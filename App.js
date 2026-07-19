@@ -121,7 +121,12 @@ export default function App() {
   const cameraRef = useRef(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => { cargarConteos(); }, []);
+  useEffect(() => {
+    cargarConteos();
+    // Auto-refresh cada 30 segundos
+    const intervalo = setInterval(cargarConteos, 30000);
+    return () => clearInterval(intervalo);
+  }, []);
 
   useEffect(() => {
     if (capturando) {
