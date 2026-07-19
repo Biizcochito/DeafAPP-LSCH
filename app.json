@@ -4,21 +4,19 @@
     "slug": "DeafApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "95dbcada-15c7-46dd-a53b-20342a820b52"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "owner": "bizcochito",
+    "android": {
+      "package": "com.bizcochito.DeafApp"
     }
   }
 }
