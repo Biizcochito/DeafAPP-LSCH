@@ -105,6 +105,12 @@ function SignaRow({ seña, conteo, onGrabar }) {
 }
 
 // ── APP ────────────────────────────────────────────────────────────
+// Fondo oscuro para toda la página web
+if (typeof document !== 'undefined') {
+  document.body.style.backgroundColor = '#0F0F1E';
+  document.body.style.margin = '0';
+  document.documentElement.style.backgroundColor = '#0F0F1E';
+}
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
   const [pantalla,   setPantalla]   = useState("bienvenida");
