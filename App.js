@@ -107,7 +107,7 @@ function SignaRow({ seña, conteo, onGrabar }) {
 // ── APP ────────────────────────────────────────────────────────────
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [pantalla,   setPantalla]   = useState("home");
+  const [pantalla,   setPantalla]   = useState("bienvenida");
   const [catActual,  setCatActual]  = useState(null);
   const [señaActual, setSeñaActual] = useState(null);
   const [conteos,    setConteos]    = useState({});
@@ -238,6 +238,64 @@ export default function App() {
         <TouchableOpacity style={styles.btnPrimario} onPress={requestPermission}>
           <Text style={styles.btnPrimarioTexto}>Permitir cámara</Text>
         </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
+  // ── PANTALLA BIENVENIDA ────────────────────────────────────────
+  if (pantalla === "bienvenida") {
+    return (
+      <SafeAreaView style={[styles.root, styles.centrado]}>
+        <StatusBar barStyle="light-content" />
+        <ScrollView contentContainerStyle={styles.bienvenidaScroll}>
+          <Text style={styles.bienvenidaEmoji}>🧏‍♂️</Text>
+          <Text style={styles.bienvenidaTitulo}>Bienvenido a DeafApp</Text>
+          <Text style={styles.bienvenidaSubtitulo}>Lenguaje de Señas Chileno LSCh 🇨🇱</Text>
+
+          <View style={styles.bienvenidaCard}>
+            <Text style={styles.bienvenidaSeccion}>¿Qué es esto?</Text>
+            <Text style={styles.bienvenidaTexto}>
+              Este proyecto busca crear el primer sistema de reconocimiento del
+              Lenguaje de Señas Chileno (LSCh) con Inteligencia Artificial.
+            </Text>
+          </View>
+
+          <View style={styles.bienvenidaCard}>
+            <Text style={styles.bienvenidaSeccion}>🎯 ¿Cómo funciona?</Text>
+            <Text style={styles.bienvenidaTexto}>
+              Cada seña que grabas se usa para entrenar una IA que aprende a
+              reconocer el LSCh. Mientras más personas contribuyan, mejor
+              será el reconocimiento.
+            </Text>
+          </View>
+
+          <View style={styles.bienvenidaCard}>
+            <Text style={styles.bienvenidaSeccion}>🔮 ¿Qué viene a futuro?</Text>
+            <Text style={styles.bienvenidaTexto}>
+              Con suficientes contribuciones, la app podrá:{"\n"}
+              • Traducir señas a texto en tiempo real{"\n"}
+              • Convertir voz a señas para oyentes{"\n"}
+              • Funcionar sin internet desde tu celular
+            </Text>
+          </View>
+
+          <View style={[styles.bienvenidaCard, { borderColor: "#E94560" }]}>
+            <Text style={styles.bienvenidaSeccion}>❤️ Tu aporte importa</Text>
+            <Text style={styles.bienvenidaTexto}>
+              Cada grabación acerca a la comunidad sorda a comunicarse
+              libremente con el mundo. ¡Gracias por ser parte de este proyecto!
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.btnComenzar}
+            onPress={() => setPantalla("home")}
+          >
+            <Text style={styles.btnComenzarTexto}>¡Comenzar a contribuir! 🤟</Text>
+          </TouchableOpacity>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -399,7 +457,13 @@ export default function App() {
 const CARD_W = (width - 48) / 2;
 
 const styles = StyleSheet.create({
-  root:    { flex: 1, backgroundColor: "#0F0F1E" },
+  root: { 
+    flex: 1, 
+    backgroundColor: "#0F0F1E",
+    maxWidth: 480,
+    marginHorizontal: "auto",
+    width: "100%",
+  },
   centrado:{ alignItems: "center", justifyContent: "center" },
 
   // Home
@@ -476,6 +540,17 @@ const styles = StyleSheet.create({
   btnVolver:  { backgroundColor: "#333",    borderRadius: 16, paddingVertical: 14, alignItems: "center" },
   btnTextoBlanco:{ fontSize: 16, fontWeight: "700", color: "#FFF" },
   btnTextoGris:  { fontSize: 15, fontWeight: "600", color: "#AAA" },
+
+  // Bienvenida
+  bienvenidaScroll:    { alignItems: "center", paddingHorizontal: 20, paddingTop: 40 },
+  bienvenidaEmoji:     { fontSize: 70, marginBottom: 12 },
+  bienvenidaTitulo:    { fontSize: 30, fontWeight: "900", color: "#FFF", textAlign: "center" },
+  bienvenidaSubtitulo: { fontSize: 14, color: "#888", marginBottom: 24, textAlign: "center" },
+  bienvenidaCard:      { backgroundColor: "#1A1A2E", borderRadius: 16, padding: 18, marginBottom: 14, width: "100%", borderWidth: 1, borderColor: "#333" },
+  bienvenidaSeccion:   { fontSize: 16, fontWeight: "800", color: "#FFF", marginBottom: 8 },
+  bienvenidaTexto:     { fontSize: 14, color: "#AAA", lineHeight: 22 },
+  btnComenzar:         { backgroundColor: "#E94560", borderRadius: 20, paddingVertical: 18, paddingHorizontal: 40, marginTop: 10, width: "100%", alignItems: "center" },
+  btnComenzarTexto:    { fontSize: 18, fontWeight: "900", color: "#FFF" },
 
   // Permisos
   permisoTitulo:{ fontSize: 22, fontWeight: "800", color: "#FFF", textAlign: "center", marginTop: 16 },
