@@ -105,12 +105,6 @@ function SignaRow({ seña, conteo, onGrabar }) {
 }
 
 // ── APP ────────────────────────────────────────────────────────────
-// Fondo oscuro para toda la página web
-if (typeof document !== 'undefined') {
-  document.body.style.backgroundColor = '#0F0F1E';
-  document.body.style.margin = '0';
-  document.documentElement.style.backgroundColor = '#0F0F1E';
-}
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
   const [pantalla,   setPantalla]   = useState("bienvenida");
@@ -251,12 +245,13 @@ export default function App() {
   // ── PANTALLA BIENVENIDA ────────────────────────────────────────
   if (pantalla === "bienvenida") {
     return (
-      <SafeAreaView style={[styles.root, styles.centrado]}>
+      <View style={styles.root}>
+        <SafeAreaView style={[styles.contenedor, styles.centrado]}>
         <StatusBar barStyle="light-content" />
         <ScrollView contentContainerStyle={styles.bienvenidaScroll}>
-          <Text style={styles.bienvenidaEmoji}>🧏‍♂️</Text>
+          <Text style={styles.bienvenidaEmoji}>🤟</Text>
           <Text style={styles.bienvenidaTitulo}>Bienvenido a DeafApp</Text>
-          <Text style={styles.bienvenidaSubtitulo}>Lenguaje de Señas Chileno LSCh 🇨🇱</Text>
+          <Text style={styles.bienvenidaSubtitulo}>Lenguaje de Señas Chileno</Text>
 
           <View style={styles.bienvenidaCard}>
             <Text style={styles.bienvenidaSeccion}>¿Qué es esto?</Text>
@@ -302,7 +297,8 @@ export default function App() {
 
           <View style={{ height: 40 }} />
         </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </View>
     );
   }
 
@@ -310,7 +306,8 @@ export default function App() {
   if (pantalla === "grabar") {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
     return (
-      <SafeAreaView style={styles.root}>
+      <View style={styles.root}>
+      <SafeAreaView style={styles.contenedor}>
         <StatusBar barStyle="light-content" />
         <View style={styles.grabarHeader}>
           <TouchableOpacity onPress={() => { setPantalla("categoria"); setExito(false); setError(null); }} style={styles.btnBack}>
@@ -387,6 +384,7 @@ export default function App() {
           )}
         </View>
       </SafeAreaView>
+      </View>
     );
   }
 
@@ -395,7 +393,8 @@ export default function App() {
     const pendientes = catActual.señas.filter(s => (conteos[s] || 0) < META_POR_SEÑA);
     const listas     = catActual.señas.filter(s => (conteos[s] || 0) >= META_POR_SEÑA);
     return (
-      <SafeAreaView style={styles.root}>
+      <View style={styles.root}>
+      <SafeAreaView style={styles.contenedor}>
         <StatusBar barStyle="light-content" />
         <View style={[styles.catHeader, { borderBottomColor: catActual.color }]}>
           <TouchableOpacity onPress={() => setPantalla("home")} style={styles.btnBack}>
@@ -426,12 +425,14 @@ export default function App() {
           <View style={{ height: 40 }} />
         </ScrollView>
       </SafeAreaView>
+      </View>
     );
   }
 
   // ── PANTALLA HOME ──────────────────────────────────────────────
   return (
-    <SafeAreaView style={styles.root}>
+    <View style={styles.root}>
+    <SafeAreaView style={styles.contenedor}>
       <StatusBar barStyle="light-content" />
       <View style={styles.homeHeader}>
         <Text style={styles.homeTitulo}>DeafApp</Text>
@@ -456,6 +457,7 @@ export default function App() {
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
+    </View>
   );
 }
 
@@ -466,9 +468,14 @@ const styles = StyleSheet.create({
   root: { 
     flex: 1, 
     backgroundColor: "#0F0F1E",
-    maxWidth: 480,
-    marginHorizontal: "auto",
     width: "100%",
+  },
+  contenedor: {
+    flex: 1,
+    maxWidth: 800,
+    width: "100%",
+    alignSelf: "center",
+    backgroundColor: "#0F0F1E",
   },
   centrado:{ alignItems: "center", justifyContent: "center" },
 
