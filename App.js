@@ -1,6 +1,6 @@
 /**
  * DeafApp — Recopilación de señas LSCh
- * Captura 30 frames en 3 segundos y los sube a Supabase
+ * Dataset completo: todas las categorías del proyecto
  */
 
 import { useState, useRef, useEffect } from "react";
@@ -14,7 +14,6 @@ import { createClient } from "@supabase/supabase-js";
 
 const { width, height } = Dimensions.get("window");
 
-// Fondo oscuro para toda la página web en PC
 if (typeof document !== "undefined") {
   document.body.style.backgroundColor = "#0F0F1E";
   document.body.style.margin = "0";
@@ -35,28 +34,72 @@ const CATEGORIAS = [
     señas: ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","z"],
   },
   {
-    id: "alimentos", nombre: "Alimentos", emoji: "🍎", color: "#FF6B6B",
-    señas: ["arroz","fideos","pure","porotos","lentejas","carne","cerdo","pavo","longaniza","vianesa","pollo","pescado","aceite","sal","azucar","pimienta","ajo"],
+    id: "numeros", nombre: "Números", emoji: "🔢", color: "#C39BD3",
+    señas: ["uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","veinte","treinta","cuarenta","cincuenta","cien","mil"],
   },
   {
     id: "saludos", nombre: "Saludos", emoji: "👋", color: "#4ECDC4",
-    señas: ["hola","adios","buenos dias","buenas tardes","buenas noches","gracias","por favor","de nada","como estas","bien","mal"],
+    señas: ["hola","adios","buenos dias","buenas tardes","buenas noches","gracias","por favor","de nada","como estas","bien","mal","mucho gusto","hasta luego","bienvenido"],
   },
   {
     id: "familia", nombre: "Familia", emoji: "👨‍👩‍👧", color: "#45B7D1",
-    señas: ["mama","papa","hermano","hermana","abuelo","abuela","hijo","hija","tio","tia","primo","familia"],
+    señas: ["mama","papa","hermano","hermana","abuelo","abuela","hijo","hija","tio","tia","primo","familia","esposo","esposa","bebe","niño","niña"],
+  },
+  {
+    id: "alimentos", nombre: "Alimentos", emoji: "🍎", color: "#FF6B6B",
+    señas: ["arroz","fideos","pure","porotos","lentejas","carne","cerdo","pavo","longaniza","vianesa","pollo","pescado","aceite","sal","azucar","pimienta","ajo","pan","leche","queso","huevo"],
+  },
+  {
+    id: "frutas_verduras", nombre: "Frutas y Verduras", emoji: "🥦", color: "#27AE60",
+    señas: ["manzana","naranja","platano","uva","frutilla","pera","sandia","melon","limon","durazno","tomate","lechuga","zanahoria","cebolla","papa","pepino","brocoli","espinaca","choclo","zapallo"],
   },
   {
     id: "verbos", nombre: "Verbos", emoji: "⚡", color: "#96CEB4",
-    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir"],
+    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir","morir"],
+  },
+  {
+    id: "adjetivos", nombre: "Adjetivos", emoji: "🎨", color: "#E74C3C",
+    señas: ["grande","pequeño","bonito","feo","bueno","malo","rapido","lento","caliente","frio","nuevo","viejo","feliz","triste","alto","bajo","gordo","flaco","fuerte","debil","inteligente","tonto","rico","pobre","limpio","sucio","lleno","vacio"],
+  },
+  {
+    id: "preguntas", nombre: "Preguntas", emoji: "❓", color: "#F39C12",
+    señas: ["que","como","donde","cuando","quien","por que","cuanto","cual","para que","de donde","a donde","cuantos","cuantas"],
   },
   {
     id: "pronombres", nombre: "Pronombres", emoji: "👤", color: "#F7DC6F",
-    señas: ["yo","tu","el","ella","nosotros","ellos","esto","eso"],
+    señas: ["yo","tu","el","ella","nosotros","ellos","ellas","usted","ustedes","este","ese","aquel","aqui","alli","alla","esto","eso","aquello"],
   },
   {
-    id: "numeros", nombre: "Números", emoji: "🔢", color: "#C39BD3",
-    señas: ["uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez"],
+    id: "paises", nombre: "Países", emoji: "🌎", color: "#2980B9",
+    señas: ["chile","argentina","peru","brasil","colombia","bolivia","ecuador","venezuela","paraguay","uruguay","mexico","usa","canada","españa","francia","alemania","italia","china","japon","corea","cuba","panama","costa rica","guatemala","honduras","el salvador","nicaragua","haiti","republica dominicana"],
+  },
+  {
+    id: "regiones", nombre: "Regiones de Chile", emoji: "🗺️", color: "#8E44AD",
+    señas: ["arica","tarapaca","antofagasta","atacama","coquimbo","valparaiso","metropolitana","ohiggins","maule","nuble","biobio","araucania","los rios","los lagos","aysen","magallanes"],
+  },
+  {
+    id: "continentes", nombre: "Continentes", emoji: "🌍", color: "#16A085",
+    señas: ["america","america del sur","america del norte","america central","europa","asia","africa","oceania","antartica"],
+  },
+  {
+    id: "estados_civiles", nombre: "Estados Civiles", emoji: "💍", color: "#D35400",
+    señas: ["soltero","soltera","casado","casada","divorciado","divorciada","viudo","viuda","separado","separada","conviviente","comprometido"],
+  },
+  {
+    id: "colores", nombre: "Colores", emoji: "🎨", color: "#E91E63",
+    señas: ["rojo","azul","verde","amarillo","blanco","negro","naranja","morado","rosado","cafe","gris","celeste","dorado","plateado"],
+  },
+  {
+    id: "tiempo", nombre: "Tiempo", emoji: "🕐", color: "#607D8B",
+    señas: ["hoy","ayer","manana","ahora","antes","despues","siempre","nunca","a veces","lunes","martes","miercoles","jueves","viernes","sabado","domingo","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre","año","mes","semana","dia","hora","minuto"],
+  },
+  {
+    id: "emociones", nombre: "Emociones", emoji: "😊", color: "#FF9800",
+    señas: ["feliz","triste","enojado","asustado","sorprendido","aburrido","cansado","emocionado","nervioso","tranquilo","preocupado","confundido","avergonzado","orgulloso","celoso","amor","odio"],
+  },
+  {
+    id: "cuerpo", nombre: "Cuerpo Humano", emoji: "🫀", color: "#9C27B0",
+    señas: ["cabeza","cara","ojo","nariz","boca","oreja","cuello","hombro","brazo","mano","dedo","pecho","espalda","pierna","rodilla","pie","corazon","cerebro","estomago"],
   },
 ];
 
@@ -224,13 +267,13 @@ export default function App() {
     );
   }
 
-  // ── PANTALLA BIENVENIDA ──────────────────────────────────────────
+  // BIENVENIDA
   if (pantalla === "bienvenida") {
     return (
       <SafeAreaView style={styles.root}>
         <StatusBar barStyle="light-content" />
         <ScrollView contentContainerStyle={styles.bienvenidaScroll}>
-          <Text style={styles.bienvenidaEmoji}>🤟</Text>
+          <Text style={styles.bienvenidaEmoji}>🤟🧏‍♂️🧏‍♀️</Text>
           <Text style={styles.bienvenidaTitulo}>Bienvenido a DeafApp</Text>
           <Text style={styles.bienvenidaSubtitulo}>Lenguaje de Señas Chileno</Text>
           <View style={styles.bienvenidaCard}>
@@ -272,7 +315,7 @@ export default function App() {
     );
   }
 
-  // ── PANTALLA GRABAR ──────────────────────────────────────────────
+  // GRABAR
   if (pantalla === "grabar") {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
     return (
@@ -312,7 +355,7 @@ export default function App() {
         <Text style={styles.instruccion}>
           {capturando
             ? "¡Haz la seña frente a la cámara!"
-            : `Graba la seña: "${señaActual}" — Aleja el celular para que se vean tus manos`}
+            : `Graba la seña: "${señaActual}" — Asegúrate que se vean tus manos`}
         </Text>
         {error && <Text style={styles.errorTexto}>{error}</Text>}
         <View style={styles.grabarBotones}>
@@ -345,7 +388,7 @@ export default function App() {
     );
   }
 
-  // ── PANTALLA CATEGORÍA ───────────────────────────────────────────
+  // CATEGORÍA
   if (pantalla === "categoria" && catActual) {
     const pendientes = catActual.señas.filter(s => (conteos[s] || 0) < META_POR_SEÑA);
     const listas     = catActual.señas.filter(s => (conteos[s] || 0) >= META_POR_SEÑA);
@@ -384,15 +427,15 @@ export default function App() {
     );
   }
 
-  // ── PANTALLA HOME ────────────────────────────────────────────────
+  // HOME
   return (
     <SafeAreaView style={styles.root}>
       <StatusBar barStyle="light-content" />
       <View style={styles.homeHeader}>
-        <Text style={styles.homeTitulo}>DeafApp</Text>
+        <Text style={styles.homeTitulo}>DeafApp 🤟</Text>
         <Text style={styles.homeSubtitulo}>Lenguaje de Señas Chileno</Text>
       </View>
-      <Text style={styles.homeInstruccion}>Selecciona una categoría 👇</Text>
+      <Text style={styles.homeInstruccion}>Selecciona una categoría y graba tus señas 👇</Text>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.grid}>
           {CATEGORIAS.map(cat => (
@@ -420,7 +463,6 @@ const styles = StyleSheet.create({
   root:    { flex: 1, backgroundColor: "#0F0F1E" },
   centrado:{ alignItems: "center", justifyContent: "center" },
 
-  // Bienvenida
   bienvenidaScroll:    { alignItems: "center", paddingHorizontal: 20, paddingTop: 40, maxWidth: 600, alignSelf: "center", width: "100%" },
   bienvenidaEmoji:     { fontSize: 70, marginBottom: 12 },
   bienvenidaTitulo:    { fontSize: 30, fontWeight: "900", color: "#FFF", textAlign: "center" },
@@ -431,16 +473,15 @@ const styles = StyleSheet.create({
   btnComenzar:         { backgroundColor: "#E94560", borderRadius: 20, paddingVertical: 18, paddingHorizontal: 40, marginTop: 10, width: "100%", alignItems: "center" },
   btnComenzarTexto:    { fontSize: 18, fontWeight: "900", color: "#FFF" },
 
-  // Home
-  homeHeader:    { alignItems: "center", paddingTop: 12, paddingBottom: 4 },
-  homeTitulo:    { fontSize: 32, fontWeight: "900", color: "#FFF" },
-  homeSubtitulo: { fontSize: 13, color: "#888", marginTop: 2 },
-  homeInstruccion:{ fontSize: 15, color: "#AAA", textAlign: "center", marginBottom: 12, paddingHorizontal: 20 },
-  grid:          { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: 12, gap: 12 },
+  homeHeader:     { alignItems: "center", paddingTop: 12, paddingBottom: 4 },
+  homeTitulo:     { fontSize: 30, fontWeight: "900", color: "#FFF" },
+  homeSubtitulo:  { fontSize: 13, color: "#888", marginTop: 2 },
+  homeInstruccion:{ fontSize: 14, color: "#AAA", textAlign: "center", marginBottom: 12, paddingHorizontal: 20 },
+  grid:           { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: 12, gap: 12 },
 
   catCard:    { width: CARD_W, backgroundColor: "#1A1A2E", borderRadius: 16, padding: 16, alignItems: "center", borderWidth: 2 },
-  catEmoji:   { fontSize: 38, marginBottom: 6 },
-  catNombre:  { fontSize: 15, fontWeight: "700", color: "#FFF", marginBottom: 8 },
+  catEmoji:   { fontSize: 36, marginBottom: 6 },
+  catNombre:  { fontSize: 14, fontWeight: "700", color: "#FFF", marginBottom: 8, textAlign: "center" },
   catProgreso:{ fontSize: 11, color: "#888", marginTop: 4 },
 
   totalBox:       { alignItems: "center", marginTop: 20, gap: 6 },
@@ -466,7 +507,7 @@ const styles = StyleSheet.create({
   grabarHeader: { flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 10 },
   btnBack:      { width: 44, height: 44, justifyContent: "center", alignItems: "center" },
   btnBackTexto: { fontSize: 32, color: "#FFF", fontWeight: "300" },
-  grabarTitulo: { flex: 1, textAlign: "center", fontSize: 22, fontWeight: "900", color: "#FFF", letterSpacing: 2 },
+  grabarTitulo: { flex: 1, textAlign: "center", fontSize: 20, fontWeight: "900", color: "#FFF", letterSpacing: 1 },
 
   camaraBox: { width: "100%", maxWidth: 600, alignSelf: "center", height: height * 0.50, overflow: "hidden", backgroundColor: "#000", borderRadius: 16 },
   camara:    { flex: 1 },
@@ -485,7 +526,7 @@ const styles = StyleSheet.create({
   exitoTexto:   { fontSize: 36, fontWeight: "900", color: "#FFF" },
   exitoSub:     { fontSize: 16, color: "#D5F5E3" },
 
-  instruccion: { fontSize: 15, color: "#AAA", textAlign: "center", marginTop: 12, paddingHorizontal: 20 },
+  instruccion: { fontSize: 14, color: "#AAA", textAlign: "center", marginTop: 12, paddingHorizontal: 20 },
   errorTexto:  { fontSize: 13, color: "#E74C3C", textAlign: "center", marginTop: 6 },
 
   grabarBotones: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 20 },
