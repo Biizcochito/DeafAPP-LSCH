@@ -1,7 +1,6 @@
 /**
  * DeafApp — Recopilación de señas LSCh
  * Captura 30 frames en 3 segundos y los sube a Supabase
- * Funciona en cualquier navegador móvil sin instalar nada
  */
 
 import { useState, useRef, useEffect } from "react";
@@ -15,37 +14,41 @@ import { createClient } from "@supabase/supabase-js";
 
 const { width, height } = Dimensions.get("window");
 
-// ── SUPABASE ───────────────────────────────────────────────────────
+// Fondo oscuro para toda la página web en PC
+if (typeof document !== "undefined") {
+  document.body.style.backgroundColor = "#0F0F1E";
+  document.body.style.margin = "0";
+  document.documentElement.style.backgroundColor = "#0F0F1E";
+}
+
 const SUPABASE_URL = "https://didlffnluqqurelgnqdp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZGxmZm5sdXFxdXJlbGducWRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MDMwNTYsImV4cCI6MjA5OTk3OTA1Nn0.G6MqUFXNJleUTBtZu7kQb58E-rGWk3w-rLbvRu6xOVE";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const META_POR_SEÑA  = 30;   // grabaciones objetivo por seña
-const TOTAL_FRAMES   = 30;   // frames por secuencia
-const FPS_INTERVALO  = 100;  // ms entre frames (10fps)
+const META_POR_SEÑA = 30;
+const TOTAL_FRAMES  = 30;
+const FPS_INTERVALO = 100;
 
-// ── CATEGORÍAS ─────────────────────────────────────────────────────
 const CATEGORIAS = [
   {
+    id: "abecedario", nombre: "Abecedario", emoji: "🔤", color: "#E67E22",
+    señas: ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","z"],
+  },
+  {
     id: "alimentos", nombre: "Alimentos", emoji: "🍎", color: "#FF6B6B",
-    señas: ["arroz","fideos","pure","porotos","lentejas","carne","cerdo",
-            "pavo","longaniza","vianesa","pollo","pescado","aceite","sal",
-            "azucar","pimienta","ajo"],
+    señas: ["arroz","fideos","pure","porotos","lentejas","carne","cerdo","pavo","longaniza","vianesa","pollo","pescado","aceite","sal","azucar","pimienta","ajo"],
   },
   {
     id: "saludos", nombre: "Saludos", emoji: "👋", color: "#4ECDC4",
-    señas: ["hola","adios","buenos dias","buenas tardes","buenas noches",
-            "gracias","por favor","de nada","como estas","bien","mal"],
+    señas: ["hola","adios","buenos dias","buenas tardes","buenas noches","gracias","por favor","de nada","como estas","bien","mal"],
   },
   {
     id: "familia", nombre: "Familia", emoji: "👨‍👩‍👧", color: "#45B7D1",
-    señas: ["mama","papa","hermano","hermana","abuelo","abuela",
-            "hijo","hija","tio","tia","primo","familia"],
+    señas: ["mama","papa","hermano","hermana","abuelo","abuela","hijo","hija","tio","tia","primo","familia"],
   },
   {
     id: "verbos", nombre: "Verbos", emoji: "⚡", color: "#96CEB4",
-    señas: ["comer","beber","dormir","trabajar","estudiar",
-            "caminar","correr","hablar","escuchar","ver","ir","venir"],
+    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir"],
   },
   {
     id: "pronombres", nombre: "Pronombres", emoji: "👤", color: "#F7DC6F",
@@ -57,7 +60,6 @@ const CATEGORIAS = [
   },
 ];
 
-// ── HELPERS ────────────────────────────────────────────────────────
 const colorProgreso = (n) => {
   if (n === 0)                  return "#555";
   if (n < META_POR_SEÑA * 0.3) return "#E74C3C";
@@ -65,7 +67,6 @@ const colorProgreso = (n) => {
   return "#27AE60";
 };
 
-// ── COMPONENTES ────────────────────────────────────────────────────
 function CategoriaCard({ cat, conteos, onPress }) {
   const listas = cat.señas.filter(s => (conteos[s] || 0) >= META_POR_SEÑA).length;
   const pct    = cat.señas.length > 0 ? listas / cat.señas.length : 0;
@@ -104,7 +105,6 @@ function SignaRow({ seña, conteo, onGrabar }) {
   );
 }
 
-// ── APP ────────────────────────────────────────────────────────────
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
   const [pantalla,   setPantalla]   = useState("bienvenida");
@@ -114,7 +114,7 @@ export default function App() {
   const [countdown,  setCountdown]  = useState(null);
   const [capturando, setCapturando] = useState(false);
   const [subiendo,   setSubiendo]   = useState(false);
-  const [progreso,   setProgreso]   = useState(0);   // 0-30 frames capturados
+  const [progreso,   setProgreso]   = useState(0);
   const [exito,      setExito]      = useState(false);
   const [error,      setError]      = useState(null);
 
@@ -123,7 +123,6 @@ export default function App() {
 
   useEffect(() => {
     cargarConteos();
-    // Auto-refresh cada 30 segundos
     const intervalo = setInterval(cargarConteos, 30000);
     return () => clearInterval(intervalo);
   }, []);
@@ -154,8 +153,6 @@ export default function App() {
 
   const iniciarCaptura = async () => {
     if (!cameraRef.current || capturando || subiendo) return;
-
-    // Countdown 3-2-1
     for (let i = 3; i >= 1; i--) {
       setCountdown(i);
       await new Promise(r => setTimeout(r, 900));
@@ -163,18 +160,14 @@ export default function App() {
     setCountdown("¡Ya!");
     await new Promise(r => setTimeout(r, 400));
     setCountdown(null);
-
     setCapturando(true);
     setProgreso(0);
     setError(null);
-
     const frames = [];
     try {
       for (let i = 0; i < TOTAL_FRAMES; i++) {
         const foto = await cameraRef.current.takePictureAsync({
-          quality:         0.15,   // muy comprimida para ahorrar espacio
-          base64:          true,
-          skipProcessing:  true,
+          quality: 0.15, base64: true, skipProcessing: true,
         });
         frames.push(foto.base64);
         setProgreso(i + 1);
@@ -194,29 +187,19 @@ export default function App() {
       const timestamp   = Date.now();
       const nombre      = `${señaActual}_${timestamp}.json`;
       const storagePath = `${catActual.id}/${señaActual}/${nombre}`;
-
-      // Empaquetar los 30 frames en un JSON
       const payload = JSON.stringify({
-        label:     señaActual,
-        categoria: catActual.id,
-        frames:    frames,        // array de 30 strings base64
-        timestamp: timestamp,
-        n_frames:  frames.length,
+        label: señaActual, categoria: catActual.id,
+        frames: frames, timestamp: timestamp, n_frames: frames.length,
       });
-
       const blob = new Blob([payload], { type: "application/json" });
-
       const { error: uploadError } = await supabase.storage
         .from("contribuciones")
         .upload(storagePath, blob, { contentType: "application/json" });
-
       if (uploadError) {
         setError(`Error: ${uploadError.message}`);
       } else {
         await supabase.from("grabaciones").insert({
-          label:        señaActual,
-          categoria:    catActual.id,
-          archivo_path: storagePath,
+          label: señaActual, categoria: catActual.id, archivo_path: storagePath,
         });
         setConteos(prev => ({ ...prev, [señaActual]: (prev[señaActual] || 0) + 1 }));
         setExito(true);
@@ -227,7 +210,6 @@ export default function App() {
     setSubiendo(false);
   };
 
-  // ── PERMISOS ───────────────────────────────────────────────────
   if (!permission) return <View style={styles.root} />;
   if (!permission.granted) {
     return (
@@ -242,17 +224,15 @@ export default function App() {
     );
   }
 
-  // ── PANTALLA BIENVENIDA ────────────────────────────────────────
+  // ── PANTALLA BIENVENIDA ──────────────────────────────────────────
   if (pantalla === "bienvenida") {
     return (
-      <View style={styles.root}>
-        <SafeAreaView style={[styles.contenedor, styles.centrado]}>
+      <SafeAreaView style={styles.root}>
         <StatusBar barStyle="light-content" />
         <ScrollView contentContainerStyle={styles.bienvenidaScroll}>
           <Text style={styles.bienvenidaEmoji}>🤟</Text>
           <Text style={styles.bienvenidaTitulo}>Bienvenido a DeafApp</Text>
           <Text style={styles.bienvenidaSubtitulo}>Lenguaje de Señas Chileno</Text>
-
           <View style={styles.bienvenidaCard}>
             <Text style={styles.bienvenidaSeccion}>¿Qué es esto?</Text>
             <Text style={styles.bienvenidaTexto}>
@@ -260,16 +240,13 @@ export default function App() {
               Lenguaje de Señas Chileno (LSCh) con Inteligencia Artificial.
             </Text>
           </View>
-
           <View style={styles.bienvenidaCard}>
             <Text style={styles.bienvenidaSeccion}>🎯 ¿Cómo funciona?</Text>
             <Text style={styles.bienvenidaTexto}>
               Cada seña que grabas se usa para entrenar una IA que aprende a
-              reconocer el LSCh. Mientras más personas contribuyan, mejor
-              será el reconocimiento.
+              reconocer el LSCh. Mientras más personas contribuyan, mejor será el reconocimiento.
             </Text>
           </View>
-
           <View style={styles.bienvenidaCard}>
             <Text style={styles.bienvenidaSeccion}>🔮 ¿Qué viene a futuro?</Text>
             <Text style={styles.bienvenidaTexto}>
@@ -279,7 +256,6 @@ export default function App() {
               • Funcionar sin internet desde tu celular
             </Text>
           </View>
-
           <View style={[styles.bienvenidaCard, { borderColor: "#E94560" }]}>
             <Text style={styles.bienvenidaSeccion}>❤️ Tu aporte importa</Text>
             <Text style={styles.bienvenidaTexto}>
@@ -287,27 +263,20 @@ export default function App() {
               libremente con el mundo. ¡Gracias por ser parte de este proyecto!
             </Text>
           </View>
-
-          <TouchableOpacity
-            style={styles.btnComenzar}
-            onPress={() => setPantalla("home")}
-          >
+          <TouchableOpacity style={styles.btnComenzar} onPress={() => setPantalla("home")}>
             <Text style={styles.btnComenzarTexto}>¡Comenzar a contribuir! 🤟</Text>
           </TouchableOpacity>
-
           <View style={{ height: 40 }} />
         </ScrollView>
-        </SafeAreaView>
-      </View>
+      </SafeAreaView>
     );
   }
 
-  // ── PANTALLA GRABAR ────────────────────────────────────────────
+  // ── PANTALLA GRABAR ──────────────────────────────────────────────
   if (pantalla === "grabar") {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
     return (
-      <View style={styles.root}>
-      <SafeAreaView style={styles.contenedor}>
+      <SafeAreaView style={styles.root}>
         <StatusBar barStyle="light-content" />
         <View style={styles.grabarHeader}>
           <TouchableOpacity onPress={() => { setPantalla("categoria"); setExito(false); setError(null); }} style={styles.btnBack}>
@@ -316,23 +285,19 @@ export default function App() {
           <Text style={styles.grabarTitulo}>{señaActual?.toUpperCase()}</Text>
           <View style={{ width: 44 }} />
         </View>
-
         <View style={styles.camaraBox}>
           <CameraView ref={cameraRef} style={styles.camara} facing="front" />
-
           {countdown !== null && (
             <View style={styles.countdownOverlay}>
               <Text style={styles.countdownTexto}>{countdown}</Text>
             </View>
           )}
-
           {capturando && (
             <View style={styles.recIndicador}>
               <Animated.View style={[styles.recPunto, { transform: [{ scale: pulseAnim }] }]} />
               <Text style={styles.recTexto}>{progreso}/{TOTAL_FRAMES}</Text>
             </View>
           )}
-
           {exito && (
             <View style={styles.exitoOverlay}>
               <Text style={{ fontSize: 70 }}>✅</Text>
@@ -340,21 +305,16 @@ export default function App() {
               <Text style={styles.exitoSub}>Tu seña fue guardada</Text>
             </View>
           )}
-
-          {/* Barra de progreso de captura */}
           <View style={styles.progresoBarra}>
             <View style={[styles.progresoRelleno, { width: `${pctProgreso}%` }]} />
           </View>
         </View>
-
         <Text style={styles.instruccion}>
           {capturando
             ? "¡Haz la seña frente a la cámara!"
-            : `Graba la seña: "${señaActual}"`}
+            : `Graba la seña: "${señaActual}" — Aleja el celular para que se vean tus manos`}
         </Text>
-
         {error && <Text style={styles.errorTexto}>{error}</Text>}
-
         <View style={styles.grabarBotones}>
           {!capturando && !subiendo && !exito && (
             <TouchableOpacity style={styles.btnGrabarGrande} onPress={iniciarCaptura}>
@@ -362,7 +322,6 @@ export default function App() {
               <Text style={styles.btnGrabarGrandeTexto}>Grabar seña (3 seg)</Text>
             </TouchableOpacity>
           )}
-
           {(capturando || subiendo) && (
             <View style={styles.subiendoBox}>
               <ActivityIndicator size="large" color="#E94560" />
@@ -371,7 +330,6 @@ export default function App() {
               </Text>
             </View>
           )}
-
           {exito && (
             <View style={{ width: "100%", gap: 12 }}>
               <TouchableOpacity style={styles.btnOtraVez} onPress={() => { setExito(false); setProgreso(0); }}>
@@ -384,17 +342,15 @@ export default function App() {
           )}
         </View>
       </SafeAreaView>
-      </View>
     );
   }
 
-  // ── PANTALLA CATEGORÍA ─────────────────────────────────────────
+  // ── PANTALLA CATEGORÍA ───────────────────────────────────────────
   if (pantalla === "categoria" && catActual) {
     const pendientes = catActual.señas.filter(s => (conteos[s] || 0) < META_POR_SEÑA);
     const listas     = catActual.señas.filter(s => (conteos[s] || 0) >= META_POR_SEÑA);
     return (
-      <View style={styles.root}>
-      <SafeAreaView style={styles.contenedor}>
+      <SafeAreaView style={styles.root}>
         <StatusBar barStyle="light-content" />
         <View style={[styles.catHeader, { borderBottomColor: catActual.color }]}>
           <TouchableOpacity onPress={() => setPantalla("home")} style={styles.btnBack}>
@@ -425,14 +381,12 @@ export default function App() {
           <View style={{ height: 40 }} />
         </ScrollView>
       </SafeAreaView>
-      </View>
     );
   }
 
-  // ── PANTALLA HOME ──────────────────────────────────────────────
+  // ── PANTALLA HOME ────────────────────────────────────────────────
   return (
-    <View style={styles.root}>
-    <SafeAreaView style={styles.contenedor}>
+    <SafeAreaView style={styles.root}>
       <StatusBar barStyle="light-content" />
       <View style={styles.homeHeader}>
         <Text style={styles.homeTitulo}>DeafApp</Text>
@@ -457,27 +411,25 @@ export default function App() {
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
-    </View>
   );
 }
 
-// ── ESTILOS ────────────────────────────────────────────────────────
 const CARD_W = (width - 48) / 2;
 
 const styles = StyleSheet.create({
-  root: { 
-    flex: 1, 
-    backgroundColor: "#0F0F1E",
-    width: "100%",
-  },
-  contenedor: {
-    flex: 1,
-    maxWidth: 800,
-    width: "100%",
-    alignSelf: "center",
-    backgroundColor: "#0F0F1E",
-  },
+  root:    { flex: 1, backgroundColor: "#0F0F1E" },
   centrado:{ alignItems: "center", justifyContent: "center" },
+
+  // Bienvenida
+  bienvenidaScroll:    { alignItems: "center", paddingHorizontal: 20, paddingTop: 40, maxWidth: 600, alignSelf: "center", width: "100%" },
+  bienvenidaEmoji:     { fontSize: 70, marginBottom: 12 },
+  bienvenidaTitulo:    { fontSize: 30, fontWeight: "900", color: "#FFF", textAlign: "center" },
+  bienvenidaSubtitulo: { fontSize: 14, color: "#888", marginBottom: 24, textAlign: "center" },
+  bienvenidaCard:      { backgroundColor: "#1A1A2E", borderRadius: 16, padding: 18, marginBottom: 14, width: "100%", borderWidth: 1, borderColor: "#333" },
+  bienvenidaSeccion:   { fontSize: 16, fontWeight: "800", color: "#FFF", marginBottom: 8 },
+  bienvenidaTexto:     { fontSize: 14, color: "#AAA", lineHeight: 22 },
+  btnComenzar:         { backgroundColor: "#E94560", borderRadius: 20, paddingVertical: 18, paddingHorizontal: 40, marginTop: 10, width: "100%", alignItems: "center" },
+  btnComenzarTexto:    { fontSize: 18, fontWeight: "900", color: "#FFF" },
 
   // Home
   homeHeader:    { alignItems: "center", paddingTop: 12, paddingBottom: 4 },
@@ -486,28 +438,23 @@ const styles = StyleSheet.create({
   homeInstruccion:{ fontSize: 15, color: "#AAA", textAlign: "center", marginBottom: 12, paddingHorizontal: 20 },
   grid:          { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: 12, gap: 12 },
 
-  // Categoria card
   catCard:    { width: CARD_W, backgroundColor: "#1A1A2E", borderRadius: 16, padding: 16, alignItems: "center", borderWidth: 2 },
   catEmoji:   { fontSize: 38, marginBottom: 6 },
   catNombre:  { fontSize: 15, fontWeight: "700", color: "#FFF", marginBottom: 8 },
   catProgreso:{ fontSize: 11, color: "#888", marginTop: 4 },
 
-  // Total
   totalBox:       { alignItems: "center", marginTop: 20, gap: 6 },
   totalTexto:     { fontSize: 13, color: "#666" },
   actualizarTexto:{ fontSize: 13, color: "#4CAF50" },
 
-  // Barra de progreso genérica
   barraFondo:   { width: "100%", height: 6, backgroundColor: "#333", borderRadius: 3, overflow: "hidden" },
   barraRelleno: { height: 6, borderRadius: 3 },
 
-  // Categoria screen
   catHeader:      { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 2, gap: 10 },
   catHeaderEmoji: { fontSize: 26 },
   catHeaderNombre:{ fontSize: 20, fontWeight: "800", color: "#FFF", flex: 1 },
   seccionTitulo:  { fontSize: 14, fontWeight: "700", color: "#AAA", marginLeft: 16, marginTop: 18, marginBottom: 6 },
 
-  // Sign row
   señaFila:   { flexDirection: "row", alignItems: "center", backgroundColor: "#1A1A2E", marginHorizontal: 12, marginVertical: 4, borderRadius: 14, padding: 14 },
   señaInfo:   { flex: 1, marginRight: 12 },
   señaNombre: { fontSize: 17, fontWeight: "700", color: "#FFF", textTransform: "capitalize", marginBottom: 6 },
@@ -516,13 +463,12 @@ const styles = StyleSheet.create({
   btnGrabarListo: { backgroundColor: "#27AE60" },
   btnGrabarTexto: { fontSize: 22, color: "#FFF", fontWeight: "bold" },
 
-  // Grabar screen
   grabarHeader: { flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 10 },
   btnBack:      { width: 44, height: 44, justifyContent: "center", alignItems: "center" },
   btnBackTexto: { fontSize: 32, color: "#FFF", fontWeight: "300" },
   grabarTitulo: { flex: 1, textAlign: "center", fontSize: 22, fontWeight: "900", color: "#FFF", letterSpacing: 2 },
 
-  camaraBox: { width: "100%", height: height * 0.50, overflow: "hidden", backgroundColor: "#000" },
+  camaraBox: { width: "100%", maxWidth: 600, alignSelf: "center", height: height * 0.50, overflow: "hidden", backgroundColor: "#000", borderRadius: 16 },
   camara:    { flex: 1 },
 
   countdownOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.75)", justifyContent: "center", alignItems: "center" },
@@ -554,18 +500,6 @@ const styles = StyleSheet.create({
   btnTextoBlanco:{ fontSize: 16, fontWeight: "700", color: "#FFF" },
   btnTextoGris:  { fontSize: 15, fontWeight: "600", color: "#AAA" },
 
-  // Bienvenida
-  bienvenidaScroll:    { alignItems: "center", paddingHorizontal: 20, paddingTop: 40 },
-  bienvenidaEmoji:     { fontSize: 70, marginBottom: 12 },
-  bienvenidaTitulo:    { fontSize: 30, fontWeight: "900", color: "#FFF", textAlign: "center" },
-  bienvenidaSubtitulo: { fontSize: 14, color: "#888", marginBottom: 24, textAlign: "center" },
-  bienvenidaCard:      { backgroundColor: "#1A1A2E", borderRadius: 16, padding: 18, marginBottom: 14, width: "100%", borderWidth: 1, borderColor: "#333" },
-  bienvenidaSeccion:   { fontSize: 16, fontWeight: "800", color: "#FFF", marginBottom: 8 },
-  bienvenidaTexto:     { fontSize: 14, color: "#AAA", lineHeight: 22 },
-  btnComenzar:         { backgroundColor: "#E94560", borderRadius: 20, paddingVertical: 18, paddingHorizontal: 40, marginTop: 10, width: "100%", alignItems: "center" },
-  btnComenzarTexto:    { fontSize: 18, fontWeight: "900", color: "#FFF" },
-
-  // Permisos
   permisoTitulo:{ fontSize: 22, fontWeight: "800", color: "#FFF", textAlign: "center", marginTop: 16 },
   permisoSub:   { fontSize: 15, color: "#888", textAlign: "center", marginTop: 6, marginBottom: 40 },
   btnPrimario:  { backgroundColor: "#E94560", borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40 },
