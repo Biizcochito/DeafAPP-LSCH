@@ -1,13 +1,13 @@
 /**
  * DeafApp — Recopilación de señas LSCh
- * Dataset completo: todas las categorías del proyecto
+ * Dataset completo con todas las categorías + feedback
  */
 
 import { useState, useRef, useEffect } from "react";
 import {
   StyleSheet, Text, View, TouchableOpacity,
   ScrollView, SafeAreaView, Dimensions,
-  ActivityIndicator, StatusBar, Animated,
+  ActivityIndicator, StatusBar, Animated, TextInput,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { createClient } from "@supabase/supabase-js";
@@ -42,6 +42,10 @@ const CATEGORIAS = [
     señas: ["hola","adios","buenos dias","buenas tardes","buenas noches","gracias","por favor","de nada","como estas","bien","mal","mucho gusto","hasta luego","bienvenido"],
   },
   {
+    id: "conversacion", nombre: "Conversación", emoji: "💬", color: "#1ABC9C",
+    señas: ["si","no","tal vez","no entiendo","repite","mas despacio","espera","claro","de acuerdo","por supuesto","nunca","siempre","a veces","todo","nada","algo","alguien","nadie"],
+  },
+  {
     id: "familia", nombre: "Familia", emoji: "👨‍👩‍👧", color: "#45B7D1",
     señas: ["mama","papa","hermano","hermana","abuelo","abuela","hijo","hija","tio","tia","primo","familia","esposo","esposa","bebe","niño","niña"],
   },
@@ -55,19 +59,71 @@ const CATEGORIAS = [
   },
   {
     id: "verbos", nombre: "Verbos", emoji: "⚡", color: "#96CEB4",
-    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir","morir"],
+    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir"],
   },
   {
     id: "adjetivos", nombre: "Adjetivos", emoji: "🎨", color: "#E74C3C",
-    señas: ["grande","pequeño","bonito","feo","bueno","malo","rapido","lento","caliente","frio","nuevo","viejo","feliz","triste","alto","bajo","gordo","flaco","fuerte","debil","inteligente","tonto","rico","pobre","limpio","sucio","lleno","vacio"],
+    señas: ["grande","pequeño","bonito","feo","bueno","malo","rapido","lento","caliente","frio","nuevo","viejo","feliz","triste","alto","bajo","gordo","flaco","fuerte","debil","inteligente","rico","pobre","limpio","sucio","lleno","vacio"],
   },
   {
     id: "preguntas", nombre: "Preguntas", emoji: "❓", color: "#F39C12",
-    señas: ["que","como","donde","cuando","quien","por que","cuanto","cual","para que","de donde","a donde","cuantos","cuantas"],
+    señas: ["que","como","donde","cuando","quien","por que","cuanto","cual","para que","de donde","a donde","cuantos"],
   },
   {
     id: "pronombres", nombre: "Pronombres", emoji: "👤", color: "#F7DC6F",
-    señas: ["yo","tu","el","ella","nosotros","ellos","ellas","usted","ustedes","este","ese","aquel","aqui","alli","alla","esto","eso","aquello"],
+    señas: ["yo","tu","el","ella","nosotros","ellos","ellas","usted","ustedes","este","ese","aquel","aqui","alli","esto","eso"],
+  },
+  {
+    id: "emociones", nombre: "Emociones", emoji: "😊", color: "#FF9800",
+    señas: ["feliz","triste","enojado","asustado","sorprendido","aburrido","cansado","emocionado","nervioso","tranquilo","preocupado","confundido","avergonzado","orgulloso","celoso","amor","odio"],
+  },
+  {
+    id: "salud", nombre: "Salud y Médico", emoji: "🏥", color: "#E91E63",
+    señas: ["doctor","enfermo","hospital","medicina","dolor","operacion","urgencia","farmacia","enfermera","sangre","fiebre","gripe","resfrio","embarazada","discapacidad","sordo","ciego","alergia","herida","pastilla"],
+  },
+  {
+    id: "hogar", nombre: "Hogar", emoji: "🏠", color: "#795548",
+    señas: ["casa","habitacion","cocina","bano","cama","silla","mesa","puerta","ventana","sofa","television","refrigerador","lavadora","microondas","telefono","computador","luz","llave","escalera","jardin"],
+  },
+  {
+    id: "transporte", nombre: "Transporte", emoji: "🚗", color: "#607D8B",
+    señas: ["bus","metro","auto","taxi","bicicleta","avion","tren","barco","moto","camion","ambulancia","policia","semaforo","calle","avenida","puente","estacion","aeropuerto","puerto"],
+  },
+  {
+    id: "educacion", nombre: "Educación", emoji: "🏫", color: "#3F51B5",
+    señas: ["colegio","universidad","profesor","alumno","libro","tarea","clase","examen","nota","lapiz","cuaderno","mochila","recreo","matematicas","lenguaje","historia","ciencias","educacion fisica","ingles","arte"],
+  },
+  {
+    id: "dinero", nombre: "Dinero y Comercio", emoji: "💰", color: "#FFC107",
+    señas: ["peso","comprar","vender","caro","barato","pagar","cambio","banco","tarjeta","efectivo","deuda","precio","descuento","factura","recibo","mercado","supermercado","tienda","farmacia"],
+  },
+  {
+    id: "clima", nombre: "Clima y Tiempo", emoji: "🌤️", color: "#00BCD4",
+    señas: ["sol","lluvia","frio","calor","viento","nube","nieve","temperatura","tormenta","niebla","granizo","humedad","seco","mojado","primavera","verano","otoño","invierno"],
+  },
+  {
+    id: "animales", nombre: "Animales", emoji: "🐶", color: "#8BC34A",
+    señas: ["perro","gato","vaca","caballo","pajaro","pez","conejo","raton","cerdo","gallina","oveja","leon","tigre","elefante","mono","delfin","ballena","serpiente","araña","mariposa"],
+  },
+  {
+    id: "deportes", nombre: "Deportes", emoji: "🏋️", color: "#FF5722",
+    señas: ["futbol","basquetbol","tenis","natacion","correr","ganar","perder","equipo","partido","campeon","estadio","pelota","raqueta","piscina","gimnasio","entrenamiento","competencia"],
+  },
+  {
+    id: "emergencias", nombre: "Emergencias", emoji: "🚨", color: "#F44336",
+    señas: ["ayuda","peligro","accidente","fuego","policia","ambulancia","bombero","robo","perdido","llamar","emergencia","herido","dolor fuerte","no puedo respirar","caida","ataque"],
+  },
+  {
+    id: "necesidades", nombre: "Necesidades Básicas", emoji: "💊", color: "#9C27B0",
+    señas: ["agua","comida","bano","ayuda","cansado","hambre","sed","frio","calor","dormir","trabajar","dinero","medicamento","doctor","descanso","casa","familia","amigo"],
+  },
+  {
+    id: "colores", nombre: "Colores", emoji: "🌈", color: "#E91E63",
+    señas: ["rojo","azul","verde","amarillo","blanco","negro","naranja","morado","rosado","cafe","gris","celeste","dorado","plateado"],
+  },
+  {
+    id: "cuerpo", nombre: "Cuerpo Humano", emoji: "🫀", color: "#9C27B0",
+    señas: ["cabeza","cara","ojo","nariz","boca","oreja","cuello","hombro","brazo","mano","dedo","pecho","espalda","pierna","rodilla","pie","corazon","cerebro","estomago"],
   },
   {
     id: "paises", nombre: "Países", emoji: "🌎", color: "#2980B9",
@@ -86,20 +142,12 @@ const CATEGORIAS = [
     señas: ["soltero","soltera","casado","casada","divorciado","divorciada","viudo","viuda","separado","separada","conviviente","comprometido"],
   },
   {
-    id: "colores", nombre: "Colores", emoji: "🎨", color: "#E91E63",
-    señas: ["rojo","azul","verde","amarillo","blanco","negro","naranja","morado","rosado","cafe","gris","celeste","dorado","plateado"],
+    id: "religion", nombre: "Religión", emoji: "🙏", color: "#795548",
+    señas: ["dios","iglesia","oracion","fe","gracias a dios","biblia","misa","pastor","santo","bendicion","amor de dios","creer","alma","cielo","bautismo"],
   },
   {
-    id: "tiempo", nombre: "Tiempo", emoji: "🕐", color: "#607D8B",
+    id: "tiempo", nombre: "Tiempo y Fechas", emoji: "🕐", color: "#607D8B",
     señas: ["hoy","ayer","manana","ahora","antes","despues","siempre","nunca","a veces","lunes","martes","miercoles","jueves","viernes","sabado","domingo","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre","año","mes","semana","dia","hora","minuto"],
-  },
-  {
-    id: "emociones", nombre: "Emociones", emoji: "😊", color: "#FF9800",
-    señas: ["feliz","triste","enojado","asustado","sorprendido","aburrido","cansado","emocionado","nervioso","tranquilo","preocupado","confundido","avergonzado","orgulloso","celoso","amor","odio"],
-  },
-  {
-    id: "cuerpo", nombre: "Cuerpo Humano", emoji: "🫀", color: "#9C27B0",
-    señas: ["cabeza","cara","ojo","nariz","boca","oreja","cuello","hombro","brazo","mano","dedo","pecho","espalda","pierna","rodilla","pie","corazon","cerebro","estomago"],
   },
 ];
 
@@ -161,6 +209,12 @@ export default function App() {
   const [exito,      setExito]      = useState(false);
   const [error,      setError]      = useState(null);
 
+  // Feedback
+  const [tipoFeedback,    setTipoFeedback]    = useState("sugerencia");
+  const [mensajeFeedback, setMensajeFeedback] = useState("");
+  const [enviandoFeedback,setEnviandoFeedback]= useState(false);
+  const [exitoFeedback,   setExitoFeedback]   = useState(false);
+
   const cameraRef = useRef(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
@@ -192,6 +246,23 @@ export default function App() {
         setConteos(c);
       }
     } catch (e) { console.log("Error conteos:", e); }
+  };
+
+  const enviarFeedback = async () => {
+    if (!mensajeFeedback.trim()) return;
+    setEnviandoFeedback(true);
+    try {
+      await supabase.from("feedback").insert({
+        tipo:    tipoFeedback,
+        mensaje: mensajeFeedback.trim(),
+      });
+      setExitoFeedback(true);
+      setMensajeFeedback("");
+      setTimeout(() => setExitoFeedback(false), 3000);
+    } catch (e) {
+      console.log("Error feedback:", e);
+    }
+    setEnviandoFeedback(false);
   };
 
   const iniciarCaptura = async () => {
@@ -267,47 +338,49 @@ export default function App() {
     );
   }
 
-  // BIENVENIDA
+  // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
     return (
       <SafeAreaView style={styles.root}>
         <StatusBar barStyle="light-content" />
         <ScrollView contentContainerStyle={styles.bienvenidaScroll}>
-          <Text style={styles.bienvenidaEmoji}>🤟🧏‍♂️🧏‍♀️</Text>
-          <Text style={styles.bienvenidaTitulo}>Bienvenido a DeafApp</Text>
-          <Text style={styles.bienvenidaSubtitulo}>Lenguaje de Señas Chileno</Text>
+          <Text style={styles.bienvenidaEmoji}>🤟</Text>
+          <Text style={styles.bienvenidaTitulo}>Bienvenidx a DeafApp</Text>
+          <Text style={styles.bienvenidaSubtitulo}>Lengua de Señas Chilena 🇨🇱</Text>
           <View style={styles.bienvenidaCard}>
             <Text style={styles.bienvenidaSeccion}>¿Qué es esto?</Text>
             <Text style={styles.bienvenidaTexto}>
-              Este proyecto busca crear el primer sistema de reconocimiento del
-              Lenguaje de Señas Chileno (LSCh) con Inteligencia Artificial.
+              DeafApp ayuda a crear una IA que entienda la Lengua de Señas Chilena (LSCh)🇨🇱
             </Text>
           </View>
           <View style={styles.bienvenidaCard}>
-            <Text style={styles.bienvenidaSeccion}>🎯 ¿Cómo funciona?</Text>
+            <Text style={styles.bienvenidaSeccion}>🤟 ¿Cómo funciona?</Text>
             <Text style={styles.bienvenidaTexto}>
-              Cada seña que grabas se usa para entrenar una IA que aprende a
-              reconocer el LSCh. Mientras más personas contribuyan, mejor será el reconocimiento.
+             Tu grabas una seña.
+             Esa grabacion ayuda a enseñar a la IA.
+             Mientras mas personas participen, mejor aprendera.
             </Text>
           </View>
           <View style={styles.bienvenidaCard}>
-            <Text style={styles.bienvenidaSeccion}>🔮 ¿Qué viene a futuro?</Text>
+            <Text style={styles.bienvenidaSeccion}>🚀 En el futuro</Text>
             <Text style={styles.bienvenidaTexto}>
-              Con suficientes contribuciones, la app podrá:{"\n"}
-              • Traducir señas a texto en tiempo real{"\n"}
-              • Convertir voz a señas para oyentes{"\n"}
-              • Funcionar sin internet desde tu celular
+              La app podrá:{"\n"}
+              • Traducir señas a texto.{"\n"}
+              • Pasar voz a señas.{"\n"}
+              • Funcionar sin internet.
             </Text>
           </View>
           <View style={[styles.bienvenidaCard, { borderColor: "#E94560" }]}>
-            <Text style={styles.bienvenidaSeccion}>❤️ Tu aporte importa</Text>
+            <Text style={styles.bienvenidaSeccion}>❤️ Tu Ayuda importa</Text>
             <Text style={styles.bienvenidaTexto}>
-              Cada grabación acerca a la comunidad sorda a comunicarse
-              libremente con el mundo. ¡Gracias por ser parte de este proyecto!
+              Cada video ayuda a mejorar la app.
+              Asi sera mas facil la comunicacion entre personas sordas y oyentes
+
+             ¡Gracias por ser parte de este proyecto!
             </Text>
           </View>
           <TouchableOpacity style={styles.btnComenzar} onPress={() => setPantalla("home")}>
-            <Text style={styles.btnComenzarTexto}>¡Comenzar a contribuir! 🤟</Text>
+            <Text style={styles.btnComenzarTexto}>¡Comenzar a Grabar! 🤟</Text>
           </TouchableOpacity>
           <View style={{ height: 40 }} />
         </ScrollView>
@@ -315,7 +388,78 @@ export default function App() {
     );
   }
 
-  // GRABAR
+  // ── FEEDBACK ─────────────────────────────────────────────────────
+  if (pantalla === "feedback") {
+    const tipos = [
+      { id: "sugerencia", label: "💡 Sugerencia", color: "#F39C12" },
+      { id: "error",      label: "🐛 Error",       color: "#E74C3C" },
+      { id: "seña_nueva", label: "🤟 Seña nueva",  color: "#27AE60" },
+      { id: "otro",       label: "📝 Otro",         color: "#607D8B" },
+    ];
+    return (
+      <SafeAreaView style={styles.root}>
+        <StatusBar barStyle="light-content" />
+        <View style={styles.feedbackHeader}>
+          <TouchableOpacity onPress={() => setPantalla("home")} style={styles.btnBack}>
+            <Text style={styles.btnBackTexto}>‹</Text>
+          </TouchableOpacity>
+          <Text style={styles.feedbackTitulo}>Feedback</Text>
+          <View style={{ width: 44 }} />
+        </View>
+        <ScrollView contentContainerStyle={styles.feedbackScroll}>
+          <Text style={styles.feedbackSubtitulo}>
+            Tu opinión nos ayuda a mejorar DeafApp 💬
+          </Text>
+
+          <Text style={styles.feedbackLabel}>Tipo de feedback:</Text>
+          <View style={styles.tiposGrid}>
+            {tipos.map(t => (
+              <TouchableOpacity
+                key={t.id}
+                style={[styles.tipoBtn, tipoFeedback === t.id && { borderColor: t.color, backgroundColor: t.color + "22" }]}
+                onPress={() => setTipoFeedback(t.id)}
+              >
+                <Text style={[styles.tipoTexto, tipoFeedback === t.id && { color: t.color }]}>{t.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Text style={styles.feedbackLabel}>Tu mensaje:</Text>
+          <TextInput
+            style={styles.feedbackInput}
+            placeholder="Escribe aquí tu sugerencia, error, o la  seña que falta o agregarias..."
+            placeholderTextColor="#555"
+            multiline
+            numberOfLines={5}
+            value={mensajeFeedback}
+            onChangeText={setMensajeFeedback}
+            textAlignVertical="top"
+          />
+
+          {exitoFeedback && (
+            <View style={styles.exitoFeedback}>
+              <Text style={styles.exitoFeedbackTexto}>✅ ¡Gracias por tu feedback!</Text>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={[styles.btnEnviarFeedback, (!mensajeFeedback.trim() || enviandoFeedback) && { opacity: 0.5 }]}
+            onPress={enviarFeedback}
+            disabled={!mensajeFeedback.trim() || enviandoFeedback}
+          >
+            {enviandoFeedback
+              ? <ActivityIndicator color="#FFF" />
+              : <Text style={styles.btnEnviarFeedbackTexto}>📤 Enviar feedback</Text>
+            }
+          </TouchableOpacity>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // ── GRABAR ───────────────────────────────────────────────────────
   if (pantalla === "grabar") {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
     return (
@@ -388,7 +532,7 @@ export default function App() {
     );
   }
 
-  // CATEGORÍA
+  // ── CATEGORÍA ────────────────────────────────────────────────────
   if (pantalla === "categoria" && catActual) {
     const pendientes = catActual.señas.filter(s => (conteos[s] || 0) < META_POR_SEÑA);
     const listas     = catActual.señas.filter(s => (conteos[s] || 0) >= META_POR_SEÑA);
@@ -427,13 +571,13 @@ export default function App() {
     );
   }
 
-  // HOME
+  // ── HOME ─────────────────────────────────────────────────────────
   return (
     <SafeAreaView style={styles.root}>
       <StatusBar barStyle="light-content" />
       <View style={styles.homeHeader}>
         <Text style={styles.homeTitulo}>DeafApp 🤟</Text>
-        <Text style={styles.homeSubtitulo}>Lenguaje de Señas Chileno</Text>
+        <Text style={styles.homeSubtitulo}>Lengua de Señas Chilena</Text>
       </View>
       <Text style={styles.homeInstruccion}>Selecciona una categoría y graba tus señas 👇</Text>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -451,6 +595,12 @@ export default function App() {
             <Text style={styles.actualizarTexto}>↻ Actualizar</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Botón Feedback */}
+        <TouchableOpacity style={styles.btnFeedback} onPress={() => setPantalla("feedback")}>
+          <Text style={styles.btnFeedbackTexto}>💬 Dar feedback o sugerencia</Text>
+        </TouchableOpacity>
+
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
@@ -474,19 +624,22 @@ const styles = StyleSheet.create({
   btnComenzarTexto:    { fontSize: 18, fontWeight: "900", color: "#FFF" },
 
   homeHeader:     { alignItems: "center", paddingTop: 12, paddingBottom: 4 },
-  homeTitulo:     { fontSize: 30, fontWeight: "900", color: "#FFF" },
+  homeTitulo:     { fontSize: 28, fontWeight: "900", color: "#FFF" },
   homeSubtitulo:  { fontSize: 13, color: "#888", marginTop: 2 },
   homeInstruccion:{ fontSize: 14, color: "#AAA", textAlign: "center", marginBottom: 12, paddingHorizontal: 20 },
   grid:           { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: 12, gap: 12 },
 
-  catCard:    { width: CARD_W, backgroundColor: "#1A1A2E", borderRadius: 16, padding: 16, alignItems: "center", borderWidth: 2 },
-  catEmoji:   { fontSize: 36, marginBottom: 6 },
-  catNombre:  { fontSize: 14, fontWeight: "700", color: "#FFF", marginBottom: 8, textAlign: "center" },
+  catCard:    { width: CARD_W, backgroundColor: "#1A1A2E", borderRadius: 16, padding: 14, alignItems: "center", borderWidth: 2 },
+  catEmoji:   { fontSize: 34, marginBottom: 6 },
+  catNombre:  { fontSize: 13, fontWeight: "700", color: "#FFF", marginBottom: 8, textAlign: "center" },
   catProgreso:{ fontSize: 11, color: "#888", marginTop: 4 },
 
   totalBox:       { alignItems: "center", marginTop: 20, gap: 6 },
   totalTexto:     { fontSize: 13, color: "#666" },
   actualizarTexto:{ fontSize: 13, color: "#4CAF50" },
+
+  btnFeedback:     { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#F39C12" },
+  btnFeedbackTexto:{ fontSize: 16, fontWeight: "700", color: "#F39C12" },
 
   barraFondo:   { width: "100%", height: 6, backgroundColor: "#333", borderRadius: 3, overflow: "hidden" },
   barraRelleno: { height: 6, borderRadius: 3 },
@@ -540,6 +693,21 @@ const styles = StyleSheet.create({
   btnVolver:  { backgroundColor: "#333",    borderRadius: 16, paddingVertical: 14, alignItems: "center" },
   btnTextoBlanco:{ fontSize: 16, fontWeight: "700", color: "#FFF" },
   btnTextoGris:  { fontSize: 15, fontWeight: "600", color: "#AAA" },
+
+  // Feedback
+  feedbackHeader:   { flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: "#333" },
+  feedbackTitulo:   { flex: 1, textAlign: "center", fontSize: 20, fontWeight: "900", color: "#FFF" },
+  feedbackScroll:   { paddingHorizontal: 20, paddingTop: 20, maxWidth: 600, alignSelf: "center", width: "100%" },
+  feedbackSubtitulo:{ fontSize: 15, color: "#AAA", textAlign: "center", marginBottom: 24 },
+  feedbackLabel:    { fontSize: 14, fontWeight: "700", color: "#AAA", marginBottom: 10 },
+  tiposGrid:        { flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 20 },
+  tipoBtn:          { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: "#333", backgroundColor: "#1A1A2E" },
+  tipoTexto:        { fontSize: 14, color: "#888", fontWeight: "600" },
+  feedbackInput:    { backgroundColor: "#1A1A2E", borderRadius: 16, padding: 16, color: "#FFF", fontSize: 15, minHeight: 120, borderWidth: 1, borderColor: "#333", marginBottom: 16 },
+  exitoFeedback:    { backgroundColor: "#1A4A2A", borderRadius: 12, padding: 14, marginBottom: 12, alignItems: "center" },
+  exitoFeedbackTexto:{ fontSize: 15, color: "#4CAF50", fontWeight: "700" },
+  btnEnviarFeedback:    { backgroundColor: "#F39C12", borderRadius: 16, paddingVertical: 16, alignItems: "center" },
+  btnEnviarFeedbackTexto:{ fontSize: 16, fontWeight: "700", color: "#FFF" },
 
   permisoTitulo:{ fontSize: 22, fontWeight: "800", color: "#FFF", textAlign: "center", marginTop: 16 },
   permisoSub:   { fontSize: 15, color: "#888", textAlign: "center", marginTop: 6, marginBottom: 40 },
