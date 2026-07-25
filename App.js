@@ -18,7 +18,14 @@ if (typeof document !== "undefined") {
   document.body.style.backgroundColor = "#0F0F1E";
   document.body.style.margin = "0";
   document.documentElement.style.backgroundColor = "#0F0F1E";
+  const style = document.createElement("style");
+  style.textContent = `::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #1A1A2E; } ::-webkit-scrollbar-thumb { background: #E94560; border-radius: 4px; }`;
+  document.head.appendChild(style);
 }
+  document.body.style.backgroundColor = "#0F0F1E";
+  document.body.style.margin = "0";
+  document.documentElement.style.backgroundColor = "#0F0F1E";
+
 
 const SUPABASE_URL = "https://didlffnluqqurelgnqdp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZGxmZm5sdXFxdXJlbGducWRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MDMwNTYsImV4cCI6MjA5OTk3OTA1Nn0.G6MqUFXNJleUTBtZu7kQb58E-rGWk3w-rLbvRu6xOVE";
@@ -29,14 +36,7 @@ const TOTAL_FRAMES  = 30;
 const FPS_INTERVALO = 100;
 
 const CATEGORIAS = [
-  {
-    id: "abecedario", nombre: "Abecedario", emoji: "🔤", color: "#E67E22",
-    señas: ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","z"],
-  },
-  {
-    id: "numeros", nombre: "Números", emoji: "🔢", color: "#C39BD3",
-    señas: ["uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","veinte","treinta","cuarenta","cincuenta","cien","mil"],
-  },
+ 
   {
     id: "saludos", nombre: "Saludos", emoji: "👋", color: "#4ECDC4",
     señas: ["hola","adios","buenos dias","buenas tardes","buenas noches","gracias","por favor","de nada","como estas","bien","mal","mucho gusto","hasta luego","bienvenido"],
@@ -598,7 +598,7 @@ export default function App() {
 
         {/* Botón Feedback */}
         <TouchableOpacity style={styles.btnFeedback} onPress={() => setPantalla("feedback")}>
-          <Text style={styles.btnFeedbackTexto}>💬 Dar feedback o sugerencia</Text>
+          <Text style={styles.btnFeedbackTexto}>💬 Que opinas tu?</Text>
         </TouchableOpacity>
 
         <View style={{ height: 40 }} />
