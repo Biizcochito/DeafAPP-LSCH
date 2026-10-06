@@ -1,0 +1,52 @@
+<!doctype html><meta charset="utf-8"><title>Diagnóstico local de manos reales</title>
+<style>body{font:16px system-ui;background:#111827;color:white;margin:24px}video,canvas{width:320px}button{padding:12px}pre{white-space:pre-wrap}</style>
+<h1>Diagnóstico local de manos reales</h1><button id="run">Capturar encuadre y comparar</button><button id="again">Comparar la muestra existente</button>
+<p id="status">La muestra se procesa localmente. No se sube ninguna grabación.</p>
+<video autoplay muted playsinline></video><canvas width="640" height="480"></canvas><pre id="result"></pre>
+<script type="module">
+import {createHandWorker} from './handTrackingWorker.js';
+import {createSignTracker,loadHolistic,createHolistic} from './landmarkTracking.js';
+const video=document.querySelector('video'), canvas=document.querySelector('canvas'), ctx=canvas.getContext('2d'), status=document.querySelector('#status'), result=document.querySelector('#result');
+const run=async(capture)=>{
+ const button=document.querySelector('#run');button.disabled=true;
+ let stream;
+ try{
+  if(capture){status.textContent='Capturando el encuadre real…';
+  stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'},audio:false});
+  video.srcObject=stream;await video.play();
+  await new Promise(resolve=>video.requestVideoFrameCallback(resolve));
+  ctx.drawImage(video,0,0,640,480);
+  stream.getTracks().forEach(t=>t.stop());stream=null;}
+  else {const sample=new Image();sample.src='./real-hand-diagnostic.jpg';await sample.decode();ctx.drawImage(sample,344,184.4375,320,240,0,0,640,480);}
+  const variants=[{name:'GPU 6 candidatos',numHands:6,detectionConfidence:.1,presenceConfidence:.35},{name:'CPU 6 candidatos',numHands:6,delegate:'CPU',detectionConfidence:.1,presenceConfidence:.35},{name:'CPU 6 candidatos estricto',numHands:6,delegate:'CPU',detectionConfidence:.05,presenceConfidence:.5}];
+  const results=[];
+  for(const options of variants){
+   status.textContent='Midiendo '+options.name+'…';
+   let detector;
+   if(options.holistic){const Model=await loadHolistic(), tracker=createHolistic(Model);tracker.setOptions({modelComplexity:0,smoothLandmarks:false,minDetectionConfidence:.35,minTrackingConfidence:.35});let value;tracker.onResults(r=>{value={multiHandLandmarks:[r.leftHandLandmarks,r.rightHandLandmarks].filter(Boolean),multiHandedness:[{label:'holistic'}]}});detector={async detect(image){await tracker.send({image});return value},close(){return tracker.close()}};}
+   else if(options.legacy){const tracker=await createSignTracker({legacyHands:true});let value;tracker.onResults(r=>{value={multiHandLandmarks:[r.leftHandLandmarks,r.rightHandLandmarks].filter(Boolean),multiHandedness:[{label:'legacy'}]}});detector={async detect(image){await tracker.sendHands({image});return value},close(){return tracker.close()}};}
+   else detector=await createHandWorker(options);
+   try{
+    for(const padding of [1.1]){
+     const input=document.createElement('canvas');input.width=options.cropWidth||640;input.height=480;const c=input.getContext('2d');
+     c.fillStyle='#222';c.fillRect(0,0,input.width,480);if(options.filter)c.filter=options.filter;
+     if(options.flipY){c.translate(0,480);c.scale(1,-1);}
+     const inset=(padding-1)/(2*padding);c.drawImage(canvas,options.cropX||0,0,options.cropWidth||640,480,input.width*inset,480*inset,input.width/padding,480/padding);
+     let value;const counts=[];const start=performance.now();
+     for(let frame=0;frame<8;frame++){value=await detector.detect(input,performance.now());counts.push(value.multiHandLandmarks.length)}
+     results.push({name:options.name,padding,counts,ms:performance.now()-start,labels:value.multiHandedness.map(h=>h.label)});
+     const label=document.createElement('p');label.textContent=options.name+' margen '+padding;document.body.append(label);
+     const output=document.createElement('canvas');output.width=640;output.height=480;const oc=output.getContext('2d');oc.drawImage(canvas,0,0);oc.strokeStyle=oc.fillStyle='#4ECDC4';
+     for(const hand of value.multiHandLandmarks){oc.beginPath();for(let i=0;i<hand.length;i++){const p=hand[i],x=(options.cropX||0)+(p.x*padding-(padding-1)/2)*(options.cropWidth||640);let y=(p.y*padding-(padding-1)/2)*480;if(options.flipY)y=480-y;if(i===0)oc.moveTo(x,y);else oc.lineTo(x,y);oc.fillRect(x-2,y-2,4,4);}oc.stroke();}
+     document.body.append(output);
+     result.textContent=JSON.stringify(results,null,2);
+    }
+   }finally{detector.close()}
+  }
+  status.textContent='Comparación completada';
+ }catch(e){status.textContent='ERROR: '+e.message}
+ finally{stream?.getTracks().forEach(t=>t.stop());button.disabled=false}
+};
+document.querySelector('#run').onclick=()=>run(true);
+document.querySelector('#again').onclick=()=>run(false);
+</script>

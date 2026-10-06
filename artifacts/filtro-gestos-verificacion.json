@@ -1,0 +1,644 @@
+[
+  {
+    "scenario": "dedo medio: ambas manos",
+    "frames": [
+      {
+        "time": 10406.19999999553,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 10611.39999999851,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 10752.19999999553,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 10893.89999999851,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": false
+      },
+      {
+        "time": 11065.29999999702,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 11221.10000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": false
+      },
+      {
+        "time": 11394.19999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 11567.5,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 11740,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 11897.79999999702,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 12069.29999999702,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 12240.79999999702,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 12397.69999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": true
+      },
+      {
+        "time": 12550.60000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 12689.89999999851,
+        "hands": 2,
+        "candidates": [
+          false,
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 12845.79999999702,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": true
+      }
+    ]
+  },
+  {
+    "scenario": "dedo medio: izquierda de la imagen",
+    "frames": [
+      {
+        "time": 13001.29999999702,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 13158,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 13312.29999999702,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 13452.39999999851,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 13638.5,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 13779.19999999553,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 13936.5,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 14075.39999999851,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 14264.60000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 14419.60000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 14545,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 14685.29999999702,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 14870,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 15011.5,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 15150.60000000149,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 15292.10000000149,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "scenario": "dedo medio: derecha de la imagen",
+    "frames": [
+      {
+        "time": 15475.89999999851,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 15631.79999999702,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 15773.60000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 15898.79999999702,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": false
+      },
+      {
+        "time": 16085.39999999851,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 16240.79999999702,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": false
+      },
+      {
+        "time": 16395.29999999702,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 16550.89999999851,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": true
+      },
+      {
+        "time": 16737.5,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 16894.19999999553,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 17049.79999999702,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 17191.60000000149,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": true
+      },
+      {
+        "time": 17378.19999999553,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 17533.39999999851,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 17689,
+        "hands": 1,
+        "candidates": [
+          true
+        ],
+        "blocked": true
+      },
+      {
+        "time": 17845,
+        "hands": 1,
+        "candidates": [
+          false
+        ],
+        "blocked": true
+      }
+    ]
+  },
+  {
+    "scenario": "manos abiertas",
+    "frames": [
+      {
+        "time": 18015.69999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 18174.60000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 18332,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 18486.10000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 18642.60000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 18799,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 18968.5,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 19125.29999999702,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 19282.19999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 19438.69999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 19593.60000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 19750.19999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 19891,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 20046.39999999851,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 20203.69999999553,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      },
+      {
+        "time": 20360.10000000149,
+        "hands": 2,
+        "candidates": [
+          false,
+          false
+        ],
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "scenario": "sin manos",
+    "frames": [
+      {
+        "time": 20516.10000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 20640,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 20765.60000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 20890.10000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21046.39999999851,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21171.10000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21295.19999999553,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21421.19999999553,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21577.29999999702,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21702.29999999702,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21841.60000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 21968.10000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 22141.19999999553,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 22264.79999999702,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 22403.39999999851,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      },
+      {
+        "time": 22529.10000000149,
+        "hands": 0,
+        "candidates": [],
+        "blocked": false
+      }
+    ]
+  }
+]

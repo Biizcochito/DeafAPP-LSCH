@@ -1,0 +1,5330 @@
+{
+  "version": 1,
+  "targetClasses": 531,
+  "inputRecordings": 110,
+  "acceptedRecordings": 0,
+  "declaredParticipants": 0,
+  "trainingVariants": 0,
+  "evaluationRecordings": 0,
+  "evaluationStatus": "needs-other-real-participants",
+  "translatorReady": false,
+  "notes": [
+    "La cantidad de aumentos no representa personas nuevas.",
+    "Los perfiles son declarados y requieren comprobar que identifican personas diferentes.",
+    "Este proceso prepara datos; no entrena ni publica un traductor."
+  ],
+  "classes": [
+    {
+      "classId": "saludos/hola",
+      "category": "saludos",
+      "label": "hola",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/adios",
+      "category": "saludos",
+      "label": "adios",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/buenos dias",
+      "category": "saludos",
+      "label": "buenos dias",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/buenas tardes",
+      "category": "saludos",
+      "label": "buenas tardes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/buenas noches",
+      "category": "saludos",
+      "label": "buenas noches",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/gracias",
+      "category": "saludos",
+      "label": "gracias",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/por favor",
+      "category": "saludos",
+      "label": "por favor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/de nada",
+      "category": "saludos",
+      "label": "de nada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/como estas",
+      "category": "saludos",
+      "label": "como estas",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/bien",
+      "category": "saludos",
+      "label": "bien",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/mal",
+      "category": "saludos",
+      "label": "mal",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/mucho gusto",
+      "category": "saludos",
+      "label": "mucho gusto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/hasta luego",
+      "category": "saludos",
+      "label": "hasta luego",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "saludos/bienvenido",
+      "category": "saludos",
+      "label": "bienvenido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/si",
+      "category": "conversacion",
+      "label": "si",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/no",
+      "category": "conversacion",
+      "label": "no",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/tal vez",
+      "category": "conversacion",
+      "label": "tal vez",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/no entiendo",
+      "category": "conversacion",
+      "label": "no entiendo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/repite",
+      "category": "conversacion",
+      "label": "repite",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/mas despacio",
+      "category": "conversacion",
+      "label": "mas despacio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/espera",
+      "category": "conversacion",
+      "label": "espera",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/claro",
+      "category": "conversacion",
+      "label": "claro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/de acuerdo",
+      "category": "conversacion",
+      "label": "de acuerdo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/por supuesto",
+      "category": "conversacion",
+      "label": "por supuesto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/nunca",
+      "category": "conversacion",
+      "label": "nunca",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/siempre",
+      "category": "conversacion",
+      "label": "siempre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/a veces",
+      "category": "conversacion",
+      "label": "a veces",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/todo",
+      "category": "conversacion",
+      "label": "todo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/nada",
+      "category": "conversacion",
+      "label": "nada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/algo",
+      "category": "conversacion",
+      "label": "algo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/alguien",
+      "category": "conversacion",
+      "label": "alguien",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "conversacion/nadie",
+      "category": "conversacion",
+      "label": "nadie",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/mama",
+      "category": "familia",
+      "label": "mama",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/papa",
+      "category": "familia",
+      "label": "papa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/hermano",
+      "category": "familia",
+      "label": "hermano",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/hermana",
+      "category": "familia",
+      "label": "hermana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/abuelo",
+      "category": "familia",
+      "label": "abuelo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/abuela",
+      "category": "familia",
+      "label": "abuela",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/hijo",
+      "category": "familia",
+      "label": "hijo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/hija",
+      "category": "familia",
+      "label": "hija",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/tio",
+      "category": "familia",
+      "label": "tio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/tia",
+      "category": "familia",
+      "label": "tia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/primo",
+      "category": "familia",
+      "label": "primo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/familia",
+      "category": "familia",
+      "label": "familia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/esposo",
+      "category": "familia",
+      "label": "esposo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/esposa",
+      "category": "familia",
+      "label": "esposa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/bebe",
+      "category": "familia",
+      "label": "bebe",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/niño",
+      "category": "familia",
+      "label": "niño",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "familia/niña",
+      "category": "familia",
+      "label": "niña",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/arroz",
+      "category": "alimentos",
+      "label": "arroz",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/fideos",
+      "category": "alimentos",
+      "label": "fideos",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/pure",
+      "category": "alimentos",
+      "label": "pure",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/porotos",
+      "category": "alimentos",
+      "label": "porotos",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/lentejas",
+      "category": "alimentos",
+      "label": "lentejas",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/carne",
+      "category": "alimentos",
+      "label": "carne",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/cerdo",
+      "category": "alimentos",
+      "label": "cerdo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/pavo",
+      "category": "alimentos",
+      "label": "pavo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/longaniza",
+      "category": "alimentos",
+      "label": "longaniza",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/vianesa",
+      "category": "alimentos",
+      "label": "vianesa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/pollo",
+      "category": "alimentos",
+      "label": "pollo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/pescado",
+      "category": "alimentos",
+      "label": "pescado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/aceite",
+      "category": "alimentos",
+      "label": "aceite",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/sal",
+      "category": "alimentos",
+      "label": "sal",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/azucar",
+      "category": "alimentos",
+      "label": "azucar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/pimienta",
+      "category": "alimentos",
+      "label": "pimienta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/ajo",
+      "category": "alimentos",
+      "label": "ajo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/pan",
+      "category": "alimentos",
+      "label": "pan",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/leche",
+      "category": "alimentos",
+      "label": "leche",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/queso",
+      "category": "alimentos",
+      "label": "queso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "alimentos/huevo",
+      "category": "alimentos",
+      "label": "huevo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/manzana",
+      "category": "frutas_verduras",
+      "label": "manzana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/naranja",
+      "category": "frutas_verduras",
+      "label": "naranja",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/platano",
+      "category": "frutas_verduras",
+      "label": "platano",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/uva",
+      "category": "frutas_verduras",
+      "label": "uva",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/frutilla",
+      "category": "frutas_verduras",
+      "label": "frutilla",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/pera",
+      "category": "frutas_verduras",
+      "label": "pera",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/sandia",
+      "category": "frutas_verduras",
+      "label": "sandia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/melon",
+      "category": "frutas_verduras",
+      "label": "melon",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/limon",
+      "category": "frutas_verduras",
+      "label": "limon",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/durazno",
+      "category": "frutas_verduras",
+      "label": "durazno",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/tomate",
+      "category": "frutas_verduras",
+      "label": "tomate",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/lechuga",
+      "category": "frutas_verduras",
+      "label": "lechuga",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/zanahoria",
+      "category": "frutas_verduras",
+      "label": "zanahoria",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/cebolla",
+      "category": "frutas_verduras",
+      "label": "cebolla",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/papa",
+      "category": "frutas_verduras",
+      "label": "papa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/pepino",
+      "category": "frutas_verduras",
+      "label": "pepino",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/brocoli",
+      "category": "frutas_verduras",
+      "label": "brocoli",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/espinaca",
+      "category": "frutas_verduras",
+      "label": "espinaca",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/choclo",
+      "category": "frutas_verduras",
+      "label": "choclo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "frutas_verduras/zapallo",
+      "category": "frutas_verduras",
+      "label": "zapallo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/comer",
+      "category": "verbos",
+      "label": "comer",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/beber",
+      "category": "verbos",
+      "label": "beber",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/dormir",
+      "category": "verbos",
+      "label": "dormir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/trabajar",
+      "category": "verbos",
+      "label": "trabajar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/estudiar",
+      "category": "verbos",
+      "label": "estudiar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/caminar",
+      "category": "verbos",
+      "label": "caminar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/correr",
+      "category": "verbos",
+      "label": "correr",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/hablar",
+      "category": "verbos",
+      "label": "hablar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/escuchar",
+      "category": "verbos",
+      "label": "escuchar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/ver",
+      "category": "verbos",
+      "label": "ver",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/ir",
+      "category": "verbos",
+      "label": "ir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/venir",
+      "category": "verbos",
+      "label": "venir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/leer",
+      "category": "verbos",
+      "label": "leer",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/escribir",
+      "category": "verbos",
+      "label": "escribir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/jugar",
+      "category": "verbos",
+      "label": "jugar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/nadar",
+      "category": "verbos",
+      "label": "nadar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/bailar",
+      "category": "verbos",
+      "label": "bailar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/cantar",
+      "category": "verbos",
+      "label": "cantar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/reir",
+      "category": "verbos",
+      "label": "reir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/llorar",
+      "category": "verbos",
+      "label": "llorar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/ayudar",
+      "category": "verbos",
+      "label": "ayudar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/querer",
+      "category": "verbos",
+      "label": "querer",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/amar",
+      "category": "verbos",
+      "label": "amar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/pensar",
+      "category": "verbos",
+      "label": "pensar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/saber",
+      "category": "verbos",
+      "label": "saber",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/poder",
+      "category": "verbos",
+      "label": "poder",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/tener",
+      "category": "verbos",
+      "label": "tener",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/hacer",
+      "category": "verbos",
+      "label": "hacer",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/dar",
+      "category": "verbos",
+      "label": "dar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/salir",
+      "category": "verbos",
+      "label": "salir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/entrar",
+      "category": "verbos",
+      "label": "entrar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/comprar",
+      "category": "verbos",
+      "label": "comprar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/vender",
+      "category": "verbos",
+      "label": "vender",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "verbos/vivir",
+      "category": "verbos",
+      "label": "vivir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/grande",
+      "category": "adjetivos",
+      "label": "grande",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/pequeño",
+      "category": "adjetivos",
+      "label": "pequeño",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/bonito",
+      "category": "adjetivos",
+      "label": "bonito",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/feo",
+      "category": "adjetivos",
+      "label": "feo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/bueno",
+      "category": "adjetivos",
+      "label": "bueno",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/malo",
+      "category": "adjetivos",
+      "label": "malo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/rapido",
+      "category": "adjetivos",
+      "label": "rapido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/lento",
+      "category": "adjetivos",
+      "label": "lento",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/caliente",
+      "category": "adjetivos",
+      "label": "caliente",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/frio",
+      "category": "adjetivos",
+      "label": "frio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/nuevo",
+      "category": "adjetivos",
+      "label": "nuevo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/viejo",
+      "category": "adjetivos",
+      "label": "viejo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/feliz",
+      "category": "adjetivos",
+      "label": "feliz",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/triste",
+      "category": "adjetivos",
+      "label": "triste",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/alto",
+      "category": "adjetivos",
+      "label": "alto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/bajo",
+      "category": "adjetivos",
+      "label": "bajo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/gordo",
+      "category": "adjetivos",
+      "label": "gordo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/flaco",
+      "category": "adjetivos",
+      "label": "flaco",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/fuerte",
+      "category": "adjetivos",
+      "label": "fuerte",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/debil",
+      "category": "adjetivos",
+      "label": "debil",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/inteligente",
+      "category": "adjetivos",
+      "label": "inteligente",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/rico",
+      "category": "adjetivos",
+      "label": "rico",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/pobre",
+      "category": "adjetivos",
+      "label": "pobre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/limpio",
+      "category": "adjetivos",
+      "label": "limpio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/sucio",
+      "category": "adjetivos",
+      "label": "sucio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/lleno",
+      "category": "adjetivos",
+      "label": "lleno",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "adjetivos/vacio",
+      "category": "adjetivos",
+      "label": "vacio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/que",
+      "category": "preguntas",
+      "label": "que",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/como",
+      "category": "preguntas",
+      "label": "como",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/donde",
+      "category": "preguntas",
+      "label": "donde",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/cuando",
+      "category": "preguntas",
+      "label": "cuando",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/quien",
+      "category": "preguntas",
+      "label": "quien",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/por que",
+      "category": "preguntas",
+      "label": "por que",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/cuanto",
+      "category": "preguntas",
+      "label": "cuanto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/cual",
+      "category": "preguntas",
+      "label": "cual",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/para que",
+      "category": "preguntas",
+      "label": "para que",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/de donde",
+      "category": "preguntas",
+      "label": "de donde",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/a donde",
+      "category": "preguntas",
+      "label": "a donde",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "preguntas/cuantos",
+      "category": "preguntas",
+      "label": "cuantos",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/yo",
+      "category": "pronombres",
+      "label": "yo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/tu",
+      "category": "pronombres",
+      "label": "tu",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/el",
+      "category": "pronombres",
+      "label": "el",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/ella",
+      "category": "pronombres",
+      "label": "ella",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/nosotros",
+      "category": "pronombres",
+      "label": "nosotros",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/ellos",
+      "category": "pronombres",
+      "label": "ellos",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/ellas",
+      "category": "pronombres",
+      "label": "ellas",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/usted",
+      "category": "pronombres",
+      "label": "usted",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/ustedes",
+      "category": "pronombres",
+      "label": "ustedes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/este",
+      "category": "pronombres",
+      "label": "este",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/ese",
+      "category": "pronombres",
+      "label": "ese",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/aquel",
+      "category": "pronombres",
+      "label": "aquel",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/aqui",
+      "category": "pronombres",
+      "label": "aqui",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/alli",
+      "category": "pronombres",
+      "label": "alli",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/esto",
+      "category": "pronombres",
+      "label": "esto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "pronombres/eso",
+      "category": "pronombres",
+      "label": "eso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/feliz",
+      "category": "emociones",
+      "label": "feliz",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/triste",
+      "category": "emociones",
+      "label": "triste",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/enojado",
+      "category": "emociones",
+      "label": "enojado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/asustado",
+      "category": "emociones",
+      "label": "asustado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/sorprendido",
+      "category": "emociones",
+      "label": "sorprendido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/aburrido",
+      "category": "emociones",
+      "label": "aburrido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/cansado",
+      "category": "emociones",
+      "label": "cansado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/emocionado",
+      "category": "emociones",
+      "label": "emocionado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/nervioso",
+      "category": "emociones",
+      "label": "nervioso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/tranquilo",
+      "category": "emociones",
+      "label": "tranquilo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/preocupado",
+      "category": "emociones",
+      "label": "preocupado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/confundido",
+      "category": "emociones",
+      "label": "confundido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/avergonzado",
+      "category": "emociones",
+      "label": "avergonzado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/orgulloso",
+      "category": "emociones",
+      "label": "orgulloso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/celoso",
+      "category": "emociones",
+      "label": "celoso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/amor",
+      "category": "emociones",
+      "label": "amor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emociones/odio",
+      "category": "emociones",
+      "label": "odio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/doctor",
+      "category": "salud",
+      "label": "doctor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/enfermo",
+      "category": "salud",
+      "label": "enfermo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/hospital",
+      "category": "salud",
+      "label": "hospital",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/medicina",
+      "category": "salud",
+      "label": "medicina",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/dolor",
+      "category": "salud",
+      "label": "dolor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/operacion",
+      "category": "salud",
+      "label": "operacion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/urgencia",
+      "category": "salud",
+      "label": "urgencia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/farmacia",
+      "category": "salud",
+      "label": "farmacia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/enfermera",
+      "category": "salud",
+      "label": "enfermera",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/sangre",
+      "category": "salud",
+      "label": "sangre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/fiebre",
+      "category": "salud",
+      "label": "fiebre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/gripe",
+      "category": "salud",
+      "label": "gripe",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/resfrio",
+      "category": "salud",
+      "label": "resfrio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/embarazada",
+      "category": "salud",
+      "label": "embarazada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/discapacidad",
+      "category": "salud",
+      "label": "discapacidad",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/sordo",
+      "category": "salud",
+      "label": "sordo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/ciego",
+      "category": "salud",
+      "label": "ciego",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/alergia",
+      "category": "salud",
+      "label": "alergia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/herida",
+      "category": "salud",
+      "label": "herida",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "salud/pastilla",
+      "category": "salud",
+      "label": "pastilla",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/casa",
+      "category": "hogar",
+      "label": "casa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/habitacion",
+      "category": "hogar",
+      "label": "habitacion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/cocina",
+      "category": "hogar",
+      "label": "cocina",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/bano",
+      "category": "hogar",
+      "label": "bano",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/cama",
+      "category": "hogar",
+      "label": "cama",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/silla",
+      "category": "hogar",
+      "label": "silla",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/mesa",
+      "category": "hogar",
+      "label": "mesa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/puerta",
+      "category": "hogar",
+      "label": "puerta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/ventana",
+      "category": "hogar",
+      "label": "ventana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/sofa",
+      "category": "hogar",
+      "label": "sofa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/television",
+      "category": "hogar",
+      "label": "television",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/refrigerador",
+      "category": "hogar",
+      "label": "refrigerador",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/lavadora",
+      "category": "hogar",
+      "label": "lavadora",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/microondas",
+      "category": "hogar",
+      "label": "microondas",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/telefono",
+      "category": "hogar",
+      "label": "telefono",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/computador",
+      "category": "hogar",
+      "label": "computador",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/luz",
+      "category": "hogar",
+      "label": "luz",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/llave",
+      "category": "hogar",
+      "label": "llave",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/escalera",
+      "category": "hogar",
+      "label": "escalera",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "hogar/jardin",
+      "category": "hogar",
+      "label": "jardin",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/bus",
+      "category": "transporte",
+      "label": "bus",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/metro",
+      "category": "transporte",
+      "label": "metro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/auto",
+      "category": "transporte",
+      "label": "auto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/taxi",
+      "category": "transporte",
+      "label": "taxi",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/bicicleta",
+      "category": "transporte",
+      "label": "bicicleta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/avion",
+      "category": "transporte",
+      "label": "avion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/tren",
+      "category": "transporte",
+      "label": "tren",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/barco",
+      "category": "transporte",
+      "label": "barco",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/moto",
+      "category": "transporte",
+      "label": "moto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/camion",
+      "category": "transporte",
+      "label": "camion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/ambulancia",
+      "category": "transporte",
+      "label": "ambulancia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/policia",
+      "category": "transporte",
+      "label": "policia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/semaforo",
+      "category": "transporte",
+      "label": "semaforo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/calle",
+      "category": "transporte",
+      "label": "calle",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/avenida",
+      "category": "transporte",
+      "label": "avenida",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/puente",
+      "category": "transporte",
+      "label": "puente",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/estacion",
+      "category": "transporte",
+      "label": "estacion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/aeropuerto",
+      "category": "transporte",
+      "label": "aeropuerto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "transporte/puerto",
+      "category": "transporte",
+      "label": "puerto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/colegio",
+      "category": "educacion",
+      "label": "colegio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/universidad",
+      "category": "educacion",
+      "label": "universidad",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/profesor",
+      "category": "educacion",
+      "label": "profesor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/alumno",
+      "category": "educacion",
+      "label": "alumno",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/libro",
+      "category": "educacion",
+      "label": "libro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/tarea",
+      "category": "educacion",
+      "label": "tarea",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/clase",
+      "category": "educacion",
+      "label": "clase",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/examen",
+      "category": "educacion",
+      "label": "examen",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/nota",
+      "category": "educacion",
+      "label": "nota",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/lapiz",
+      "category": "educacion",
+      "label": "lapiz",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/cuaderno",
+      "category": "educacion",
+      "label": "cuaderno",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/mochila",
+      "category": "educacion",
+      "label": "mochila",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/recreo",
+      "category": "educacion",
+      "label": "recreo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/matematicas",
+      "category": "educacion",
+      "label": "matematicas",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/lenguaje",
+      "category": "educacion",
+      "label": "lenguaje",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/historia",
+      "category": "educacion",
+      "label": "historia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/ciencias",
+      "category": "educacion",
+      "label": "ciencias",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/educacion fisica",
+      "category": "educacion",
+      "label": "educacion fisica",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/ingles",
+      "category": "educacion",
+      "label": "ingles",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "educacion/arte",
+      "category": "educacion",
+      "label": "arte",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/peso",
+      "category": "dinero",
+      "label": "peso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/comprar",
+      "category": "dinero",
+      "label": "comprar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/vender",
+      "category": "dinero",
+      "label": "vender",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/caro",
+      "category": "dinero",
+      "label": "caro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/barato",
+      "category": "dinero",
+      "label": "barato",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/pagar",
+      "category": "dinero",
+      "label": "pagar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/cambio",
+      "category": "dinero",
+      "label": "cambio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/banco",
+      "category": "dinero",
+      "label": "banco",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/tarjeta",
+      "category": "dinero",
+      "label": "tarjeta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/efectivo",
+      "category": "dinero",
+      "label": "efectivo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/deuda",
+      "category": "dinero",
+      "label": "deuda",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/precio",
+      "category": "dinero",
+      "label": "precio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/descuento",
+      "category": "dinero",
+      "label": "descuento",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/factura",
+      "category": "dinero",
+      "label": "factura",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/recibo",
+      "category": "dinero",
+      "label": "recibo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/mercado",
+      "category": "dinero",
+      "label": "mercado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/supermercado",
+      "category": "dinero",
+      "label": "supermercado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/tienda",
+      "category": "dinero",
+      "label": "tienda",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "dinero/farmacia",
+      "category": "dinero",
+      "label": "farmacia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/sol",
+      "category": "clima",
+      "label": "sol",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/lluvia",
+      "category": "clima",
+      "label": "lluvia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/frio",
+      "category": "clima",
+      "label": "frio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/calor",
+      "category": "clima",
+      "label": "calor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/viento",
+      "category": "clima",
+      "label": "viento",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/nube",
+      "category": "clima",
+      "label": "nube",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/nieve",
+      "category": "clima",
+      "label": "nieve",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/temperatura",
+      "category": "clima",
+      "label": "temperatura",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/tormenta",
+      "category": "clima",
+      "label": "tormenta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/niebla",
+      "category": "clima",
+      "label": "niebla",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/granizo",
+      "category": "clima",
+      "label": "granizo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/humedad",
+      "category": "clima",
+      "label": "humedad",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/seco",
+      "category": "clima",
+      "label": "seco",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/mojado",
+      "category": "clima",
+      "label": "mojado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/primavera",
+      "category": "clima",
+      "label": "primavera",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/verano",
+      "category": "clima",
+      "label": "verano",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/otoño",
+      "category": "clima",
+      "label": "otoño",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "clima/invierno",
+      "category": "clima",
+      "label": "invierno",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/perro",
+      "category": "animales",
+      "label": "perro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/gato",
+      "category": "animales",
+      "label": "gato",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/vaca",
+      "category": "animales",
+      "label": "vaca",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/caballo",
+      "category": "animales",
+      "label": "caballo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/pajaro",
+      "category": "animales",
+      "label": "pajaro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/pez",
+      "category": "animales",
+      "label": "pez",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/conejo",
+      "category": "animales",
+      "label": "conejo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/raton",
+      "category": "animales",
+      "label": "raton",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/cerdo",
+      "category": "animales",
+      "label": "cerdo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/gallina",
+      "category": "animales",
+      "label": "gallina",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/oveja",
+      "category": "animales",
+      "label": "oveja",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/leon",
+      "category": "animales",
+      "label": "leon",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/tigre",
+      "category": "animales",
+      "label": "tigre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/elefante",
+      "category": "animales",
+      "label": "elefante",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/mono",
+      "category": "animales",
+      "label": "mono",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/delfin",
+      "category": "animales",
+      "label": "delfin",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/ballena",
+      "category": "animales",
+      "label": "ballena",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/serpiente",
+      "category": "animales",
+      "label": "serpiente",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/araña",
+      "category": "animales",
+      "label": "araña",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "animales/mariposa",
+      "category": "animales",
+      "label": "mariposa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/futbol",
+      "category": "deportes",
+      "label": "futbol",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/basquetbol",
+      "category": "deportes",
+      "label": "basquetbol",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/tenis",
+      "category": "deportes",
+      "label": "tenis",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/natacion",
+      "category": "deportes",
+      "label": "natacion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/correr",
+      "category": "deportes",
+      "label": "correr",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/ganar",
+      "category": "deportes",
+      "label": "ganar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/perder",
+      "category": "deportes",
+      "label": "perder",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/equipo",
+      "category": "deportes",
+      "label": "equipo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/partido",
+      "category": "deportes",
+      "label": "partido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/campeon",
+      "category": "deportes",
+      "label": "campeon",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/estadio",
+      "category": "deportes",
+      "label": "estadio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/pelota",
+      "category": "deportes",
+      "label": "pelota",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/raqueta",
+      "category": "deportes",
+      "label": "raqueta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/piscina",
+      "category": "deportes",
+      "label": "piscina",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/gimnasio",
+      "category": "deportes",
+      "label": "gimnasio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/entrenamiento",
+      "category": "deportes",
+      "label": "entrenamiento",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "deportes/competencia",
+      "category": "deportes",
+      "label": "competencia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/ayuda",
+      "category": "emergencias",
+      "label": "ayuda",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/peligro",
+      "category": "emergencias",
+      "label": "peligro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/accidente",
+      "category": "emergencias",
+      "label": "accidente",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/fuego",
+      "category": "emergencias",
+      "label": "fuego",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/policia",
+      "category": "emergencias",
+      "label": "policia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/ambulancia",
+      "category": "emergencias",
+      "label": "ambulancia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/bombero",
+      "category": "emergencias",
+      "label": "bombero",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/robo",
+      "category": "emergencias",
+      "label": "robo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/perdido",
+      "category": "emergencias",
+      "label": "perdido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/llamar",
+      "category": "emergencias",
+      "label": "llamar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/emergencia",
+      "category": "emergencias",
+      "label": "emergencia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/herido",
+      "category": "emergencias",
+      "label": "herido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/dolor fuerte",
+      "category": "emergencias",
+      "label": "dolor fuerte",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/no puedo respirar",
+      "category": "emergencias",
+      "label": "no puedo respirar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/caida",
+      "category": "emergencias",
+      "label": "caida",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "emergencias/ataque",
+      "category": "emergencias",
+      "label": "ataque",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/agua",
+      "category": "necesidades",
+      "label": "agua",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/comida",
+      "category": "necesidades",
+      "label": "comida",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/bano",
+      "category": "necesidades",
+      "label": "bano",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/ayuda",
+      "category": "necesidades",
+      "label": "ayuda",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/cansado",
+      "category": "necesidades",
+      "label": "cansado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/hambre",
+      "category": "necesidades",
+      "label": "hambre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/sed",
+      "category": "necesidades",
+      "label": "sed",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/frio",
+      "category": "necesidades",
+      "label": "frio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/calor",
+      "category": "necesidades",
+      "label": "calor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/dormir",
+      "category": "necesidades",
+      "label": "dormir",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/trabajar",
+      "category": "necesidades",
+      "label": "trabajar",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/dinero",
+      "category": "necesidades",
+      "label": "dinero",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/medicamento",
+      "category": "necesidades",
+      "label": "medicamento",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/doctor",
+      "category": "necesidades",
+      "label": "doctor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/descanso",
+      "category": "necesidades",
+      "label": "descanso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/casa",
+      "category": "necesidades",
+      "label": "casa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/familia",
+      "category": "necesidades",
+      "label": "familia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "necesidades/amigo",
+      "category": "necesidades",
+      "label": "amigo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/rojo",
+      "category": "colores",
+      "label": "rojo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/azul",
+      "category": "colores",
+      "label": "azul",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/verde",
+      "category": "colores",
+      "label": "verde",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/amarillo",
+      "category": "colores",
+      "label": "amarillo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/blanco",
+      "category": "colores",
+      "label": "blanco",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/negro",
+      "category": "colores",
+      "label": "negro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/naranja",
+      "category": "colores",
+      "label": "naranja",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/morado",
+      "category": "colores",
+      "label": "morado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/rosado",
+      "category": "colores",
+      "label": "rosado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/cafe",
+      "category": "colores",
+      "label": "cafe",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/gris",
+      "category": "colores",
+      "label": "gris",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/celeste",
+      "category": "colores",
+      "label": "celeste",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/dorado",
+      "category": "colores",
+      "label": "dorado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "colores/plateado",
+      "category": "colores",
+      "label": "plateado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/cabeza",
+      "category": "cuerpo",
+      "label": "cabeza",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/cara",
+      "category": "cuerpo",
+      "label": "cara",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/ojo",
+      "category": "cuerpo",
+      "label": "ojo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/nariz",
+      "category": "cuerpo",
+      "label": "nariz",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/boca",
+      "category": "cuerpo",
+      "label": "boca",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/oreja",
+      "category": "cuerpo",
+      "label": "oreja",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/cuello",
+      "category": "cuerpo",
+      "label": "cuello",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/hombro",
+      "category": "cuerpo",
+      "label": "hombro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/brazo",
+      "category": "cuerpo",
+      "label": "brazo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/mano",
+      "category": "cuerpo",
+      "label": "mano",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/dedo",
+      "category": "cuerpo",
+      "label": "dedo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/pecho",
+      "category": "cuerpo",
+      "label": "pecho",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/espalda",
+      "category": "cuerpo",
+      "label": "espalda",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/pierna",
+      "category": "cuerpo",
+      "label": "pierna",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/rodilla",
+      "category": "cuerpo",
+      "label": "rodilla",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/pie",
+      "category": "cuerpo",
+      "label": "pie",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/corazon",
+      "category": "cuerpo",
+      "label": "corazon",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/cerebro",
+      "category": "cuerpo",
+      "label": "cerebro",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "cuerpo/estomago",
+      "category": "cuerpo",
+      "label": "estomago",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/chile",
+      "category": "paises",
+      "label": "chile",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/argentina",
+      "category": "paises",
+      "label": "argentina",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/peru",
+      "category": "paises",
+      "label": "peru",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/brasil",
+      "category": "paises",
+      "label": "brasil",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/colombia",
+      "category": "paises",
+      "label": "colombia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/bolivia",
+      "category": "paises",
+      "label": "bolivia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/ecuador",
+      "category": "paises",
+      "label": "ecuador",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/venezuela",
+      "category": "paises",
+      "label": "venezuela",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/paraguay",
+      "category": "paises",
+      "label": "paraguay",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/uruguay",
+      "category": "paises",
+      "label": "uruguay",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/mexico",
+      "category": "paises",
+      "label": "mexico",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/usa",
+      "category": "paises",
+      "label": "usa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/canada",
+      "category": "paises",
+      "label": "canada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/españa",
+      "category": "paises",
+      "label": "españa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/francia",
+      "category": "paises",
+      "label": "francia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/alemania",
+      "category": "paises",
+      "label": "alemania",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/italia",
+      "category": "paises",
+      "label": "italia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/china",
+      "category": "paises",
+      "label": "china",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/japon",
+      "category": "paises",
+      "label": "japon",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/corea",
+      "category": "paises",
+      "label": "corea",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/cuba",
+      "category": "paises",
+      "label": "cuba",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/panama",
+      "category": "paises",
+      "label": "panama",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/costa rica",
+      "category": "paises",
+      "label": "costa rica",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/guatemala",
+      "category": "paises",
+      "label": "guatemala",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/honduras",
+      "category": "paises",
+      "label": "honduras",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/el salvador",
+      "category": "paises",
+      "label": "el salvador",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/nicaragua",
+      "category": "paises",
+      "label": "nicaragua",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/haiti",
+      "category": "paises",
+      "label": "haiti",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "paises/republica dominicana",
+      "category": "paises",
+      "label": "republica dominicana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/arica",
+      "category": "regiones",
+      "label": "arica",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/tarapaca",
+      "category": "regiones",
+      "label": "tarapaca",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/antofagasta",
+      "category": "regiones",
+      "label": "antofagasta",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/atacama",
+      "category": "regiones",
+      "label": "atacama",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/coquimbo",
+      "category": "regiones",
+      "label": "coquimbo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/valparaiso",
+      "category": "regiones",
+      "label": "valparaiso",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/metropolitana",
+      "category": "regiones",
+      "label": "metropolitana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/ohiggins",
+      "category": "regiones",
+      "label": "ohiggins",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/maule",
+      "category": "regiones",
+      "label": "maule",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/nuble",
+      "category": "regiones",
+      "label": "nuble",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/biobio",
+      "category": "regiones",
+      "label": "biobio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/araucania",
+      "category": "regiones",
+      "label": "araucania",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/los rios",
+      "category": "regiones",
+      "label": "los rios",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/los lagos",
+      "category": "regiones",
+      "label": "los lagos",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/aysen",
+      "category": "regiones",
+      "label": "aysen",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "regiones/magallanes",
+      "category": "regiones",
+      "label": "magallanes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/america",
+      "category": "continentes",
+      "label": "america",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/america del sur",
+      "category": "continentes",
+      "label": "america del sur",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/america del norte",
+      "category": "continentes",
+      "label": "america del norte",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/america central",
+      "category": "continentes",
+      "label": "america central",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/europa",
+      "category": "continentes",
+      "label": "europa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/asia",
+      "category": "continentes",
+      "label": "asia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/africa",
+      "category": "continentes",
+      "label": "africa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/oceania",
+      "category": "continentes",
+      "label": "oceania",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "continentes/antartica",
+      "category": "continentes",
+      "label": "antartica",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/soltero",
+      "category": "estados_civiles",
+      "label": "soltero",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/soltera",
+      "category": "estados_civiles",
+      "label": "soltera",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/casado",
+      "category": "estados_civiles",
+      "label": "casado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/casada",
+      "category": "estados_civiles",
+      "label": "casada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/divorciado",
+      "category": "estados_civiles",
+      "label": "divorciado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/divorciada",
+      "category": "estados_civiles",
+      "label": "divorciada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/viudo",
+      "category": "estados_civiles",
+      "label": "viudo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/viuda",
+      "category": "estados_civiles",
+      "label": "viuda",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/separado",
+      "category": "estados_civiles",
+      "label": "separado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/separada",
+      "category": "estados_civiles",
+      "label": "separada",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/conviviente",
+      "category": "estados_civiles",
+      "label": "conviviente",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "estados_civiles/comprometido",
+      "category": "estados_civiles",
+      "label": "comprometido",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/dios",
+      "category": "religion",
+      "label": "dios",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/iglesia",
+      "category": "religion",
+      "label": "iglesia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/oracion",
+      "category": "religion",
+      "label": "oracion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/fe",
+      "category": "religion",
+      "label": "fe",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/gracias a dios",
+      "category": "religion",
+      "label": "gracias a dios",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/biblia",
+      "category": "religion",
+      "label": "biblia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/misa",
+      "category": "religion",
+      "label": "misa",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/pastor",
+      "category": "religion",
+      "label": "pastor",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/santo",
+      "category": "religion",
+      "label": "santo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/bendicion",
+      "category": "religion",
+      "label": "bendicion",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/amor de dios",
+      "category": "religion",
+      "label": "amor de dios",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/creer",
+      "category": "religion",
+      "label": "creer",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/alma",
+      "category": "religion",
+      "label": "alma",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/cielo",
+      "category": "religion",
+      "label": "cielo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "religion/bautismo",
+      "category": "religion",
+      "label": "bautismo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/hoy",
+      "category": "tiempo",
+      "label": "hoy",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/ayer",
+      "category": "tiempo",
+      "label": "ayer",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/manana",
+      "category": "tiempo",
+      "label": "manana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/ahora",
+      "category": "tiempo",
+      "label": "ahora",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/antes",
+      "category": "tiempo",
+      "label": "antes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/despues",
+      "category": "tiempo",
+      "label": "despues",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/siempre",
+      "category": "tiempo",
+      "label": "siempre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/nunca",
+      "category": "tiempo",
+      "label": "nunca",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/a veces",
+      "category": "tiempo",
+      "label": "a veces",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/lunes",
+      "category": "tiempo",
+      "label": "lunes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/martes",
+      "category": "tiempo",
+      "label": "martes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/miercoles",
+      "category": "tiempo",
+      "label": "miercoles",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/jueves",
+      "category": "tiempo",
+      "label": "jueves",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/viernes",
+      "category": "tiempo",
+      "label": "viernes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/sabado",
+      "category": "tiempo",
+      "label": "sabado",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/domingo",
+      "category": "tiempo",
+      "label": "domingo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/enero",
+      "category": "tiempo",
+      "label": "enero",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/febrero",
+      "category": "tiempo",
+      "label": "febrero",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/marzo",
+      "category": "tiempo",
+      "label": "marzo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/abril",
+      "category": "tiempo",
+      "label": "abril",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/mayo",
+      "category": "tiempo",
+      "label": "mayo",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/junio",
+      "category": "tiempo",
+      "label": "junio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/julio",
+      "category": "tiempo",
+      "label": "julio",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/agosto",
+      "category": "tiempo",
+      "label": "agosto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/septiembre",
+      "category": "tiempo",
+      "label": "septiembre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/octubre",
+      "category": "tiempo",
+      "label": "octubre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/noviembre",
+      "category": "tiempo",
+      "label": "noviembre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/diciembre",
+      "category": "tiempo",
+      "label": "diciembre",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/año",
+      "category": "tiempo",
+      "label": "año",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/mes",
+      "category": "tiempo",
+      "label": "mes",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/semana",
+      "category": "tiempo",
+      "label": "semana",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/dia",
+      "category": "tiempo",
+      "label": "dia",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/hora",
+      "category": "tiempo",
+      "label": "hora",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    },
+    {
+      "classId": "tiempo/minuto",
+      "category": "tiempo",
+      "label": "minuto",
+      "recordings": 0,
+      "declaredParticipants": 0,
+      "trainingParticipants": 0,
+      "evaluationParticipants": 0,
+      "status": "needs-reviewed-samples"
+    }
+  ],
+  "snapshotAt": "2026-10-04T02:41:32.151Z",
+  "quarantinedRecordings": 110
+}

@@ -1,0 +1,74 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba de revisión de señas</title>
+<style>html,body,#root{height:100%;margin:0}body{overflow:hidden}#root{display:flex;flex:1}#fixture-panel{position:fixed;z-index:100;top:4px;left:4px;padding:6px;background:#222;color:white;font:10px system-ui;border-radius:6px;max-width:230px}#fixture-panel button{font-size:10px;margin:3px}</style></head><body>
+<div id="fixture-panel">Prueba local: cámara, detección y servidor simulados. No se envían grabaciones reales.<br>
+<button id="restore">Restaurar conexión</button><button id="fail-database">Fallar registro</button><button id="fail-upload">Fallar envío</button>
+<output id="requests"></output></div><div id="root"></div>
+<script>
+(async()=>{
+ if(new URL(location.href).searchParams.get('device')==='phone')Object.defineProperty(navigator,'userAgentData',{value:{mobile:true},configurable:true});
+ const testDatabase='deafapp-recording-drafts-ui-test';
+ const getItem=Storage.prototype.getItem,setItem=Storage.prototype.setItem;
+ const profileKey=key=>key==='deafapp-recording-profiles-v1'?'deafapp-recording-profiles-ui-test':key;
+ Storage.prototype.getItem=function(key){return getItem.call(this,profileKey(key));};
+ Storage.prototype.setItem=function(key,value){return setItem.call(this,profileKey(key),value);};
+ const open=indexedDB.open.bind(indexedDB);
+ indexedDB.open=(name,version)=>open(name==='deafapp-recording-drafts'?testDatabase:name,version);
+ let mode=sessionStorage.getItem('review-test-mode')||'upload-fail';
+ let requests=JSON.parse(sessionStorage.getItem('review-test-requests')||'{"uploads":0,"registrations":0,"lookups":0}');
+ let rows=JSON.parse(sessionStorage.getItem('review-test-rows')||'[]');
+ const report=()=>{sessionStorage.setItem('review-test-requests',JSON.stringify(requests));document.getElementById('requests').textContent=`Subidas: ${requests.uploads} · Registros: ${requests.registrations} · Consultas: ${requests.lookups} · Observaciones: ${requests.observations||0} · Perfil: ${requests.participantId||'ninguno'} · Idioma: ${requests.language||'ninguno'}`;};report();
+ for(const [id,value] of [['restore','success'],['fail-database','database-fail'],['fail-upload','upload-fail']])document.getElementById(id).onclick=()=>{mode=value;sessionStorage.setItem('review-test-mode',value);};
+ const originalFetch=window.fetch.bind(window);
+ const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json'}});
+ window.fetch=async(input,options={})=>{
+   const url=new URL(typeof input==='string'?input:input.url,location.href);
+   if(!url.hostname.endsWith('.supabase.co'))return originalFetch(input,options);
+   const method=(options.method||'GET').toUpperCase();
+   if(url.pathname.startsWith('/storage/')&&method==='POST'){
+     const payload=JSON.parse(await options.body.get('').text());
+     requests.observations=payload.training?.samples?.length||0;requests.participantId=payload.training?.participantId;requests.language=payload.language;
+     requests.uploads++;report();
+     if(mode==='upload-fail')throw new TypeError('Conexión interrumpida en la prueba.');
+     return json({Id:'test-storage',Key:url.pathname.slice('/storage/v1/object/'.length)});
+   }
+   if(url.pathname.endsWith('/grabaciones')&&method==='POST'){
+     requests.registrations++;report();
+     if(mode==='database-fail')return json({message:'Fallo simulado al registrar la seña',code:'XX000'},500);
+     rows.push({...JSON.parse(options.body),id:rows.length+1});sessionStorage.setItem('review-test-rows',JSON.stringify(rows));
+     return new Response(null,{status:201});
+   }
+   const path=url.searchParams.get('archivo_path');
+   if(path){requests.lookups++;report();return json(rows.filter(row=>`eq.${row.archivo_path}`===path).map(row=>({id:row.id})));}
+   return json([]);
+ };
+ const camera=document.createElement('canvas');camera.width=640;camera.height=480;
+ const draw=()=>{
+   const ctx=camera.getContext('2d'),t=performance.now()/500;
+   ctx.fillStyle='#c8e8e6';ctx.fillRect(0,0,640,480);
+   ctx.fillStyle='#33476a';ctx.fillRect(220,280,200,200);
+   ctx.fillStyle='#ecba91';ctx.beginPath();ctx.ellipse(320,180,70,90,0,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle='#33476a';ctx.beginPath();ctx.arc(295,170,5,0,7);ctx.arc(345,170,5,0,7);ctx.fill();
+   ctx.strokeStyle='#33476a';ctx.lineWidth=4;ctx.beginPath();ctx.arc(320,205,23,0,Math.PI);ctx.stroke();
+   for(const [x,phase]of[[145,0],[495,1]]){
+     const y=260+Math.sin(t+phase)*22;ctx.fillStyle='#ecba91';ctx.beginPath();ctx.ellipse(x,y,33,43,0,0,7);ctx.fill();
+     for(let i=0;i<4;i++){ctx.beginPath();ctx.roundRect(x-28+i*15,y-83,12,65,6);ctx.fill();}
+   }
+   ctx.fillStyle='#33476a';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText('Prueba de grabación',320,40);ctx.fillText(`Secuencia ${Math.floor(performance.now()/100)%30+1}`,320,440);
+   requestAnimationFrame(draw);
+ };draw();
+ navigator.mediaDevices.getUserMedia=async()=>camera.captureStream(30);
+ const points=x=>Array.from({length:21},(_,i)=>({x:x+(i%5)*.012,y:.55-Math.floor(i/5)*.025,z:0}));
+ window.Worker=class{
+   postMessage(message){queueMicrotask(()=>this.onmessage?.({data:{id:message.id,type:'result',result:message.type==='frame'?{multiHandLandmarks:[points(.2),points(.7)],multiHandedness:[{label:'Left'},{label:'Right'}]}:undefined}}));}
+   terminate(){}
+ };
+ window.FACEMESH_CONTOURS=[];
+ window.FaceMesh=class{
+   setOptions(){}onResults(callback){this.callback=callback;}async close(){}
+   async send({image}){this.callback({image,multiFaceLandmarks:[Array.from({length:468},()=>({x:.5,y:.37,z:0}))]});}
+ };
+ const append=document.head.appendChild.bind(document.head);
+ document.head.appendChild=node=>{if(node.tagName==='SCRIPT'&&node.src.includes('@mediapipe/face_mesh')){queueMicrotask(()=>node.onload?.());return node;}return append(node);};
+ const script=document.createElement('script');script.src='APP_BUNDLE_URL';document.body.appendChild(script);
+})();
+</script></body></html>

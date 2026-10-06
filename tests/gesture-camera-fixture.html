@@ -1,0 +1,24 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba local de DeafApp</title>
+<style>html,body,#root{height:100%;margin:0}body{overflow:hidden}#root{display:flex;flex:1}#fixture-note{position:fixed;z-index:100;top:8px;left:8px;padding:6px;background:#222;color:#fff;font:11px system-ui;border-radius:6px;max-width:180px}</style></head><body>
+<div id="fixture-note">Prueba local con la captura enviada. Cámara simulada; subidas deshabilitadas.</div><div id="root"></div>
+<script>
+// Developer-only fixture: feed the supplied still through the real detectors
+// and production UI, without occupying the webcam or allowing uploads.
+(async()=>{
+ const device=new URL(location.href).searchParams.get('device');
+ if(device==='phone')Object.defineProperty(navigator,'userAgentData',{value:{mobile:true},configurable:true});
+ if(device)document.getElementById('fixture-note').textContent=`Prueba local: ${device==='phone'?'celular':'PC'}. Cámara simulada; subidas deshabilitadas.`;
+ const photo=new Image();photo.src='./gesture-example.png';await photo.decode();
+ const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;
+ const draw=()=>{canvas.getContext('2d').drawImage(photo,8,57,600,450,0,0,640,480);requestAnimationFrame(draw);};draw();
+ navigator.mediaDevices.getUserMedia=async()=>canvas.captureStream(30);
+ const originalFetch=window.fetch.bind(window);
+ window.fetch=(input,options)=>{
+  const url=typeof input==='string'?input:input.url;
+  const method=(options?.method||input.method||'GET').toUpperCase();
+  if(url.includes('.supabase.co')&&!['GET','HEAD'].includes(method))return Promise.reject(new Error('Subidas deshabilitadas en la prueba local.'));
+  return originalFetch(input,options);
+ };
+ const script=document.createElement('script');script.src='APP_BUNDLE_URL';document.body.appendChild(script);
+})();
+</script></body></html>

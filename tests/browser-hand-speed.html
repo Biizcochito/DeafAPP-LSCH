@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<title>Comparación de velocidad de manos</title>
+<style>
+body{background:#0f0f1e;color:white;font:16px system-ui;margin:28px}button{padding:12px}section{display:flex;gap:24px;flex-wrap:wrap}canvas{width:360px;max-width:100%;background:#222}pre{white-space:pre-wrap;font-size:14px}#status{margin:18px 0}
+</style>
+<h1>Velocidad y recuperación del trazado de manos</h1>
+<button id="run">Comparar detector anterior y nuevo</button>
+<div id="status" role="status">Listo</div>
+<section><div><h2>Detector anterior</h2><canvas id="full" width="640" height="480"></canvas></div><div><h2>Detector nuevo</h2><canvas id="lite" width="640" height="480"></canvas></div></section>
+<div id="summary"></div><details><summary>Ver métricas completas</summary><pre id="results"></pre></details>
+<script type="module">
+import { createSignTracker, drawSignLandmarks } from './landmarkTracking.js';
+import { withTrackingTimeout } from './trackingOverlay.js';
+const button = document.querySelector('#run');
+const status = document.querySelector('#status');
+const results = document.querySelector('#results');
+const median = values => [...values].sort((a,b)=>a-b)[Math.floor(values.length/2)];
+button.onclick = async () => {
+  button.disabled = true;
+  try {
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.src = 'https://storage.googleapis.com/mediapipe-assets/right_hands.jpg';
+    await image.decode();
+    const portrait = new Image(); portrait.crossOrigin='anonymous';
+    portrait.src='https://storage.googleapis.com/mediapipe-assets/portrait.jpg';
+    await portrait.decode();
+    const metrics = [];
+    for (const complexity of [1, 2]) {
+      status.textContent = complexity === 1 ? 'Midiendo modelo anterior…' : 'Midiendo detector nuevo…';
+      const loadAt = performance.now();
+      const tracker = await createSignTracker({ legacyHands: complexity === 1 });
+      const loadMs = performance.now() - loadAt;
+      try {
+        const input = document.createElement('canvas');
+        input.width = 640; input.height = 480;
+        const ctx = input.getContext('2d');
+        const blank = () => { ctx.fillStyle = '#222'; ctx.fillRect(0,0,640,480); };
+        let last;
+        tracker.onResults(value => { last = value; });
+        blank();
+        const started = performance.now();
+        await withTrackingTimeout(tracker.sendHands({image:input}),45000);
+        const handStartupMs = performance.now() - started;
+        await withTrackingTimeout(tracker.sendFace({image:input}),45000);
+        const startupMs = performance.now() - started;
+        const both = () => last?.leftHandLandmarks?.length === 21 && last?.rightHandLandmarks?.length === 21;
+        const showBoth = (offset = 0, size = 1) => {
+          blank();
+          const scale = Math.min(520/image.naturalWidth, 420/image.naturalHeight) * size;
+          const w = image.naturalWidth*scale, h = image.naturalHeight*scale;
+          ctx.drawImage(image,(640-w)/2+offset,(480-h)/2,w,h);
+        };
+        showBoth();
+        const acquireAt = performance.now();
+        let acquireFrames = 0;
+        do { await tracker.sendHands({image:input}); acquireFrames++; } while (!both() && acquireFrames < 12);
+        const acquireBothMs = performance.now() - acquireAt;
+        const durations = [];
+        let trackedBothFrames = 0;
+        for (let frame = 0; frame < 20; frame++) {
+          showBoth(Math.sin(frame/3)*35);
+          const time = performance.now();
+          await tracker.sendHands({image:input});
+          durations.push(performance.now()-time);
+          if (both()) trackedBothFrames++;
+        }
+        const output = document.querySelector(complexity === 1 ? '#full' : '#lite');
+        const outputContext = output.getContext('2d');
+        outputContext.drawImage(input,0,0);
+        drawSignLandmarks(outputContext,last);
+        blank();
+        for (let frame = 0; frame < 3; frame++) await tracker.sendHands({image:input});
+        showBoth();
+        const reacquireAt = performance.now();
+        let reacquireFrames = 0;
+        do { await tracker.sendHands({image:input}); reacquireFrames++; } while (!both() && reacquireFrames < 12);
+        const reacquireBothMs = performance.now()-reacquireAt;
+        blank(); ctx.save(); ctx.translate(500,0); ctx.scale(-1,1);
+        ctx.drawImage(image,image.naturalWidth/2,0,image.naturalWidth/2,image.naturalHeight,0,0,360,480);
+        ctx.restore();
+        for (let frame = 0; frame < 12; frame++) await tracker.sendHands({image:input});
+        const leftAlonePoints = last.leftHandLandmarks?.length || 0;
+        const rightWhenLeftAlone = last.rightHandLandmarks?.length || 0;
+        blank(); ctx.drawImage(image,image.naturalWidth/2,0,image.naturalWidth/2,image.naturalHeight,140,0,360,480);
+        for(let frame=0;frame<12;frame++) await tracker.sendHands({image:input});
+        const rightAlonePoints = last.rightHandLandmarks?.length || 0;
+        const leftWhenRightAlone = last.leftHandLandmarks?.length || 0;
+        blank();
+        for (let frame=0;frame<3;frame++) await tracker.sendHands({image:input});
+        const emptyFramePoints = (last.leftHandLandmarks?.length||0)+(last.rightHandLandmarks?.length||0);
+        const smallHands = [];
+        for (const size of [.65,.5,.4]) {
+          blank(); for(let frame=0;frame<3;frame++) await tracker.sendHands({image:input});
+          showBoth(0,size);
+          const started=performance.now(); let frames=0;
+          do {await tracker.sendHands({image:input});frames++;} while(!both() && frames<12);
+          smallHands.push({size,detected:both(),frames,ms:performance.now()-started});
+        }
+        const edgeHands = [];
+        for (const side of ['left','right']) {
+          blank();for(let frame=0;frame<3;frame++) await tracker.sendHands({image:input});
+          if(side==='left'){ctx.save();ctx.translate(360,0);ctx.scale(-1,1);}
+          ctx.drawImage(image,image.naturalWidth/2,0,image.naturalWidth/2,image.naturalHeight,side==='left'?0:280,0,360,480);
+          if(side==='left')ctx.restore();
+          let frames=0; const ready=()=>last[side==='left'?'leftHandLandmarks':'rightHandLandmarks']?.length===21;
+          do {await tracker.sendHands({image:input});frames++;}while(!ready() && frames<12);
+          edgeHands.push({side,detected:ready(),frames});
+        }
+        blank();for(let frame=0;frame<3;frame++) await tracker.sendHands({image:input});
+        // The portrait asset includes crossed hands in its lower half. Use
+        // only the head/shoulders as the no-hands control.
+        ctx.drawImage(portrait,0,0,portrait.naturalWidth,portrait.naturalHeight*.5,0,0,640,400);
+        let portraitFalsePoints=0;
+        for(let frame=0;frame<12;frame++) {await tracker.sendHands({image:input});portraitFalsePoints=Math.max(portraitFalsePoints,(last.leftHandLandmarks?.length||0)+(last.rightHandLandmarks?.length||0));}
+        metrics.push({model:complexity===1?'anterior':'nuevo',loadMs,handStartupMs,startupMs,acquireBothMs,acquireFrames,medianTrackingMs:median(durations),trackedBothFrames,totalFrames:20,reacquireBothMs,reacquireFrames,leftAlonePoints,rightWhenLeftAlone,rightAlonePoints,leftWhenRightAlone,emptyFramePoints,portraitFalsePoints,smallHands,edgeHands});
+        results.textContent = JSON.stringify(metrics,null,2);
+      } finally { await tracker.close(); }
+    }
+    status.textContent = metrics.every(m=>m.trackedBothFrames===20 && m.leftAlonePoints===21 && m.rightWhenLeftAlone===0 && m.rightAlonePoints===21 && m.leftWhenRightAlone===0 && m.emptyFramePoints===0 && m.portraitFalsePoints===0 && m.edgeHands.every(h=>h.detected)) ? 'PRUEBA CORRECTA: movimiento, bordes, cada mano sola y ausencia de manos' : 'PRUEBA FALLIDA: revisar continuidad de detección';
+    document.querySelector('#summary').textContent=metrics.map(m=>`${m.model.toUpperCase()}: movimiento ${m.trackedBothFrames}/20 · manos pequeñas: ${m.smallHands[0].detected?Math.round(m.smallHands[0].ms)+' ms / '+m.smallHands[0].frames+' intento':'sin detección en 12 intentos'} · cada mano sola: ${m.leftAlonePoints===21&&m.rightAlonePoints===21?'correcto':'fallo'}`).join(' | ');
+  } catch (error) { status.textContent = `ERROR: ${error.message}`; }
+  finally { button.disabled = false; }
+};
+</script>
+</html>

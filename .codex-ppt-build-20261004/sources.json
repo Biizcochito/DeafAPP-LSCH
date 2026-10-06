@@ -1,0 +1,111 @@
+[
+  {
+    "slide": 1,
+    "title": "DeafApp. Mejoras implementadas"
+  },
+  {
+    "slide": 2,
+    "title": "Trazado de cara en la cámara",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuente: artifacts/manos-rapidas-camara-real.jpg y artifacts/manos-rapidas-verificacion.md. Captura histórica de la cámara física local, 2 de octubre de 2026. Se observó también el estado de ambas manos detectadas y retirada de sus trazados al bajarlas.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 3,
+    "title": "Reconocimiento de manos más rápido",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuente: artifacts/manos-rapidas-verificacion.md y artifacts/manos-rapidas-verificacion.jpg. Detector regional MediaPipe HandPose 3D lite con TensorFlow.js en un Worker. Inicio del modelo y adquisición de manos son tiempos diferentes. Tras preparar el modelo: primera adquisición 63 ms, siguientes inferencias 38–74 ms, 8/8 imágenes desplazadas con ambas manos. La carga simultánea tuvo picos. No equivale a latencia total ni garantiza el mismo rendimiento en otros equipos.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 4,
+    "title": "Inicio y reinicio de la cámara",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: App.js, tests/webCameraCompatibility.test.mjs, scripts/patch-expo-camera.cjs y artifacts/camara-inicio-corregidos.png. Se corrigió la referencia inexistente a OverconstrainedError y se implementaron alternativas de restricciones y controles de reproducción/inicialización. La captura documenta una cámara física activa en la versión corregida. Ningún cambio garantiza compatibilidad con todo hardware.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 5,
+    "title": "Cámara automática para PC y celular",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: artifacts/camara-automatica-verificacion.md, camara-automatica-pc.jpg, camara-automatica-celular.jpg. Interfaz real compilada con cámara simulada a partir de una imagen y subidas deshabilitadas. Celular emulado en navegador, no probado en teléfono físico. PC máximo 600 px de ancho en 4:3. Celular máximo 450 px en 9:16. Reducir la ventana de PC no cambia su clasificación.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 6,
+    "title": "Grabación con una o dos manos",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: App.js, recordingHandGuard.js, trainingCapture.js y artifacts/grabacion-una-mano.png. Captura histórica de la cámara física durante la preparación. Se exige confirmar ambas manos al inicio de la sesión preparada, después se permite al menos una mano detectada. Preparar grabación arma la espera y cuenta atrás para que no haya que sostener las manos y pulsar a la vez. No afirmar que el fotograma de esta captura muestra una seña completa.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 7,
+    "title": "Ayuda durante la detección de manos",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: App.js y artifacts/ayuda-deteccion-manos.png. Captura histórica de la cámara real cuando el detector buscaba las manos. Las sugerencias dependen de su estado y solo aparecen en el contexto de la grabación. La ayuda no sustituye la detección ni asegura disponibilidad inmediata.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 8,
+    "title": "Filtro del dedo medio levantado",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: artifacts/filtro-gestos-verificacion.md, artifacts/filtro-gestos-app.jpg y gestureModeration.js. Captura real de la interfaz compilada con entrada simulada basada en la imagen del usuario y subidas deshabilitadas. Regla concreta basada en 21 puntos, persistencia mínima de 3 detecciones y 250 ms. Es una configuración de mano y puede fallar si el modelo confunde dedos. No es un detector general de intención obscena. Otros gestos aún requieren ejemplos y revisión para no bloquear LSCh válida.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 9,
+    "title": "Vista previa antes de enviar",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: App.js, recordingDraftStore.js, artifacts/vista-previa-verificacion.md y artifacts/vista-previa-grabacion.jpg. Captura de la interfaz real con cámara, detector y servidor simulados. La imagen dibujada pertenece a la prueba del software, no es una seña de entrenamiento. Se comprobó que abrir y reproducir la vista previa no sube datos. La toma válida contiene 30 fotogramas y conserva proporción. No se enviaron grabaciones reales durante esa prueba.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 10,
+    "title": "Guardado local y reintento del envío",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: artifacts/vista-previa-verificacion.md, artifacts/vista-previa-reintento.jpg, recordingDraftStore.js y recordingSubmission.js. Prueba compilada con datos simulados y IndexedDB aislada. Guardado de una toma pendiente por origen/navegador, recuperación al recargar, ruta única por toma, comprobación del registro antes del reintento y limpieza solo al completar. Web Locks cuando disponible y tiempo límite de 30 s. No afirmar prueba de subida real a producción.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 11,
+    "title": "Grabación sin elegir Persona 1 o 2",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: RecordingProfiles.js, recordingSource.js, trainingCapture.js, training/datasetPreparation.js y artifacts/grabacion-sin-personas.png. Captura actual tras retirar el selector. La cámara no se comprobó físicamente en esa captura y aparece negra. Se documentan los controles y ausencia del selector. Se guarda un código automático de origen local anónimo, no una identidad verificada. Se conservaron perfiles antiguos. La evaluación independiente no cuenta esos códigos como personas distintas.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 12,
+    "title": "Herramientas técnicas fuera del menú",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: App.js, AdminPanel.js, admin/README.md y artifacts/menu-sin-visualizador.jpg. Captura histórica del menú después de retirar el visualizador público de landmarks. El menú de la captura conserva elementos previos de revisión, por lo que se muestra un recorte de categorías. En el estado actual la aprobación, catálogo y pruebas técnicas pertenecen al administrador. Se mantiene el trazado en la cámara de grabación.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 13,
+    "title": "Administrador oculto con contraseña",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: AdminPanel.js, admin/README.md y artifacts/ppt-acceso-admin.jpg. Captura actual de la pantalla de acceso, 4 de octubre de 2026. Acceso mediante cinco pulsaciones consecutivas en el logo de DeafApp. Validación de contraseña en el servidor Supabase, sesión temporal y límite de intentos. No se incluye la contraseña en esta presentación. Protección del administrador no significa que los objetos del bucket antiguo de grabaciones sean privados.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 14,
+    "title": "Moderación de todas las grabaciones",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: AdminPanel.js, admin/README.md, admin/schema.sql y artifacts/ppt-moderacion-actual.jpg. Captura actual del servidor: 20 pendientes, 110 aprobadas y 0 rechazadas. Consulta sin cambiar decisiones. Búsqueda, filtros y selección por página para decisiones individuales o por lote. Las nuevas contribuciones llegan pendientes. Rechazar conserva archivos y los excluye de aprobadas. No se usó voto público como aprobación automática.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 15,
+    "title": "Aprobar o rechazar después de revisar",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: AdminPanel.js, admin/README.md y artifacts/ppt-revision-grabacion.jpg. Captura actual de una grabación real pendiente saludos/hola, registro 186. Vista previa pausada para el pantallazo. Solo se consultó el archivo, no se cambió la aprobación. Las funciones aplican comprobación de versión para decisiones concurrentes. Rechazar no elimina el original.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 16,
+    "title": "Material de LSCh dentro del administrador",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: admin/README.md, training/README.md y artifacts/ppt-material-actual.jpg. Captura actual de referencias educativas. Se incorporaron ocho referencias educativas y un catálogo académico con metadatos de 379 videos. No son 379 clips revisados para entrenamiento ni permisos de uso concedidos. Referencias UMCE/Mineduc y Universidad de Valparaíso disponibles en el catálogo. No se afirma descarga del dataset del estudio.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 17,
+    "title": "Prioridades de las 531 entradas",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: training/README.md, admin/README.md y artifacts/ppt-entrenamiento-actual.jpg. Captura actual antes de analizar de nuevo. El conteo es de entradas de vocabulario por categoría, no 531 señas lingüísticamente distintas ni entrenadas. Modo independiente exige al menos 5 originales de aprendizaje y 2 de prueba por seña con participantes separados. Variaciones artificiales no se cuentan como originales. El análisis estricto no equivale al modo experimental de recuperación. Importación desde navegador sigue pendiente de una comprobación manual autorizada.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 18,
+    "title": "Recuperación de las 110 aprobadas",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: training/README.md, admin/README.md y artifacts/recuperacion-110-lista.png. Resultado real del 4 de octubre de 2026. 110 aprobadas procesadas y guardadas sin error, 44 con puntos de calidad técnica utilizable, 12 además con etiquetas compatibles/aprobadas y 2 clases con dos originales distintos. Calidad técnica no garantiza corrección lingüística. Se conservaron archivos y decisiones del servidor. La recuperación persiste en IndexedDB por navegador/origen.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 19,
+    "title": "Revisión de etiquetas recuperadas",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: training/README.md y artifacts/ppt-revision-recuperacion.jpg. Captura actual del editor de revisión de la recuperación 166. Se abrió sin guardar cambios. Corrección exacta por entrada/categoría, confirmación explícita y código de participante solo si se sabe. La anotación es local y no modifica el original ni la decisión del servidor. Las grabaciones antiguas sin tiempos conservan orden, no se inventa su velocidad.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 20,
+    "title": "Primer prototipo entrenado y guardado",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: training/README.md, admin/README.md y artifacts/ppt-modelo-guardado.jpg. Informe histórico cargado desde IndexedDB y capturado el 4 de octubre. Modelo temporal Conv1D de 32 pasos y 171 características, 30 épocas con variaciones de originales solo en aprendizaje. Dos originales de aprendizaje totales y dos reservados totales, uno de cada etiqueta. Cerdo: 1/1; día: 0/1. 50% equivale a un acierto en dos tomas, no precisión general. Puede ser la misma persona. Se guardan modelo, etiquetas e informe por candidato, persisten al recargar. No activa reconocimiento público ni traductor continuo.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 21,
+    "title": "Archivos preparados para Cloudflare",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: admin/README.md, training/README.md, package.json, dist/index.html y DeafApp-sin-selector-personas.zip. ZIP actual de 18 entradas, index.html en raíz, biblioteca y modelos de seguimiento locales. Se excluyeron SQL, contraseñas, grabaciones privadas y diagnósticos. Preparar el ZIP no publica la interfaz. IndexedDB de localhost no se transfiere automáticamente al dominio oficial. App.js es fuente Expo, no una aplicación web exportada por sí sola.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  },
+  {
+    "slide": 22,
+    "title": "Estado actual y próxima etapa",
+    "notes": "DeafApp. Estado documentado al 4 de octubre de 2026.\nFuentes: App.js, training/README.md, admin/README.md y conversación del proyecto. La meta del usuario es un traductor en tiempo real entre LSCh y oyentes mediante voz/texto, bidireccional. El estado implementado es captura, moderación, preparación y prototipo aislado privado. Falta comprobar con participantes distintos, gestos desconocidos y cámara real antes de habilitar reconocimiento público. Frases continuas y voz/texto hacia LSCh necesitan etapas adicionales. No se afirma que DeafApp sea la mejor o primera opción nacional.\nLas capturas anteriores documentan la interfaz en el momento indicado. La versión local no demuestra que la misma actualización esté publicada en Cloudflare."
+  }
+]

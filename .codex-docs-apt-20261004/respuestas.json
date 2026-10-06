@@ -1,0 +1,82 @@
+{
+  "grupo": "Diego Padilla, Ignacio Hernández y Felipe Crisóstomo",
+  "carrera": "Ingeniería en Informática · Sede San Joaquín",
+  "fecha": "Estado del proyecto al 4 de octubre de 2026",
+  "proyecto": "Sistema de Reconocimiento en Tiempo Real de Lengua de Señas Chilena (LSCh) mediante Redes LSTM – DeafApp",
+  "desarrollo": {
+    "resumen": [
+      "Durante esta etapa nos enfocamos en mejorar DeafApp para que la recolección de señas fuera más clara y útil. Corregimos problemas de cámara, desfase del trazado y detección de manos. Agregamos preparación de la grabación, cuenta regresiva, vista previa y recuperación de una toma pendiente. Una vez confirmadas ambas manos, se puede grabar una seña con una sola mano.",
+      "También implementamos un administrador con contraseña para revisar las contribuciones y preparar los datos. Analizamos las 110 grabaciones aprobadas y recuperamos sus secuencias sin modificar los originales. Con ese material entrenamos un primer prototipo de dos señas. Los objetivos de captura y revisión presentan avances concretos; el reconocimiento general y su integración en tiempo real siguen pendientes."
+    ],
+    "objetivos": [
+      "Mantenemos el objetivo general de desarrollar un sistema de reconocimiento en tiempo real de LSCh mediante redes LSTM, integrado en una aplicación móvil/web que permita recolectar y validar datos con la comunidad sorda.",
+      "Ajustamos los objetivos específicos a: extraer puntos de cara y manos; mejorar la captura y envío de señas; revisar las contribuciones desde el administrador; preparar muestras con etiquetas y permisos comprobados; y evaluar un modelo temporal antes de integrarlo al reconocimiento en vivo. La aprobación final pasa al administrador y el aprendizaje se inicia con las señas que tengan datos suficientes."
+    ],
+    "metodologia": [
+      "Seguimos trabajando en ciclos cortos de desarrollo, prueba y corrección. Para los datos usamos las fases de CRISP-DM: comprender el problema, revisar las grabaciones, preparar las secuencias, entrenar y evaluar el modelo. Esto nos permite corregir la aplicación sin esperar a tener todo el vocabulario listo.",
+      "Como ajuste, comenzamos con un prototipo temporal Conv1D de dos señas y dejamos el modelo LSTM previsto para una comparación posterior. Las referencias de LSCh sirven para buscar material, pero cada fragmento necesita revisión de significado y permiso de uso antes de entrenar. La evaluación con personas distintas se mantiene como requisito para comprobar si el modelo funciona fuera de las grabaciones iniciales."
+    ],
+    "evidencias": [
+      "Adjuntamos capturas del seguimiento de cara y manos y del panel de grabaciones. El código de la aplicación y los registros de pruebas permiten revisar las correcciones de cámara, el flujo de captura y el control de aprobación.",
+      "La recuperación de 110 grabaciones dejó 44 con puntos utilizables para experimentar y 12 con etiquetas compatibles. El primer modelo de «cerdo» y «día» acertó una de dos pruebas internas. Conservamos estos resultados para mostrar el avance real, sin presentar esa prueba pequeña como precisión general. Resguardamos la calidad al conservar los originales, separar las tomas de prueba y evitar que las variaciones artificiales cuenten como personas nuevas."
+    ],
+    "facilitadores": [
+      "Nos ha ayudado contar con una aplicación existente, equipos propios y servicios de Supabase y Cloudflare ya configurados. Los perfiles del grupo también se complementan: Diego aborda el sistema y la integración, Ignacio el análisis de datos y Felipe la interfaz y las pruebas, según la distribución del proyecto.",
+      "Las principales dificultades han sido la detección lenta de manos, los errores de cámara y la poca diversidad de grabaciones. Para abordarlas ajustamos el seguimiento, incorporamos una vista previa y revisamos el material antiguo antes de entrenar. Sigue siendo necesario conseguir muestras de más personas y apoyo para confirmar el significado de las señas."
+    ],
+    "ajustes": [
+      "Priorizamos la calidad de la captura y la recuperación de datos antes de ampliar el reconocimiento. Quitamos la selección manual de «Persona 1» y «Persona 2» de la pantalla pública; el código de origen que se guarda automáticamente no se considera una identidad comprobada.",
+      "La aprobación final de grabaciones pasó al administrador. El material de LSCh y las pruebas también quedaron en ese panel. El entrenamiento comenzó con dos señas y una red Conv1D, en lugar de intentar activar todo el vocabulario. No eliminamos la meta de traducción en tiempo real, pero su integración queda sujeta a una evaluación suficiente."
+    ],
+    "pendientes": [
+      "La ampliación del conjunto de datos y la evaluación con personas distintas avanzan más lento de lo previsto por la baja participación y la falta de información en grabaciones antiguas. Trabajaremos con grupos pequeños de señas, repeticiones nuevas y material externo que cuente con revisión y autorización.",
+      "La integración del modelo con el backend y las pruebas del traductor completo aún no se han iniciado. Su periodo está planificado desde octubre. Antes de esa integración necesitamos mejorar el resultado del prototipo y comparar el modelo previsto. La defensa final permanece para el cierre del semestre."
+    ],
+    "plan": [
+      ["Desarrollo de software", "Definición del proyecto", "Guía APT y proyecto", "12–25 ago.", "Diego Padilla", "Existe una base técnica.", "Completado", "Se conserva."],
+      ["Inteligencia artificial", "Ampliar y limpiar datos", "DeafApp y Supabase", "19 ago.–22 sep.", "Diego Padilla", "Faltan participantes.", "Con retraso", "Continuar en octubre."],
+      ["Base de datos y backend", "Corregir errores", "Supabase y código", "26 ago.–8 sep.", "Diego Padilla", "Cámara y permisos.", "Ajustada", "Aprobación en admin."],
+      ["Análisis de datos", "Revisar el conjunto", "Grabaciones y análisis", "2–29 sep.", "Ignacio Hernández", "Faltan datos antiguos.", "En curso", "Recuperar secuencias."],
+      ["Desarrollo de interfaces", "Mejorar la experiencia", "React Native y Expo", "2–29 sep.", "Felipe Crisóstomo", "Validar otros equipos.", "Ajustada", "Cámara y vista previa."],
+      ["Inteligencia artificial", "Entrenar el modelo", "TensorFlow y puntos", "9 sep.–6 oct.", "Diego Padilla", "Muestras limitadas.", "En curso", "Prototipo Conv1D."],
+      ["Análisis de datos", "Documentar CRISP-DM", "Guías y auditoría", "16 sep.–6 oct.", "Ignacio Hernández", "Mantener evidencias.", "En curso", "Incluir recuperación."],
+      ["Pruebas de software", "Apoyar la integración", "Entorno de pruebas", "7 oct.–10 nov.", "Felipe Crisóstomo", "Depende del modelo.", "No iniciado", "Probar por módulos."],
+      ["Documentación", "Informe de avance", "Guía y evidencias", "23 sep.–6 oct.", "Equipo", "Reunir los avances.", "Completado", "Incluir límites actuales."],
+      ["Análisis de datos", "Evaluar resultados", "Informe del modelo", "30 sep.–13 oct.", "Ignacio Hernández", "Prueba inicial pequeña.", "En curso", "Ampliar evaluación."],
+      ["Desarrollo de software", "Integrar reconocimiento", "Modelo y backend", "7–27 oct.", "Diego Padilla", "Requiere validación.", "No iniciado", "Integrar tras evaluar."],
+      ["Pruebas de software", "Probar y desplegar", "Cloudflare y pruebas", "28 oct.–10 nov.", "Diego Padilla", "Verificar la versión.", "No iniciado", "Validar PC y celular."],
+      ["Documentación", "Informe y presentación", "Guías y resultados", "11–24 nov.", "Equipo", "Preparación adelantada.", "En curso", "Actualizar al cierre."],
+      ["Comunicación técnica", "Defensa del proyecto", "App y presentación", "25 nov.–1 dic.", "Equipo", "Cierre del semestre.", "No iniciado", "Se conserva."]
+    ]
+  },
+  "informe": {
+    "areas": "Desarrollo de software, inteligencia artificial y aprendizaje automático, desarrollo de aplicaciones móviles/web.",
+    "competencias": "Análisis y diseño de sistemas de software; desarrollo de soluciones basadas en inteligencia artificial; gestión de bases de datos y backend; desarrollo de interfaces móviles; trabajo bajo metodologías ágiles.",
+    "relevancia": [
+      "Elegimos este proyecto porque Diego tiene un amigo sordo y ha visto las dificultades que enfrenta para comunicarse con personas oyentes. Son situaciones cotidianas, como pedir algo en una tienda o entender una indicación, que también pueden darse en un entorno educativo como Duoc UC. El proyecto se sitúa en Chile y trabaja con Lengua de Señas Chilena.",
+      "Desde Ingeniería en Informática buscamos aportar una herramienta que facilite esa comunicación. DeafApp ya permite reunir y revisar grabaciones para preparar el reconocimiento. El traductor en tiempo real sigue siendo la meta. El trabajo combina desarrollo de software, datos e inteligencia artificial en un problema cercano al grupo."
+    ],
+    "objetivos": [
+      "Objetivo general: desarrollar un sistema de reconocimiento en tiempo real de señas de LSCh mediante redes neuronales LSTM, integrado en una aplicación móvil/web que permita la recolección y validación de datos con la comunidad sorda.",
+      "Objetivos específicos: implementar la extracción de puntos de cara y manos; mejorar la aplicación para grabar y enviar señas; revisar las contribuciones antes de usarlas; preparar y evaluar un modelo de secuencias; e integrar el reconocimiento en vivo cuando su desempeño esté validado.",
+      "Conservamos la meta del proyecto y ajustamos su ejecución. La aprobación final quedó en el administrador y el primer experimento usa Conv1D. El modelo LSTM previsto y la integración del traductor todavía requieren desarrollo y evaluación."
+    ],
+    "metodologia": [
+      "Trabajamos con una metodología ágil e iterativa. En cada ciclo revisamos un problema de la aplicación, realizamos el ajuste y comprobamos el resultado. Para el componente de datos seguimos las fases de CRISP-DM: comprensión del problema y de los datos, preparación, modelado y evaluación. La integración y el despliegue del reconocimiento quedan para después de validar el modelo.",
+      "Primero mejoramos la captura, luego revisamos y recuperamos grabaciones, y finalmente probamos un grupo pequeño de señas. Conservamos las imágenes originales y reservamos tomas para la prueba antes de generar variaciones de entrenamiento. Esta forma de trabajo es pertinente porque tenemos pocos participantes y necesitamos comprobar la calidad del material antes de ampliar el sistema."
+    ],
+    "desarrollo": [
+      "Mejoramos el inicio de la cámara, la alineación de los trazados y la detección de manos. Adaptamos el encuadre para PC y celular. La grabación se prepara antes de levantar las manos, incluye cuenta regresiva y permite usar una mano después de confirmar ambas. Agregamos vista previa, borrador recuperable y control de reintentos para evitar envíos duplicados.",
+      "Implementamos el panel privado para aprobar o rechazar grabaciones y concentrar el material de LSCh y el entrenamiento. Recuperamos las 110 grabaciones aprobadas: 44 tienen puntos utilizables para experimentar y 12 también tienen etiquetas compatibles. Entrenamos un prototipo de «cerdo» y «día», con dos originales para aprendizaje y dos para prueba. Acertó una de las dos pruebas; ese resultado no demuestra funcionamiento con otras personas.",
+      "Contar con la aplicación y los servicios configurados facilitó el trabajo. La falta de participantes y de datos completos en grabaciones antiguas dificultó el entrenamiento. Por eso priorizamos la captura y la revisión, comenzamos con dos señas y dejamos la integración en tiempo real pendiente. Los enlaces educativos requieren revisión de significado y permisos antes de incorporarlos."
+    ],
+    "evidencias": [
+      "Adjuntamos capturas de la cámara, la moderación, la recuperación de grabaciones y el informe del modelo guardado. Muestran el flujo de captura y administración y los resultados del primer experimento. El código, los registros de pruebas y la documentación de entrenamiento complementan estas evidencias.",
+      "El producto alcanzado en esta etapa es una plataforma de captura y revisión con un prototipo privado de reconocimiento. La traducción continua y el funcionamiento con personas distintas siguen pendientes de validación."
+    ],
+    "intereses": [
+      "El proyecto reforzó nuestro interés por aplicar lo aprendido a una necesidad real. Diego mantiene su interés en desarrollo Full Stack e inteligencia artificial. El trabajo nos permitió ver que conectar una interfaz, una base de datos y un modelo requiere cuidar también la calidad de las grabaciones y la experiencia de quien usa la aplicación.",
+      "Ignacio mantiene su orientación hacia la ingeniería de datos y el análisis con CRISP-DM, mientras Felipe se enfoca en interfaces y aplicaciones móviles. Nos interesa seguir profundizando en estos ámbitos y en accesibilidad. Nos proyectamos en equipos de desarrollo donde podamos combinar estos perfiles, probar las soluciones con usuarios y mejorar los resultados a partir de evidencia."
+    ]
+  }
+}

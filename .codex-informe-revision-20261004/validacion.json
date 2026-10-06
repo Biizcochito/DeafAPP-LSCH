@@ -1,0 +1,161 @@
+{
+  "output": "D:\\Descargas D\\DeafAPP-LSCH-master\\entregables\\DeafApp-Informe-Final-Proyecto-APT-completo.docx",
+  "backup": "D:\\Descargas D\\DeafAPP-LSCH-master\\.codex-informe-revision-20261004\\guia-original.docx",
+  "source_sha256": "eae5f6e4f98be24256bad31c12e4a7e4de52dc9218be9303704bab6c7ccf3852",
+  "output_sha256": "f8d308244ef5c667c809733cc2bfffe4cbae388484d7beaa3bd03b61fe5cffc7",
+  "sections_answered": 6,
+  "answer_paragraphs": 28,
+  "coverage": [
+    {
+      "section": "Relevancia",
+      "question": "Problema y relevancia profesional",
+      "answered": true
+    },
+    {
+      "section": "Relevancia",
+      "question": "Contexto y personas beneficiadas",
+      "answered": true
+    },
+    {
+      "section": "Relevancia",
+      "question": "Aporte de valor",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "Objetivo general",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "Objetivos específicos",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Objetivos",
+      "question": "Estado de cumplimiento",
+      "answered": true
+    },
+    {
+      "section": "Metodología",
+      "question": "Metodología utilizada",
+      "answered": true
+    },
+    {
+      "section": "Metodología",
+      "question": "Fases y procedimientos",
+      "answered": true
+    },
+    {
+      "section": "Metodología",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Metodología",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Metodología",
+      "question": "Pertinencia",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "Etapas y actividades",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "continuacion",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "Organización del equipo",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "Facilitadores",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "Dificultades",
+      "answered": true
+    },
+    {
+      "section": "Desarrollo",
+      "question": "Ajustes y decisiones",
+      "answered": true
+    },
+    {
+      "section": "Evidencias",
+      "question": "Evidencias adjuntas",
+      "answered": true
+    },
+    {
+      "section": "Evidencias",
+      "question": "Evidencias complementarias",
+      "answered": true
+    },
+    {
+      "section": "Evidencias",
+      "question": "Resultado alcanzado",
+      "answered": true
+    },
+    {
+      "section": "Intereses y proyecciones profesionales",
+      "question": "Aporte a nuestros intereses",
+      "answered": true
+    },
+    {
+      "section": "Intereses y proyecciones profesionales",
+      "question": "Intereses que queremos profundizar",
+      "answered": true
+    },
+    {
+      "section": "Intereses y proyecciones profesionales",
+      "question": "Proyección laboral",
+      "answered": true
+    }
+  ],
+  "word_count": 1319,
+  "image_count": 4,
+  "changed_original_parts": [
+    "[Content_Types].xml",
+    "word/_rels/document.xml.rels",
+    "word/document.xml"
+  ],
+  "section_geometry_preserved": true,
+  "all_xml_well_formed": true,
+  "original_updated": false,
+  "render_status": "Not verified: bundled LibreOffice executable is unavailable on this Windows runtime"
+}

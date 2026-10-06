@@ -1,0 +1,124 @@
+{
+  "path": "D:\\Descargas D\\Definicion Proyecto APT.docx",
+  "sha256": "80a7949719beef832b23afe70b618586c1c896d597ef7da4cd51a6d25513e15e",
+  "sections": [
+    {
+      "width": 7560310,
+      "height": 10692130,
+      "top": 899795,
+      "bottom": 899795,
+      "left": 1080135,
+      "right": 1080135
+    }
+  ],
+  "parts": {
+    "word/header1.xml": {
+      "size": 8632,
+      "sha256": "e6a20537948cc193c94fbb819d241bda10477295227f3e59fca128cf619ab923"
+    },
+    "word/_rels/header1.xml.rels": {
+      "size": 288,
+      "sha256": "6da7a486da2022851359dddebe4d23b4799d05acbf35790f6c5fbcde09ac3ec9"
+    },
+    "word/footer1.xml": {
+      "size": 1958,
+      "sha256": "1d8ca427ddd65ff6089a753abe269f72b953335ca64a3ea64dc9b083e6e3b861"
+    },
+    "word/footnotes.xml": {
+      "size": 4105,
+      "sha256": "96ebb4a66a3ffb75acc6d3d0b97ad563e55714e0aa77e080b8b9fbadda94b483"
+    },
+    "word/numbering.xml": {
+      "size": 7402,
+      "sha256": "edcc7db533c3c613a926f83e3a7e3224294b7054df937efe9766095309445e77"
+    },
+    "word/settings.xml": {
+      "size": 2152,
+      "sha256": "26f2853fde05b88d4b0a9da0bb016d56a896901f60c9272dddf33c3f3fa61e4a"
+    },
+    "word/fontTable.xml": {
+      "size": 2404,
+      "sha256": "72fa4dd298ac976066c70e167570e5b391414d5aef98a9d2a4bfb2035cd1c204"
+    },
+    "word/_rels/fontTable.xml.rels": {
+      "size": 1032,
+      "sha256": "3e8a7065dc4b07ddab8e5aa1f98cd63615f7f5b5953f08a4768a5ad6a1d336dd"
+    },
+    "word/styles.xml": {
+      "size": 20158,
+      "sha256": "02423c72a4feba612163ce4e55b7eebc42b48401c32c2acce1003d88e80fa734"
+    },
+    "customXML/itemProps1.xml": {
+      "size": 404,
+      "sha256": "fc2e321bb5ca54d5f2b99b99f91d681d004417098918a318be88fe525218c9a3"
+    },
+    "customXML/item1.xml": {
+      "size": 485,
+      "sha256": "8558d3562d0976266a6dbe870d0e944b307ca5a9fc7538b8cfa74020240d97c3"
+    },
+    "customXML/_rels/item1.xml.rels": {
+      "size": 295,
+      "sha256": "26ac718f80df621ee703e3c0f143a63034967c5fe65fbfdcefbf96419235355e"
+    },
+    "docProps/custom.xml": {
+      "size": 529,
+      "sha256": "f479b1b1612559b9e8895c85ff2aa1e77eddbb8a5a0a55f2ae588e2292ff0637"
+    },
+    "docProps/core.xml": {
+      "size": 483,
+      "sha256": "45200303150495839e8cc4453b168fee0cae4c982d6d434f28a350edadde413d"
+    },
+    "word/document.xml": {
+      "size": 397040,
+      "sha256": "00acfe5de413b6371280ffd42fdfc58c6bc30a436ab4b0a9146de4249313dac9"
+    },
+    "word/_rels/document.xml.rels": {
+      "size": 1476,
+      "sha256": "b8dc628889e65d75768c0e8fbe0b8da4d872f42744c1c41e291dd41904db9e3d"
+    },
+    "_rels/.rels": {
+      "size": 590,
+      "sha256": "1083451c93b8fa1f926374e0ce67ecb0c0fd3a56fb346ee53a62d654859378d5"
+    },
+    "word/fonts/NotoSansSymbols-regular.ttf": {
+      "size": 183620,
+      "sha256": "3c9c40311ae6012f7d3c4a4ff98952b2c7bbc0d4c89a93ba22986ff1f1884af5"
+    },
+    "word/fonts/NotoSansSymbols-bold.ttf": {
+      "size": 183344,
+      "sha256": "afc2a6b7050df884f5deb2618ebbdecb9fa2f163d3ca66ca75f8b069febc6741"
+    },
+    "word/media/image2.png": {
+      "size": 70,
+      "sha256": "18d840af2c50eff9a5241d4b50833a596e6b71af0cee87cf2b3435345f2f7aba"
+    },
+    "word/theme/theme1.xml": {
+      "size": 8395,
+      "sha256": "a6d6be71a15ce85bec1c2effef083250e6f60b3cc0ac6a632307180a5e9a304f"
+    },
+    "word/media/image1.png": {
+      "size": 38280,
+      "sha256": "360009a1b7a31941c27d15b7413d69c84e2783ec2a20151c3ae1d3dbf9a076d3"
+    },
+    "word/fonts/CenturyGothic-regular.ttf": {
+      "size": 122408,
+      "sha256": "c9dcb6d274beca191371d8c122d73eed935dd375ace67c8315f3d462844ffcb8"
+    },
+    "word/fonts/CenturyGothic-bold.ttf": {
+      "size": 111416,
+      "sha256": "7bd8a8a4a443fadf67e0cfe0705d2322e84cd0363689b0e926b3ddc4f3224797"
+    },
+    "word/fonts/CenturyGothic-boldItalic.ttf": {
+      "size": 120848,
+      "sha256": "c0be9a28799c475e94eea54a306b064d62c93e575f02541af965cdadf5de23ce"
+    },
+    "word/fonts/CenturyGothic-italic.ttf": {
+      "size": 130212,
+      "sha256": "65717907c811ff0cd163d207d2ea242ac1814f1e7bbbfb3e90a21b8a777ce2e7"
+    },
+    "[Content_Types].xml": {
+      "size": 2118,
+      "sha256": "31369d5e3a106c6fc164b1ecbe3083504c9be7a812e235c5476a8f4fe14c274a"
+    }
+  }
+}

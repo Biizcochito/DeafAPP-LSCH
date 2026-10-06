@@ -1,0 +1,15 @@
+import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
+const root = new URL('../', import.meta.url);
+const report = JSON.parse(await readFile(new URL('training/prepared/report.json', root), 'utf8'));
+const quarantine = JSON.parse(await readFile(new URL('training/prepared/quarantine.json', root), 'utf8'));
+const reportFile = await stat(new URL('training/prepared/report.json', root));
+const snapshot = { ...report, snapshotAt: reportFile.mtime.toISOString(), quarantinedRecordings: Array.isArray(quarantine) ? quarantine.length : quarantine.recordings?.length || 0 };
+await mkdir(new URL('admin/', root), { recursive: true });
+await writeFile(new URL('admin/dataset-snapshot.json', root), JSON.stringify(snapshot, null, 2) + '\n');
+const literal = JSON.stringify(snapshot).replaceAll("'", "''");
+await writeFile(new URL('admin/update-snapshot.sql', root), `insert into deafapp_private.admin_data(name,value) values ('preparation','${literal}'::jsonb) on conflict(name) do update set value=excluded.value,updated_at=now();\nselect name, value->>'inputRecordings' as examined, value->>'acceptedRecordings' as eligible from deafapp_private.admin_data where name='preparation';\n`);
+console.log(JSON.stringify({ classes: snapshot.targetClasses, recordings: snapshot.inputRecordings, eligible: snapshot.acceptedRecordings, quarantined: snapshot.quarantinedRecordings }));
+const catalog = JSON.parse(await readFile(new URL('training/sources/tub/lsch-catalog.json', root), 'utf8'));
+await writeFile(new URL('admin/catalog-snapshot.json', root), JSON.stringify(catalog, null, 2) + '\n');
+const catalogLiteral = JSON.stringify(catalog).replaceAll("'", "''");
+await writeFile(new URL('admin/update-catalog.sql', root), `insert into deafapp_private.admin_data(name,value) values ('catalog','${catalogLiteral}'::jsonb) on conflict(name) do update set value=excluded.value,updated_at=now();\nselect jsonb_array_length(value->'videos') as videos from deafapp_private.admin_data where name='catalog';\n`);

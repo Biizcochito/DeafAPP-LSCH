@@ -1,0 +1,10 @@
+TensorFlow.js 4.22.0 and @tensorflow-models/hand-pose-detection 2.0.1
+Copyright Google LLC. Apache License 2.0; see the accompanying LICENSE files.
+Official sources:
+https://github.com/tensorflow/tfjs
+https://github.com/tensorflow/tfjs-models/tree/master/hand-pose-detection
+The lite detector and lite landmark weights are the official MediaPipe TFJS
+HandPose 3D v1 models downloaded from https://tfhub.dev/mediapipe/tfjs-model/handpose_3d/
+The hand-pose package is pinned because regional inference uses the internal
+handLandmarks, handLandmarksToRoi, detectPalm and palmDetectionToRoi methods.
+Review those interfaces before changing the pinned version.

@@ -1,0 +1,104 @@
+[
+  {
+    "model": "anterior",
+    "loadMs": 2.7999999970197678,
+    "handStartupMs": 1460,
+    "startupMs": 2610.1999999955297,
+    "acquireBothMs": 80.5,
+    "acquireFrames": 1,
+    "medianTrackingMs": 22.600000001490116,
+    "trackedBothFrames": 20,
+    "totalFrames": 20,
+    "reacquireBothMs": 25.899999998509884,
+    "reacquireFrames": 1,
+    "leftAlonePoints": 21,
+    "rightWhenLeftAlone": 0,
+    "rightAlonePoints": 21,
+    "leftWhenRightAlone": 0,
+    "emptyFramePoints": 0,
+    "portraitFalsePoints": 0,
+    "smallHands": [
+      {
+        "size": 0.65,
+        "detected": false,
+        "frames": 12,
+        "ms": 143.10000000149012
+      },
+      {
+        "size": 0.5,
+        "detected": false,
+        "frames": 12,
+        "ms": 151.80000000447035
+      },
+      {
+        "size": 0.4,
+        "detected": false,
+        "frames": 12,
+        "ms": 123.40000000596046
+      }
+    ],
+    "edgeHands": [
+      {
+        "side": "left",
+        "detected": true,
+        "frames": 1
+      },
+      {
+        "side": "right",
+        "detected": true,
+        "frames": 1
+      }
+    ]
+  },
+  {
+    "model": "nuevo",
+    "loadMs": 364,
+    "handStartupMs": 1700.2000000029802,
+    "startupMs": 3424.7000000029802,
+    "acquireBothMs": 94.19999999552965,
+    "acquireFrames": 1,
+    "medianTrackingMs": 29.900000005960464,
+    "trackedBothFrames": 20,
+    "totalFrames": 20,
+    "reacquireBothMs": 54.69999999552965,
+    "reacquireFrames": 1,
+    "leftAlonePoints": 21,
+    "rightWhenLeftAlone": 0,
+    "rightAlonePoints": 21,
+    "leftWhenRightAlone": 0,
+    "emptyFramePoints": 0,
+    "portraitFalsePoints": 0,
+    "smallHands": [
+      {
+        "size": 0.65,
+        "detected": true,
+        "frames": 1,
+        "ms": 28
+      },
+      {
+        "size": 0.5,
+        "detected": false,
+        "frames": 12,
+        "ms": 146.90000000596046
+      },
+      {
+        "size": 0.4,
+        "detected": false,
+        "frames": 12,
+        "ms": 134.40000000596046
+      }
+    ],
+    "edgeHands": [
+      {
+        "side": "left",
+        "detected": true,
+        "frames": 1
+      },
+      {
+        "side": "right",
+        "detected": true,
+        "frames": 1
+      }
+    ]
+  }
+]

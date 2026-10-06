@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<title>Verificación del trazado de cara y manos</title>
+<style>
+body{background:#0f0f1e;color:#fff;font:16px system-ui;margin:32px}button{padding:12px;margin-right:12px}canvas{width:500px;max-width:100%;border:1px solid #555}#status{margin:20px 0}pre{white-space:pre-wrap}
+</style>
+<h1>Verificación con los modelos reales de MediaPipe</h1>
+<button id="face">Probar rostro sin cuerpo</button>
+<button id="hands">Probar manos sin cuerpo</button>
+<button id="left">Probar mano izquierda sola</button>
+<button id="motion">Probar rostro en movimiento</button>
+<button id="warm">Probar arranque y respuesta de manos</button>
+<div id="status" role="status">Listo para probar</div>
+<canvas id="output"></canvas><pre id="result"></pre>
+<script type="module">
+import { createSignTracker, drawSignLandmarks, warmSignTracking } from './landmarkTracking.js';
+import { withTrackingTimeout } from './trackingOverlay.js';
+let tracker;
+const status = document.querySelector('#status');
+const output = document.querySelector('#output');
+const ctx = output.getContext('2d');
+const result = document.querySelector('#result');
+async function run(kind) {
+  document.querySelectorAll('button').forEach(b => b.disabled = true);
+  try {
+    status.textContent = 'Cargando modelos reales…';
+    tracker ||= await createSignTracker();
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.src = `https://storage.googleapis.com/mediapipe-assets/${kind === 'face' ? 'portrait.jpg' : 'right_hands.jpg'}`;
+    await image.decode();
+    let input = image;
+    if (kind === 'left') {
+      input = document.createElement('canvas');
+      input.width = Math.round(image.naturalWidth / 2);
+      input.height = image.naturalHeight;
+      const inputContext = input.getContext('2d');
+      // The official right_hands asset contains right hands. Reflect one to
+      // obtain a left-hand input; classification still comes from the model.
+      inputContext.translate(input.width, 0);
+      inputContext.scale(-1, 1);
+      inputContext.drawImage(image, image.naturalWidth / 2, 0, image.naturalWidth / 2, image.naturalHeight, 0, 0, input.width, input.height);
+    }
+    output.width = input.naturalWidth || input.width;
+    output.height = input.naturalHeight || input.height;
+    tracker.onResults(results => {
+      ctx.clearRect(0, 0, output.width, output.height);
+      ctx.drawImage(results.image, 0, 0, output.width, output.height);
+      drawSignLandmarks(ctx, results);
+      const counts = {
+        face: results.faceLandmarks?.length || 0,
+        leftHand: results.leftHandLandmarks?.length || 0,
+        rightHand: results.rightHandLandmarks?.length || 0,
+        pose: results.poseLandmarks?.length || 0,
+      };
+      result.textContent = JSON.stringify(counts, null, 2);
+      const success = kind === 'face' ? counts.face >= 468 : kind === 'left' ? counts.leftHand === 21 && counts.rightHand === 0 : counts.leftHand === 21 && counts.rightHand === 21;
+      status.textContent = success ? 'PRUEBA CORRECTA: trazado detectado sin cuerpo' : 'PRUEBA FALLIDA: faltan puntos';
+    });
+    for (let frame = 0; frame < (kind === 'left' ? 12 : 1); frame++) {
+      await withTrackingTimeout(tracker.send({ image: input }), 45000);
+    }
+  } catch (error) {
+    status.textContent = `ERROR: ${error.message}`;
+  } finally {
+    document.querySelectorAll('button').forEach(b => b.disabled = false);
+  }
+}
+document.querySelector('#face').onclick = () => run('face');
+document.querySelector('#hands').onclick = () => run('hands');
+document.querySelector('#left').onclick = () => run('left');
+document.querySelector('#motion').onclick = async () => {
+  document.querySelectorAll('button').forEach(b => b.disabled = true);
+  try {
+    status.textContent = 'Comprobando movimiento y actualización independiente…';
+    await tracker?.close();
+    tracker = await createSignTracker();
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.src = 'https://storage.googleapis.com/mediapipe-assets/portrait.jpg';
+    await image.decode();
+    const input = document.createElement('canvas');
+    input.width = output.width = 640;
+    input.height = output.height = 480;
+    const inputContext = input.getContext('2d');
+    const positions = [];
+    const durations = [];
+    tracker.onResults(results => {
+      if (!results.faceLandmarks?.length) return;
+      positions.push(results.faceLandmarks[1].x);
+      ctx.clearRect(0,0,640,480);
+      ctx.drawImage(results.image,0,0,640,480);
+      drawSignLandmarks(ctx,results);
+    });
+    inputContext.fillStyle = '#222';
+    inputContext.fillRect(0,0,640,480);
+    const handJob = withTrackingTimeout(tracker.sendHands({ image: input }), 45000).catch(error => ({error: error.message}));
+    for (let i = 0; i < 12; i++) {
+      inputContext.fillStyle = '#222';
+      inputContext.fillRect(0,0,640,480);
+      inputContext.drawImage(image,100 + i * 12,10,300,450);
+      const started = performance.now();
+      await withTrackingTimeout(tracker.sendFace({ image: input }), 45000);
+      durations.push(performance.now() - started);
+    }
+    await handJob;
+    const change = Math.max(...positions) - Math.min(...positions);
+    const counts = { faceUpdates: positions.length, horizontalChange: change, warmFaceMs: durations.slice(1), firstFrameMs: durations[0] };
+    result.textContent = JSON.stringify(counts,null,2);
+    status.textContent = positions.length >= 10 && change > .08 ? 'PRUEBA CORRECTA: rostro en movimiento sin congelarse' : 'PRUEBA FALLIDA: rostro no sigue el movimiento';
+  } catch (error) { status.textContent = `ERROR: ${error.message}`; }
+  finally { document.querySelectorAll('button').forEach(b => b.disabled = false); }
+};
+document.querySelector('#warm').onclick = async () => {
+  document.querySelectorAll('button').forEach(b => b.disabled = true);
+  try {
+    status.textContent = 'Preparando detectores antes de abrir la cámara…';
+    const start = performance.now();
+    const prepared = await warmSignTracking();
+    const startupMs = performance.now() - start;
+    const reopenedAt = performance.now();
+    const reopened = await warmSignTracking();
+    const reopenMs = performance.now() - reopenedAt;
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.src = 'https://storage.googleapis.com/mediapipe-assets/right_hands.jpg';
+    await image.decode();
+    output.width = Math.min(image.naturalWidth, 640);
+    output.height = Math.round(image.naturalHeight * output.width / image.naturalWidth);
+    let last;
+    prepared.onResults(value => { last = value; });
+    const durations = [];
+    let detectedFrames = 0;
+    for (let frame = 0; frame < 12; frame++) {
+      const started = performance.now();
+      await prepared.sendHands({ image });
+      durations.push(performance.now() - started);
+      if (last.leftHandLandmarks?.length === 21 && last.rightHandLandmarks?.length === 21) detectedFrames++;
+    }
+    ctx.drawImage(image, 0, 0, output.width, output.height);
+    drawSignLandmarks(ctx, last);
+    result.textContent = JSON.stringify({ startupMs, reopenMs, sameTracker: prepared === reopened, detectedFrames, firstHandMs: durations[0], followingHandMs: durations.slice(1) }, null, 2);
+    status.textContent = detectedFrames === 12 && prepared === reopened ? 'PRUEBA CORRECTA: manos continuas y detector reutilizado' : 'PRUEBA FALLIDA: detección incompleta';
+  } catch (error) { status.textContent = `ERROR: ${error.message}`; }
+  finally { document.querySelectorAll('button').forEach(b => b.disabled = false); }
+};
+window.addEventListener('pagehide', () => tracker?.close());
+</script>
+</html>

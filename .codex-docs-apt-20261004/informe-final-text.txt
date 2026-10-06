@@ -1,0 +1,81 @@
+Guía
+3.
+ 
+Informe final
+ P
+royecto 
+APT 
+Asignatura 
+Capstone
+Guía
+3.
+ 
+Informe final
+ P
+royecto 
+APT 
+Asignatura 
+Capstone
+Diego Padilla, Ignacio Hernández y Felipe Crisóstomo
+Ingeniería en Informática · Sede San Joaquín
+Estado del proyecto al 4 de octubre de 2026
+1
+. 
+Informe
+ final 
+P
+royecto APT
+El objetivo de est
+e
+ 
+informe
+ es que describas los aspectos más relevantes de tu 
+Proyecto APT. Es importante que
+ fundament
+es las
+ decisiones que tuviste que tomar a lo largo del proceso. 
+A continuación, encontrarás distintos campos que deberás completar
+ con la información solicitada, los
+ que 
+dan
+ cuenta del resumen de tu proyecto APT y sus principales resultados.
+Nombre del proyecto
+Sistema de Reconocimiento en Tiempo Real de Lengua de Señas Chilena (LSCh) mediante Redes LSTM – DeafApp
+Área (s) de desempeño(s)
+Desarrollo de software, inteligencia artificial y aprendizaje automático, desarrollo de aplicaciones móviles/web.
+Competencias 
+Análisis y diseño de sistemas de software; desarrollo de soluciones basadas en inteligencia artificial; gestión de bases de datos y backend; desarrollo de interfaces móviles; trabajo bajo metodologías ágiles.
+Contenidos de
+l informe f
+inal
+1. 
+Relevancia del proyecto APT
+Elegimos este proyecto porque Diego tiene un amigo sordo y ha visto las dificultades que enfrenta para comunicarse con personas oyentes. Son situaciones cotidianas, como pedir algo en una tienda o entender una indicación, que también pueden darse en un entorno educativo como Duoc UC. El proyecto se sitúa en Chile y trabaja con Lengua de Señas Chilena.
+Desde Ingeniería en Informática buscamos aportar una herramienta que facilite esa comunicación. DeafApp ya permite reunir y revisar grabaciones para preparar el reconocimiento. El traductor en tiempo real sigue siendo la meta. El trabajo combina desarrollo de software, datos e inteligencia artificial en un problema cercano al grupo.
+2. Objetivos 
+Objetivo general: desarrollar un sistema de reconocimiento en tiempo real de señas de LSCh mediante redes neuronales LSTM, integrado en una aplicación móvil/web que permita la recolección y validación de datos con la comunidad sorda.
+Objetivos específicos: implementar la extracción de puntos de cara y manos; mejorar la aplicación para grabar y enviar señas; revisar las contribuciones antes de usarlas; preparar y evaluar un modelo de secuencias; e integrar el reconocimiento en vivo cuando su desempeño esté validado.
+Conservamos la meta del proyecto y ajustamos su ejecución. La aprobación final quedó en el administrador y el primer experimento usa Conv1D. El modelo LSTM previsto y la integración del traductor todavía requieren desarrollo y evaluación.
+3. Metodología
+Trabajamos con una metodología ágil e iterativa. En cada ciclo revisamos un problema de la aplicación, realizamos el ajuste y comprobamos el resultado. Para el componente de datos seguimos las fases de CRISP-DM: comprensión del problema y de los datos, preparación, modelado y evaluación. La integración y el despliegue del reconocimiento quedan para después de validar el modelo.
+Primero mejoramos la captura, luego revisamos y recuperamos grabaciones, y finalmente probamos un grupo pequeño de señas. Conservamos las imágenes originales y reservamos tomas para la prueba antes de generar variaciones de entrenamiento. Esta forma de trabajo es pertinente porque tenemos pocos participantes y necesitamos comprobar la calidad del material antes de ampliar el sistema.
+4. Desarrollo
+Mejoramos el inicio de la cámara, la alineación de los trazados y la detección de manos. Adaptamos el encuadre para PC y celular. La grabación se prepara antes de levantar las manos, incluye cuenta regresiva y permite usar una mano después de confirmar ambas. Agregamos vista previa, borrador recuperable y control de reintentos para evitar envíos duplicados.
+Implementamos el panel privado para aprobar o rechazar grabaciones y concentrar el material de LSCh y el entrenamiento. Recuperamos las 110 grabaciones aprobadas: 44 tienen puntos utilizables para experimentar y 12 también tienen etiquetas compatibles. Entrenamos un prototipo de «cerdo» y «día», con dos originales para aprendizaje y dos para prueba. Acertó una de las dos pruebas; ese resultado no demuestra funcionamiento con otras personas.
+Contar con la aplicación y los servicios configurados facilitó el trabajo. La falta de participantes y de datos completos en grabaciones antiguas dificultó el entrenamiento. Por eso priorizamos la captura y la revisión, comenzamos con dos señas y dejamos la integración en tiempo real pendiente. Los enlaces educativos requieren revisión de significado y permisos antes de incorporarlos.
+5. Evidencias
+Adjuntamos capturas de la cámara, la moderación, la recuperación de grabaciones y el informe del modelo guardado. Muestran el flujo de captura y administración y los resultados del primer experimento. El código, los registros de pruebas y la documentación de entrenamiento complementan estas evidencias.
+El producto alcanzado en esta etapa es una plataforma de captura y revisión con un prototipo privado de reconocimiento. La traducción continua y el funcionamiento con personas distintas siguen pendientes de validación.
+6
+. 
+Intereses 
+y proyecciones
+ profesionales
+El proyecto reforzó nuestro interés por aplicar lo aprendido a una necesidad real. Diego mantiene su interés en desarrollo Full Stack e inteligencia artificial. El trabajo nos permitió ver que conectar una interfaz, una base de datos y un modelo requiere cuidar también la calidad de las grabaciones y la experiencia de quien usa la aplicación.
+Ignacio mantiene su orientación hacia la ingeniería de datos y el análisis con CRISP-DM, mientras Felipe se enfoca en interfaces y aplicaciones móviles. Nos interesa seguir profundizando en estos ámbitos y en accesibilidad. Nos proyectamos en equipos de desarrollo donde podamos combinar estos perfiles, probar las soluciones con usuarios y mejorar los resultados a partir de evidencia.
+Evidencias del proyecto
+Figura 1  Prueba real del seguimiento de cara y manos
+Figura 2  Revisión de contribuciones en el administrador
+Evidencias del entrenamiento
+Figura 3  Recuperación de 110 grabaciones y dos señas para experimentar
+Figura 4  Informe del prototipo de cerdo y día con una de dos pruebas acertada

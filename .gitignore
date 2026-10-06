@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.zip
+.admin-private/
+# Local recordings and extracted features can contain identifiable images/movements.
+training/recordings/
+training/clips/
+training/prepared/
+training/sync-manifest.json
+training/sync-report.json
+training/participant-aliases.json
+training/pilot-private/

@@ -1,0 +1,136 @@
+{
+  "path": "D:\\Descargas D\\2.6_GuiaEstudiante_Fase 2_Informe Final Proyecto APT.docx",
+  "sha256": "eae5f6e4f98be24256bad31c12e4a7e4de52dc9218be9303704bab6c7ccf3852",
+  "sections": [
+    {
+      "width": 7560310,
+      "height": 10692130,
+      "top": 899795,
+      "bottom": 899795,
+      "left": 1080135,
+      "right": 1080135
+    }
+  ],
+  "parts": {
+    "[Content_Types].xml": {
+      "size": 2540,
+      "sha256": "43390b5fdaab576b34fa923536de7085b6b0ea15fbcf04760928c8bf89b1cb73"
+    },
+    "_rels/.rels": {
+      "size": 737,
+      "sha256": "c30fe099dbcfed4ecc4ae544ccf82f432c8d3bb665e2a301df283738b196d803"
+    },
+    "word/_rels/document.xml.rels": {
+      "size": 1914,
+      "sha256": "975c0934e3e4f627f061066e72a8d2916a0c6336100052b3c1162c6032948790"
+    },
+    "word/document.xml": {
+      "size": 68537,
+      "sha256": "c8f70fa5b0b17794d69d2c1542048a992163abf5e87c40f5fcd52588f467653a"
+    },
+    "word/endnotes.xml": {
+      "size": 1910,
+      "sha256": "e2a24d62f99637173b2437750c02e93e500ea0f3f0e8bde43bfe99ab0e3b4294"
+    },
+    "word/_rels/header1.xml.rels": {
+      "size": 289,
+      "sha256": "94bca6aec3177c3b64686e1248ecfb39e9750dc067c2274af33e6b442d1f6617"
+    },
+    "word/header1.xml": {
+      "size": 7090,
+      "sha256": "9d06e4bea5cb06d5c5e11e009c489f18c633ab5ad42bafcdc60888ba30a2c149"
+    },
+    "word/footnotes.xml": {
+      "size": 1916,
+      "sha256": "5b418c873e3b4603b847fd22f238ea5c4f71debed21ddb75621749cb57c63264"
+    },
+    "word/media/image1.png": {
+      "size": 45035,
+      "sha256": "e2eb3e6745faeddbfb5941c8be9e502b2f38b2a1eb20d0eb49a548afde99ca8d"
+    },
+    "word/theme/theme1.xml": {
+      "size": 8395,
+      "sha256": "a6d6be71a15ce85bec1c2effef083250e6f60b3cc0ac6a632307180a5e9a304f"
+    },
+    "word/settings.xml": {
+      "size": 4037,
+      "sha256": "7e8f3e19941ed9250b11d9967bd4b631ed6aba2df90b8cebe4de6baa4d67dd30"
+    },
+    "customXml/itemProps2.xml": {
+      "size": 893,
+      "sha256": "b3958487787bc307679c8165b4033e1fe2c1ee2f281a411e9350ac2fa58b0dc0"
+    },
+    "docProps/custom.xml": {
+      "size": 530,
+      "sha256": "d9547fbeb99a1cb38f3855b66dc0540e5a6239448091d6ce5b20368db20d0497"
+    },
+    "docProps/app.xml": {
+      "size": 713,
+      "sha256": "56ef28c991cc99104cb6c436f80037854c7e8f45b11bf0b77c6d94f2007b041b"
+    },
+    "customXml/itemProps1.xml": {
+      "size": 1088,
+      "sha256": "ba7487d71df243dbcf1a4bd03c7a395aa09dce2cd52d4f72b8552a802e7c9fb2"
+    },
+    "customXml/_rels/item4.xml.rels": {
+      "size": 296,
+      "sha256": "3c0d4d955517fe8112c945b1e56f63d5bef3c0005ccb627e40acda432e1cdc1d"
+    },
+    "customXml/_rels/item3.xml.rels": {
+      "size": 296,
+      "sha256": "3aa4054f7f463c6d441102c960783aa7f937d6945a0a885b624a66aafaeedb6c"
+    },
+    "customXml/_rels/item2.xml.rels": {
+      "size": 296,
+      "sha256": "2a6aee4c8a9714223a3568077411a0c82d11b484b1c9ab93a19d50b99c57baa5"
+    },
+    "customXml/_rels/item1.xml.rels": {
+      "size": 296,
+      "sha256": "80482f86e196171d66001e0e74d1900408a3aaf2463e54005d251b5f2db9a0b0"
+    },
+    "customXml/item2.xml": {
+      "size": 294,
+      "sha256": "b954a60e85246c4fe904a6efef3b193f5f552895e963ac34f239f2491cf61d25"
+    },
+    "customXml/item1.xml": {
+      "size": 7818,
+      "sha256": "7f74fc9be69934fc17c9fe5f1c1787c4df4ef81555cdda5571186ce55dde3710"
+    },
+    "word/fontTable.xml": {
+      "size": 2944,
+      "sha256": "2133c5bf261a9339e86ad396b310f7742cf28b8a1bb957182db176849106d018"
+    },
+    "customXml/item3.xml": {
+      "size": 219,
+      "sha256": "5efcaf9ad70d9c29f406ee438f8f428b021a881d2c5afff0e53b00b1f67ae51e"
+    },
+    "customXml/itemProps3.xml": {
+      "size": 335,
+      "sha256": "36316b359dfdf25a838676b4a6fe5b9be2e948387b57d672e29781d8a99750f5"
+    },
+    "customXml/item4.xml": {
+      "size": 306,
+      "sha256": "6484d95a7eb59c4beac874cc1fae10b7f7f4cfb7caeb09dfc375ad3ac4ad6ba0"
+    },
+    "customXml/itemProps4.xml": {
+      "size": 341,
+      "sha256": "476b48994ef9d31d361b74dce502222efaa83992e7b4fe52648dc76f2fed3a51"
+    },
+    "word/numbering.xml": {
+      "size": 17729,
+      "sha256": "3ff2dd1c06137e24a8fe4d3e2aea06a2252e6fd1a8bd74a3e937a20d515920eb"
+    },
+    "word/styles.xml": {
+      "size": 36334,
+      "sha256": "74190ec2062b301063366009aaefd50db541f4a0d6c39248b0694a8e58097690"
+    },
+    "word/webSettings.xml": {
+      "size": 1773,
+      "sha256": "141fb4a012ce713b50f3d4da44e86d5aeec837895feabd0465d01ed1900cbe5a"
+    },
+    "docProps/core.xml": {
+      "size": 758,
+      "sha256": "e3afa58f423966cd875f983232615079a446a85a47d2f3a48b728fbe3d03ca82"
+    }
+  }
+}

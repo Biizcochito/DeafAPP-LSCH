@@ -1,0 +1,49 @@
+{
+  "package": "D:\\Descargas D\\DeafAPP-LSCH-master\\DeafApp-camara-inicio-corregido.zip",
+  "folder": "D:\\Descargas D\\DeafAPP-LSCH-master\\DeafApp-camara-inicio-corregido",
+  "bytes": 4236240,
+  "files": 16,
+  "scripts": [
+    "/_expo/static/js/web/index-2dd4f5134728cb2acb1443e07d1bcbbd.js"
+  ],
+  "features": {
+    "createWebCameraLifecycle": true,
+    "releaseDelayMs": true,
+    "retryDelayMs": true,
+    "Cierra otras pestañas": true,
+    "Ocultar trazado": true,
+    "Mostrar trazado": true,
+    "Reiniciar cámara": true,
+    "Preparar grabación": true,
+    "face-mesh-hands": true,
+    "Confirma ambas manos": true
+  },
+  "exact_copy_of_dist": true,
+  "tests_passed": 40,
+  "real_camera_verified": {
+    "initial_open": true,
+    "restart": true,
+    "leave_and_reenter": true,
+    "frame_size": [
+      640,
+      480
+    ],
+    "black_preview": false
+  },
+  "published": true,
+  "official_bundle_observed": "index-05334c4ae21d2bcc7ca26b562fad8c95.js",
+  "production_version": "d0b4e719",
+  "production_url": "https://deafapp-lsch.deafapp-lsch.workers.dev/",
+  "official_bundle_verified": "index-2dd4f5134728cb2acb1443e07d1bcbbd.js",
+  "official_real_camera_verified": {
+    "initial_open": true,
+    "restart": true,
+    "frame_size": [
+      640,
+      480
+    ],
+    "playing": true,
+    "face_tracing_visible": true
+  },
+  "production_screenshot": "artifacts/camara-inicio-corregido-oficial.jpg"
+}

@@ -1,0 +1,581 @@
+B0 P: }Guía1. Definición Proyecto APT Asignatura Capstone
+B1 P: 
+B2 P: 
+B3 P: 
+B4 P: 
+B5 P: 
+B6 P: 
+B7 P: PARTE I
+B8 TABLE
+  R0 C0: 1. Antecedentes Personales
+  R1 C0: A continuación, se presenta una tabla en la que debes completar la información solicitada. 
+B9 P: 
+B10 TABLE
+  R0 C0: Nombre estudiante
+  R0 C1: Diego Padilla, Ignacio Hernández, Felipe Crisóstomo
+  R1 C0: Rut
+  R1 C1: 20207903-2 / 20776609-7 / 21194699-2
+  R2 C0: Carrera
+  R2 C1: Ingeniería en Informática
+  R3 C0: Sede
+  R3 C1: San Joaquín
+B11 P: 
+B12 TABLE
+  R0 C0: 2. Descripción Proyecto APT
+  R1 C0: En la descripción debes señalar brevemente el nombre de tu proyecto APT y las competencias del perfil de egreso que vas a poner en práctica. Si en tu carrera están definidas las áreas de desempeño, también menciona a qué áreas de desempeño está vinculado el proyecto. 
+B13 P: 
+B14 TABLE
+  R0 C0: Nombre del proyecto
+  R0 C1: Sistema de Reconocimiento en Tiempo Real de Lengua de Señas Chilena  | (LSCh )mediante Redes LSTM- DeafApp
+  R1 C0: Área (s) de desempeño(s)
+  R1 C1: Desarrollo de Software,Inteligencia Artificial y aprendizaje automático,Desarrollo de aplicaciones móviles/web
+  R2 C0: Competencias  | 
+  R2 C1: Análisis y diseño de sistema de software, desarrollo de soluciones basadas en inteligencia artificial,gestión de base de datos y backed,desarrollo de interfaces móviles, y trabajo bajo metodologías ágiles 
+B15 P: 
+B16 P: 
+B17 TABLE
+  R0 C0: 3. Fundamentación Proyecto APT
+  R1 C0: A continuación, se presentan distintos campos que debes completar con la información solicitada. Esta sección busca que describas en detalle tu proyecto y justifiques su relevancia y pertinencia.  
+B18 P: 
+B19 TABLE
+  R0 C0: Relevancia del proyecto APT
+  R0 C1: Elegimos este tema porque uno de los integrantes del equipo Diego, tiene un amigo que es  sordo y a lo largo del tiempo a  visto de cerca las dificultades de comunicación que enfrenta en su día a día , situaciones tan simples como pedir algo en una tienda, entender indicaciones o comunicarse con personas oyentes se vuelven una barrera constante, y eso incluye contexto que deberían ser más inclusivos, como el propio Duoc. Ver esa realidad de cerca, y no solo como un problema abstracto, fue lo que nos  motivó a buscar una forma de aportar desde nuestra carrera esa necesidad. Es un tema relevante para el campo laboral porque combina dos áreas con alta demanda actual como es el desarrollo de software y la aplicación de inteligencia artificial en un caso de uso concreto y con impacto social real, demostrando la capacidad de construir una solución tecnológica completa, desde el procesamiento de datos hasta el desarrollo de una aplicación funcional, algo cada vez más valorado en el ejercicio profesional de la carrera, donde no solo se busca el dominio técnico sino también la capacidad de identificar problemáticas reales y resolverlas con tecnología | ¿Por qué escogiste este tema? ¿Por qué es relevante este tema para el campo laboral de tu carrera? | ¿Dónde se ubica la situación que vas a abordar? (Ej.: País, región, comuna o institución) ¿Cuáles son las características principales de ese lugar?  | ¿A quiénes afecta o impacta la situación que vas a abordar? (Ej.: Grupo etario, usuarios de algún servicio, etc.). | ¿Cuál sería el aporte de valor (real o simulado) de tu Proyecto APT para el contexto laboral y/o social en que se situaría?
+  R1 C0: Descripción del Proyecto APT
+  R1 C1: Con este proyecto se espera lograr un sistema capaz de reconocer en tiempo real señas de la Lengua de Señas (LSCh), utilizando inteligencia artificial para facilitar la comunicación  entre personas sordas y oyentes. El proyecto consiste en desarrollar, por un lado un modelo de reconocimiento basado en redes neuronales LSTM, entrenado a partir de secuencias de landmarks corporales y de manos extraídos mediante Media Pipe Holistic, y por otro, una aplicación móvil/web que integra ese modelo y permite además que la propia comunidad sorda participe activamente, grabando señas y validando colaborativamente las grabaciones de otros usuarios mediante un sistema de votación. La forma de abordar la problemática planteada es construir la tecnología junto con la comunidad y no solo para ella en lugar de depender únicamente de datos recolectados por el desarrollador, la aplicación incentiva la participación de distintas personas sordas para lograr un set de datos más diverso y representativo, mientras que un asesor sordo con vínculos en la comunidad guía las decisiones más sensibles del proyecto, como el tratamientos de variantes regionales de las señas 
+  R2 C0: Pertinencia del proyecto con el perfil de egreso
+  R2 C1: Este Proyecto APT se relaciona directamente con el perfil de egreso de Ingeniería en Informática porque exige poner en práctica, de forma integrada. competencias de desarrollo de software, aplicación de inteligencia artificial y gestión de bases de datos, en lugar de trabajarlas de manera aislada como suele ocurrir en asignaturas puntuales. La competencia de desarrollo de software es necesaria porque el proyecto no se  queda solo en un modelo experimental, sino que se materializa en una aplicación funcional, con interfaz, backend y despliegue real, lo que exige diseñar una solución completa y no solo un prototipo. La competencia de inteligencia artificial es central para resolver la problemática planteada, ya que el reconocimiento de señas en tiempo real requiere procesar datos de vídeo, extraer características relevantes y entrenar un modelo capaz de clasificar correctamente los movimientos, algo que no podría lograrse sólo con lógica de programación tradicional. Finalmente, la gestión de bases de datos y servicios backend es indispensable porque el proyecto depende de almacenar, organizar y validar de forma segura las grabaciones aportadas por la comunidad, asegurando que el sistema pueda crecer y mejorar con el tiempo. En conjunto estas competencias son las que permiten que el proyecto no sea solo una idea, sino una solución tecnológica viable y aplicable a la problemática social identificada. | 
+  R3 C0: Relación con los intereses profesionales
+  R3 C1: Mis intereses profesionales están orientados al desarrollo Full Stack y a la aplicación de inteligencia artificial en contextos reales, especialmente en roles que combinan tecnologías como React, TypeScript y Node con procesos de transformación digital y adopción de IA, que es hacia donde estoy enfocando mis postulaciones laborales actualmente. Este proyecto APT refleja directamente esos intereses porque me permite trabajar en ambos frentes a la vez, por un lado el desarrollo completo de una aplicación (frontend, backend y base de datos) y por otro, la implementación práctica de un modelo de inteligencia artificial, en lugar de abordarlos como ejercicios separados o teóricos. Esta orientación se complementa  con los perfiles del resto del equipo Ignacio está orientado a la ingeniería de datos, aporta el análisis y aseguramiento de calidad del dataset bajo una mirada mas analitica  y metodologica (CRISP-DM), mientras que Felipe, con experiencia  en desarrollo frontend y aplicaciones móviles con React  y Next.js, refuerza directamente la parte de interfaz  y experiencia  de usuario  de la aplicación, Trabajar con perfiles complementarios en un proyecto real, en lugar de  hacerlo todo de forma aislada , se acerca bastante  a como funciona  un equipo de desarrollo  en un contexto laboral real. Realizar este proyecto contribuye  a nuestro desarrollo profesional.
+  R4 C0: Factibilidad de desarrollo del Proyecto APT
+  R4 C1: Es posible desarrollar este Proyecto APT dentro del semestre y las horas asignadas a la asignatura de Portafolio de Título porque ya contamos con avances técnicos concretos que sirven de base, como los pipelines de extracción de landmarks, un modelo LSTM entrenado con resultados iniciales positivos y una aplicación ya desplegada en producción, por lo que el trabajo de esta fase se centra en consolidar, ampliar el dataset y perfeccionar la integración, más que en partir desde cero. En cuanto a materiales, el proyecto no requiere recursos costosos ni difíciles de conseguir utilizamos equipo propio, una cámara web para la captura de señas, y servicios en la nube ya configurados Supabase para base de datos y almacenamiento, y Cloudflare Workers para el despliegue ambos dentro de planes gratuitos o de bajo costo. | Entre los factores externos que facilitan su desarrollo está, en primer lugar, el trabajo en equipo con Ignacio Hernández y Felipe Crisóstomo, cuyos perfiles se complementan directamente con las necesidades del proyecto Ignacio está orientado a la ingeniería de datos, por lo que se encarga del análisis y aseguramiento de calidad del dataset, mientras que Felipe cuenta con experiencia real en desarrollo de aplicaciones e integración de plataformas, lo que calza perfectamente con el trabajo de mejora de interfaz y apoyo en las pruebas de integración de la app. Mientras yo me enfoco en el desarrollo del sistema (modelo, aplicación e integración), Ignacio agiliza la etapa de análisis del dataset y Felipe refuerza la calidad y experiencia de usuario de la aplicación, lo que en conjunto acelera distintas etapas del proyecto en paralelo en lugar de depender de una sola persona para todo. A esto se suma el apoyo de un amigo sordo y de un asesor sordo con vínculos en la comunidad, quienes orientan las decisiones más sensibles del proyecto y facilitan el contacto con potenciales usuarios para la recolección de datos. | Como factor que podría dificultar el avance, identificó que la velocidad de recolección de datos depende de la participación voluntaria de la comunidad sorda, lo cual es un proceso que no controlamos directamente para mitigarlo, implementé un sistema de metas por seña y notificaciones automáticas que incentivan la participación constante, además de apoyarnos en contactos directos dentro de la comunidad para acelerar ese proceso cuando sea necesario. |  
+B20 P: 
+B21 P: PARTE II 
+B22 TABLE
+  R0 C0: 4. Objetivos
+  R1 C0: En este apartado debes definir objetivos generales y específicos del Proyecto APT. Es importante aclarar que los objetivos se deben plantear en forma clara, concisa y sin dar mayores explicaciones, es decir, deben entenderse por sí solos. Se sugiere redactarlos utilizando un verbo en infinitivo, pues ello obliga a precisar acciones concretas.
+B23 P: 
+B24 TABLE
+  R0 C0: Objetivo general
+  R0 C1: Desarrollar un sistema de reconocimiento en tiempo real de señas de la Lengua de Señas Chilena (LSCh) mediante redes neuronales LSTM, integrado en una aplicación móvil/web que permita la recolección y validación colaborativa de datos con la comunidad sorda 
+  R1 C0: Objetivos específicos
+  R1 C1: Implementar un pipeline de extracción de landmarks corporales y de manos a partir de video, utilizando Media Pipe Holistic | Entrenar un Modelo LSTM capaz de clasificar secuencias de señas LSCh con un nivel de precisión adecuado para uso práctico | Diseñar y desplegar una aplicación móvil/web que permite a la comunidad grabar señas y visualizar el progreso de recolección por categoría | Implementar un sistema de validación comunitaria mediante votación, que asegure calidad y diversidad de origen en las grabaciones aprobadas | Integrar el modelo entrenado con un backend que permita realizar el reconocimiento de señas en tiempo real dentro de la aplicación
+B25 P: 
+B26 P: 
+B27 TABLE
+  R0 C0: 5. Metodología
+  R1 C0: En el siguiente apartado deberás describir la metodología, propia de tu disciplina, que utilizarás para resolver el proyecto APT antes descrito, incluyendo las etapas y métodos de trabajo.  
+B28 P: 
+B29 TABLE
+  R0 C0: Descripción de la Metodología
+  R1 C0: El proyecto se desarrollará bajo una metodología ágil e iterativa, en ciclos cortos que permiten ir ajustando tanto el modelo de reconocimiento como la aplicación a medida que se recolectan más datos y se recibe retroalimentación de la comunidad. La primera etapa consiste en la recolección y preprocesamiento de datos, donde se capturan videos de señas y se extraen los landmarks corporales y de manos mediante MediaPipe Holistic, generando las secuencias que alimentarán al modelo. Luego, en la etapa de entrenamiento del modelo, se desarrolla y ajusta de forma iterativa una red LSTM, evaluando su precisión y aplicando técnicas de aumento de datos para mejorar su capacidad de generalización. En paralelo, se avanza en el desarrollo de la aplicación móvil/web, que incluye el módulo de grabación de señas, el seguimiento de progreso por categoría, el sistema de votación para la validación comunitaria de las grabaciones, y mejoras continuas de interfaz y experiencia de usuario. Posteriormente, se realiza la integración entre el modelo entrenado y el backend, permitiendo que el reconocimiento de señas funcione en tiempo real dentro de la aplicación, etapa en la que también se realizan pruebas de integración sobre el flujo completo. A lo largo de todo el proceso se mantienen instancias de validación con un asesor sordo, quien revisa la pertinencia lingüística de las señas recolectadas y orienta decisiones sensibles, como el tratamiento de variantes regionales. Finalmente, se realizan pruebas de precisión del modelo, corrección de errores y despliegue continuo de la aplicación. | Al tratarse de un proyecto desarrollado en equipo, las responsabilidades se distribuyen de acuerdo al perfil de cada integrante. El desarrollo del sistema pipeline de extracción de datos, entrenamiento del modelo, aplicación móvil/web e integración backend es responsabilidad de Diego Padilla, quien además toma las decisiones técnicas finales del proyecto. Ignacio Hernández, con un perfil orientado a la ingeniería de datos, se encarga del análisis de calidad del dataset, la estructuración del proyecto bajo las fases de la metodología CRISP-DM, y el análisis de resultados y métricas del modelo una vez entrenado. Felipe Crisóstomo, con experiencia real en desarrollo de aplicaciones e integración de plataformas, se encarga de las mejoras de interfaz y experiencia de usuario de la aplicación, además de apoyar en las pruebas de integración del sistema completo una vez conectado el modelo. El asesor sordo cumple un rol externo de validación comunitaria y lingüística, sin participar en el desarrollo técnico del sistema.
+B30 P: 
+B31 P: 
+B32 TABLE
+  R0 C0: 6. Evidencias
+  R1 C0: A continuación, describe qué evidencias serán evaluadas en el informe de avance y en el informe final de tu proyecto APT. Estas evidencias deben ser acordadas con tu docente.  Se entenderá por evidencia los productos que se desarrollen durante el proyecto y cuyo propósito sea visibilizar o documentar cómo se ha implementado el trabajo.  
+B33 P: 
+B34 TABLE
+  R0 C0: Tipo de evidencia  | (avance o final)
+  R0 C1: Nombre de la evidencia
+  R0 C2: Descripción
+  R0 C3: Justificación
+  R1 C0: Avance
+  R1 C1: Pipeline de extracción de datos
+  R1 C2: Código funcional que procesa video y genera landmarks corporales y de manos en formato .npy mediante Media Pipe Holistic.
+  R1 C3: Permite demostrar que la etapa de preprocesamiento de datos, base todo el sistema de reconocimiento, está correctamente implementada y funcionando 
+  R2 C0: Avance 
+  R2 C1: Modelo LSTM entrenado (versión intermedia)
+  R2 C2: Modelo de reconocimiento de señas entrenado con un subconjunto del dataset, junto con sus métricas de precisión sobre el set de prueba.
+  R2 C3: Evidencia el avance concreto en la etapa de inteligencia artificial del proyecto y permite contrastar mejoras a medida que se amplía el dataset
+  R3 C0: Avance
+  R3 C1: Aplicación desplegada (versión funcional)
+  R3 C2: Aplicación móvil/web en producción, con módulo de grabación de selas y visualización de progreso por categoría
+  R3 C3: Demuestra que el desarrollo de software avanza en paralelo al modelo, y que existe una plataforma real para la recolección de datos con la comunidad
+  R4 C0: Final 
+  R4 C1: Sistema integrado completo
+  R4 C2: Aplicación conectada al backend, realizando reconocimiento de señas en tiempo real mediante el modelo entrenado
+  R4 C3: Es la evidencia principal del cummplimiento del objetivo general del proyecto, un sistema funcional de extremo a extremo
+  R5 C0: Final
+  R5 C1: Informe de precisión del modelo
+  R5 C2: Documento con las métricas finales de accuracy y desempeño del modelo entrenado con el dataset completo
+  R5 C3: Permite evaluar objetivamente el resultado técnico del componente de inteligencia artificial  del proyecto
+  R6 C0: Final
+  R6 C1: Registro de validación comunitaria
+  R6 C2: Reporte de las grabaciones aprobadas mediante el sistema de votación de la comunidad (✓/✗/🤷)
+  R6 C3: Evidencia que el proceso de recolección y validación de datos con la comunidad sorda se llevó a cabo correctamente, cummpliendo el enfoque colaborativo del proyecto
+B35 P: 
+B36 TABLE
+  R0 C0: 7. Plan de Trabajo
+  R1 C0: En la siguiente tabla define la planificación de tu Proyecto APT de acuerdo a lo requerido.
+B37 P: 
+B38 TABLE
+  R0 C0: Plan de Trabajo Proyecto APT
+  R1 C0: Competencia o unidades de competencias
+  R1 C1: Nombre de  Actividades/Tareas
+  R1 C2: Descripción Actividades/Tareas
+  R1 C3: Recursos
+  R1 C4: Duración de la actividad | 
+  R1 C5: Responsable
+  R1 C6: Observaciones
+  R2 C0: Nombra las competencias o unidades de competencias que se relacionan con las diferentes actividades requeridas para el desarrollo de la actividad.
+  R2 C1: Señale el nombre de la tarea o actividad.
+  R2 C2: Describe la tarea o actividad.
+  R2 C3: Nombra los recursos necesarios para llevar a cabo las actividades definidas.
+  R2 C4: Escribe la duración de actividades o tarea. | 
+  R2 C5: Escribe el nombre del integrante del equipo responsable de la actividad y tareas asociadas.
+  R2 C6: Escribe las dificultades o facilitadores que se podrían presentar durante la ejecución de cada una de las actividades propuestas para llevar a cabo el plan de trabajo.
+  R3 C0: Diseño y desarrollo de soluciones de software
+  R3 C1: Definición y documentación del proyecto
+  R3 C2: Redacción de la Guia Estudiante Fase 1: Definición del problema, objetivos, metodología y factibilidad
+  R3 C3: Formato Institucional, información del proyecto ya desarrollado
+  R3 C4: S1-S2(12 Ago- | 25 Ago)
+  R3 C5: Diego Padilla
+  R3 C6: Facilitador, ya existe trabajo técnico avanzado que respalda la definición
+  R4 C0: Inteligencia artificial/Machine Learning
+  R4 C1: Ampliación y limpieza del dataset
+  R4 C2: Recolección de nuevas grabaciones de señas con la comunidad
+  R4 C3: Aplicación DeafApp,cámara Supabase
+  R4 C4: S2-S6(19 Ago- |  22 Sep)
+  R4 C5: Diego Padilla
+  R4 C6: Dificultad ya que depende de la participación voluntaria de la comunidad, se mitiga con notificaciones automáticas al autor para avisar que hicieron X seña dentro de la Appp
+  R5 C0: Gestión de bases de datos y backend
+  R5 C1: Corrección de Bugs críticos del sistema 
+  R5 C2: Resolver el bug de políticas RLS en Supabase que bloquea el guardado de votos comunitarios
+  R5 C3: Supabase,Backend Flask
+  R5 C4: S3-S4(26 Ago- | 8 Sep)
+  R5 C5: Diego Padilla
+  R5 C6: Dificultad técnica puntual ya identificada la causa probable
+  R6 C0: Análisis de datos/CRISP-DM
+  R6 C1: Análisis de calidad del dataset
+  R6 C2: Evaluar balance de muestras por categoría, detectar outliers y grabaciones defectuosas, generar estadísticas de distribución
+  R6 C3: Dataset exportado, Python, herramientas de análisis de datos 
+  R6 C4: S4-S7 (2 Sep - |  29 Sep) 
+  R6 C5: Ignacio Hernández
+  R6 C6: Facilitador, perfil orientado a Ingeniería de Datos, ya maneja este tipo de análisis gracias a proyectos anteriores
+  R7 C0: Desarrollo de software
+  R7 C1: Mejoras de Interfaz y experiencia de usuario de la app
+  R7 C2: Pulir pantallas existentes de DeafApp (responsive, panel admin,flujo de grabación para mejorar la exp del usuario )
+  R7 C3: React Native, Expo,DeafApp (repo existente)
+  R7 C4: S4-S7(2 Sep- | 29 Sep)
+  R7 C5: Felipe Crisóstomo
+  R7 C6: Facilitador, perfil con experiencia previa en React, Next.js y apps móviles iOS y Android
+  R8 C0: Inteligencia artificial / Machine Learning 
+  R8 C1: Reentrenamiento y ajuste del modelo LSTM
+  R8 C2: Entrenar el modelo con el dataset ampliado y evaluar mejoras en precisión
+  R8 C3: Python, TensorFlow/Keras, MediaPipe,dataset procesado
+  R8 C4: S5-S8 (9 Sep - |  6 Oct) 
+  R8 C5: Diego Padilla
+  R8 C6: Facilitador, pipeline de entrenamiento ya implementado y probado
+  R9 C0: Analisi de datos / CRISP-DM 
+  R9 C1: Documentación de fases CRISP-DM
+  R9 C2: Estructurar formalmente las fases de “Data Understanding” y “Data Preparation”
+  R9 C3: Formato institucional, dataset, Informe de análisis
+  R9 C4: S6-S8 (16 Sep - |  6 Oct) 
+  R9 C5: Ignacio Hernández
+  R9 C6: Aporta rigor metodológico al informe final
+  R10 C0: Desarrollo de software
+  R10 C1: Apoyo en pruebas de integración
+  R10 C2: Probar el flujo completo  app-modelo-backend una vez conectado, reportando errores de interfaz o exp del usuario
+  R10 C3: Cloudflare Workers, entorno de pruebas DeafApp
+  R10 C4: S10-S13(7 Oct - | 10 Nov)
+  R10 C5: Felipe Crisóstomo
+  R10 C6: Trabaja en paralelo a la integración técnica realizada por Diego 
+  R11 C0: Diseño y desarrollo de soluciones de software 
+  R11 C1: Elaboración del Informe de avance 
+  R11 C2: Documentar el progreso técnico y las evidencias intermedias del proyecto
+  R11 C3: Formato institucional
+  R11 C4: S7-S8 (23 Sep - |  6 Oct) 
+  R11 C5: Diego Padilla e | Ignacio Hernández | Felipe Crisóstomo
+  R11 C6: Cada uno documenta su área de responsabilidad
+  R12 C0: Analisi de datos / CRISP-DM 
+  R12 C1: Analisi de resultados del modelo
+  R12 C2:  Generar matriz de confusión y análisis de errores por categoría de seña a partir de las métricas del modelo reentrenado
+  R12 C3: Métricas del modelo, Python (pandas matplotlib)
+  R12 C4: S8-S9 (30 Sep - |  13 Oct) 
+  R12 C5: Ignacio Hernández
+  R12 C6: Depende que el modelo reentrenado (Tare de Diego) este listos antes de iniciar  
+  R13 C0: Desarrollo de software 
+  R13 C1: Integración del modelo con el backend
+  R13 C2: Conectar el modelo entrando al backend Flask para exponer el reconocimiento en tiempo real dentro de la app
+  R13 C3: Flask, modelo entrenado, DeafApp
+  R13 C4: S9-S11 (7 Oct - |  27 Oct) 
+  R13 C5: Diego Padilla
+  R13 C6: Facilitador, ya que la arquitectura de la app ya está preparada para  esta integración
+  R14 C0: Desarrollo de software 
+  R14 C1: Pruebas de integración y despliegue
+  R14 C2: Pruebas del sistema completo (app + modelo + backend y despliegue en Cloudflare Workers)
+  R14 C3: Cloudflare Workers, entorno de pruebas
+  R14 C4: S11-S13 (28 Oct  - |  10 Nov) 
+  R14 C5: Diego Padilla
+  R14 C6: Observación, ya que el cacheo de Cloudflare al validar que los cambios se reflejen
+  R15 C0: Diseño y desarrollo de soluciones de software
+  R15 C1: Elaboración del informe final y preparación de la presentación
+  R15 C2: Consolidar resultados, métricas finales del modelo y preparar la defensa del proyecto
+  R15 C3: Formato  Institucional, resultados del sistema
+  R15 C4: S13-S15 (11 Nov - |  24 Nov) 
+  R15 C5: Diego Padilla  Ignacio Hernández | Felipe Crisóstomo
+  R15 C6: Fecha límite, presentación final a fines de noviembre / inicios de diciembre
+  R16 C0: -
+  R16 C1: Presentación final del Proyecto
+  R16 C2: Exposición y defensa del proyecto ante el docente / comisión evaluadora
+  R16 C3: Sistema desplegado, informe final
+  R16 C4: S16 (25 Nov - |  1 Dic) 
+  R16 C5: Diego Padilla  | Ignacio Hernández | Felipe Crisóstomo
+  R16 C6: Última semana del Semestre
+B39 P: 
+B40 TABLE
+  R0 C0: 8. Carta Gantt 
+  R1 C0: Busca un formato de Carta Gantt que te acomode y organiza en este las actividades planificadas en el punto anterior considerando el periodo asignado para el desarrollo de tu Proyecto APT. Debes mantener la temporalidad del periodo académico en el desarrollo de las tres fases que contempla la Asignatura de Portafolio de Título.
+B41 P: 
+B42 P: 
+B43 TABLE
+  R0 C0: Actividad
+  R0 C1: Fase 1
+  R0 C2: Fase 2
+  R0 C3: Fase 3
+  R1 C0: 
+  R1 C1: S 1
+  R1 C2: S 2
+  R1 C3: S 3
+  R1 C4: S 4
+  R1 C5: S 5
+  R1 C6: S 6
+  R1 C7: S 7
+  R1 C8: S 8
+  R1 C9: S 9
+  R1 C10: S 10
+  R1 C11: S 11
+  R1 C12: S 12
+  R1 C13: S 13
+  R1 C14: S 14
+  R1 C15: S 15
+  R1 C16: S 16
+  R1 C17: S 17
+  R1 C18: S 18
+  R2 C0: Definición y documentación del proyecto 
+  R2 C1: X
+  R2 C2: X
+  R2 C3: 
+  R2 C4: 
+  R2 C5: 
+  R2 C6: 
+  R2 C7: 
+  R2 C8: 
+  R2 C9: 
+  R2 C10: 
+  R2 C11: 
+  R2 C12: 
+  R2 C13: 
+  R2 C14: 
+  R2 C15: 
+  R2 C16: 
+  R2 C17: 
+  R2 C18: 
+  R3 C0: Ampliación y limpieza del dataset 
+  R3 C1: 
+  R3 C2: X
+  R3 C3: X
+  R3 C4: X
+  R3 C5: X
+  R3 C6: X
+  R3 C7: 
+  R3 C8: 
+  R3 C9: 
+  R3 C10: 
+  R3 C11: 
+  R3 C12: 
+  R3 C13: 
+  R3 C14: 
+  R3 C15: 
+  R3 C16: 
+  R3 C17: 
+  R3 C18: 
+  R4 C0: Corrección de bugs críticos del sistema 
+  R4 C1: 
+  R4 C2: 
+  R4 C3: X
+  R4 C4: X
+  R4 C5: 
+  R4 C6: 
+  R4 C7: 
+  R4 C8: 
+  R4 C9: 
+  R4 C10: 
+  R4 C11: 
+  R4 C12: 
+  R4 C13: 
+  R4 C14: 
+  R4 C15: 
+  R4 C16: 
+  R4 C17: 
+  R4 C18: 
+  R5 C0: Análisis de calidad del dataset (Ignacio) 
+  R5 C1: 
+  R5 C2: 
+  R5 C3: 
+  R5 C4: X
+  R5 C5: X
+  R5 C6: X
+  R5 C7: X
+  R5 C8: 
+  R5 C9: 
+  R5 C10: 
+  R5 C11: 
+  R5 C12: 
+  R5 C13: 
+  R5 C14: 
+  R5 C15: 
+  R5 C16: 
+  R5 C17: 
+  R5 C18: 
+  R6 C0: Mejoras de interfaz y UX de la app (Felipe)
+  R6 C1: 
+  R6 C2: 
+  R6 C3: 
+  R6 C4: X
+  R6 C5: X
+  R6 C6: X
+  R6 C7: X
+  R6 C8: 
+  R6 C9: 
+  R6 C10: 
+  R6 C11: 
+  R6 C12: 
+  R6 C13: 
+  R6 C14: 
+  R6 C15: 
+  R6 C16: 
+  R6 C17: 
+  R6 C18: 
+  R7 C0: Reentrenamiento y ajuste del modelo LSTM 
+  R7 C1: 
+  R7 C2: 
+  R7 C3: 
+  R7 C4: X
+  R7 C5: X
+  R7 C6: X
+  R7 C7: X
+  R7 C8: X
+  R7 C9: 
+  R7 C10: 
+  R7 C11: 
+  R7 C12: 
+  R7 C13: 
+  R7 C14: 
+  R7 C15: 
+  R7 C16: 
+  R7 C17: 
+  R7 C18: 
+  R8 C0: Documentación de fases CRISP-DM (Ignacio) 
+  R8 C1: 
+  R8 C2: 
+  R8 C3: 
+  R8 C4: 
+  R8 C5: 
+  R8 C6: X
+  R8 C7: X
+  R8 C8: X
+  R8 C9: 
+  R8 C10: 
+  R8 C11: 
+  R8 C12: 
+  R8 C13: 
+  R8 C14: 
+  R8 C15: 
+  R8 C16: 
+  R8 C17: 
+  R8 C18: 
+  R9 C0: Elaboración del informe de avance 
+  R9 C1: 
+  R9 C2: 
+  R9 C3: 
+  R9 C4: 
+  R9 C5: 
+  R9 C6: 
+  R9 C7: X
+  R9 C8: X
+  R9 C9: 
+  R9 C10: 
+  R9 C11: 
+  R9 C12: 
+  R9 C13: 
+  R9 C14: 
+  R9 C15: 
+  R9 C16: 
+  R9 C17: 
+  R9 C18: 
+  R10 C0: Análisis de resultados del modelo (Ignacio) 
+  R10 C1: 
+  R10 C2: 
+  R10 C3: 
+  R10 C4: 
+  R10 C5: 
+  R10 C6: 
+  R10 C7: 
+  R10 C8: X
+  R10 C9: X
+  R10 C10: 
+  R10 C11: 
+  R10 C12: 
+  R10 C13: 
+  R10 C14: 
+  R10 C15: 
+  R10 C16: 
+  R10 C17: 
+  R10 C18: 
+  R11 C0: Integración del modelo con el backend 
+  R11 C1: 
+  R11 C2: 
+  R11 C3: 
+  R11 C4: 
+  R11 C5: 
+  R11 C6: 
+  R11 C7: 
+  R11 C8: 
+  R11 C9: X
+  R11 C10: X
+  R11 C11: X
+  R11 C12: 
+  R11 C13: 
+  R11 C14: 
+  R11 C15: 
+  R11 C16: 
+  R11 C17: 
+  R11 C18: 
+  R12 C0: Apoyo en pruebas de integración (Felipe)
+  R12 C1: 
+  R12 C2: 
+  R12 C3: 
+  R12 C4: 
+  R12 C5: 
+  R12 C6: 
+  R12 C7: 
+  R12 C8: 
+  R12 C9: 
+  R12 C10: X
+  R12 C11: X
+  R12 C12: X
+  R12 C13: X
+  R12 C14: 
+  R12 C15: 
+  R12 C16: 
+  R12 C17: 
+  R12 C18: 
+  R13 C0: Pruebas de integración y despliegue 
+  R13 C1: 
+  R13 C2: 
+  R13 C3: 
+  R13 C4: 
+  R13 C5: 
+  R13 C6: 
+  R13 C7: 
+  R13 C8: 
+  R13 C9: 
+  R13 C10: 
+  R13 C11: X
+  R13 C12: X
+  R13 C13: X
+  R13 C14: 
+  R13 C15: 
+  R13 C16: 
+  R13 C17: 
+  R13 C18: 
+  R14 C0: Elaboración del informe final 
+  R14 C1: 
+  R14 C2: 
+  R14 C3: 
+  R14 C4: 
+  R14 C5: 
+  R14 C6: 
+  R14 C7: 
+  R14 C8: 
+  R14 C9: 
+  R14 C10: 
+  R14 C11: 
+  R14 C12: 
+  R14 C13: X
+  R14 C14: X
+  R14 C15: 
+  R14 C16: 
+  R14 C17: 
+  R14 C18: 
+  R15 C0: Preparación de la presentación 
+  R15 C1: 
+  R15 C2: 
+  R15 C3: 
+  R15 C4: 
+  R15 C5: 
+  R15 C6: 
+  R15 C7: 
+  R15 C8: 
+  R15 C9: 
+  R15 C10: 
+  R15 C11: 
+  R15 C12: 
+  R15 C13: 
+  R15 C14: X
+  R15 C15: X
+  R15 C16: 
+  R15 C17: 
+  R15 C18: 
+  R16 C0: Presentación final del Proyecto APT 
+  R16 C1: 
+  R16 C2: 
+  R16 C3: 
+  R16 C4: 
+  R16 C5: 
+  R16 C6: 
+  R16 C7: 
+  R16 C8: 
+  R16 C9: 
+  R16 C10: 
+  R16 C11: 
+  R16 C12: 
+  R16 C13: 
+  R16 C14: 
+  R16 C15: 
+  R16 C16: 
+  R16 C17: 
+  R16 C18: 
+  R17 C0: 
+  R17 C1: 
+  R17 C2: 
+  R17 C3: 
+  R17 C4: 
+  R17 C5: 
+  R17 C6: 
+  R17 C7: 
+  R17 C8: 
+  R17 C9: 
+  R17 C10: 
+  R17 C11: 
+  R17 C12: 
+  R17 C13: 
+  R17 C14: 
+  R17 C15: 
+  R17 C16: 
+  R17 C17: 
+  R17 C18: 
+  R18 C0: 
+  R18 C1: 
+  R18 C2: 
+  R18 C3: 
+  R18 C4: 
+  R18 C5: 
+  R18 C6: 
+  R18 C7: 
+  R18 C8: 
+  R18 C9: 
+  R18 C10: 
+  R18 C11: 
+  R18 C12: 
+  R18 C13: 
+  R18 C14: 
+  R18 C15: 
+  R18 C16: 
+  R18 C17: 
+  R18 C18: 
+B44 P: 
+B45 sectPr
+word/header1.xml: Guía Estudiante - Definición Proyecto APT  | Fase 1
+word/footer1.xml: 

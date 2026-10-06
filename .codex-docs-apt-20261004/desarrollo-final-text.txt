@@ -1,0 +1,193 @@
+Guía
+2.
+ 
+Desarrollo P
+royecto 
+APT 
+Asignatura 
+Capstone
+Guía
+2.
+ 
+Desarrollo P
+royecto 
+APT 
+Asignatura 
+Capstone
+Diego Padilla, Ignacio Hernández y Felipe Crisóstomo
+Ingeniería en Informática · Sede San Joaquín
+Estado del proyecto al 4 de octubre de 2026
+1
+. 
+Resumen 
+avance 
+Proyecto APT
+A continuación, encontrarás distintos campos que deberás completar con la información solicitada. 
+Resumen
+ de
+ avance proyecto APT
+Durante esta etapa nos enfocamos en mejorar DeafApp para que la recolección de señas fuera más clara y útil. Corregimos problemas de cámara, desfase del trazado y detección de manos. Agregamos preparación de la grabación, cuenta regresiva, vista previa y recuperación de una toma pendiente. Una vez confirmadas ambas manos, se puede grabar una seña con una sola mano.
+También implementamos un administrador con contraseña para revisar las contribuciones y preparar los datos. Analizamos las 110 grabaciones aprobadas y recuperamos sus secuencias sin modificar los originales. Con ese material entrenamos un primer prototipo de dos señas. Los objetivos de captura y revisión presentan avances concretos; el reconocimiento general y su integración en tiempo real siguen pendientes.
+Objetivos
+Mantenemos el objetivo general de desarrollar un sistema de reconocimiento en tiempo real de LSCh mediante redes LSTM, integrado en una aplicación móvil/web que permita recolectar y validar datos con la comunidad sorda.
+Ajustamos los objetivos específicos a: extraer puntos de cara y manos; mejorar la captura y envío de señas; revisar las contribuciones desde el administrador; preparar muestras con etiquetas y permisos comprobados; y evaluar un modelo temporal antes de integrarlo al reconocimiento en vivo. La aprobación final pasa al administrador y el aprendizaje se inicia con las señas que tengan datos suficientes.
+Metodología
+Seguimos trabajando en ciclos cortos de desarrollo, prueba y corrección. Para los datos usamos las fases de CRISP-DM: comprender el problema, revisar las grabaciones, preparar las secuencias, entrenar y evaluar el modelo. Esto nos permite corregir la aplicación sin esperar a tener todo el vocabulario listo.
+Como ajuste, comenzamos con un prototipo temporal Conv1D de dos señas y dejamos el modelo LSTM previsto para una comparación posterior. Las referencias de LSCh sirven para buscar material, pero cada fragmento necesita revisión de significado y permiso de uso antes de entrenar. La evaluación con personas distintas se mantiene como requisito para comprobar si el modelo funciona fuera de las grabaciones iniciales.
+Evidencias de avance
+Adjuntamos capturas del seguimiento de cara y manos y del panel de grabaciones. El código de la aplicación y los registros de pruebas permiten revisar las correcciones de cámara, el flujo de captura y el control de aprobación.
+La recuperación de 110 grabaciones dejó 44 con puntos utilizables para experimentar y 12 con etiquetas compatibles. El primer modelo de «cerdo» y «día» acertó una de dos pruebas internas. Conservamos estos resultados para mostrar el avance real, sin presentar esa prueba pequeña como precisión general. Resguardamos la calidad al conservar los originales, separar las tomas de prueba y evitar que las variaciones artificiales cuenten como personas nuevas.
+2
+. 
+Monitoreo del Plan de Trabajo 
+Examina cuidadosamente tu plan de trabajo, enfocándote especialmente en la columna de 
+estado de avance 
+y ajustes.
+Responsables y plazos según la definición del proyecto. «Equipo» corresponde a Diego Padilla, Ignacio Hernández y Felipe Crisóstomo. Los estados reflejan el avance al 4 de octubre.
+Plan de Trabajo
+C
+ompetencia
+ o unidades de competencias
+Actividades
+Recursos
+Duración de la actividad
+Responsable
+Observaciones
+Estado de avance
+A
+justes
+Desarrollo de software
+Definición del proyecto
+Guía APT y proyecto
+12–25 ago.
+Diego Padilla
+Existe una base técnica.
+Completado
+Se conserva.
+Inteligencia artificial
+Ampliar y limpiar datos
+DeafApp y Supabase
+19 ago.–22 sep.
+Diego Padilla
+Faltan participantes.
+Con retraso
+Continuar en octubre.
+Base de datos y backend
+Corregir errores
+Supabase y código
+26 ago.–8 sep.
+Diego Padilla
+Cámara y permisos.
+Ajustada
+Aprobación en admin.
+Análisis de datos
+Revisar el conjunto
+Grabaciones y análisis
+2–29 sep.
+Ignacio Hernández
+Faltan datos antiguos.
+En curso
+Recuperar secuencias.
+Desarrollo de interfaces
+Mejorar la experiencia
+React Native y Expo
+2–29 sep.
+Felipe Crisóstomo
+Validar otros equipos.
+Ajustada
+Cámara y vista previa.
+Inteligencia artificial
+Entrenar el modelo
+TensorFlow y puntos
+9 sep.–6 oct.
+Diego Padilla
+Muestras limitadas.
+En curso
+Prototipo Conv1D.
+Análisis de datos
+Documentar CRISP-DM
+Guías y auditoría
+16 sep.–6 oct.
+Ignacio Hernández
+Mantener evidencias.
+En curso
+Incluir recuperación.
+Pruebas de software
+Apoyar la integración
+Entorno de pruebas
+7 oct.–10 nov.
+Felipe Crisóstomo
+Depende del modelo.
+No iniciado
+Probar por módulos.
+Documentación
+Informe de avance
+Guía y evidencias
+23 sep.–6 oct.
+Equipo
+Reunir los avances.
+Completado
+Incluir límites actuales.
+Análisis de datos
+Evaluar resultados
+Informe del modelo
+30 sep.–13 oct.
+Ignacio Hernández
+Prueba inicial pequeña.
+En curso
+Ampliar evaluación.
+Desarrollo de software
+Integrar reconocimiento
+Modelo y backend
+7–27 oct.
+Diego Padilla
+Requiere validación.
+No iniciado
+Integrar tras evaluar.
+Pruebas de software
+Probar y desplegar
+Cloudflare y pruebas
+28 oct.–10 nov.
+Diego Padilla
+Verificar la versión.
+No iniciado
+Validar PC y celular.
+Documentación
+Informe y presentación
+Guías y resultados
+11–24 nov.
+Equipo
+Preparación adelantada.
+En curso
+Actualizar al cierre.
+Comunicación técnica
+Defensa del proyecto
+App y presentación
+25 nov.–1 dic.
+Equipo
+Cierre del semestre.
+No iniciado
+Se conserva.
+3
+. 
+Ajustes a partir del monitoreo 
+Profundiza en las observaciones de tu plan de trabajo
+. Analiza las actividades planificadas y señala 
+qué 
+aspectos facilitaron u 
+obst
+aculizaron la ejecución del plan. Plantea 
+cómo abordaste y/o abordarás
+ los obstáculos. Por último, señala los ajustes que realizaste al plan de trabajo a partir de este análisis.
+Factores que han facilitado y dificultado el plan de trabajo
+Nos ha ayudado contar con una aplicación existente, equipos propios y servicios de Supabase y Cloudflare ya configurados. Los perfiles del grupo también se complementan: Diego aborda el sistema y la integración, Ignacio el análisis de datos y Felipe la interfaz y las pruebas, según la distribución del proyecto.
+Las principales dificultades han sido la detección lenta de manos, los errores de cámara y la poca diversidad de grabaciones. Para abordarlas ajustamos el seguimiento, incorporamos una vista previa y revisamos el material antiguo antes de entrenar. Sigue siendo necesario conseguir muestras de más personas y apoyo para confirmar el significado de las señas.
+Actividades ajustadas o eliminadas
+Priorizamos la calidad de la captura y la recuperación de datos antes de ampliar el reconocimiento. Quitamos la selección manual de «Persona 1» y «Persona 2» de la pantalla pública; el código de origen que se guarda automáticamente no se considera una identidad comprobada.
+La aprobación final de grabaciones pasó al administrador. El material de LSCh y las pruebas también quedaron en ese panel. El entrenamiento comenzó con dos señas y una red Conv1D, en lugar de intentar activar todo el vocabulario. No eliminamos la meta de traducción en tiempo real, pero su integración queda sujeta a una evaluación suficiente.
+Actividades no iniciadas o con retraso
+La ampliación del conjunto de datos y la evaluación con personas distintas avanzan más lento de lo previsto por la baja participación y la falta de información en grabaciones antiguas. Trabajaremos con grupos pequeños de señas, repeticiones nuevas y material externo que cuente con revisión y autorización.
+La integración del modelo con el backend y las pruebas del traductor completo aún no se han iniciado. Su periodo está planificado desde octubre. Antes de esa integración necesitamos mejorar el resultado del prototipo y comparar el modelo previsto. La defensa final permanece para el cierre del semestre.
+Evidencias del proyecto
+Figura 1  Prueba de cámara con puntos de cara y una mano detectada
+Figura 2  Panel de revisión con 110 aprobadas y 20 pendientes

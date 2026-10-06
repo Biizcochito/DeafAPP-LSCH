@@ -1,0 +1,19 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Regiones de manos</title>
+<style>body{background:#10101d;color:white;font:16px system-ui;margin:24px}canvas{width:640px;max-width:100%}button{padding:12px}pre{white-space:pre-wrap}</style>
+<h1>Búsqueda directa de manos</h1><button id="run">Probar adquisición directa</button><p id="status">Listo</p><canvas id="output" width="640" height="480"></canvas><pre id="metrics"></pre>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection@2.0.1/dist/hand-pose-detection.min.js" crossorigin="anonymous"></script>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const button=document.querySelector('#run'),status=document.querySelector('#status');button.disabled=true;let detector,tensor;
+ try{
+  await tf.setBackend('webgl');await tf.ready();const photo=new Image();photo.src='./real-hand-diagnostic.jpg';await photo.decode();const raw=document.createElement('canvas');raw.width=640;raw.height=480;raw.getContext('2d').drawImage(photo,340,182,316,238,0,0,640,480);
+  status.textContent='Preparando modelo…';detector=await handPoseDetection.createDetector(handPoseDetection.SupportedModels.MediaPipeHands,{runtime:'tfjs',modelType:'lite',maxHands:2});tensor=tf.tidy(()=>tf.browser.fromPixels(raw).toFloat());
+  const oc=document.querySelector('#output').getContext('2d');oc.drawImage(raw,0,0);oc.fillStyle='#4ECDC4';const metrics=[];
+  for(const xCenter of [.2,.7]){
+   const roi={xCenter,yCenter:.72,width:.55,height:.55*640/480,rotation:0};let hand;const times=[];for(let i=0;i<4;i++){status.textContent='Midiendo mano '+xCenter;const t=performance.now();hand=await detector.handLandmarks(roi,tensor);times.push(performance.now()-t)}
+   metrics.push({xCenter,detected:!!hand,score:hand?.handScore,times,wrist:hand?.landmarks?.[0]});if(hand)for(const p of hand.landmarks)oc.fillRect(p.x*640-3,p.y*480-3,6,6);document.querySelector('#metrics').textContent=JSON.stringify(metrics,null,2);
+  }status.textContent='Prueba completada';
+ }catch(e){status.textContent='Error: '+e.message}finally{tensor?.dispose();detector?.dispose();button.disabled=false}
+};
+</script></html>
+

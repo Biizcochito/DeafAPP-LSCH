@@ -1,0 +1,20 @@
+{
+  "official_bundle_observed": "index-e6bcc91bc243ccb91938eef86b02a159.js",
+  "official_canvas_count_observed": 0,
+  "package": "D:\\Descargas D\\DeafAPP-LSCH-master\\DeafApp-restaurar-camara.zip",
+  "files": 16,
+  "scripts": [
+    "/_expo/static/js/web/index-05334c4ae21d2bcc7ca26b562fad8c95.js"
+  ],
+  "features": {
+    "Ocultar trazado": true,
+    "Mostrar trazado": true,
+    "Reiniciar c\u00e1mara": true,
+    "face-mesh-hands": true,
+    "Preparar grabaci\u00f3n": true,
+    "Confirma ambas manos": true
+  },
+  "exact_copy_of_current_dist": true,
+  "published": false,
+  "focused_tests_passed": 30
+}

@@ -1,0 +1,11 @@
+{"schema":"openai.presentation.layout/v5","unit":"px","slide":{"id":"sl/i107q5of","index":4,"layout":{"id":"ly/14ra9krq","name":"Blank"},"backgroundColor":"rgba(16,16,31,1)","position":{"left":0,"top":0,"width":1280,"height":720}},
+"elements":[
+{"id":"sh/m5kbi1oj","kind":"textbox","name":"slide-5-text-0","position":{"left":64,"top":44,"width":1152,"height":70},"text":"Cámara automática para PC y celular","style":{"fontSize":44,"typeface":"Arial","color":"#FFFFFF","bold":true,"alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/dgbulwnm","kind":"textbox","name":"slide-5-text-1","position":{"left":1166,"top":679,"width":50,"height":24},"text":"05","style":{"fontSize":16,"typeface":"Arial","color":"#ADACBC","alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/cf2tcr61","kind":"textbox","name":"slide-5-text-2","position":{"left":64,"top":661,"width":1080,"height":40},"text":"Capturas de pruebas locales. El celular se comprobó con emulación del navegador.","style":{"fontSize":16,"typeface":"Arial","color":"#ADACBC","alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/z2tcnm5s","kind":"textbox","name":"slide-5-text-3","position":{"left":80,"top":128,"width":570,"height":40},"text":"PC · formato 4:3","style":{"fontSize":28,"typeface":"Arial","color":"#5DE0DC","bold":true,"alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/yhkbe1o7","kind":"textbox","name":"slide-5-text-4","position":{"left":804,"top":128,"width":412,"height":40},"text":"Celular · formato 9:16","style":{"fontSize":28,"typeface":"Arial","color":"#5DE0DC","bold":true,"alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"im/g7atobq5","kind":"image","position":{"left":153.32,"top":182,"width":462.36,"height":356}},
+{"id":"im/h8juxg7q","kind":"image","position":{"left":891.03,"top":182,"width":207.94,"height":450}},
+{"id":"sh/n6dcr65o","kind":"textbox","name":"slide-5-text-5","position":{"left":80,"top":557,"width":630,"height":82},"text":"La web elige el formato según el dispositivo y conserva la proporción al cambiar el tamaño.","style":{"fontSize":24,"typeface":"Arial","color":"#D6D6E4","alignment":"left"},"geometry":"rect","lineWidth":0}
+]}

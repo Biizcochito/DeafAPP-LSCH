@@ -1,0 +1,32 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Adquisición de manos</title>
+<style>body{background:#10101d;color:white;font:16px system-ui;margin:24px}canvas{width:320px}button{padding:12px}section{display:flex;flex-wrap:wrap;gap:16px}pre{white-space:pre-wrap}</style>
+<h1>Comprobación de adquisición de manos</h1><button id="run">Comprobar muestra local</button><p id="status">Listo</p><section id="outputs"></section><pre id="metrics"></pre>
+<script>window.exports={};</script><script src="./mediapipe/hands-v1.0.1/vision_bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const button=document.querySelector('#run'),status=document.querySelector('#status'),metrics=document.querySelector('#metrics');button.disabled=true;
+ try{
+  const photo=new Image();photo.src='./real-hand-diagnostic.jpg';await photo.decode();
+  const raw=document.createElement('canvas');raw.width=640;raw.height=480;raw.getContext('2d').drawImage(photo,340,182,316,238,0,0,640,480);
+  const files=await window.exports.FilesetResolver.forVisionTasks('./mediapipe/hands-v1.0.1/'); const measurements=[];
+  for(const kind of ['tasks-window-gpu','tasks-window-cpu']){
+   status.textContent='Probando '+kind;
+   let detector,value;
+   if(kind.startsWith('legacy')){detector=new Hands({locateFile:f=>'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/'+f});detector.setOptions({maxNumHands:2,modelComplexity:1,staticImageMode:kind==='legacy-image',minDetectionConfidence:.35,minTrackingConfidence:.35});detector.onResults(r=>value=r.multiHandLandmarks||[]);}
+   else detector=await window.exports.HandLandmarker.createFromOptions(files,{baseOptions:{modelAssetPath:'./mediapipe/hands-v1.0.1/hand_landmarker.task',delegate:kind.endsWith('gpu')?'GPU':'CPU'},runningMode:'IMAGE',numHands:2,minHandDetectionConfidence:.1,minHandPresenceConfidence:.35,minTrackingConfidence:.35});
+   try{for(const region of ["no-face","left","right"]){ const padding=1.4,mirrored=false; for(const turn of [0]){
+    const masked=document.createElement("canvas");masked.width=640;masked.height=480;const mc=masked.getContext("2d");mc.drawImage(raw,0,0);mc.fillStyle="#222";mc.fillRect(640*.3,480*.17,640*.31,480*.54);if(region==="left")mc.fillRect(320,0,320,480);if(region==="right")mc.fillRect(0,0,320,480);const input=document.createElement('canvas');input.width=640;input.height=480;const c=input.getContext('2d');c.fillStyle='#222';c.fillRect(0,0,640,480);if(mirrored){c.translate(640,0);c.scale(-1,1);}c.drawImage(masked,(1-1/padding)*320,(1-1/padding)*240,640/padding,480/padding);
+    const counts=[],times=[];for(let i=0;i<4;i++){const t=performance.now();if(kind.startsWith('legacy'))await detector.send({image:input});else value=detector.detect(input).landmarks;counts.push(value.length);times.push(performance.now()-t);}
+    measurements.push({kind,padding,mirrored,region,counts,times,points:value.map(hand=>[hand[0],hand[5],hand[8],hand[20]])});metrics.textContent=JSON.stringify(measurements,null,2);
+    const group=document.createElement('div'),title=document.createElement('p'),output=document.createElement('canvas');title.textContent=kind+' · zona '+region+' · '+counts.join(',');output.width=640;output.height=480;const oc=output.getContext('2d');oc.drawImage(raw,0,0);oc.fillStyle='#4ECDC4';for(const hand of value)for(const p of hand)oc.fillRect(((mirrored?1-p.x:p.x)*padding-(padding-1)/2)*640-2,(p.y*padding-(padding-1)/2)*480-2,4,4);group.append(title,output);document.querySelector('#outputs').append(group);
+   }}}finally{await detector.close()}
+  }status.textContent='Comparación terminada';
+ }catch(e){status.textContent='Error: '+e.message}finally{button.disabled=false}
+};
+</script></html>
+
+
+
+
+

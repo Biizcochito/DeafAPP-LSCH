@@ -1,0 +1,198 @@
+Guía
+2.
+ 
+Desarrollo P
+royecto 
+APT 
+Asignatura 
+Capstone
+Guía
+2.
+ 
+Desarrollo P
+royecto 
+APT 
+Asignatura 
+Capstone
+Diego Padilla, Ignacio Hernández y Felipe Crisóstomo
+Ingeniería en Informática · Duoc UC sede San Joaquín
+DeafApp · Avance al 5 de octubre de 2026
+1
+. 
+Resumen 
+avance 
+Proyecto APT
+A continuación, encontrarás distintos campos que deberás completar con la información solicitada. 
+Resumen
+ de
+ avance proyecto APT
+Durante el desarrollo de DeafApp mejoramos la captura de grabaciones de Lengua de Señas Chilena. Trabajamos en el seguimiento de cara y manos, adaptamos la cámara para computador y celular e incorporamos mensajes de ayuda, preparación con cuenta regresiva y una vista previa antes de enviar la grabación. Al inicio se confirman ambas manos y después se permite realizar la seña con una o dos manos.
+También implementamos un panel privado de administración para aprobar o rechazar grabaciones. Los materiales de LSCh y las pruebas quedaron en este espacio. Así avanzamos en los objetivos de facilitar la captura y controlar qué muestras se incorporan al conjunto de datos.
+Revisamos 110 grabaciones y recuperamos datos técnicos de seguimiento en 44. Con una selección pequeña probamos un modelo para las señas “cerdo” y “día”. La aplicación permite recopilar y revisar muestras, pero todavía no contamos con un traductor completo en tiempo real ni con el reconocimiento de todo el catálogo.
+Objetivos
+Mantuvimos el objetivo general de desarrollar una herramienta que facilite la comunicación entre personas sordas y oyentes mediante LSCh, texto y voz. Ajustamos el alcance de esta etapa para avanzar según la calidad y cantidad de las muestras disponibles.
+Los objetivos específicos de esta etapa son mejorar la captura y el seguimiento; organizar y revisar las grabaciones antes de entrenar; comprobar el proceso de reconocimiento con un grupo pequeño de señas; y ampliar el modelo cuando existan suficientes muestras revisadas. El catálogo de la aplicación no significa que todas sus señas ya puedan reconocerse automáticamente.
+Metodología
+Trabajamos mediante mejoras y pruebas por etapas, utilizando CRISP-DM como referencia para comprender, preparar y evaluar los datos. Primero revisamos las grabaciones, después recuperamos su información de seguimiento y finalmente realizamos un experimento de reconocimiento. Conservamos los archivos originales y separamos las muestras de entrenamiento y evaluación.
+La propuesta original contemplaba un modelo LSTM. Para comprobar primero el proceso utilizamos un prototipo Conv1D de dos señas. Su evaluación inicial acertó una de dos pruebas; por la cantidad reducida de muestras, este resultado no demuestra precisión general ni funcionamiento con distintas personas. El entrenamiento más amplio y la integración completa siguen pendientes.
+Evidencias de avance
+Adjuntamos capturas reales de la cámara con trazados, del panel de revisión de grabaciones, de la recuperación de datos y del informe del prototipo. Estas evidencias muestran las mejoras visibles, la organización de las muestras y el alcance del primer experimento.
+También contamos con el código del proyecto, registros de pruebas y la web publicada. Para resguardar la calidad conservamos los originales, incorporamos revisión administrativa y comprobamos aspectos del funcionamiento de cámara y grabación. Aún necesitamos ampliar las pruebas con más personas y distintas condiciones. Las capturas se incluyen al final de esta guía.
+2
+. 
+Monitoreo del Plan de Trabajo 
+Examina cuidadosamente tu plan de trabajo, enfocándote especialmente en la columna de 
+estado de avance 
+y ajustes.
+Responsables y periodos según la planificación original. “Equipo” corresponde a Diego Padilla, Ignacio Hernández y Felipe Crisóstomo. Los estados reflejan el avance conocido al 5 de octubre de 2026.
+Plan de Trabajo
+C
+ompetencia
+ o unidades de competencias
+Actividades
+Recursos
+Duración de la actividad
+Responsable
+Observaciones
+Estado de avance
+A
+justes
+Análisis y diseño de sistemas
+Definir problema, objetivos y alcance.
+Guías APT y aplicación existente.
+12–25 ago.
+Diego Padilla
+La aplicación previa y el caso cercano ayudaron a definir la necesidad.
+Completado
+Diferenciar el objetivo final del alcance del prototipo.
+IA y preparación de datos
+Recopilar y organizar grabaciones.
+DeafApp, cámara y Supabase.
+19 ago.–22 sep.
+Diego Padilla
+Pocas personas disponibles y muestras antiguas incompletas.
+Con retraso
+Continuar recopilando y recuperar muestras útiles.
+Bases de datos y backend
+Revisar almacenamiento y aprobación.
+Supabase, código y administrador.
+26 ago.–8 sep.
+Diego Padilla
+Se necesitó controlar las grabaciones incorporadas al conjunto de datos.
+Ajustada
+Aprobación y rechazo desde el panel privado.
+Análisis de datos
+Evaluar calidad de las grabaciones.
+Python, videos y datos de seguimiento.
+2–29 sep.
+Ignacio Hernández
+44 de 110 grabaciones permitieron recuperar datos técnicos.
+Ajustada
+Clasificar utilidad y compatibilidad antes de entrenar.
+Interfaces web y móviles
+Mejorar cámara y grabación.
+React Native, Expo y cámara.
+2–29 sep.
+Felipe Crisóstomo
+Problemas de cámara, seguimiento y diferencias entre dispositivos.
+Ajustada
+Encuadre adaptable, mensajes, cuenta regresiva y vista previa.
+Inteligencia artificial
+Entrenar y evaluar un primer modelo.
+Python y datos preparados.
+9 sep.–6 oct.
+Diego Padilla
+Las muestras no permiten reconocer todo el catálogo.
+Ajustada
+Prototipo Conv1D de “cerdo” y “día”; LSTM pendiente.
+Metodología CRISP-DM
+Documentar comprensión y preparación de datos.
+Guía CRISP-DM y registros.
+16 sep.–6 oct.
+Ignacio Hernández
+La revisión identificó límites del conjunto de datos.
+En curso
+Documentar criterios de selección y descarte.
+Pruebas de software
+Apoyar pruebas entre interfaz, modelo y backend.
+Aplicación y entorno de pruebas.
+7 oct.–10 nov.
+Felipe Crisóstomo
+Depende de un modelo preparado para integrar.
+No iniciado
+Probar por componentes y luego el flujo completo.
+Documentación técnica
+Elaborar informe de avance.
+Guía APT, capturas y registros.
+23 sep.–6 oct.
+Equipo
+Existen evidencias de mejoras y pruebas iniciales.
+En curso
+Incluir cambios de alcance y tareas pendientes.
+Evaluación de modelos
+Analizar resultados y errores.
+Resultados del modelo y Python.
+30 sep.–13 oct.
+Ignacio Hernández
+La evaluación inicial tiene muy pocas muestras.
+En curso
+Ampliar evaluación sin atribuir precisión general.
+Integración de software
+Conectar el modelo con la aplicación.
+Modelo, backend y DeafApp.
+7–27 oct.
+Diego Padilla
+Requiere validar previamente el reconocimiento.
+No iniciado
+Integrar primero señas con muestras suficientes y revisadas.
+Pruebas y despliegue
+Probar y publicar el sistema integrado.
+Cloudflare y entorno de pruebas.
+28 oct.–10 nov.
+Diego Padilla
+La web está publicada; el traductor completo sigue pendiente.
+No iniciado
+Validar captura, reconocimiento y respuesta antes de publicar.
+Documentación y comunicación
+Preparar informe final y presentación.
+Guías, capturas y resultados.
+11–24 nov.
+Equipo
+Ya se adelantaron borradores y la presentación.
+En curso
+Actualizar los borradores con los resultados del cierre.
+Comunicación técnica
+Presentar y defender el proyecto.
+Informe, presentación y demostración.
+25 nov.–1 dic.
+Equipo
+La demostración debe mostrar funciones comprobadas.
+No iniciado
+Explicar resultados, límites y próximos pasos.
+3
+. 
+Ajustes a partir del monitoreo 
+Profundiza en las observaciones de tu plan de trabajo
+. Analiza las actividades planificadas y señala 
+qué 
+aspectos facilitaron u 
+obst
+aculizaron la ejecución del plan. Plantea 
+cómo abordaste y/o abordarás
+ los obstáculos. Por último, señala los ajustes que realizaste al plan de trabajo a partir de este análisis.
+Factores que han facilitado y dificultado el plan de trabajo
+Contar con una aplicación existente, un computador con cámara y servicios configurados facilitó el desarrollo. También ayudó distribuir las tareas de programación, análisis de datos e interfaz entre los integrantes del equipo. La experiencia cercana de una persona sorda permitió orientar el proyecto hacia una necesidad real.
+Las principales dificultades fueron los errores al iniciar la cámara, la lentitud del seguimiento de manos, las diferencias entre navegadores y la falta de grabaciones de distintas personas. Para abordarlas ajustamos el inicio de cámara, el seguimiento y los mensajes de ayuda. Además, revisamos las grabaciones antiguas y priorizamos las muestras que permiten recuperar datos útiles. Continuaremos comprobando la compatibilidad y reuniendo nuevas muestras.
+Actividades ajustadas o eliminadas
+Ajustamos el entrenamiento previsto para comenzar con dos señas, porque todavía no existen suficientes muestras útiles para cubrir todo el catálogo. La propuesta LSTM sigue siendo parte de la planificación, pero primero comprobamos la preparación de datos y un prototipo Conv1D.
+Trasladamos la aprobación y el rechazo de grabaciones al panel privado de administración. También cambiamos la preparación de la grabación para confirmar ambas manos solo al inicio y permitir después señas con una o dos manos.
+El material de LSCh quedó como apoyo para consultar y organizar referencias. Su uso en entrenamiento requiere revisar el contenido y sus condiciones de uso. No eliminamos el objetivo del traductor; dividimos su desarrollo en etapas para trabajar con resultados comprobables.
+Actividades no iniciadas o con retraso
+La ampliación del conjunto de grabaciones quedó retrasada por la poca participación y por las limitaciones de algunas muestras antiguas. Para avanzar continuaremos recuperando datos útiles y solicitando nuevas grabaciones, priorizando las señas que tengan mejores muestras.
+La integración completa del modelo, las pruebas del traductor y la defensa todavía no se han iniciado. Según la planificación, sus periodos comienzan después del 5 de octubre. Primero validaremos un grupo pequeño de señas, luego integraremos el reconocimiento y finalmente ampliaremos el sistema. Los borradores del informe final y la presentación se actualizarán con los resultados del cierre.
+Evidencias del proyecto
+Figura 1  Seguimiento de cara y una mano durante una prueba de grabación
+Figura 2  Panel privado con grabaciones aprobadas y pendientes de revisión
+Evidencias del entrenamiento
+Figura 3  Registro de recuperación y preparación de grabaciones
+Figura 4  Informe del experimento inicial con las señas cerdo y día

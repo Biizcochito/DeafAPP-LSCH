@@ -1,0 +1,7 @@
+MediaPipe Tasks Vision 0.10.21 — Copyright Google LLC / The MediaPipe Authors.
+Distributed under the Apache License, Version 2.0. See LICENSE.
+
+Runtime source: https://www.npmjs.com/package/@mediapipe/tasks-vision/v/0.10.21
+The original vision_bundle.cjs is served as vision_bundle.js with a JavaScript MIME type.
+WASM files are unchanged from the same versioned npm package.
+Model: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task

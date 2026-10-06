@@ -1,0 +1,115 @@
+Guía
+3.
+ 
+Informe final
+ P
+royecto 
+APT 
+Asignatura 
+Capstone
+Guía
+3.
+ 
+Informe final
+ P
+royecto 
+APT 
+Asignatura 
+Capstone
+Diego Padilla, Ignacio Hernández y Felipe Crisóstomo
+Ingeniería en Informática · Sede San Joaquín
+Estado del proyecto al 4 de octubre de 2026
+1
+. 
+Informe
+ final 
+P
+royecto APT
+El objetivo de est
+e
+ 
+informe
+ es que describas los aspectos más relevantes de tu 
+Proyecto APT. Es importante que
+ fundament
+es las
+ decisiones que tuviste que tomar a lo largo del proceso. 
+A continuación, encontrarás distintos campos que deberás completar
+ con la información solicitada, los
+ que 
+dan
+ cuenta del resumen de tu proyecto APT y sus principales resultados.
+Nombre del proyecto
+Sistema de Reconocimiento en Tiempo Real de Lengua de Señas Chilena (LSCh) mediante Redes LSTM – DeafApp
+Área (s) de desempeño(s)
+Desarrollo de software, inteligencia artificial y aprendizaje automático, desarrollo de aplicaciones móviles y web.
+Competencias 
+Análisis y diseño de sistemas de software; desarrollo de soluciones basadas en inteligencia artificial; gestión de bases de datos y backend; desarrollo de interfaces móviles; trabajo bajo metodologías ágiles.
+Contenidos de
+l informe f
+inal
+1. 
+Relevancia del proyecto APT
+Problema y relevancia profesional: 
+Elegimos este proyecto porque Diego tiene un amigo sordo y ha visto las dificultades que enfrenta para comunicarse con personas oyentes. Pedir algo en una tienda o entender una indicación puede convertirse en una barrera. Desde Ingeniería en Informática buscamos aportar una solución que reúna desarrollo de software, bases de datos e inteligencia artificial en una necesidad cercana al grupo.
+Contexto y personas beneficiadas: 
+El proyecto se sitúa en Chile y considera la Lengua de Señas Chilena. Tomamos como referencia situaciones de atención cotidiana y espacios educativos como Duoc UC, sede San Joaquín, donde conviven personas con distintas necesidades de comunicación. Está dirigido a personas sordas que usan LSCh y a personas oyentes que necesitan comunicarse con ellas.
+Aporte de valor: 
+El aporte alcanzado es una web que permite reunir, revisar y organizar grabaciones para preparar el reconocimiento de señas. La meta es facilitar la comunicación mediante texto y voz. La traducción continua sigue en desarrollo y la aplicación no busca reemplazar a los intérpretes.
+2. Objetivos 
+Objetivo general: 
+Desarrollar un sistema de reconocimiento en tiempo real de señas de la Lengua de Señas Chilena mediante redes neuronales LSTM, integrado en una aplicación móvil y web que permita recolectar y validar datos con la comunidad sorda.
+Objetivos específicos: 
+1. Implementar la extracción de puntos de cara y manos a partir de las secuencias de grabación.
+2. Diseñar y desplegar una aplicación que permita grabar señas y consultar el progreso por categoría.
+3. Revisar y aprobar las contribuciones antes de incorporarlas al conjunto de entrenamiento.
+4. Preparar los datos, entrenar un modelo de secuencias y evaluar sus resultados con grabaciones reservadas para prueba.
+5. Integrar el reconocimiento en vivo cuando el modelo tenga un desempeño suficiente y comprobado.
+Estado de cumplimiento: 
+La captura, el almacenamiento y la revisión están implementados. El primer experimento utiliza Conv1D y dos señas; el modelo LSTM previsto y la integración del traductor siguen pendientes.
+3. Metodología
+Metodología utilizada: 
+Trabajamos de forma ágil e iterativa: revisamos un problema, realizamos un ajuste y comprobamos el resultado. Para el trabajo con datos seguimos CRISP-DM, que organiza la comprensión del problema, la preparación de datos, el modelado y la evaluación.
+Fases y procedimientos: 
+Primero definimos la necesidad de comunicación y revisamos las grabaciones disponibles. Después mejoramos la captura y organizamos las contribuciones con su seña y estado de revisión.
+En la preparación recuperamos puntos utilizables de las grabaciones antiguas y comprobamos sus etiquetas. Conservamos los originales y separamos las tomas de prueba antes de generar variaciones para entrenar.
+En el modelado probamos un grupo pequeño de señas y guardamos el modelo junto con su informe. En la evaluación revisamos sus aciertos y limitaciones; la integración del reconocimiento queda para una etapa posterior.
+Pertinencia: 
+Esta metodología nos permite avanzar con los recursos disponibles y corregir problemas sin esperar a tener todo el vocabulario. También evita entrenar con material sin revisar o presentar una prueba pequeña como un resultado válido para todos los usuarios.
+4. Desarrollo
+Etapas y actividades: 
+Partimos de la aplicación existente y mejoramos la cámara, los trazados de cara y manos y el encuadre para PC y celular. Agregamos preparación de grabación y cuenta regresiva: se confirman ambas manos al inicio y luego se permite realizar la seña con una o dos manos.
+Incorporamos vista previa, borrador recuperable y reintentos de envío. Después implementamos el panel privado para aprobar o rechazar grabaciones y reunir el material de LSCh y las pruebas de entrenamiento.
+Revisamos las 110 grabaciones aprobadas. La recuperación encontró 44 con puntos utilizables para experimentar y 12 con etiquetas compatibles. El prototipo de «cerdo» y «día» utilizó dos originales para aprender y dos para prueba; acertó una de las dos pruebas. Todavía no demuestra reconocimiento con personas distintas.
+Organización del equipo: 
+Según la definición del proyecto, Diego se enfoca en el sistema y su integración, Ignacio en los datos y el análisis de resultados, y Felipe en la interfaz y las pruebas. Estos perfiles nos permiten abordar partes complementarias del trabajo.
+Facilitadores: 
+Contar con una aplicación previa, equipos propios y servicios de Supabase y Cloudflare configurados nos permitió concentrarnos en las mejoras y la preparación de datos. El caso cercano de Diego ayudó a mantener el proyecto centrado en una necesidad real.
+Dificultades: 
+Las principales dificultades han sido la poca participación, la falta de datos completos en grabaciones antiguas y los errores de cámara o seguimiento entre navegadores. Sigue pendiente confirmar la apertura de cámara en Firefox y ampliar las pruebas con otros equipos.
+Ajustes y decisiones: 
+Priorizamos la calidad de la captura antes de ampliar el reconocimiento. La aprobación final pasó al administrador y quitamos la selección manual de «Persona 1» y «Persona 2». Comenzamos con dos señas y Conv1D para comprobar el flujo. El material externo requiere revisión de significado y permisos antes de incorporarse al entrenamiento.
+5. Evidencias
+Evidencias adjuntas: 
+Las figuras 1 a 4 muestran una prueba de cámara con trazados, la revisión de contribuciones, la recuperación de grabaciones y el informe del modelo guardado. Permiten ver la captura, la administración y el resultado del primer experimento.
+Evidencias complementarias: 
+El código fuente, la web publicada y los registros de pruebas documentan los cambios. Se aprobaron 40 pruebas automatizadas de ciclo de cámara, compatibilidad, seguimiento, requisitos de manos y encuadre. Estas pruebas no sustituyen la comprobación en cada navegador.
+Resultado alcanzado: 
+Disponemos de una plataforma de captura y revisión y de un prototipo privado para experimentar con dos señas. Quedan pendientes la evaluación con más personas, el modelo previsto y la traducción en tiempo real del vocabulario completo.
+6
+. 
+Intereses 
+y proyecciones
+ profesionales
+Aporte a nuestros intereses: 
+El proyecto nos ayudó a conocer mejor el trabajo que queremos desarrollar. Aprendimos que una solución con inteligencia artificial depende también de la calidad de los datos, de una interfaz comprensible y de probar con usuarios. Mantuvimos los intereses planteados al inicio y reforzamos nuestro interés por la accesibilidad.
+Intereses que queremos profundizar: 
+Diego quiere seguir trabajando en desarrollo Full Stack e inteligencia artificial. Ignacio busca profundizar en ingeniería de datos, preparación de conjuntos de entrenamiento y análisis de resultados. Felipe mantiene su interés en interfaces, experiencia de usuario y aplicaciones móviles.
+Proyección laboral: 
+Nos proyectamos en equipos donde podamos combinar estos perfiles y participar en el desarrollo completo de una solución. Queremos seguir aprendiendo a integrar aplicaciones y modelos, evaluar su funcionamiento con evidencia y mejorar la experiencia de las personas que los utilizan.
+Evidencias del proyecto
+Figura 1  Captura real de cara y una mano durante una prueba de grabación
+Figura 2  Panel de revisión con 110 grabaciones aprobadas y 20 pendientes
+Evidencias del entrenamiento
+Figura 3  Recuperación del material antiguo y selección de dos señas para experimentar
+Figura 4  Informe del prototipo de cerdo y día con una de dos pruebas acertada

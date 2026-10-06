@@ -1,0 +1,61 @@
+B0 P: 
+B1 P: Guía2. Desarrollo Proyecto APT Asignatura CapstoneGuía2. Desarrollo Proyecto APT Asignatura Capstone
+B2 P: 
+B3 P: 
+B4 P: 
+B5 P: 
+B6 P: 
+B7 P: 
+B8 TABLE
+  R0 C0: 1. Resumen avance Proyecto APT
+  R1 C0: A continuación, encontrarás distintos campos que deberás completar con la información solicitada. 
+B9 P: 
+B10 P: 
+B11 TABLE
+  R0 C0: Resumen de avance proyecto APT
+  R0 C1: En esta sección deberás realizar un resumen de los avances que has realizado en tu proyecto APT. Relata brevemente qué actividades del proyecto has llevado a cabo y qué objetivos específicos has cumplido hasta el minuto y de qué manera. | En caso que hayas realizado ajustes a los objetivos o metodología, debes incluir dichos apartados nuevamente en este informe, señalando cuáles son dichos ajustes.
+  R1 C0: Objetivos
+  R1 C1: Opcional en caso de ajuste
+  R2 C0: Metodología
+  R2 C1: Opcional en caso de ajuste
+  R3 C0: Evidencias de avance
+  R3 C1: Describe la(s) evidencia(s) que presentarás en este informe de avance y justifica de qué manera esta(s) evidencia(s) permite(n) dar cuenta del desarrollo del proyecto. | En caso de ser pertinente explica cómo resguardaste la calidad de tu Proyecto APT a partir de aspectos propios de tu disciplina (correcta aplicación de metodologías, actividades, herramientas, recursos propios, etc.). | En este apartado adjuntar la(s) evidencia(s) seleccionada(s) para ser evaluada por el docente.
+B12 TABLE
+  R0 C0: 2. Monitoreo del Plan de Trabajo 
+  R1 C0: Examina cuidadosamente tu plan de trabajo, enfocándote especialmente en la columna de estado de avance y ajustes.
+B13 P: 
+B14 TABLE
+  R0 C0: Plan de Trabajo
+  R1 C0: Competencia o unidades de competencias
+  R1 C1: Actividades
+  R1 C2: Recursos
+  R1 C3: Duración de la actividad
+  R1 C4: Responsable
+  R1 C5: Observaciones
+  R1 C6: Estado de avance
+  R1 C7: Ajustes
+  R2 C0: Nombra las competencias o unidades de competencias que se relacionan con las diferentes actividades requeridas para el desarrollo del proyecto APT.
+  R2 C1: Nombra las actividades que se necesitan para desarrollar el proyecto APT. 
+  R2 C2: Nombra los recursos necesarios para llevar a cabo las actividades definidas.
+  R2 C3: Señala la duración de cada actividad. 
+  R2 C4: Escribe el nombre del integrante del equipo responsable de cada actividad.
+  R2 C5: Señala las dificultades o facilitadores que se podrían presentar durante la ejecución de cada una de las actividades propuestas.
+  R2 C6: Describe el estado de avance de cada actividad. |  | Tipos de estado:  | En curso/ Con retraso/ No iniciado/ Completado/ Ajustada 
+  R2 C7: Señala los ajustes o reformulaciones que has realizado. 
+B15 P: 
+B16 TABLE
+  R0 C0: 3. Ajustes a partir del monitoreo 
+  R1 C0: Profundiza en las observaciones de tu plan de trabajo. Analiza las actividades planificadas y señala qué aspectos facilitaron u obstaculizaron la ejecución del plan. Plantea cómo abordaste y/o abordarás los obstáculos. Por último, señala los ajustes que realizaste al plan de trabajo a partir de este análisis.
+B17 P: 
+B18 TABLE
+  R0 C0: Factores que han facilitado y/o dificultado el desarrollo de mi plan de trabajo: Describe los factores que han facilitado y/o dificultado el desarrollo de tu Proyecto APT hasta ahora. En el caso de las dificultades debes describir qué acciones tomaste y/o tomarás para solucionarlas.   |  |  |  |  | 
+B19 P: 
+B20 TABLE
+  R0 C0: Actividades ajustadas o eliminadas: Señalar los ajustes que realizaste a tu plan de trabajo o actividades que eliminaste y, justifica por qué lo hiciste.  En el caso de que tu plan de trabajo no haya requerido ni requiera ajustes, justifica esta decisión a partir de los facilitadores que te han permitido desarrollarlo como fue planeado. |  |  |  |  |  |  | 
+B21 P: 
+B22 P: 
+B23 TABLE
+  R0 C0: Actividades que no has iniciado o están retrasadas: En caso de que no hayas iniciado actividades o estén retrasadas de acuerdo a tu planificación, señala los motivos por los que no has podido cumplir dichos plazos y qué estrategias utilizarás para avanzar en dichas actividades y no afectar tu proyecto APT.  |  |  |  |  |  |  | 
+B24 P: 
+B25 sectPr
+word/header1.xml: Guía Estudiante |  -  | Desarrollo |   | Proyecto  | APT |   | Fase  | 2

@@ -1,0 +1,51 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Verificación del filtro de gestos</title>
+<style>body{background:#0f0f1e;color:#fff;font:15px system-ui;margin:24px}main{max-width:640px;margin:auto}.frame{position:relative}canvas{width:100%;border-radius:16px}#warning{position:absolute;bottom:20px;left:12px;right:12px;background:#91192df2;padding:12px;border-radius:12px;font-weight:700;text-align:center}button{padding:16px;border:0;border-radius:14px;background:#e94560;color:white;font:700 16px system-ui}button:disabled{opacity:.45}pre{white-space:pre-wrap}</style>
+<main><h1>Filtro de gestos en la grabación</h1><button id="run">Comprobar captura enviada</button><p id="status">Listo para comprobar</p><div class="frame"><canvas id="output" width="640" height="480"></canvas><div id="warning" role="alert" hidden></div></div><p><button id="record">Preparar grabación</button></p><pre id="metrics"></pre></main>
+<script src="hand-model/tf.min.js"></script><script src="hand-model/hand-pose-detection.min.js"></script>
+<script type="module">
+import {createHandWorker} from './handTrackingWorker.js';
+import {createGestureGate,isMiddleFingerGesture,BLOCKED_GESTURE_MESSAGE} from './gestureModeration.js';
+const status=document.querySelector('#status'),metrics=document.querySelector('#metrics'),warning=document.querySelector('#warning'),record=document.querySelector('#record');
+document.querySelector('#run').onclick=async()=>{
+ let detector;const reports=[];
+ try{
+  status.textContent='Preparando el detector local…';detector=await createHandWorker();
+  const photo=new Image();photo.src='./gesture-example.png';await photo.decode();
+  const input=document.createElement('canvas');input.width=640;input.height=480;const c=input.getContext('2d'),out=document.querySelector('#output').getContext('2d');
+  const open=new Image();open.src='./real-hand-diagnostic.jpg';await open.decode();
+  for(const scenario of ['dedo medio: ambas manos','dedo medio: izquierda de la imagen','dedo medio: derecha de la imagen','manos abiertas','sin manos']){
+   const gate=createGestureGate();const frames=[];let last;
+   for(let frame=0;frame<16;frame++){
+    c.fillStyle='#222';c.fillRect(0,0,640,480);
+    if(scenario.startsWith('dedo medio')){
+     c.drawImage(photo,8,57,600,450,0,0,640,480);
+     if(scenario.includes('izquierda'))c.fillRect(320,0,320,480);
+     if(scenario.includes('derecha'))c.fillRect(0,0,320,480);
+    }else if(scenario==='manos abiertas')c.drawImage(open,340,182,316,238,0,0,640,480);
+    const time=performance.now(),result=await detector.detect(input,time,{x:.5,y:.52,width:.36,height:.62});
+    const tracking={enabled:true,handTime:time,sourceWidth:640,sourceHeight:480,leftHandLandmarks:result.multiHandLandmarks[0],rightHandLandmarks:result.multiHandLandmarks[1]};
+    last=gate.update(tracking,performance.now());frames.push({time,hands:result.multiHandLandmarks.length,candidates:result.multiHandLandmarks.map(hand=>isMiddleFingerGesture(hand,640/480)),blocked:last.blocked});
+    if(scenario==='dedo medio: ambas manos'){
+     out.drawImage(input,0,0);out.fillStyle='#4ECDC4';for(const hand of result.multiHandLandmarks)for(const p of hand)out.fillRect(p.x*640-2,p.y*480-2,4,4);
+     warning.hidden=!last.blocked;warning.textContent=BLOCKED_GESTURE_MESSAGE;record.disabled=last.blocked;record.textContent=last.blocked?'Grabación bloqueada':'Preparar grabación';
+    }
+    await new Promise(resolve=>setTimeout(resolve,100));
+    if(frame===15)reports.push({scenario,frames,landmarks:result.multiHandLandmarks});
+   }
+   metrics.textContent=JSON.stringify(reports.map(({landmarks,...rest})=>rest),null,2);
+  }
+  if(!reports[0].frames.some(frame=>frame.hands)){
+   c.drawImage(photo,8,57,600,450,0,0,640,480);
+   const direct=await handPoseDetection.createDetector(handPoseDetection.SupportedModels.MediaPipeHands,{runtime:'tfjs',modelType:'lite',maxHands:2,detectorModelUrl:new URL('hand-model/palm/model.json',location.href).href,landmarkModelUrl:new URL('hand-model/landmark/model.json',location.href).href});
+   const tensor=tf.tidy(()=>tf.browser.fromPixels(input).toFloat()),probes=[];
+   try{for(const xCenter of [.22,.75])for(const yCenter of [.5,.6,.7])for(const width of [.4,.55]){
+    const hand=await direct.handLandmarks({xCenter,yCenter,width,height:width*640/480,rotation:0},tensor);
+    probes.push({xCenter,yCenter,width,score:hand?.handScore,blocked:isMiddleFingerGesture(hand?.landmarks,640/480),landmarks:hand?.landmarks});
+   }}finally{tensor.dispose();direct.dispose();}
+   reports.push({scenario:'adquisición regional de diagnóstico',probes});
+   metrics.textContent=JSON.stringify(reports.map(({landmarks,...rest})=>rest),null,2);
+  }
+  status.textContent='Comprobación terminada';
+ }catch(error){status.textContent='Error: '+error.message;}finally{detector?.close();}
+};
+</script></html>

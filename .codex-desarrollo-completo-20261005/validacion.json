@@ -1,0 +1,19 @@
+{
+  "output": "D:\\Descargas D\\DeafAPP-LSCH-master\\entregables\\2.4_DesarrolloProyecto_APT_completado.docx",
+  "source_unchanged": true,
+  "filled_sections": 7,
+  "work_plan_activities": 14,
+  "work_plan_columns": 8,
+  "real_screenshots": 4,
+  "word_count": 1519,
+  "changed_parts": [
+    "[Content_Types].xml",
+    "word/_rels/document.xml.rels",
+    "word/document.xml"
+  ],
+  "section_geometry_preserved": true,
+  "floating_tables_removed": true,
+  "table_width_twips": 8504,
+  "xml_and_zip_valid": true,
+  "visual_review": "Unavailable: packaged renderer fails because soffice.exe is missing."
+}

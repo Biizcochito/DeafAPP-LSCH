@@ -1,0 +1,14 @@
+{
+  "output": "D:\\Descargas D\\DeafAPP-LSCH-master\\entregables\\DeafApp-Desarrollo-Proyecto-APT.docx",
+  "changed_original_parts": [
+    "[Content_Types].xml",
+    "word/_rels/document.xml.rels",
+    "word/document.xml"
+  ],
+  "original_sha256_unchanged": true,
+  "image_count": 2,
+  "sections": 1,
+  "word_count": 1248,
+  "all_xml_well_formed": true,
+  "render_validation": "unavailable: bundled LibreOffice is not provided on Windows"
+}

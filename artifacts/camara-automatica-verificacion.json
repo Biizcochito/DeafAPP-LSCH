@@ -1,0 +1,49 @@
+{
+  "desktop": {
+    "canvasHeight": 450,
+    "canvasWidth": 600,
+    "facePoints": "468",
+    "height": 450,
+    "leftPoints": "21",
+    "overflow": false,
+    "ratio": 1.3333333333333333,
+    "ready": 4,
+    "rightPoints": "0",
+    "videoTime": 11.759717,
+    "width": 600
+  },
+  "narrowDesktop": {
+    "canvasHeight": 275,
+    "canvasWidth": 366,
+    "facePoints": "468",
+    "height": 274.5,
+    "overflow": false,
+    "ratio": 1.3333333333333333,
+    "ready": 4,
+    "videoTime": 24.562054,
+    "width": 366
+  },
+  "phone": {
+    "canvasHeight": 636,
+    "canvasWidth": 358,
+    "facePoints": "468",
+    "height": 636.4375,
+    "overflow": false,
+    "ratio": 0.5625061376804478,
+    "ready": 4,
+    "videoTime": 10.346324,
+    "width": 358
+  },
+  "rotatedPhone": {
+    "canvasHeight": 800,
+    "canvasWidth": 450,
+    "facePoints": "468",
+    "height": 800,
+    "overflow": false,
+    "ratio": 0.5625,
+    "ready": 4,
+    "videoTime": 24.819153,
+    "width": 450
+  },
+  "camera": "simulada, con el bundle real de la aplicación"
+}

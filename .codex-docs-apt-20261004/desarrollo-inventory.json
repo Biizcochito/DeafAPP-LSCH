@@ -1,0 +1,124 @@
+{
+  "path": "D:\\Descargas D\\2.4_GuiaEstudiante_Fase 2_DesarrolloProyecto APT.docx",
+  "sha256": "8b1647ab6c8c4766d0949f6507d79eda92eb9581b3a7e6b6bc4fa566205e1294",
+  "sections": [
+    {
+      "width": 7560310,
+      "height": 10692130,
+      "top": 899795,
+      "bottom": 899795,
+      "left": 1080135,
+      "right": 1080135
+    }
+  ],
+  "parts": {
+    "[Content_Types].xml": {
+      "size": 2408,
+      "sha256": "8d2758fc14c2221d208336d945b2cafa4a42e0dca7be349dc4e78aa31c12dc4d"
+    },
+    "_rels/.rels": {
+      "size": 737,
+      "sha256": "c30fe099dbcfed4ecc4ae544ccf82f432c8d3bb665e2a301df283738b196d803"
+    },
+    "word/_rels/document.xml.rels": {
+      "size": 1771,
+      "sha256": "068a7679cf6c0dd191178219038e174efcf19f73b99f75ae36393fed8f06d600"
+    },
+    "word/document.xml": {
+      "size": 90916,
+      "sha256": "23daed5c7d788c16dfef11423d42cadca869cb0314491c258878aeff433c9dcb"
+    },
+    "word/footnotes.xml": {
+      "size": 3467,
+      "sha256": "01e36be4da0f0f120afaf9a02cf90baeec33241c1b5ef76703383837a2011b7c"
+    },
+    "word/_rels/header1.xml.rels": {
+      "size": 289,
+      "sha256": "94bca6aec3177c3b64686e1248ecfb39e9750dc067c2274af33e6b442d1f6617"
+    },
+    "word/header1.xml": {
+      "size": 7070,
+      "sha256": "85b3e2c8bd7dfae9d89b6f8253a0715f7d61c13c53fe0ca4b5de2118163d01ac"
+    },
+    "word/endnotes.xml": {
+      "size": 1910,
+      "sha256": "2041a390c268b19322310e857222f676f10696b5e00e2dbc50ebf48b7608b21d"
+    },
+    "word/media/image1.png": {
+      "size": 45035,
+      "sha256": "e2eb3e6745faeddbfb5941c8be9e502b2f38b2a1eb20d0eb49a548afde99ca8d"
+    },
+    "word/theme/theme1.xml": {
+      "size": 8395,
+      "sha256": "a6d6be71a15ce85bec1c2effef083250e6f60b3cc0ac6a632307180a5e9a304f"
+    },
+    "word/settings.xml": {
+      "size": 3829,
+      "sha256": "1f8060ac9897680bb437ecbd386853bc45c502f9148dea7b7f001cef517e44cf"
+    },
+    "customXml/itemProps2.xml": {
+      "size": 1088,
+      "sha256": "992c4d10044f649caff693fc2746552f7b609c51125b8db3ee95f442f014de52"
+    },
+    "customXml/item2.xml": {
+      "size": 7818,
+      "sha256": "7f74fc9be69934fc17c9fe5f1c1787c4df4ef81555cdda5571186ce55dde3710"
+    },
+    "customXml/itemProps1.xml": {
+      "size": 893,
+      "sha256": "a5f92dae5b80746f5e388f154e9ca863a3f7b2a0f430b55690c90246086f2056"
+    },
+    "customXml/_rels/item1.xml.rels": {
+      "size": 296,
+      "sha256": "80482f86e196171d66001e0e74d1900408a3aaf2463e54005d251b5f2db9a0b0"
+    },
+    "customXml/_rels/item2.xml.rels": {
+      "size": 296,
+      "sha256": "2a6aee4c8a9714223a3568077411a0c82d11b484b1c9ab93a19d50b99c57baa5"
+    },
+    "customXml/_rels/item3.xml.rels": {
+      "size": 296,
+      "sha256": "3aa4054f7f463c6d441102c960783aa7f937d6945a0a885b624a66aafaeedb6c"
+    },
+    "docProps/custom.xml": {
+      "size": 402,
+      "sha256": "43d7f72637e435a4bb8570cba18ce5320d322e7a1ee066a9d0879385d19ca4c1"
+    },
+    "word/fontTable.xml": {
+      "size": 2144,
+      "sha256": "479e38c620cab263c21f3d1e924964c26ad271ed28e0acd430dbc898ce617830"
+    },
+    "docProps/core.xml": {
+      "size": 758,
+      "sha256": "ff9298412ebd952929ef409b81d50d8528bac65569257c463f072b115f228b2b"
+    },
+    "customXml/item3.xml": {
+      "size": 219,
+      "sha256": "5efcaf9ad70d9c29f406ee438f8f428b021a881d2c5afff0e53b00b1f67ae51e"
+    },
+    "customXml/itemProps3.xml": {
+      "size": 335,
+      "sha256": "5ebec49d12663a353dd0d91f445dcab8226fc445ed965127efa1b51159c82330"
+    },
+    "word/numbering.xml": {
+      "size": 3723,
+      "sha256": "9c4c45a093500570e089b56b29785ba2657c05b1a380954596cf2c15ca0e369f"
+    },
+    "word/styles.xml": {
+      "size": 35940,
+      "sha256": "b46ac09b6d7ab2d0717859c418dcc42725b5fe2a6a4a6ee4e282c6b528f9a958"
+    },
+    "word/webSettings.xml": {
+      "size": 576,
+      "sha256": "f096acb67339b77d0e2dd9afd8fc8f34e7b563101773f433d0ed540859d6cb13"
+    },
+    "customXml/item1.xml": {
+      "size": 294,
+      "sha256": "b954a60e85246c4fe904a6efef3b193f5f552895e963ac34f239f2491cf61d25"
+    },
+    "docProps/app.xml": {
+      "size": 988,
+      "sha256": "b648c54f7f37fd578401a2eb04f5aea1ed5d50656bfa11f8d0702770eef1746f"
+    }
+  }
+}
