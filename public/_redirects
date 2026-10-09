@@ -1,0 +1,5 @@
+# La web es de una sola página: estas rutas se resuelven en el navegador, no son archivos.
+/app    /index.html  200
+/app/   /index.html  200
+/admin  /index.html  200
+/admin/ /index.html  200

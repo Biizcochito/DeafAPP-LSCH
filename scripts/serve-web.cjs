@@ -8,7 +8,8 @@ http.createServer((request, response) => {
   try { target = path.resolve(root, '.' + decodeURIComponent(new URL(request.url, 'http://localhost').pathname)); }
   catch { response.writeHead(400); response.end(); return; }
   if ((target !== root && !target.startsWith(root + path.sep)) || !['GET', 'HEAD'].includes(request.method)) { response.writeHead(403); response.end(); return; }
-  if (target === root) target = path.join(root, 'index.html');
+  // La web es de una sola página: /app y /admin se resuelven en el navegador.
+  if (target === root || /^\/(app|admin)\/?$/.test(new URL(request.url, 'http://localhost').pathname)) target = path.join(root, 'index.html');
   fs.stat(target, (error, stat) => {
     if (error || !stat.isFile()) { response.writeHead(404); response.end('No encontrado'); return; }
     response.writeHead(200, { 'content-type': types[path.extname(target)] || 'application/octet-stream', 'cache-control': 'no-cache' });

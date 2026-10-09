@@ -1,4 +1,7 @@
 node_modules/
+.expo/dev/logs/start.log
+.impeccable/review/
+.impeccable/concepts/
 dist/
 *.zip
 .admin-private/

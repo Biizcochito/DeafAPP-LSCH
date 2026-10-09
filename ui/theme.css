@@ -1,0 +1,48 @@
+/* Sistema visual compartido de DeafApp web: bienvenida (.deaf-welcome) y app (.deaf-app). */
+@font-face { font-family: 'Bricolage Grotesque'; src: url('/fonts/bricolage-grotesque-latin-wght-normal.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: Onest; src: url('/fonts/Onest-Variable.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
+
+.deaf-welcome, .deaf-app {
+  --ink: #080c0a;
+  --ink-2: #0d1410;
+  --surface: #111a15;
+  --raised: #18231d;
+  --line: rgba(245, 242, 235, .1);
+  --line-2: rgba(245, 242, 235, .2);
+  --cream: #f5f2eb;
+  --muted: #a9b5ad;
+  --lime: #d6f36a;
+  --lime-hi: #e6ff8f;
+  --coral: #ff8e72;
+  --sky: #78e0ff;
+  --iris: #a99bff;
+  --mint: #4ee0b5;
+  --display: 'Bricolage Grotesque', Onest, system-ui, sans-serif;
+  --body: Onest, system-ui, sans-serif;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  font-family: var(--body);
+  color: var(--cream);
+  color-scheme: dark;
+}
+
+.deaf-welcome *, .deaf-welcome *::before, .deaf-welcome *::after,
+.deaf-app *, .deaf-app *::before, .deaf-app *::after { box-sizing: border-box; }
+.deaf-welcome h1, .deaf-welcome h2, .deaf-welcome h3, .deaf-welcome p,
+.deaf-app h1, .deaf-app h2, .deaf-app h3, .deaf-app p { margin: 0; }
+
+/* Palabras de BlurText: sin Tailwind, deben ser inline-block para poder desplazarse. */
+.blur-line { display: block; }
+.blur-word { display: inline-block; will-change: transform, filter, opacity; }
+
+/* Textura de grano muy sutil sobre superficies grandes. */
+.grain::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Manos del seguimiento (HandConstellation) */
+.hand-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hand-svg line { stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.hand-svg circle { fill: var(--ink); stroke: currentColor; stroke-width: 2; }
+.hand-svg polygon { fill: currentColor; opacity: .08; }
+.hand-glow { filter: drop-shadow(0 0 7px currentColor); }
