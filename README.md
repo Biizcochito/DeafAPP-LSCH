@@ -72,6 +72,27 @@ Los votos públicos ya no conceden aprobación. Los candidatos de entrenamiento 
 
 El tamaño se adapta al espacio disponible. Tener una entrada en el catálogo no significa que ya exista un modelo capaz de reconocerla.
 
+### Traductor de prueba (beta)
+
+Pantalla **«Probar el traductor»** (web: Más → Probar el traductor; celular: inicio). Traduce **una seña por clip**: cuenta
+atrás 3-2-1, captura de 30 fotogramas (igual que la grabación) y consulta a la API de LSCh, que responde con las **3 señas más
+probables** y sus porcentajes (y un aviso si no se ven las manos). Hoy solo reconoce las **19 palabras de alimentos** con que
+se entrenó el modelo del backend, y con pocos datos puede equivocarse: por eso muestra tres opciones.
+
+| Pieza | Archivo |
+| --- | --- |
+| Lógica (captura, consulta, mensajes de error, resumen del resultado) | `translator.js`, probada con `tests/translator.test.mjs` |
+| Estado compartido web/celular | `useTranslator.js` |
+| Pantalla web (DOM + CSS) y pantalla nativa | `TranslatorScreen.web.js` + `TranslatorScreen.css`, `TranslatorScreen.js` |
+| Dirección de la API guardada en el dispositivo | `translatorSettingsStore.js` / `.web.js` |
+
+La API no vive en la web (es Python con TensorFlow): corre en el PC del proyecto (`iniciar_api.bat` en el repo del backend,
+`Biizcochito/Proyecto_LSCh`, rama `puente-deafapp`) y se expone con un túnel HTTPS. La pantalla tiene un apartado **Servidor**
+para escribir su dirección (`https://algo.trycloudflare.com`); se guarda en el dispositivo y puede fijarse al compilar con
+`EXPO_PUBLIC_LSCH_API`. Una página HTTPS no puede llamar a una API `http://` ajena, por eso se usa el túnel. El celular manda
+los fotogramas y el servidor calcula los puntos con el mismo MediaPipe con que se armó el dataset; los fotogramas con tu cara
+viajan hasta ese servidor, así que conviene avisarlo en una demo.
+
 ### Estado del proyecto
 
 | Área | Estado | Alcance actual |
@@ -80,6 +101,7 @@ El tamaño se adapta al espacio disponible. Tener una entrada en el catálogo no
 | Material de LSCh | **Disponible en administración** | Referencias y catálogo para consulta y preparación posterior. |
 | Entrenamiento de señas aisladas | **Experimental** | Candidatos locales y primer experimento con “cerdo” y “día”. |
 | Reconocimiento para distintas personas | **Pendiente de validar** | Requiere más originales y evaluación con personas independientes. |
+| Traductor de una seña por clip | **Prueba (beta)** | 19 palabras de alimentos; muestra las 3 señas más probables. Necesita la API del backend encendida. |
 | Traducción continua entre LSCh, voz y texto | **Objetivo del proyecto** | Todavía no es una función pública. |
 
 **Este proyecto NO busca reemplazar a los intérpretes de lengua de señas.** Es una herramienta de apoyo y aprendizaje.
@@ -162,7 +184,7 @@ npx expo export -p web
 node scripts/serve-web.cjs
 ```
 
-Abrir **[http://127.0.0.1:8081/](http://127.0.0.1:8081/)** y permitir el acceso a la cámara. El seguimiento requiere cargar sus modelos; la primera inicialización puede tardar según el dispositivo y la conexión. La compatibilidad debe comprobarse en el navegador y la cámara utilizados.
+Abrir **[http://127.0.0.1:8081/](http://127.0.0.1:8081/)** para la información del proyecto y **[http://127.0.0.1:8081/app](http://127.0.0.1:8081/app)** para la app de grabación, y permitir el acceso a la cámara. El seguimiento requiere cargar sus modelos; la primera inicialización puede tardar según el dispositivo y la conexión. La compatibilidad debe comprobarse en el navegador y la cámara utilizados.
 
 ---
 
@@ -182,13 +204,26 @@ Subir **la carpeta `dist` completa**, o un ZIP de su contenido con `index.html` 
 | `admin/`, `training/`, SQL y credenciales | No se incluyen en el paquete público. |
 | Borradores y candidatos locales | Pertenecen al almacenamiento del navegador, no al despliegue. |
 
+### APK para el celular
+
+`eas.json` ya trae el perfil `preview` (distribución interna, que en Android genera un APK):
+
+```bash
+npx eas-cli login
+EXPO_PUBLIC_LSCH_API=https://algo.trycloudflare.com npx eas-cli build -p android --profile preview
+```
+
+Requiere una cuenta de Expo. **No se ha generado ningún APK desde esta copia**: el bundle de Android sí compila
+(`npx expo export --platform android`), pero la app no se ha probado en un celular real. La cámara y los permisos del celular
+son los de `expo-camera`, los mismos de la grabación.
+
 La copia actual del proyecto no incluye una configuración `wrangler.toml`; por eso no se presupone que `wrangler deploy` esté configurado. Los borradores, las recuperaciones y los candidatos guardados en el navegador tampoco forman parte de `dist`. El dominio local y el oficial mantienen almacenamientos separados.
 
 ---
 
 ## Panel de administración
 
-Pulsar **cinco veces el logo de DeafApp en un máximo de 3,5 segundos**, desde bienvenida o inicio, e ingresar la contraseña configurada por el propietario. La contraseña se comprueba en el servidor y no se incluye en el README ni en el código del navegador. No hace falta activar la cámara para administrar.
+En la versión web, abrir directamente **`/admin`** (por ejemplo, `http://localhost:8081/admin` en desarrollo) e ingresar la contraseña configurada por el propietario. La interfaz pública no muestra un enlace al panel. La contraseña se comprueba en el servidor y no se incluye en el README ni en el código del navegador. No hace falta activar la cámara para administrar. El acceso nativo existente conserva las cinco pulsaciones del logo en un máximo de 3,5 segundos.
 
 | Sección | Herramientas | Alcance |
 | --- | --- | --- |
@@ -201,7 +236,7 @@ Pulsar **cinco veces el logo de DeafApp en un máximo de 3,5 segundos**, desde b
 
 La sesión administrativa dura dos horas y permanece en memoria. Salir del panel, cerrar sesión o recargar exige volver a entrar. Las operaciones comprueban la sesión y la versión de la grabación para evitar sobrescribir una revisión más reciente.
 
-Los materiales y las pruebas se concentran en el panel privado. El antiguo acceso por `/#admin` y la sección pública «Visualizador» no describen el acceso actual.
+Los materiales y las pruebas se concentran en el panel privado. Para publicar la exportación web, el alojamiento debe servir `index.html` también al abrir `/app` y `/admin` (`public/_redirects` ya incluye esas reglas para Cloudflare); la sesión continúa validándose en el servidor. El antiguo acceso por `/#admin` y la sección pública «Visualizador» no describen el acceso actual.
 
 Instalación y detalles de moderación: [admin/README.md](admin/README.md).
 

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@supabase/supabase-js": "^2.110.7",
     "expo": "~57.0.7",
     "expo-av": "^16.0.8",
@@ -10,6 +11,8 @@
     "expo-file-system": "~57.0.1",
     "expo-speech": "~57.0.1",
     "expo-status-bar": "~57.0.1",
+    "motion": "^14.0.0",
+    "ogl": "^1.0.11",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.0",
@@ -20,6 +23,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "web:mock-admin": "node scripts/web-mock-admin.cjs",
     "postinstall": "node scripts/patch-expo-camera.cjs",
     "sources:import": "node scripts/import-public-lsch.mjs",
     "dataset:sync": "node scripts/sync-lsch-recordings.mjs",
@@ -29,7 +33,7 @@
     "admin:snapshot": "node scripts/build-admin-snapshot.mjs",
     "test:admin": "node --test tests/adminAccess.test.mjs tests/adminClient.test.mjs",
     "test:model-training": "node --test tests/modelTraining.test.mjs tests/browserDataset.test.mjs tests/legacyRecovery.test.mjs",
-    "test:training": "node --test tests/trainingCapture.test.mjs tests/datasetPreparation.test.mjs tests/sourceCatalog.test.mjs tests/recordingSubmission.test.mjs"
+    "test:training": "node --test tests/trainingCapture.test.mjs tests/datasetPreparation.test.mjs tests/sourceCatalog.test.mjs tests/recordingSubmission.test.mjs tests/myContributions.test.mjs tests/appRoutes.test.mjs tests/translator.test.mjs"
   },
   "private": true
 }

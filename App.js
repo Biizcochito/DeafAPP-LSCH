@@ -24,34 +24,49 @@ import { CATEGORIAS } from "./signCatalog";
 import { createTrainingCapture, captureTrackingSample, makeParticipantId } from "./trainingCapture";
 import { useRecordingSource } from "./RecordingProfiles";
 import AdminPanel from "./AdminPanel";
+import WelcomeScreen from "./WelcomeScreen";
+import AppWorkspace, { CameraPermission } from "./AppWorkspace";
+import { themeWebStyles } from "./appTheme";
+import TranslatorScreen from "./TranslatorScreen";
 import { createHiddenAdminEntry } from "./adminAccess";
+import { addContribution, emptyContributions, sanitizeContributions } from "./myContributions";
+import { myContributionsStore } from "./myContributionsStore";
+import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "./appRoutes";
+import { RecordingStage, RecordingReview, RecordingDone } from "./RecordingScreens";
+import { toneFor } from "./ui/categoryTones";
+import { displayWord as nombreDeSeña } from "./ui/signNames";
 
 const { width, height } = Dimensions.get("window");
 
 if (typeof document !== "undefined") {
-  document.body.style.backgroundColor = "#0F0F1E";
+  document.body.style.backgroundColor = "#080c0a";
   document.body.style.margin = "0";
-  document.documentElement.style.backgroundColor = "#0F0F1E";
+  document.documentElement.style.backgroundColor = "#080c0a";
   const style = document.createElement("style");
-  style.textContent = `::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #1A1A2E; } ::-webkit-scrollbar-thumb { background: #E94560; border-radius: 4px; }`;
+  style.textContent = `::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #080c0a; } ::-webkit-scrollbar-thumb { background: #2c3d33; border-radius: 4px; }`;
   document.head.appendChild(style);
 
   // Logo/ícono de la pestaña del navegador
-  document.title = "DeafApp 🤟";
-  const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#0F0F1E"/><text x="50%" y="58%" font-size="55" text-anchor="middle" dominant-baseline="middle">🤟</text></svg>`;
+  document.title = "DeafApp — Lengua de Señas Chilena";
   let favicon = document.querySelector("link[rel='icon']");
   if (!favicon) {
     favicon = document.createElement("link");
     favicon.rel = "icon";
     document.head.appendChild(favicon);
   }
-  favicon.href = `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`;
+  favicon.href = "/brand/deafapp-mark.svg";
 }
 
 
 const SUPABASE_URL = "https://didlffnluqqurelgnqdp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZGxmZm5sdXFxdXJlbGducWRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MDMwNTYsImV4cCI6MjA5OTk3OTA1Nn0.G6MqUFXNJleUTBtZu7kQb58E-rGWk3w-rLbvRu6xOVE";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { global: { fetch: createTimedFetch(fetch.bind(globalThis)) } });
+
+// Panel de administración simulado, solo para revisar la interfaz en local (npm run web:mock-admin).
+// Exige la variable de entorno y localhost; en el dominio publicado nunca se activa.
+const adminBackend = process.env.EXPO_PUBLIC_ADMIN_MOCK === "1" && Platform.OS === "web" && typeof window !== "undefined" &&
+  /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)
+  ? require("./adminMock").createMockAdminBackend() : supabase;
 
 // Algunos navegadores (sobre todo la cámara en versión web) ya devuelven el base64
 // con el prefijo "data:image/..." incluido. Esta función evita duplicarlo.
@@ -126,8 +141,11 @@ export default function App() {
     viewportWidth: viewport.width,
     viewportHeight: viewport.height,
   }) : undefined;
+  // La cámara conserva su proporción; solo se acota el ancho para que quepan guía, cámara y acción principal.
+  const proporcionCamara = estiloCamaraWeb?.aspectRatio || 4 / 3;
+  const anchoCamara = estiloCamaraWeb ? Math.max(220, Math.min(estiloCamaraWeb.maxWidth, (viewport.height - (proporcionCamara < 1 ? 330 : 200)) * proporcionCamara)) : undefined;
   const [permission, requestPermission] = useCameraPermissions();
-  const [pantalla,   setPantalla]   = useState("bienvenida");
+  const [pantalla,   setPantalla]   = useState(() => Platform.OS === "web" && typeof window !== "undefined" ? pantallaDe(window.location.pathname) : "bienvenida");
   const entradaAdminRef = useRef(null);
   if (!entradaAdminRef.current) entradaAdminRef.current = createHiddenAdminEntry();
   const pulsarLogo = () => {
@@ -137,6 +155,9 @@ export default function App() {
   const [catActual,  setCatActual]  = useState(null);
   const [señaActual, setSeñaActual] = useState(null);
   const [conteos,    setConteos]    = useState({});
+  const [estadoConteos, setEstadoConteos] = useState("loading");
+  const [aportes, setAportes] = useState(emptyContributions);
+  const aportesRef = useRef(aportes);
   const [countdown,  setCountdown]  = useState(null);
   const [preparando, setPreparando] = useState(false);
   const [camaraSesion, setCamaraSesion] = useState(0);
@@ -231,6 +252,7 @@ export default function App() {
   const [mensajeFeedback, setMensajeFeedback] = useState("");
   const [enviandoFeedback,setEnviandoFeedback]= useState(false);
   const [exitoFeedback,   setExitoFeedback]   = useState(false);
+  const [errorFeedback, setErrorFeedback] = useState("");
 
   // Revisión comunitaria
 
@@ -302,6 +324,44 @@ export default function App() {
     return () => clearInterval(intervalo);
   }, []);
 
+  // Aportes de esta persona en este dispositivo: la web no muestra cifras globales ni estado de revisión.
+  useEffect(() => {
+    let vigente = true;
+    myContributionsStore.load().then(guardado => {
+      if (!vigente) return;
+      aportesRef.current = sanitizeContributions(guardado);
+      setAportes(aportesRef.current);
+    });
+    return () => { vigente = false; };
+  }, []);
+
+  const registrarAporte = async draft => {
+    const siguiente = addContribution(aportesRef.current, draft);
+    if (siguiente === aportesRef.current) return;
+    aportesRef.current = siguiente;
+    setAportes(siguiente);
+    await myContributionsStore.save(siguiente);
+  };
+
+  // En la web "/" informa, "/app" es la app y "/admin" la administración; Atrás y Adelante respetan esas rutas.
+  const rutaInicialRef = useRef(true);
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof window === "undefined") return;
+    document.title = tituloDe(pantalla);
+    const destino = rutaDe(pantalla);
+    if (!mismaRuta(window.location.pathname, destino)) window.history[rutaInicialRef.current ? "replaceState" : "pushState"](null, "", destino);
+    rutaInicialRef.current = false;
+  }, [pantalla]);
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof window === "undefined") return;
+    const alNavegar = () => setPantalla(actual => {
+      const destino = pantallaDe(window.location.pathname);
+      return destino === "home" && rutaDe(actual) === "/app" ? actual : destino;
+    });
+    window.addEventListener("popstate", alNavegar);
+    return () => window.removeEventListener("popstate", alNavegar);
+  }, []);
+
   useEffect(() => {
     if (capturando) {
       Animated.loop(
@@ -316,28 +376,36 @@ export default function App() {
   }, [capturando]);
 
   const cargarConteos = async () => {
+    if (Platform.OS === "web") return; // La web ya no muestra conteos globales.
+    setEstadoConteos("loading");
     try {
-      const { data } = await supabase.from("grabaciones").select("label").eq("aprobada", true);
+      const { data, error: falloConteos } = await supabase.from("grabaciones").select("label").eq("aprobada", true);
+      if (falloConteos || !data) throw falloConteos || new Error("No se pudo cargar el progreso.");
       if (data) {
         const c = {};
         data.forEach(r => { c[r.label] = (c[r.label] || 0) + 1; });
         setConteos(c);
+        setEstadoConteos("ready");
       }
-    } catch (e) { console.log("Error conteos:", e); }
+    } catch (e) { setEstadoConteos("error"); console.log("Error conteos:", e); }
   };
 
   const enviarFeedback = async () => {
-    if (!mensajeFeedback.trim()) return;
+    if (!mensajeFeedback.trim() || enviandoFeedback) return;
     setEnviandoFeedback(true);
+    setErrorFeedback("");
+    setExitoFeedback(false);
     try {
-      await supabase.from("feedback").insert({
+      const { error: falloFeedback } = await supabase.from("feedback").insert({
         tipo:    tipoFeedback,
         mensaje: mensajeFeedback.trim(),
       });
+      if (falloFeedback) throw falloFeedback;
       setExitoFeedback(true);
       setMensajeFeedback("");
       setTimeout(() => setExitoFeedback(false), 3000);
     } catch (e) {
+      setErrorFeedback("No pudimos enviar tu mensaje. Lo conservamos para que puedas reintentarlo.");
       console.log("Error feedback:", e);
     }
     setEnviandoFeedback(false);
@@ -488,6 +556,7 @@ export default function App() {
           await guardarBorradorLocal(updated);
         },
       }));
+      try { await registrarAporte(draft); } catch { /* El resumen de aportes es opcional: el envío ya se completó. */ }
       await guardarBorradorLocal({ ...borradorRef.current, submitted: true });
       try { await recordingDraftStore.remove(draft.id); } catch { /* The submitted marker prevents restoration as pending. */ }
       borradorRef.current = null;
@@ -504,6 +573,15 @@ export default function App() {
   };
 
   if (pantalla === "vistaPrevia" && borrador) {
+    if (Platform.OS === "web") {
+      const categoriaBorrador = CATEGORIAS.find(c => c.id === borrador.category) || catActual;
+      return <RecordingReview word={nombreDeSeña(borrador.label)} category={categoriaBorrador} tone={toneFor(CATEGORIAS, categoriaBorrador)} camMax={anchoCamara}
+        ratio={borrador.frameAspectRatio || 4 / 3} frameUri={armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0])}
+        index={fotogramaVista} total={borrador.frames.length} playing={reproduciendo} seconds={(borrador.frames.length * borrador.intervalMs / 1000).toFixed(1)}
+        onTogglePlay={() => setReproduciendo(value => !value)} onBack={() => setPantalla("categoria")} onLater={() => setPantalla("categoria")}
+        onSend={enviarBorrador} onRepeat={() => { setReproduciendo(false); setRepitiendo(true); setError(null); setProgreso(0); setPantalla("grabar"); }}
+        sending={subiendo} failed={envioFallido} saved={guardadoLocal} localMessage={mensajeLocal} error={error} />;
+    }
     return (
       <SafeAreaView style={styles.root}>
         <StatusBar barStyle="light-content" />
@@ -537,7 +615,7 @@ export default function App() {
           {error && <Text accessibilityRole="alert" style={styles.errorTexto}>{error}</Text>}
           <View style={styles.grabarBotones}>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel={envioFallido ? "Reintentar envío" : "Enviar seña"} disabled={subiendo} onPress={enviarBorrador} style={[styles.btnOtraVez, styles.previewAccion, subiendo && { opacity: 0.5 }]}>
-              <Text style={styles.btnTextoBlanco}>{subiendo ? "Enviando tu seña…" : envioFallido ? "Reintentar envío" : "Enviar seña"}</Text>
+              <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>{subiendo ? "Enviando tu seña…" : envioFallido ? "Reintentar envío" : "Enviar seña"}</Text>
             </TouchableOpacity>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Repetir grabación" disabled={subiendo} style={[styles.btnVolver, styles.previewAccion, subiendo && { opacity: 0.5 }]} onPress={() => {
               setReproduciendo(false); setRepitiendo(true); setError(null); setProgreso(0); setPantalla("grabar");
@@ -555,6 +633,10 @@ export default function App() {
   }
 
   if (pantalla === "envioListo") {
+    if (Platform.OS === "web") {
+      return <RecordingDone word={nombreDeSeña(señaActual)} tone={toneFor(CATEGORIAS, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
+        onAgain={() => abrirGrabacion(señaActual)} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { setPantalla("categoria"); setExito(false); }} />;
+    }
     return (
       <SafeAreaView style={[styles.root, styles.centrado]}>
         <StatusBar barStyle="light-content" />
@@ -563,7 +645,7 @@ export default function App() {
         <Text style={styles.instruccion}>Tu seña «{señaActual}» fue enviada para revisión.</Text>
         <View style={styles.grabarBotones}>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel="Grabar otra vez" style={[styles.btnOtraVez, styles.previewAccion]} onPress={() => abrirGrabacion(señaActual)}>
-            <Text style={styles.btnTextoBlanco}>Grabar otra vez</Text>
+            <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>Grabar otra vez</Text>
           </TouchableOpacity>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" style={[styles.btnVolver, styles.previewAccion]} onPress={() => { setPantalla("categoria"); setExito(false); }}>
             <Text style={styles.btnTextoGris}>‹ Volver a la lista</Text>
@@ -573,7 +655,28 @@ export default function App() {
     );
   }
 
-  if (pantalla === "admin") return <AdminPanel client={supabase} onExit={() => setPantalla("home")} onModerated={cargarConteos} />;
+  if (pantalla === "admin") return <AdminPanel client={adminBackend} onExit={() => {
+    if (Platform.OS === "web" && typeof window !== "undefined") window.history.replaceState(null, "", "/app");
+    setPantalla("home");
+  }} onModerated={cargarConteos} />;
+
+  // Traductor (beta): una seña por clip, resuelta por la API de LSCh (ver translator.js). Se abre desde «Más» (web) o el inicio (celular).
+  if (pantalla === "traductor") return <TranslatorScreen onBack={() => setPantalla(Platform.OS === "web" ? "mas" : "home")} />;
+
+  if (Platform.OS === "web" && ["home", "categoria", "aportes", "mas", "ayuda", "feedback"].includes(pantalla)) {
+    return <AppWorkspace screen={pantalla} navigate={setPantalla} categories={CATEGORIAS} category={catActual}
+      contributions={aportes.items}
+      pending={borrador} onResume={() => mostrarVistaPrevia()}
+      onCategory={cat => { setCatActual(cat); setPantalla("categoria"); }}
+      onRecord={(word, cat) => { setCatActual(cat); abrirGrabacion(word); }}
+      feedback={{ type:tipoFeedback, setType:setTipoFeedback, message:mensajeFeedback, setMessage:setMensajeFeedback,
+        busy:enviandoFeedback, success:exitoFeedback, error:errorFeedback, send:enviarFeedback }} />;
+  }
+
+  if (Platform.OS === "web" && pantalla === "grabar" && !permission?.granted) {
+    return <CameraPermission onAllow={requestPermission} loading={!permission} pending={borrador}
+      onResume={() => mostrarVistaPrevia()} onBack={() => setPantalla("categoria")} />;
+  }
 
   if (pantalla === "grabar" && !permission) return <View style={styles.root} />;
   if (pantalla === "grabar" && !permission.granted) {
@@ -596,69 +699,7 @@ export default function App() {
 
   // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
-    return (
-      <SafeAreaView style={styles.root}>
-        <StatusBar barStyle="light-content" />
-        <ScrollView contentContainerStyle={styles.bienvenidaScroll}>
-          <Text style={styles.bienvenidaEmoji}>🤟</Text>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="DeafApp" onPress={pulsarLogo} activeOpacity={0.8}>
-            <Text style={styles.bienvenidaTitulo}>Bienvenidx a DeafApp</Text>
-          </TouchableOpacity>
-          <Text style={styles.bienvenidaSubtitulo}>Lengua de Señas Chilena 🇨🇱</Text>
-          <View style={[styles.bienvenidaCard, { borderColor: "#F1C40F" }]}>
-            <Text style={styles.bienvenidaSeccion}>⚠️ Proyecto en fase BETA</Text>
-            <Text style={styles.bienvenidaTexto}>
-              Esta app está en desarrollo y puede presentar cambios, errores o ajustes seguido.
-            </Text>
-          </View>
-          <View style={styles.bienvenidaCard}>
-            <Text style={styles.bienvenidaSeccion}>¿Qué es esto?</Text>
-            <Text style={styles.bienvenidaTexto}>
-              DeafApp ayuda a crear una IA que entienda la Lengua de Señas Chilena (LSCh)🇨🇱{"\n"}
-              Te servira en el dia a dia para hablar con cualquier persona oyente sin problemas
-            </Text>
-          </View>
-          <View style={styles.bienvenidaCard}>
-            <Text style={styles.bienvenidaSeccion}>🤟 ¿Cómo funciona?</Text>
-            <Text style={styles.bienvenidaTexto}>
-             Tu grabas una seña.
-             Esa grabacion ayuda a enseñar a la IA.
-             Mientras mas personas participen, Mas rapido podras usar la app en tu dia a dia.
-            </Text>
-          </View>
-          <View style={styles.bienvenidaCard}>
-            <Text style={styles.bienvenidaSeccion}>✅ ¿Qué es "validar"?</Text>
-            <Text style={styles.bienvenidaTexto}>
-              Las grabaciones se envían para revisión.{"\n"}
-              El equipo administrador comprueba la seña y decide si se aprueba o necesita correcciones.{"\n"}
-              Graba la palabra solicitada y revisa tu video antes de enviarlo.
-            </Text>
-          </View>
-          <View style={styles.bienvenidaCard}>
-            <Text style={styles.bienvenidaSeccion}>🚀 En el futuro</Text>
-            <Text style={styles.bienvenidaTexto}>
-              La app podrá:{"\n"}
-              • Traducir señas a texto.{"\n"}
-              • Pasar señas a voz.{"\n"}
-              • Funcionar sin internet.{"\n"}
-              • Hablar con cualquier persona oyente sin problemas.
-            </Text>
-          </View>
-          <View style={[styles.bienvenidaCard, { borderColor: "#E94560" }]}>
-            <Text style={styles.bienvenidaSeccion}>❤️ Tu Ayuda importa</Text>
-            <Text style={styles.bienvenidaTexto}>
-              Cada video ayuda a mejorar la app.
-              Asi sera mas facil la comunicacion entre personas sordas y oyentes{"\n"}
-              ¡Gracias por ser parte de este proyecto 🤟!
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.btnComenzar} onPress={() => setPantalla("home")}>
-            <Text style={styles.btnComenzarTexto}>¡Comenzar a Grabar! 🤟</Text>
-          </TouchableOpacity>
-          <View style={{ height: 40 }} />
-        </ScrollView>
-      </SafeAreaView>
-    );
+    return <WelcomeScreen onBegin={() => setPantalla("home")} onLogo={Platform.OS === "web" ? undefined : pulsarLogo} />;
   }
 
   // ── FEEDBACK ─────────────────────────────────────────────────────
@@ -735,18 +776,15 @@ export default function App() {
   // ── REVISAR (validación comunitaria) ────────────────────────────
   if (pantalla === "grabar") {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
-    return (
-      <SafeAreaView style={styles.root}>
-        <StatusBar barStyle="light-content" />
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.grabarContenido}>
-        <View style={styles.grabarHeader}>
-          <TouchableOpacity onPress={() => { cancelarCaptura(); if (repitiendo && borradorRef.current) mostrarVistaPrevia(); else setPantalla("categoria"); setExito(false); setError(null); }} style={styles.btnBack}>
-            <Text style={styles.btnBackTexto}>‹</Text>
-          </TouchableOpacity>
-          <Text style={styles.grabarTitulo}>{señaActual?.toUpperCase()}</Text>
-          <View style={{ width: 44 }} />
-        </View>
-        <View ref={contenedorCamaraRef} style={[styles.camaraBox, estiloCamaraWeb]}>
+    const volverDeGrabar = () => { cancelarCaptura(); if (repitiendo && borradorRef.current) mostrarVistaPrevia(); else setPantalla("categoria"); setExito(false); setError(null); };
+    const textoInstruccion = capturando
+      ? "¡Haz la seña frente a la cámara!"
+      : preparando ? "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos."
+      : countdown !== null ? "Mantén al menos una mano trazada. Graba al terminar la cuenta atrás."
+      : `Pulsa Preparar grabación y después coloca ambas manos frente a la cámara para grabar: "${señaActual}".`;
+    // La cámara y sus avisos son los mismos en web y nativo; solo cambia el marco que los rodea.
+    const camaraNodo = (
+        <View ref={contenedorCamaraRef} style={[styles.camaraBox, estiloCamaraWeb, Platform.OS === "web" && { maxWidth: anchoCamara, borderRadius: 22 }]}>
           <CameraView key={camaraSesion} ref={cameraRef} style={styles.camara} facing="front" onMountError={failure => setError(Platform.OS === "web" ? cameraStartupMessage(failure) : failure.message || "No se pudo abrir la cámara. Pulsa Reiniciar cámara.")} />
           <CameraLandmarks cameraContainerRef={contenedorCamaraRef} enabled={trazadoActivo} onStatus={setEstadoTrazado} onTracking={actualizarTrazado} />
           {gestoBloqueado && (
@@ -776,6 +814,37 @@ export default function App() {
             <View style={[styles.progresoRelleno, { width: `${pctProgreso}%` }]} />
           </View>
         </View>
+    );
+    if (Platform.OS === "web") {
+      const sinPreparar = !borradorRecuperado || !origenGrabacion;
+      const enProceso = preparando || countdown !== null || capturando;
+      const reposo = !enProceso && !subiendo && !exito;
+      return <RecordingStage word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS, catActual)} onBack={volverDeGrabar}
+        camera={camaraNodo} camMax={anchoCamara}
+        step={capturando ? 3 : countdown !== null ? 2 : preparando ? 1 : 0}
+        instruction={textoInstruccion} repeating={repitiendo}
+        help={trazadoActivo && ayudaManos && !gestoBloqueado && !capturando && !subiendo && !exito && !error ? ayudaManos : null}
+        error={error}
+        tracing={{ on: trazadoActivo, status: estadoTrazado, toggle: () => setTrazadoActivo(activo => !activo) }}
+        onRestartCamera={() => { setCamaraSesion(value => value + 1); setError(null); }}
+        locked={enProceso || subiendo}
+        primary={reposo ? { label: sinPreparar ? "Preparando grabación…" : gestoBloqueado ? "Grabación bloqueada" : "Preparar grabación", disabled: gestoBloqueado || sinPreparar, onPress: iniciarCaptura }
+          : exito ? { label: "Grabar otra vez", disabled: false, onPress: () => { setExito(false); setProgreso(0); } } : null}
+        canCancel={enProceso} onCancel={cancelarCaptura}
+        busy={capturando ? `Capturando... ${progreso}/${TOTAL_FRAMES}` : subiendo ? "Subiendo tu seña..." : null} />;
+    }
+    return (
+      <SafeAreaView style={styles.root}>
+        <StatusBar barStyle="light-content" />
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.grabarContenido}>
+        <View style={styles.grabarHeader}>
+          <TouchableOpacity onPress={volverDeGrabar} style={styles.btnBack}>
+            <Text style={styles.btnBackTexto}>‹</Text>
+          </TouchableOpacity>
+          <Text style={styles.grabarTitulo}>{señaActual?.toUpperCase()}</Text>
+          <View style={{ width: 44 }} />
+        </View>
+        {camaraNodo}
         {Platform.OS === "web" && (
           <View style={styles.trazadoPanel}>
             <TouchableOpacity
@@ -795,13 +864,7 @@ export default function App() {
             </TouchableOpacity>
           </View>
         )}
-        <Text style={styles.instruccion}>
-          {capturando
-            ? "¡Haz la seña frente a la cámara!"
-            : preparando ? "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos."
-            : countdown !== null ? "Mantén al menos una mano trazada. Graba al terminar la cuenta atrás."
-            : `Pulsa Preparar grabación y después coloca ambas manos frente a la cámara para grabar: "${señaActual}".`}
-        </Text>
+        <Text style={styles.instruccion}>{textoInstruccion}</Text>
         {repitiendo && <Text style={styles.trazadoEstado}>Conservaremos tu grabación anterior hasta que termines una nueva.</Text>}
         {Platform.OS === "web" && trazadoActivo && ayudaManos && !gestoBloqueado && !capturando && !subiendo && !exito && !error && (
           <View style={styles.ayudaManosBox}>
@@ -838,7 +901,7 @@ export default function App() {
           {exito && (
             <View style={{ width: "100%", gap: 12 }}>
               <TouchableOpacity style={styles.btnOtraVez} onPress={() => { setExito(false); setProgreso(0); }}>
-                <Text style={styles.btnTextoBlanco}>⊙ Grabar otra vez</Text>
+                <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>⊙ Grabar otra vez</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnVolver} onPress={() => { setPantalla("categoria"); setExito(false); }}>
                 <Text style={styles.btnTextoGris}>‹ Volver a la lista</Text>
@@ -966,6 +1029,10 @@ export default function App() {
           ))}
         </View>
 
+        <TouchableOpacity style={styles.btnTraductor} onPress={() => setPantalla("traductor")}>
+          <Text style={styles.btnTraductorTexto}>🤟 Probar el traductor (beta)</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.btnFeedback} onPress={() => setPantalla("feedback")}>
           <Text style={styles.btnFeedbackTexto}>💬 Que opinas tu?</Text>
         </TouchableOpacity>
@@ -977,19 +1044,9 @@ export default function App() {
 }
 
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(themeWebStyles({
   root:    { flex: 1, backgroundColor: "#0F0F1E" },
   centrado:{ alignItems: "center", justifyContent: "center" },
-
-  bienvenidaScroll:    { alignItems: "center", paddingHorizontal: 20, paddingTop: 40, maxWidth: 600, alignSelf: "center", width: "100%" },
-  bienvenidaEmoji:     { fontSize: 70, marginBottom: 12 },
-  bienvenidaTitulo:    { fontSize: 30, fontWeight: "900", color: "#FFF", textAlign: "center" },
-  bienvenidaSubtitulo: { fontSize: 14, color: "#888", marginBottom: 24, textAlign: "center" },
-  bienvenidaCard:      { backgroundColor: "#1A1A2E", borderRadius: 16, padding: 18, marginBottom: 14, width: "100%", borderWidth: 1, borderColor: "#333" },
-  bienvenidaSeccion:   { fontSize: 16, fontWeight: "800", color: "#FFF", marginBottom: 8 },
-  bienvenidaTexto:     { fontSize: 14, color: "#AAA", lineHeight: 22 },
-  btnComenzar:         { backgroundColor: "#E94560", borderRadius: 20, paddingVertical: 18, paddingHorizontal: 40, marginTop: 10, width: "100%", alignItems: "center" },
-  btnComenzarTexto:    { fontSize: 18, fontWeight: "900", color: "#FFF" },
 
   homeHeader:     { alignItems: "center", paddingTop: 12, paddingBottom: 4 },
   homeTitulo:     { fontSize: 28, fontWeight: "900", color: "#FFF" },
@@ -1023,6 +1080,9 @@ const styles = StyleSheet.create({
 
   btnFeedback:     { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#F39C12" },
   btnFeedbackTexto:{ fontSize: 16, fontWeight: "700", color: "#F39C12" },
+
+  btnTraductor:     { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#4ECDC4" },
+  btnTraductorTexto:{ fontSize: 16, fontWeight: "700", color: "#4ECDC4" },
 
   btnRevisar:          { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#3498DB" },
   btnRevisarLinkTexto: { fontSize: 16, fontWeight: "700", color: "#3498DB" },
@@ -1128,4 +1188,4 @@ const styles = StyleSheet.create({
   permisoSub:   { fontSize: 15, color: "#888", textAlign: "center", marginTop: 6, marginBottom: 40 },
   btnPrimario:  { backgroundColor: "#E94560", borderRadius: 16, paddingVertical: 16, paddingHorizontal: 40 },
   btnPrimarioTexto:{ fontSize: 17, fontWeight: "700", color: "#FFF" },
-});
+}, Platform.OS === "web"));

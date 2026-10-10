@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, StyleSheet } from "react-native";
+import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Platform } from "react-native";
+import { AdminLogin } from "./AppWorkspace";
 import { ADMIN_PAGE_SIZE, MODERATION_LABELS, createAdminClient, recordingPreview, validAdminSession } from "./adminClient";
 import LschSources from "./LschSources";
 import TrainingWorkbench from "./TrainingWorkbench";
@@ -124,6 +125,8 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   const picked = rows.filter(row => selected.includes(row.id));
   const preparation = overview?.preparation;
   const coverage = (preparation?.classes || []).filter(item => !coverageQuery.trim() || `${item.category} ${item.label}`.toLocaleLowerCase("es").includes(coverageQuery.toLocaleLowerCase("es").trim()));
+
+  if (!session && Platform.OS === "web") return <AdminLogin password={password} setPassword={setPassword} login={login} exit={exit} busy={busy} error={error} />;
 
   if (!session) return <SafeAreaView style={styles.root}>
     <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">

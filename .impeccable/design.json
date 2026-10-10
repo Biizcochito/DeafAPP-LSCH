@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-08T15:00:26Z",
+  "title": "Design System: DeafApp — app de participación web",
+  "extensions": {
+    "colorMeta": {
+      "darkgreen": {
+        "role": "neutral",
+        "displayName": "Carbón verdoso",
+        "tonalRamp": [
+          "oklch(15% 0.01189 167.37)",
+          "oklch(26.43% 0.01189 167.37)",
+          "oklch(37.86% 0.01189 167.37)",
+          "oklch(49.29% 0.01189 167.37)",
+          "oklch(60.71% 0.01189 167.37)",
+          "oklch(72.14% 0.01189 167.37)",
+          "oklch(83.57% 0.01189 167.37)",
+          "oklch(95% 0.01189 167.37)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Verde de superficie",
+        "tonalRamp": [
+          "oklch(15% 0.01790 158.58)",
+          "oklch(26.43% 0.01790 158.58)",
+          "oklch(37.86% 0.01790 158.58)",
+          "oklch(49.29% 0.01790 158.58)",
+          "oklch(60.71% 0.01790 158.58)",
+          "oklch(72.14% 0.01790 158.58)",
+          "oklch(83.57% 0.01790 158.58)",
+          "oklch(95% 0.01790 158.58)"
+        ]
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "Verde elevado",
+        "tonalRamp": [
+          "oklch(15% 0.02042 159.37)",
+          "oklch(26.43% 0.02042 159.37)",
+          "oklch(37.86% 0.02042 159.37)",
+          "oklch(49.29% 0.02042 159.37)",
+          "oklch(60.71% 0.02042 159.37)",
+          "oklch(72.14% 0.02042 159.37)",
+          "oklch(83.57% 0.02042 159.37)",
+          "oklch(95% 0.02042 159.37)"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Crema",
+        "tonalRamp": [
+          "oklch(15% 0.00984 87.47)",
+          "oklch(26.43% 0.00984 87.47)",
+          "oklch(37.86% 0.00984 87.47)",
+          "oklch(49.29% 0.00984 87.47)",
+          "oklch(60.71% 0.00984 87.47)",
+          "oklch(72.14% 0.00984 87.47)",
+          "oklch(83.57% 0.00984 87.47)",
+          "oklch(95% 0.00984 87.47)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Salvia tenue",
+        "tonalRamp": [
+          "oklch(15% 0.01462 155.52)",
+          "oklch(26.43% 0.01462 155.52)",
+          "oklch(37.86% 0.01462 155.52)",
+          "oklch(49.29% 0.01462 155.52)",
+          "oklch(60.71% 0.01462 155.52)",
+          "oklch(72.14% 0.01462 155.52)",
+          "oklch(83.57% 0.01462 155.52)",
+          "oklch(95% 0.01462 155.52)"
+        ]
+      },
+      "lime": {
+        "role": "primary",
+        "displayName": "Lima vivo",
+        "tonalRamp": [
+          "oklch(15% 0.16522 119.79)",
+          "oklch(26.43% 0.16522 119.79)",
+          "oklch(37.86% 0.16522 119.79)",
+          "oklch(49.29% 0.16522 119.79)",
+          "oklch(60.71% 0.16522 119.79)",
+          "oklch(72.14% 0.16522 119.79)",
+          "oklch(83.57% 0.16522 119.79)",
+          "oklch(95% 0.16522 119.79)"
+        ]
+      },
+      "coral": {
+        "role": "secondary",
+        "displayName": "Coral cálido",
+        "tonalRamp": [
+          "oklch(15% 0.10261 34.35)",
+          "oklch(26.43% 0.10261 34.35)",
+          "oklch(37.86% 0.10261 34.35)",
+          "oklch(49.29% 0.10261 34.35)",
+          "oklch(60.71% 0.10261 34.35)",
+          "oklch(72.14% 0.10261 34.35)",
+          "oklch(83.57% 0.10261 34.35)",
+          "oklch(95% 0.10261 34.35)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Verde de línea",
+        "tonalRamp": [
+          "oklch(15% 0.02346 156.95)",
+          "oklch(26.43% 0.02346 156.95)",
+          "oklch(37.86% 0.02346 156.95)",
+          "oklch(49.29% 0.02346 156.95)",
+          "oklch(60.71% 0.02346 156.95)",
+          "oklch(72.14% 0.02346 156.95)",
+          "oklch(83.57% 0.02346 156.95)",
+          "oklch(95% 0.02346 156.95)"
+        ]
+      },
+      "lime-hover": {
+        "role": "primary",
+        "displayName": "Lima luminoso",
+        "tonalRamp": [
+          "oklch(15% 0.14520 120.37)",
+          "oklch(26.43% 0.14520 120.37)",
+          "oklch(37.86% 0.14520 120.37)",
+          "oklch(49.29% 0.14520 120.37)",
+          "oklch(60.71% 0.14520 120.37)",
+          "oklch(72.14% 0.14520 120.37)",
+          "oklch(83.57% 0.14520 120.37)",
+          "oklch(95% 0.14520 120.37)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Título de pantalla",
+        "purpose": "Escala fija móvil con ajustes compactos y de escritorio."
+      },
+      "section": {
+        "displayName": "Cabecera de sección",
+        "purpose": "Catálogo y comunidad."
+      },
+      "title": {
+        "displayName": "Título de contenedor",
+        "purpose": "Resumen comunitario."
+      },
+      "row": {
+        "displayName": "Palabra",
+        "purpose": "Filas del catálogo."
+      },
+      "body": {
+        "displayName": "Texto base",
+        "purpose": "Base de lectura de la app de operación."
+      },
+      "field": {
+        "displayName": "Campo",
+        "purpose": "Búsqueda, contraseña y sugerencias."
+      },
+      "label": {
+        "displayName": "Acción",
+        "purpose": "Botón de participación."
+      },
+      "navigation": {
+        "displayName": "Destino de navegación",
+        "purpose": "Etiqueta de la barra inferior."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-navigation",
+        "value": "0 8px 28px rgba(0,0,0,.28)",
+        "purpose": "Separar la barra flotante del contenido."
+      }
+    ],
+    "motion": [
+      {
+        "name": "category-state",
+        "value": "background 180ms ease-out",
+        "purpose": "Hover y pulsación de categorías."
+      },
+      {
+        "name": "nav-state",
+        "value": "color 180ms ease-out, background 180ms ease-out",
+        "purpose": "Cambios de estado en la barra inferior."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media(prefers-reduced-motion:reduce)",
+        "purpose": "Eliminar transiciones y animaciones y establecer scroll inmediato en la app."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-max",
+        "value": "360px"
+      },
+      {
+        "name": "desktop-min",
+        "value": "700px"
+      },
+      {
+        "name": "short-mobile",
+        "value": "(max-height:650px) and (max-width:699px)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Acción principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción lima con tinta oscura en la app de participación.",
+      "html": "<div class=\"ds-canvas\"><button type=\"button\" class=\"ds-button\">Elegir una seña<svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m14 7 5 5-5 5\"/></svg></button></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-button{display:flex; justify-content:space-between; align-items:center; gap:18px; background:var(--app-lime)!important; color:var(--app-bg)!important; border-radius:12px; padding:14px 19px; min-height:52px; font-size:14px!important; font-weight:600!important;}.ds-button:hover:not(:disabled){background:#e3ff8b!important;}.ds-secondary{color:var(--app-text)!important; background:var(--app-surface)!important;}.ds-secondary:hover:not(:disabled){background:var(--app-raised)!important;}"
+    },
+    {
+      "name": "Acción secundaria",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Superficie oscura con texto crema; conservar el contraste en revisión.",
+      "html": "<div class=\"ds-canvas\"><button type=\"button\" class=\"ds-button ds-secondary\">Revisar grabación pendiente<svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m14 7 5 5-5 5\"/></svg></button></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-button{display:flex; justify-content:space-between; align-items:center; gap:18px; background:var(--app-lime)!important; color:var(--app-bg)!important; border-radius:12px; padding:14px 19px; min-height:52px; font-size:14px!important; font-weight:600!important;}.ds-button:hover:not(:disabled){background:#e3ff8b!important;}.ds-secondary{color:var(--app-text)!important; background:var(--app-surface)!important;}.ds-secondary:hover:not(:disabled){background:var(--app-raised)!important;}"
+    },
+    {
+      "name": "Búsqueda",
+      "kind": "input",
+      "refersTo": "search",
+      "description": "Búsqueda de palabra o categoría con borde lima al enfocar.",
+      "html": "<div class=\"ds-canvas\"><div class=\"ds-search\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z\"/><path d=\"m15 15 6 6\"/></svg><input type=\"search\" aria-label=\"Buscar una seña o categoría\" placeholder=\"Buscar una seña o categoría\" autocomplete=\"off\"></div></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-search{display:flex; align-items:center; gap:11px; background:var(--app-surface); border:1px solid var(--app-line); border-radius:12px; min-height:52px; padding:0 15px; color:var(--app-muted); margin-bottom:22px;}.ds-search:focus-within{border-color:var(--app-lime);}.ds-search input{color:var(--app-text); width:100%; min-width:0; border:0; background:transparent; outline:none; padding:13px 0; font-size:16px;}.ds-search input::placeholder{color:var(--app-muted);opacity:1}.ds-search input::-webkit-search-cancel-button{display:none}"
+    },
+    {
+      "name": "Navegación inferior",
+      "kind": "nav",
+      "refersTo": "bottom-nav",
+      "description": "Primitiva de tres destinos; el posicionamiento fijo y la zona segura están documentados en Layout. El preview se presenta en el flujo del panel.",
+      "html": "<div class=\"ds-canvas\"><nav class=\"ds-nav\" aria-label=\"Navegación de la app\"><button type=\"button\" aria-current=\"page\"><span><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 7h4l2-3h4l2 3h4v13H4Z\"/><path d=\"M16 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z\"/></svg></span>Grabar</button><button type=\"button\"><span><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z\"/><path d=\"M6 21v-3a6 6 0 0 1 12 0v3\"/><path d=\"M4 7a3 3 0 0 0 0 6M20 7a3 3 0 0 1 0 6M2 21v-4M22 21v-4\"/></svg></span>Comunidad</button><button type=\"button\"><span><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h.01M12 12h.01M19 12h.01\"/></svg></span>Más</button></nav></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-nav{position:fixed; z-index:5; bottom:calc(14px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%); width:calc(100% - 32px); max-width:460px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); padding:8px; border-radius:16px; background:var(--app-raised); box-shadow:0 8px 28px rgba(0,0,0,.28);position:relative;bottom:auto;left:auto;transform:none;margin:auto}.ds-nav button{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:5px; min-height:58px; color:var(--app-muted); font-size:11px; font-weight:500; border-radius:10px; transition:color 180ms ease-out,background 180ms ease-out;}.ds-nav button span{display:grid; place-items:center; height:27px; width:48px;}.ds-nav button[aria-current=page]{color:var(--app-lime); background:var(--app-bg);}.ds-nav button:hover:not([aria-current]){background:var(--app-surface);}"
+    },
+    {
+      "name": "Filtros de categoría",
+      "kind": "chip",
+      "refersTo": "filter",
+      "description": "Selección mediante aria-pressed y contraste oscuro sobre lima.",
+      "html": "<div class=\"ds-canvas\"><div class=\"ds-filter\" aria-label=\"Filtrar señas\"><button type=\"button\" aria-pressed=\"true\">Todas</button><button type=\"button\" aria-pressed=\"false\">Necesitan aportes</button><button type=\"button\" aria-pressed=\"false\">Meta completa</button></div></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-filter{display:flex; flex-wrap:wrap; gap:7px; margin:22px 0 10px;}.ds-filter button{padding:9px 11px; min-height:44px; font-size:11px; border:1px solid var(--app-line); border-radius:10px; color:var(--app-muted);}.ds-filter button[aria-pressed=true]{background:var(--app-lime); color:var(--app-bg); border-color:var(--app-lime); font-weight:600;}.ds-filter button[aria-pressed=true]:focus-visible{outline-color:var(--app-coral);}@media(max-width:360px){.ds-filter{gap:5px}.ds-filter button{padding:9px;font-size:10px}}"
+    },
+    {
+      "name": "Categoría",
+      "kind": "card",
+      "refersTo": "category",
+      "description": "Botón táctil de categoría en estado de conteos todavía no listos.",
+      "html": "<div class=\"ds-canvas\"><button type=\"button\" class=\"ds-category\"><svg width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 12V6a2 2 0 0 1 4 0v6-8a2 2 0 0 1 4 0v9-6a2 2 0 0 1 4 0v8c0 5-3 7-7 7-2 0-4-1-5-3l-4-5a2 2 0 0 1 3-2l1 1\"/></svg><span class=\"ds-category-name\">Saludos</span><span class=\"ds-category-bottom\">Aportes por comprobar<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m9 5 7 7-7 7\"/></svg></span></button></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-category{text-align:left; padding:18px 15px 13px; border-radius:14px; background:var(--app-surface)!important; display:flex; flex-direction:column; align-items:flex-start; transition:background 180ms ease-out; min-width:0;width:100%;max-width:300px}.ds-category>svg{color:var(--app-muted); margin-bottom:16px;}.ds-category:hover{background:var(--app-raised)!important;}.ds-category:active{background:var(--app-line)!important;}.ds-category-name{font-size:14px; font-weight:600; line-height:1.4; min-height:40px;}.ds-category-bottom{display:flex; align-items:center; justify-content:space-between; width:100%; gap:5px; color:var(--app-muted); font-size:11px; border-top:1px solid var(--app-line); padding-top:10px; margin-top:15px;}@media(min-width:700px){.ds-category{padding:22px}.ds-category-name{min-height:0}}@media(max-width:360px){.ds-category{padding:15px 12px 12px}}"
+    },
+    {
+      "name": "Resumen comunitario",
+      "kind": "card",
+      "refersTo": "community-summary",
+      "description": "Cobertura comunitaria; muestra el estado sin datos en lugar de inventar cifras.",
+      "html": "<div class=\"ds-canvas\"><section class=\"ds-community\"><div class=\"ds-summary-title\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z\"/><path d=\"M6 21v-3a6 6 0 0 1 12 0v3\"/><path d=\"M4 7a3 3 0 0 0 0 6M20 7a3 3 0 0 1 0 6M2 21v-4M22 21v-4\"/></svg><h2>Cada aporte suma.</h2></div><p>Estas cifras corresponden a grabaciones aprobadas, no a tus aportes personales.</p><dl><div><dt>Grabaciones aprobadas</dt><dd>—</dd></div><div><dt>Categorías completas</dt><dd>—</dd></div></dl><div class=\"ds-coverage\"><div class=\"ds-coverage-label\"><span>Señas con meta completa</span><strong>—</strong></div><progress aria-label=\"Señas con meta completa\" value=\"0\" max=\"1\"></progress></div></section></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-coverage{margin:20px 0;}.ds-coverage-label{display:flex; justify-content:space-between; align-items:center; gap:16px; font-size:12px; color:var(--app-muted);}.ds-coverage-label strong{color:var(--app-text); font-weight:550; font-variant-numeric:tabular-nums;}.ds-coverage progress{display:block; width:100%; height:5px; appearance:none; border:0; background:var(--app-line); border-radius:4px; margin-top:9px; overflow:hidden;}.ds-coverage progress::-webkit-progress-bar{background:var(--app-line);}.ds-coverage progress::-webkit-progress-value{background:var(--app-lime);}.ds-coverage progress::-moz-progress-bar{background:var(--app-lime);}.ds-community{background:var(--app-surface); border-radius:16px; padding:23px;}.ds-summary-title{display:flex; align-items:center; gap:12px;}.ds-summary-title svg{color:var(--app-lime);}.ds-summary-title h2{font-size:21px; font-weight:600; letter-spacing:-.02em;margin:0}.ds-community>p{margin-top:13px; color:var(--app-muted); font-size:13px; max-width:65ch;margin-bottom:0}.ds-community dl{margin:22px 0;}.ds-community dl>div{display:flex; justify-content:space-between; gap:20px; font-size:13px; margin-top:12px;}.ds-community dt{color:var(--app-muted);}.ds-community dd{margin:0; font-weight:600; font-variant-numeric:tabular-nums;}.ds-community .ds-coverage{margin-bottom:0}"
+    },
+    {
+      "name": "Campo de sugerencia",
+      "kind": "input",
+      "refersTo": "feedback-field",
+      "description": "Textarea con etiqueta visible, foco coral y tipografía de 16px.",
+      "html": "<div class=\"ds-canvas\"><div class=\"ds-feedback\"><label for=\"ds-feedback-message\">Tu mensaje</label><textarea id=\"ds-feedback-message\" placeholder=\"Cuéntanos tu idea o describe lo que ocurrió…\" rows=\"6\" maxlength=\"3000\" required></textarea></div></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-feedback{max-width:620px}.ds-feedback label{font-size:14px;font-weight:550;display:block}.ds-feedback textarea{border:1px solid var(--app-line); background:var(--app-surface); color:var(--app-text); border-radius:12px; padding:14px; width:100%; margin-top:10px; resize:vertical; font-size:16px;box-sizing:border-box}.ds-feedback textarea::placeholder{color:var(--app-muted);opacity:1}"
+    },
+    {
+      "name": "Contraseña administrativa",
+      "kind": "input",
+      "refersTo": "password-field",
+      "description": "Campo del login separado de /admin con contraseña y autocomplete.",
+      "html": "<div class=\"ds-canvas\"><div class=\"ds-login\"><label for=\"ds-admin-password\">Contraseña</label><input id=\"ds-admin-password\" type=\"password\" autocomplete=\"current-password\" maxlength=\"72\" required></div></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-login{max-width:400px}.ds-login label{font-size:14px;font-weight:550;display:block}.ds-login input{border:1px solid var(--app-line); background:var(--app-surface); color:var(--app-text); border-radius:12px; padding:14px; width:100%; margin-top:10px; resize:vertical; font-size:16px;box-sizing:border-box}"
+    },
+    {
+      "name": "Aviso de actualización",
+      "kind": "custom",
+      "refersTo": "notice",
+      "description": "Aviso coral con texto y acción; la exploración permanece disponible.",
+      "html": "<div class=\"ds-canvas\"><div class=\"ds-notice\" role=\"status\"><p>No pudimos actualizar los aportes. Puedes explorar las señas y volver a intentarlo.</p><button type=\"button\">Reintentar</button></div></div>",
+      "css": "@font-face{font-family:Onest;src:url('/fonts/Onest-Variable.ttf') format('truetype');font-weight:100 900;font-display:swap;}.ds-canvas{--app-bg:#151c19;--app-surface:#1e2822;--app-raised:#28342d;--app-text:#f5f2eb;--app-muted:#bcc6bf;--app-line:#3b4940;--app-lime:#d6f36a;--app-coral:#f2a08c;font:400 15px/1.55 Onest,sans-serif;color:var(--app-text);background:var(--app-bg);padding:20px;color-scheme:dark}.ds-canvas button,.ds-canvas input,.ds-canvas textarea{font:inherit}.ds-canvas button{cursor:pointer;border:0;background:none;color:inherit}.ds-canvas button:disabled{opacity:.5;cursor:default}.ds-canvas :focus-visible{outline:3px solid var(--app-coral);outline-offset:4px}.ds-canvas input,.ds-canvas textarea{caret-color:var(--app-lime)}.ds-canvas svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-canvas *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}.ds-notice{background:var(--app-surface); border-radius:12px; padding:15px; font-size:13px; color:var(--app-coral); margin-bottom:20px;}.ds-notice p{margin:0}.ds-notice button{min-height:44px; text-decoration:underline; text-underline-offset:4px; padding:10px 0 0; font-weight:600;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Afiche cultural contemporáneo",
+    "overview": "La app conserva la marca y la paleta oscura y viva elegidas para DeafApp, y las traduce a una experiencia de contribución pensada primero para celular. Onest, superficies verdes y texto crema dan continuidad; la escala fija, las listas legibles y los controles táctiles hacen que buscar y grabar una seña resulte directo. Lima identifica acciones, selección y progreso; coral hace visibles avisos y foco.\n\nEl sistema normativo de este documento procede de AppWorkspace.web.js, AppWorkspace.css y los ajustes de presentación web de appTheme.js. Incluye catálogo, búsqueda, categorías, comunidad, ayuda, sugerencias, permiso de cámara y login web de /admin. La captura y revisión mantienen sus componentes React Native con la paleta adaptada en web. El panel administrativo autenticado y las pantallas nativas conservan sus estilos existentes; el login web sí usa este sistema. Las composiciones específicas están en .impeccable/surfaces/app.md.\n\nEl antecedente de bienvenida fue una portada con fotografía editorial ilustrativa, dos columnas en escritorio y apilado hasta 760px; de ella permanecen la paleta establecida, Onest y la marca SVG. Una edición concurrente reemplazó la bienvenida con Aurora, BlurText, RotatingText y otros componentes animados. Esa edición no forma parte de la implementación ni de la revisión de app registrada aquí: este documento no certifica sus animaciones, nuevos colores, composición o dependencias. Los ejemplos del sidecar corresponden exclusivamente a la app de participación.",
+    "keyCharacteristics": [
+      "Paleta de marca estable, con una superficie elevada adicional para interacción y navegación.",
+      "Escala tipográfica fija para operar en celular y campos de 16px.",
+      "Listas abiertas, categorías táctiles y navegación inferior flotante de tres destinos.",
+      "Estado seleccionado, progreso, espera, error y éxito acompañados de texto visible.",
+      "Contraste de texto separado para acciones lima y acciones secundarias oscuras.",
+      "Administración web mediante /admin, sin acceso en los menús ni gesto sobre el logo público."
+    ],
+    "rules": [
+      {
+        "name": "The Action Contrast Rule",
+        "body": "Las acciones lima usan tinta carbón; las acciones secundarias oscuras usan crema. La revisión de grabaciones separa el estilo de texto primario del secundario para conservar este contraste.",
+        "section": "colors"
+      },
+      {
+        "name": "The Contextual Focus Rule",
+        "body": "La app usa un outline coral de 3px con offset de 4px. En el panel de inicio lima, el outline pasa a carbón verdoso. La búsqueda conserva su borde lima al recibir foco interno.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Family Rule",
+        "body": "Mantener Onest y usar tamaño, peso y espacio para diferenciar funciones.",
+        "section": "typography"
+      },
+      {
+        "name": "The Floating Navigation Rule",
+        "body": "Reservar la sombra para la navegación flotante; las listas y categorías se distinguen con tono, borde o espacio.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** mantener la paleta de marca y la escala de operación de la app, diferenciando acciones lima de acciones secundarias oscuras.",
+      "**Do** reservar espacio inferior y zona segura para la navegación flotante, incluyendo la anchura compacta de 319px.",
+      "**Do** acompañar selección, progreso, error, espera y éxito con texto y atributos de accesibilidad.",
+      "**Do** mostrar cifras comunitarias únicamente desde conteos aprobados listos; usar el estado sin datos durante espera o error.",
+      "**Do** conservar Onest local, su licencia y el SVG original de marca.",
+      "**Do** mantener administración web en /admin y probar sus campos como parte del login separado."
+    ],
+    "donts": [
+      "**Don't** añadir administración a los menús públicos, convertir el logo web en acceso oculto ni eliminar la autenticación existente.",
+      "**Don't** reutilizar texto oscuro sobre botones secundarios oscuros ni texto crema sobre una acción lima.",
+      "**Don't** cubrir las últimas filas o acciones con la barra flotante ni reducir campos de texto por debajo del tamaño implementado.",
+      "**Don't** presentar cifras inventadas, aportes personales no calculados o traducción en tiempo real como funciones disponibles.",
+      "**Don't** trasladar las animaciones concurrentes de bienvenida al sistema de operación ni afirmar que la revisión de app las aprobó.",
+      "**Don't** interpretar esta actualización como un rediseño del panel administrativo autenticado o de las pantallas nativas."
+    ]
+  }
+}
