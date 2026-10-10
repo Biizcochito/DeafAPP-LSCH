@@ -5,6 +5,8 @@
 .deaf-welcome :focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
 .deaf-welcome ::selection { background: var(--lime); color: var(--ink); }
 .deaf-welcome main:focus { outline: none; }
+/* El contenido va sobre la luz del cursor (CursorGlow), que ilumina solo el fondo. */
+.deaf-welcome > main, .deaf-welcome > .dw-footer { position: relative; z-index: 1; }
 .dw-shell { width: min(1240px, calc(100% - 64px)); margin-inline: auto; }
 .dw-skip { position: fixed; left: 16px; top: -90px; z-index: 60; background: var(--lime); color: var(--ink) !important; padding: 12px 18px; border-radius: 12px; font-weight: 650; transition: top 160ms; }
 .dw-skip:focus { top: 16px; }
