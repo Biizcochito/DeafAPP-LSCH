@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 import Aurora from "./ui/Aurora";
 import BlurText from "./ui/BlurText";
 import CountUp from "./ui/CountUp";
+import CursorGlow from "./ui/CursorGlow";
 import HandConstellation from "./ui/HandConstellation";
 import RotatingText from "./ui/RotatingText";
 import SpotlightCard from "./ui/SpotlightCard";
@@ -73,6 +74,7 @@ export default function WelcomeScreen({ onBegin, onLogo }) {
   return (
     <div className="deaf-welcome">
       <a className="dw-skip" href="#bienvenida-contenido">Ir al contenido</a>
+      <CursorGlow colors={AURORA} />
       <header className="dw-nav">
         <Brand onLogo={onLogo} />
         <nav aria-label="Navegación de bienvenida" className="dw-nav-links">
