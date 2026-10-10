@@ -1,0 +1,31 @@
+# Forzar HTTPS (la cámara del navegador solo funciona en HTTPS)
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Permitir la cámara en esta página
+<IfModule mod_headers.c>
+  Header always set Permissions-Policy "camera=(self)"
+</IfModule>
+
+# Tipos MIME para el modelo de manos
+<IfModule mod_mime.c>
+  AddType application/wasm .wasm
+  AddType application/octet-stream .bin
+  AddType application/javascript .js
+</IfModule>
+
+# Compresión
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+# index.html siempre fresco; los demás archivos (con hash en el nombre) en caché
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(js|css|png|jpg|wasm|bin)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+</IfModule>
