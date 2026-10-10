@@ -1,0 +1,38 @@
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: var(--cursor-glow-size);
+  height: var(--cursor-glow-size);
+  margin: calc(var(--cursor-glow-size) / -2) 0 0 calc(var(--cursor-glow-size) / -2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 700ms cubic-bezier(.16, 1, .3, 1);
+  will-change: transform;
+}
+
+.cursor-glow--on {
+  opacity: var(--cursor-glow-opacity);
+}
+
+/* Tres manchas de color superpuestas que giran despacio, como la aurora del inicio. */
+.cursor-glow__orb {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 38%, var(--cursor-glow-a), transparent 42%),
+    radial-gradient(circle at 64% 40%, var(--cursor-glow-b), transparent 42%),
+    radial-gradient(circle at 50% 66%, var(--cursor-glow-c), transparent 42%);
+  filter: blur(40px);
+  animation: cursor-glow-spin 24s linear infinite;
+}
+
+@keyframes cursor-glow-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-glow__orb { animation: none; }
+}
