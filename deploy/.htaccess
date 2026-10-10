@@ -3,6 +3,9 @@ RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# La web es de una sola página: /app y /admin se resuelven en el navegador
+RewriteRule ^(app|admin)/?$ /index.html [L]
+
 # Permitir la cámara en esta página
 <IfModule mod_headers.c>
   Header always set Permissions-Policy "camera=(self)"
