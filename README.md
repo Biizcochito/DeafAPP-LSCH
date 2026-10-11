@@ -8,7 +8,7 @@
 ![Lengua de Señas Chilena](https://img.shields.io/badge/Lengua-LSCh-18C8D8?style=flat-square)
 ![Expo SDK 57](https://img.shields.io/badge/Expo-SDK_57-111827?style=flat-square)
 ![Supabase](https://img.shields.io/badge/Datos-Supabase-3ECF8E?style=flat-square)
-![Despliegue web](https://img.shields.io/badge/Web-HostGator_%2B_Cloudflare-F38020?style=flat-square)
+![Cloudflare Workers](https://img.shields.io/badge/Web-Cloudflare_Workers-F38020?style=flat-square)
 
 **[Abrir DeafApp](https://deafapps.com)** · **[Funciones](#funciones)** · **[Instalación](#desarrollo-local)** · **[Administración](#panel-de-administración)**
 
