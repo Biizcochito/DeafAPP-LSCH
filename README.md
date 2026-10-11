@@ -8,9 +8,9 @@
 ![Lengua de Señas Chilena](https://img.shields.io/badge/Lengua-LSCh-18C8D8?style=flat-square)
 ![Expo SDK 57](https://img.shields.io/badge/Expo-SDK_57-111827?style=flat-square)
 ![Supabase](https://img.shields.io/badge/Datos-Supabase-3ECF8E?style=flat-square)
-![Cloudflare Workers](https://img.shields.io/badge/Web-Cloudflare_Workers-F38020?style=flat-square)
+![Despliegue web](https://img.shields.io/badge/Web-HostGator_%2B_Cloudflare-F38020?style=flat-square)
 
-**[Abrir DeafApp](https://deafapp-lsch.deafapp-lsch.workers.dev)** · **[Funciones](#funciones)** · **[Instalación](#desarrollo-local)** · **[Administración](#panel-de-administración)**
+**[Abrir DeafApp](https://deafapps.com)** · **[Funciones](#funciones)** · **[Instalación](#desarrollo-local)** · **[Administración](#panel-de-administración)**
 
 </div>
 
@@ -24,6 +24,8 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 | :---: | :---: | :---: | :---: |
 | **531 entradas** | **28 categorías** | Catálogo y grabación | Revisión, material y entrenamiento |
 
+**Sitio oficial:** [deafapps.com](https://deafapps.com) · **Repositorio:** [Biizcochito/DeafAPP-LSCH](https://github.com/Biizcochito/DeafAPP-LSCH) · **Trabajo del equipo:** [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ### Navegación
 
 | Para conocer la app | Para desarrollar | Para revisar datos |
@@ -32,6 +34,7 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 | [Flujo de grabación](#flujo-de-grabación) | [Estructura relevante](#estructura-relevante) | [Base de datos](#base-de-datos-supabase) |
 | [Estado del proyecto](#estado-del-proyecto) | [Desarrollo local](#desarrollo-local) | [Modelo y resultados](#sobre-el-modelo-de-reconocimiento) |
 | [Autores](#autores) | [Build y despliegue](#build-y-despliegue) | [Pruebas](#pruebas) |
+| [Experiencia web actual](#experiencia-web-actual) | [Flujo del equipo](#flujo-del-equipo) | [Acceso al administrador](https://deafapps.com/admin) |
 
 ---
 
@@ -39,17 +42,35 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 
 | Función | Qué permite |
 | --- | --- |
+| 🌐 **Portada y navegación renovadas** | Conocer el proyecto en la bienvenida y acceder a la app con una interfaz adaptable a computador y celular. |
 | 🤟 **Catálogo comunitario** | Grabar señas desde celular o computador para las 531 entradas del vocabulario. |
+| 🔎 **Búsqueda y filtros** | Buscar señas o categorías y filtrar una categoría por todas, por grabar o ya grabadas en este dispositivo. |
 | 🎥 **Grabación guiada** | Preparar la cámara, confirmar las manos y comenzar con una cuenta regresiva. |
 | ✋ **Trazados en vivo** | Mostrar u ocultar puntos de cara y manos, consultar su estado y recibir mensajes de ayuda. |
 | 📱 **Encuadre adaptable** | Utilizar una vista horizontal en computador y vertical en celular. |
 | ▶️ **Vista previa** | Reproducir, repetir o descartar la grabación antes de enviarla. |
 | 💾 **Borrador local** | Recuperar una toma pendiente y reintentar su envío sin duplicarla, cuando hay almacenamiento disponible. |
+| 📊 **Mis aportes** | Consultar las señas enviadas, repeticiones y avance por categoría desde este dispositivo. |
+| 💬 **Ayuda y sugerencias** | Revisar cómo preparar una grabación y enviar sugerencias, errores o propuestas de señas. |
 | 🔐 **Revisión administrativa** | Aprobar, rechazar o devolver a pendientes las contribuciones recibidas. |
 | 🛑 **Control de gesto** | Bloquear la configuración específica del dedo medio levantado cuando el detector la confirma. |
 | 🧪 **Entrenamiento experimental** | Recuperar grabaciones antiguas, revisar etiquetas y entrenar grupos pequeños desde el administrador. |
 
 La cara y las manos se procesan por separado para actualizar sus resultados. El botón **Reiniciar cámara** permite volver a iniciar la captura. El control del dedo medio es específico: no clasifica todos los gestos obscenos ni reemplaza la revisión administrativa.
+
+### Experiencia web actual
+
+El rediseño organiza la bienvenida, el catálogo y las pantallas de grabación con una identidad visual compartida. Conserva el flujo de captura, revisión y envío, la conexión con los datos existentes y las herramientas del administrador.
+
+| Dirección | Pantalla | Uso |
+| --- | --- | --- |
+| [deafapps.com](https://deafapps.com) | **Bienvenida** | Presentación, cómo participar, estado del proyecto y comunidad. |
+| [deafapps.com/app](https://deafapps.com/app) | **Aplicación** | Catálogo, búsqueda, grabación, aportes del dispositivo y menú Más. |
+| [deafapps.com/admin](https://deafapps.com/admin) | **Administración** | Formulario de acceso con contraseña y herramientas privadas del equipo. |
+
+Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. La cabecera incluye **Sugerencias** y **Ayuda para grabar**; el menú Más permite volver a la bienvenida o abrir el traductor de prueba. El navegador conserva las rutas `/`, `/app` y `/admin` al recargar y al usar Atrás o Adelante.
+
+**Mis aportes** es un registro local de envíos; no muestra decisiones de moderación ni cifras globales. Borrar los datos del navegador elimina ese resumen. Los cinco clics sobre el logo abren el acceso al administrador; no autentican al usuario.
 
 ### Flujo de grabación
 
@@ -76,15 +97,16 @@ El tamaño se adapta al espacio disponible. Tener una entrada en el catálogo no
 
 Pantalla **«Probar el traductor»** (web: Más → Probar el traductor; celular: inicio). Traduce **una seña por clip**: cuenta
 atrás 3-2-1, captura de 30 fotogramas (igual que la grabación) y consulta a la API de LSCh, que responde con las **3 señas más
-probables** y sus porcentajes (y un aviso si no se ven las manos). Hoy solo reconoce las **19 palabras de alimentos** con que
-se entrenó el modelo del backend, y con pocos datos puede equivocarse: por eso muestra tres opciones.
+probables** y sus porcentajes (y un aviso si no se ven las manos). El backend de prueba descrito para el proyecto se entrenó
+con **19 palabras de alimentos**; el apartado **Palabras que reconoce** muestra las clases informadas por el servidor
+conectado. Con pocos datos puede equivocarse: por eso muestra tres opciones.
 
 | Pieza | Archivo |
 | --- | --- |
-| Lógica (captura, consulta, mensajes de error, resumen del resultado) | `translator.js`, probada con `tests/translator.test.mjs` |
-| Estado compartido web/celular | `useTranslator.js` |
-| Pantalla web (DOM + CSS) y pantalla nativa | `TranslatorScreen.web.js` + `TranslatorScreen.css`, `TranslatorScreen.js` |
-| Dirección de la API guardada en el dispositivo | `translatorSettingsStore.js` / `.web.js` |
+| Lógica (captura, consulta, mensajes de error, resumen del resultado) | [translator.js](translator.js), probada con [tests/translator.test.mjs](tests/translator.test.mjs) |
+| Estado compartido web/celular | [useTranslator.js](useTranslator.js) |
+| Pantalla web (DOM + CSS) y pantalla nativa | [TranslatorScreen.web.js](TranslatorScreen.web.js) + [TranslatorScreen.css](TranslatorScreen.css), [TranslatorScreen.js](TranslatorScreen.js) |
+| Dirección de la API guardada en el dispositivo | [translatorSettingsStore.js](translatorSettingsStore.js) / [translatorSettingsStore.web.js](translatorSettingsStore.web.js) |
 
 La API no vive en la web (es Python con TensorFlow): corre en el PC del proyecto (`iniciar_api.bat` en el repo del backend,
 `Biizcochito/Proyecto_LSCh`, rama `puente-deafapp`) y se expone con un túnel HTTPS. La pantalla tiene un apartado **Servidor**
@@ -112,9 +134,11 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | React Native 0.86 + React 19.2 + Expo SDK 57, exportado a web |
+| Frontend | React Native 0.86 + React 19.2.3 + Expo SDK 57, exportado a web |
+| Interfaz web | Componentes DOM y CSS, Motion, OGL y tipografía Bricolage Grotesque; recursos visuales incluidos en `public/` |
 | Cámara | Expo Camera, trazados sobre la imagen y ajustes de compatibilidad web |
-| Despliegue | Cloudflare Workers con archivos estáticos |
+| Despliegue | GitHub Actions + FTPS a HostGator para `deafapps.com`; Cloudflare Workers con archivos estáticos y vistas previas por rama |
+| API del traductor de prueba | Servicio externo en Python con TensorFlow y MediaPipe; dirección configurable en la pantalla o con `EXPO_PUBLIC_LSCH_API` |
 | Backend / datos | Supabase (PostgreSQL + Storage + RLS + RPC de administración) |
 | Seguimiento de cara | MediaPipe Face Mesh, cargado desde CDN |
 | Seguimiento de manos | TensorFlow.js + MediaPipe Hands en un Web Worker, con modelos incluidos en los archivos web y una alternativa de compatibilidad |
@@ -131,8 +155,16 @@ La implementación actual de entrenamiento utiliza cara y manos. El código cons
 <summary><strong>Ver archivos y carpetas principales</strong></summary>
 
 ```text
-DeafAPP-LSCH-master/
-├── App.js                       # Navegación, catálogo y flujo de grabación
+DeafAPP-LSCH/
+├── App.js                       # Estado compartido, navegación y flujo de grabación
+├── appRoutes.js                 # Rutas /, /app y /admin; títulos y navegación web
+├── WelcomeScreen.web.js         # Portada web y presentación del proyecto
+├── WelcomeScreen.css            # Diseño de la bienvenida
+├── AppWorkspace.web.js          # Catálogo, búsqueda, aportes, ayuda y acceso al admin
+├── AppWorkspace.css             # Diseño de la aplicación web
+├── RecordingScreens.web.js      # Interfaz web de captura y vista previa
+├── RecordingScreens.css         # Diseño de las pantallas de grabación
+├── ui/                          # Tema visual, animaciones y componentes compartidos
 ├── signCatalog.js               # Categorías y vocabulario
 ├── CameraLandmarks.web.js       # Trazados sobre la cámara web
 ├── landmarkTracking.js          # Detectores y resultados de seguimiento
@@ -144,15 +176,31 @@ DeafAPP-LSCH-master/
 ├── recordingSubmission.js       # Borradores y envío sin duplicados
 ├── trainingCapture.js           # Datos de seguimiento asociados a cada toma
 ├── AdminPanel.js                # Acceso y revisión de grabaciones
+├── adminAccess.js               # Cinco pulsaciones abren el formulario de acceso
+├── myContributions.js           # Registro de aportes enviados sin contar duplicados
+├── myContributionsStore.web.js  # Persistencia del resumen en este navegador
+├── translator.js                # Captura y consulta a la API externa de LSCh
+├── useTranslator.js             # Estado del traductor compartido entre web y celular
+├── TranslatorScreen.web.js      # Pantalla web del traductor de prueba
+├── TranslatorScreen.js          # Pantalla nativa del traductor de prueba
 ├── TrainingWorkbench.web.js     # Preparación y entrenamiento privados
 ├── admin/                       # SQL, catálogo privado y documentación
 ├── training/                    # Fuentes, preparación, recuperación y entrenamiento
 ├── public/
+│   ├── brand/                   # Logo y recursos de la bienvenida
+│   ├── fonts/                   # Tipografía y licencia incluidas en la web
+│   ├── _redirects               # Rutas de la app para Cloudflare
 │   ├── hand-model/              # Librerías y modelos del detector de manos
 │   ├── hand-tracking-worker.js   # Procesamiento de manos en segundo plano
 │   └── hand-regions.js          # Regiones de búsqueda de manos
 ├── scripts/                     # Preparación de datos, compatibilidad y servidor local
 ├── tests/                       # Pruebas de cámara, grabación, administración y datos
+├── .github/workflows/
+│   └── deploy-hostgator.yml      # Publicación automática al integrar en master
+├── deploy/.htaccess             # HTTPS, rutas y cabeceras para HostGator
+├── wrangler.jsonc               # Archivos estáticos y rutas SPA en Cloudflare
+├── CONTRIBUTING.md              # Ramas y flujo de trabajo del equipo
+├── AGENTS.md                    # Reglas que deben seguir los agentes de IA
 └── dist/                        # Exportación web generada para publicar
 ```
 
@@ -164,16 +212,43 @@ Los modelos de seguimiento de manos incluidos en `public/hand-model` detectan pu
 
 ## Desarrollo local
 
-Usar una versión de Node.js compatible con [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/) y ejecutar los comandos desde la raíz del proyecto.
+Usar **Node.js 22.13 o posterior**, compatible con [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/), y ejecutar los comandos desde la raíz del repositorio.
+
+### Flujo del equipo
+
+| Rama | Propósito | Cómo recibe cambios |
+| --- | --- | --- |
+| **`master`** | Producción en [deafapps.com](https://deafapps.com). | Solo por PR aprobado desde `dev`; no se programa ni se hace commit directamente. |
+| **`dev`** | Integración del trabajo de los tres integrantes. | PR desde `feature/*` o `fix/*`; no se programa directamente aquí. |
+| **`feature/*` y `fix/*`** | Una rama por ticket de Jira, creada desde `dev`. | Trabajo del ticket y PR hacia `dev`. |
+| **`cloudflare/workers-autoconfig`** | Configuración de Cloudflare. | Se conserva aparte; no se usa para desarrollo diario. |
+
+```bash
+# Al comenzar la jornada
+git checkout dev
+git pull origin dev
+
+# Al tomar un ticket de Jira
+git checkout -b feature/nombre-del-ticket
+
+# Al terminar el trabajo
+git add README.md  # Ejemplo: agrega los archivos que cambiaste
+git commit -m "Describe el cambio"
+git push -u origin feature/nombre-del-ticket
+```
+
+Abrir un PR de la rama del ticket hacia **`dev`**. Cuando la integración esté revisada y probada, abrir un PR de **`dev` hacia `master`** y aprobarlo antes de fusionar. En este repositorio la rama de producción se llama **`master`**.
+
+La revisión y la fusión se realizan en GitHub; **la publicación posterior es automática**. Las protecciones de ramas deben configurarse en GitHub para exigir estas reglas. El flujo completo está en [CONTRIBUTING.md](CONTRIBUTING.md) y su resumen para agentes de IA en [AGENTS.md](AGENTS.md).
 
 ### Iniciar el entorno de desarrollo
 
 ```bash
-npm install
+npm ci
 npx expo start --web
 ```
 
-`npm install` también ejecuta el ajuste de compatibilidad de Expo Camera mediante `scripts/patch-expo-camera.cjs`.
+`npm ci` instala las versiones de `package-lock.json` y ejecuta el ajuste de compatibilidad de Expo Camera mediante [scripts/patch-expo-camera.cjs](scripts/patch-expo-camera.cjs). Al modificar dependencias deliberadamente, `npm install` actualiza el archivo de bloqueo y también ejecuta ese ajuste.
 
 ### Comprobar la exportación web
 
@@ -190,16 +265,31 @@ Abrir **[http://127.0.0.1:8081/](http://127.0.0.1:8081/)** para la información 
 
 ## Build y despliegue
 
+### Producción en deafapps.com
+
+Cada cambio integrado en **`master`** activa el workflow [Deploy a HostGator](https://github.com/Biizcochito/DeafAPP-LSCH/actions/workflows/deploy-hostgator.yml). Su configuración está en [.github/workflows/deploy-hostgator.yml](.github/workflows/deploy-hostgator.yml): instala dependencias con `npm ci`, exporta la web, copia [deploy/.htaccess](deploy/.htaccess) a `dist/.htaccess` y publica `dist/` por FTPS en HostGator.
+
+Las credenciales FTPS se toman de los secretos del repositorio. **`deploy/.htaccess` debe permanecer versionado**: configura HTTPS, las rutas `/app` y `/admin`, el permiso de cámara y las cabeceras de los archivos. No se agrega al `.gitignore`.
+
+### Cloudflare y vistas previas
+
+El Worker existente [deafapp-lsch](https://deafapp-lsch.deafapp-lsch.workers.dev) conserva su despliegue complementario. [wrangler.jsonc](wrangler.jsonc) declara `dist/` como directorio de archivos estáticos, `html_handling: "none"` y `not_found_handling: "single-page-application"`; junto con [public/_redirects](public/_redirects), permite abrir y recargar `/app` y `/admin`.
+
+La integración de Cloudflare compila con `npx expo export -p web`: en ramas de vista previa ejecuta `npx wrangler versions upload`; en `master` ejecuta `npx wrangler deploy`. Las vistas previas permiten comprobar el cambio antes de promoverlo a producción.
+
+### Exportación manual para comprobaciones
+
 ```bash
 npx expo export -p web
 ```
 
-Subir **la carpeta `dist` completa**, o un ZIP de su contenido con `index.html` en la raíz, al Worker existente `deafapp-lsch` desde el cargador de archivos estáticos de Cloudflare.
+La exportación genera **la carpeta `dist` completa**, con `index.html` en la raíz. Se puede comprobar con el servidor local descrito arriba. La publicación habitual del equipo se realiza mediante PR y los despliegues automáticos; no requiere cargar un ZIP manualmente.
 
 | Archivo o carpeta | Uso en la publicación |
 | --- | --- |
 | **`dist/` completa** | Contiene la web exportada y los modelos de seguimiento necesarios. |
-| **ZIP del contenido de `dist/`** | Alternativa de carga con `index.html` en la raíz. |
+| **`dist/.htaccess`** | Copia de `deploy/.htaccess` incorporada por el workflow de HostGator. |
+| **ZIP del contenido de `dist/`** | Copia para una carga manual de archivos estáticos; no sustituye el flujo de PR del equipo. |
 | `App.js` | Código fuente de React Native; necesita la exportación y no se sube por separado. |
 | `admin/`, `training/`, SQL y credenciales | No se incluyen en el paquete público. |
 | Borradores y candidatos locales | Pertenecen al almacenamiento del navegador, no al despliegue. |
@@ -213,17 +303,31 @@ npx eas-cli login
 EXPO_PUBLIC_LSCH_API=https://algo.trycloudflare.com npx eas-cli build -p android --profile preview
 ```
 
+En PowerShell, definir la misma variable antes del comando de compilación:
+
+```powershell
+$env:EXPO_PUBLIC_LSCH_API = "https://algo.trycloudflare.com"
+npx eas-cli build -p android --profile preview
+```
+
 Requiere una cuenta de Expo. **No se ha generado ningún APK desde esta copia**: el bundle de Android sí compila
 (`npx expo export --platform android`), pero la app no se ha probado en un celular real. La cámara y los permisos del celular
 son los de `expo-camera`, los mismos de la grabación.
 
-La copia actual del proyecto no incluye una configuración `wrangler.toml`; por eso no se presupone que `wrangler deploy` esté configurado. Los borradores, las recuperaciones y los candidatos guardados en el navegador tampoco forman parte de `dist`. El dominio local y el oficial mantienen almacenamientos separados.
+Los borradores, las recuperaciones y los candidatos guardados en el navegador no forman parte de `dist`. **El sitio local, deafapps.com y las vistas previas de Cloudflare mantienen almacenamientos separados**; un candidato entrenado en uno no aparece automáticamente en los otros.
 
 ---
 
 ## Panel de administración
 
-En la versión web, abrir directamente **`/admin`** (por ejemplo, `http://localhost:8081/admin` en desarrollo) e ingresar la contraseña configurada por el propietario. La interfaz pública no muestra un enlace al panel. La contraseña se comprueba en el servidor y no se incluye en el README ni en el código del navegador. No hace falta activar la cámara para administrar. El acceso nativo existente conserva las cinco pulsaciones del logo en un máximo de 3,5 segundos.
+El formulario de administración se puede abrir de dos formas:
+
+| Método | En la web | En desarrollo local |
+| --- | --- | --- |
+| **Ruta directa** | [https://deafapps.com/admin](https://deafapps.com/admin) | [http://127.0.0.1:8081/admin](http://127.0.0.1:8081/admin) |
+| **Cinco pulsaciones del logo** | Pulsar el logo **DeafApp** de la cabecera cinco veces dentro de **3,5 segundos**, desde la bienvenida o la app. | El mismo gesto desde `/` o `/app`. |
+
+Ambos métodos abren el formulario y exigen la contraseña configurada por el propietario. **Cinco pulsaciones no inician sesión ni conceden permisos.** La interfaz pública no muestra un enlace al panel; la ruta directa sigue disponible. La contraseña se comprueba en el servidor y no se incluye en el README ni en el código del navegador. No hace falta activar la cámara para administrar. El acceso nativo conserva las cinco pulsaciones del logo en la misma ventana de tiempo.
 
 | Sección | Herramientas | Alcance |
 | --- | --- | --- |
@@ -236,7 +340,7 @@ En la versión web, abrir directamente **`/admin`** (por ejemplo, `http://localh
 
 La sesión administrativa dura dos horas y permanece en memoria. Salir del panel, cerrar sesión o recargar exige volver a entrar. Las operaciones comprueban la sesión y la versión de la grabación para evitar sobrescribir una revisión más reciente.
 
-Los materiales y las pruebas se concentran en el panel privado. Para publicar la exportación web, el alojamiento debe servir `index.html` también al abrir `/app` y `/admin` (`public/_redirects` ya incluye esas reglas para Cloudflare); la sesión continúa validándose en el servidor. El antiguo acceso por `/#admin` y la sección pública «Visualizador» no describen el acceso actual.
+Los materiales y las pruebas se concentran en el panel privado. Al abrir o recargar `/app` y `/admin`, el alojamiento sirve la aplicación: [deploy/.htaccess](deploy/.htaccess) configura esas rutas en HostGator, y [wrangler.jsonc](wrangler.jsonc) junto con [public/_redirects](public/_redirects) las configura en Cloudflare. La sesión continúa validándose en el servidor. El antiguo acceso por `/#admin` y la sección pública «Visualizador» no describen el acceso actual.
 
 Instalación y detalles de moderación: [admin/README.md](admin/README.md).
 
@@ -312,7 +416,7 @@ Preparación, recuperación y comandos del conjunto de datos: [training/README.m
 | Comando | Qué comprueba |
 | --- | --- |
 | `npm run test:admin` | Acceso y operaciones de administración. |
-| `npm run test:training` | Preparación de datos, captura y envío. |
+| `npm run test:training` | Preparación de datos, captura, envío, aportes locales, rutas web y traductor de prueba. |
 | `npm run test:model-training` | Entrenador, conjuntos del navegador y recuperación de grabaciones. |
 
 ```bash
@@ -321,7 +425,11 @@ npm run test:training
 npm run test:model-training
 ```
 
-Estos comandos comprueban el acceso y la moderación, la preparación de datos, la captura, el envío, la recuperación y el entrenador. Las pruebas sintéticas verifican el software; no representan precisión de reconocimiento de LSCh. Las pruebas de cámara física y validación lingüística requieren comprobaciones adicionales.
+Estos comandos comprueban el acceso y la moderación, la preparación de datos, la captura, el envío, la recuperación, el entrenador, las rutas y la lógica del traductor. La prueba contra la API real del traductor se omite si no está configurada `LSCH_API_TEST` con un servidor disponible.
+
+La versión integrada el **11 de octubre de 2026** pasó **126 pruebas**, con **1 omitida** y ninguna fallida; también completó la exportación web. Se verificaron la interfaz en escritorio y móvil, las cinco pulsaciones, la ruta directa `/admin` y la recarga. La publicación en [deafapps.com](https://deafapps.com) quedó comprobada tras los PR [#5](https://github.com/Biizcochito/DeafAPP-LSCH/pull/5) y [#6](https://github.com/Biizcochito/DeafAPP-LSCH/pull/6), con los despliegues de HostGator y Cloudflare correctos.
+
+Las pruebas sintéticas verifican el software; no representan precisión de reconocimiento de LSCh. Las pruebas de cámara física y validación lingüística requieren comprobaciones adicionales.
 
 ---
 
@@ -348,3 +456,5 @@ Gracias también a la comunidad sorda que participa activamente grabando, valida
 ## Licencia
 
 Pendiente de definir.
+
+Los componentes visuales adaptados, sus atribuciones y las licencias de terceros se detallan en [ui/NOTICE.md](ui/NOTICE.md) y [ui/LICENSE-react-bits.md](ui/LICENSE-react-bits.md). La licencia del proyecto completo sigue pendiente.
