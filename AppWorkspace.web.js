@@ -35,7 +35,12 @@ export function AppIcon({ name, size = 22 }) {
 }
 const normalize = value => value.toLocaleLowerCase("es").normalize("NFD").replace(/[̀-ͯ]/g, "");
 
-function Brand() { return <div className="app-brand"><img src="/brand/deafapp-mark.svg" alt="" width="36" height="36" /><span>Deaf<span>App</span></span><span className="app-beta">Beta</span></div>; }
+function Brand({ onLogo }) {
+  const content = <><img src="/brand/deafapp-mark.svg" alt="" width="36" height="36" /><span>Deaf<span>App</span></span><span className="app-beta">Beta</span></>;
+  return onLogo
+    ? <button className="app-brand" type="button" aria-label="DeafApp" onClick={onLogo}>{content}</button>
+    : <div className="app-brand">{content}</div>;
+}
 function AppButton({ children, icon = "arrow", secondary = false, ...props }) { return <button className={`app-button${secondary ? " app-button-secondary" : ""}`} {...props}>{children}{icon && <AppIcon name={icon} size={19} />}</button>; }
 // Una celda por seña de la categoría: se enciende con el color de la categoría cuando la persona la grabó.
 function Cells({ category, timesOf }) {
@@ -57,7 +62,7 @@ const times = n => (n === 1 ? "1 vez" : `${n} veces`);
 
 // `contributions` son los aportes de esta persona en este dispositivo ("categoría/seña" -> { n, last }).
 // No hay cifras globales ni estado de revisión: cada quien ve solo lo que ha grabado.
-export default function AppWorkspace({ screen, navigate, categories, category, contributions, pending, onResume, onCategory, onRecord, feedback }) {
+export default function AppWorkspace({ screen, navigate, onLogo, categories, category, contributions, pending, onResume, onCategory, onRecord, feedback }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const scrollRef = useRef(null);
@@ -93,7 +98,7 @@ export default function AppWorkspace({ screen, navigate, categories, category, c
   }
   const heading = <><h1 tabIndex={-1} ref={headingRef}>{title}</h1><p>{subtitle}</p></>;
   return <div className="deaf-app has-side">
-    <header className="app-topbar"><Brand /><div className="app-header-actions">
+    <header className="app-topbar"><Brand onLogo={onLogo} /><div className="app-header-actions">
       <button className="app-icon-button" aria-label="Sugerencias" aria-current={screen === "feedback" ? "page" : undefined} onClick={() => navigate("feedback")}><AppIcon name="message" /><span className="app-icon-label">Sugerencias</span></button>
       <button className="app-icon-button" aria-label="Ayuda para grabar" aria-current={screen === "ayuda" ? "page" : undefined} onClick={() => navigate("ayuda")}><AppIcon name="question" /><span className="app-icon-label">Ayuda para grabar</span></button>
     </div></header>

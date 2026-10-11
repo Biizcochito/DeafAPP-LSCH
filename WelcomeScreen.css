@@ -13,7 +13,7 @@
 
 /* Navegación de vidrio */
 .dw-nav { position: sticky; top: 16px; z-index: 30; width: min(1180px, calc(100% - 40px)); margin: 16px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 9px 10px 9px 18px; border-radius: 999px; background: rgba(14, 21, 17, .62); border: 1px solid var(--line-2); backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5); }
-.dw-brand { display: flex; align-items: center; gap: 10px; text-align: left; }
+.dw-brand { display: flex; align-items: center; gap: 10px; padding: 0; text-align: left; }
 .dw-brand img { display: block; }
 .dw-wordmark { font: 800 26px/1 var(--display); letter-spacing: -.04em; }
 .dw-wordmark span { font-weight: 400; }

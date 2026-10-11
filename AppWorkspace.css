@@ -15,7 +15,7 @@
 
 /* Cabecera (móvil) */
 .app-topbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; max-width: 1080px; margin: 0 auto; padding: 16px 20px 10px; }
-.app-brand { display: flex; align-items: center; gap: 9px; }
+.app-brand { display: flex; align-items: center; gap: 9px; padding: 0; text-align: left; }
 .app-brand > span:not(.app-beta) { font: 800 24px/1 var(--display); letter-spacing: -.04em; }
 .app-brand > span > span { font-weight: 400; }
 .app-beta { margin-left: 4px; padding: 3px 9px; border: 1px solid var(--line-2); border-radius: 999px; color: var(--muted); font-size: 11px; font-weight: 600; line-height: 1.4; }
