@@ -664,7 +664,7 @@ export default function App() {
   if (pantalla === "traductor") return <TranslatorScreen onBack={() => setPantalla(Platform.OS === "web" ? "mas" : "home")} />;
 
   if (Platform.OS === "web" && ["home", "categoria", "aportes", "mas", "ayuda", "feedback"].includes(pantalla)) {
-    return <AppWorkspace screen={pantalla} navigate={setPantalla} categories={CATEGORIAS} category={catActual}
+    return <AppWorkspace screen={pantalla} navigate={setPantalla} onLogo={pulsarLogo} categories={CATEGORIAS} category={catActual}
       contributions={aportes.items}
       pending={borrador} onResume={() => mostrarVistaPrevia()}
       onCategory={cat => { setCatActual(cat); setPantalla("categoria"); }}
@@ -699,7 +699,7 @@ export default function App() {
 
   // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
-    return <WelcomeScreen onBegin={() => setPantalla("home")} onLogo={Platform.OS === "web" ? undefined : pulsarLogo} />;
+    return <WelcomeScreen onBegin={() => setPantalla("home")} onLogo={pulsarLogo} />;
   }
 
   // ── FEEDBACK ─────────────────────────────────────────────────────
