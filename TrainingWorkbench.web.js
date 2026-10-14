@@ -6,11 +6,13 @@ import {buildReviewedBrowserDataset,assertReviewSnapshotCurrent} from './trainin
 import {loadTrainingTensorflow} from './training/tensorflowBrowser';
 import {trainReviewedModel} from './training/modelTraining';
 import LegacyRecoveryPanel from './LegacyRecoveryPanel.web';
+import PythonBackendPanel from './PythonBackendPanel.web';
 const states={ready:'Lista para un primer entrenamiento','needs-samples':'Faltan muestras separadas','needs-preparation':'Aprobadas que requieren preparación','needs-material':'Falta material revisado'};
 const automaticSourceReason='Origen automático sin identidad confirmada: disponible para recuperación experimental; pendiente de revisión para evaluar con personas distintas';
 const reasons={'unknown-label-or-category':'Etiqueta/categoría fuera del vocabulario','missing-or-invalid-training-metadata':'Faltan puntos, tiempos o perfil de captura','invalid-jpeg-sequence':'Formato de imágenes por revisar','insufficient-fresh-hands':'Faltan detecciones recientes de manos','insufficient-fresh-face':'Faltan detecciones recientes de cara','too-few-distinct-hand-results':'El trazado se repite sin nuevas detecciones','not-approved':'Pendiente de aprobación','download-failed':'No se pudo abrir el archivo','insufficient-recovered-hands':'Esta toma necesita revisar la visibilidad de las manos','insufficient-recovered-face':'Esta toma necesita revisar la visibilidad de la cara','needs-legacy-label-review':'Falta confirmar una seña exacta del vocabulario'};
 function Button({label,onPress,disabled}){return <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={onPress} style={[styles.button,disabled&&{opacity:0.4}]}><Text style={styles.buttonText}>{label}</Text></TouchableOpacity>;}
 export default function TrainingWorkbench({api,session,client,onBack,onAccessError,onOpenMaterial}){
+  const [section,setSection]=useState('python');
   const [dataset,setDataset]=useState(()=>prepareDataset([])),[plan,setPlan]=useState(()=>createTrainingPlan(prepareDataset([])));
   const [busy,setBusy]=useState(false),[progress,setProgress]=useState('Analiza las grabaciones aprobadas para actualizar las prioridades.'),[error,setError]=useState(''),[query,setQuery]=useState(''),[filter,setFilter]=useState('all'),[limit,setLimit]=useState(25),[report,setReport]=useState(null),[selected,setSelected]=useState([]);
   const alive=useRef(true),controller=useRef(null),lock=useRef(false);
@@ -68,9 +70,12 @@ export default function TrainingWorkbench({api,session,client,onBack,onAccessErr
   const term=query.trim().toLocaleLowerCase('es');
   const rows=plan.rows.filter(row=>(filter==='all'||filter===row.state)&&(!term||`${row.label} ${row.category}`.toLocaleLowerCase('es').includes(term)));
   const personal=plan.mode==='personal-prototype',maxClasses=plan.minimums.maxClassesPerGroup;
+  const sections=<View style={styles.actions}>{[['python','Modelo del traductor'],['captures','Capturas revisadas']].map(([id,label])=><TouchableOpacity key={id} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{selected:section===id,disabled:busy}} disabled={busy} onPress={()=>setSection(id)} style={[styles.button,section!==id&&{backgroundColor:'#34344E'}]}><Text style={styles.buttonText}>{label}</Text></TouchableOpacity>)}</View>;
+  if(section==='python')return <SafeAreaView style={styles.root}><ScrollView contentContainerStyle={styles.content}><View style={styles.actions}><Text style={styles.title}>Entrenamiento LSCh</Text><Button label="Volver al administrador" onPress={onBack}/></View>{sections}<PythonBackendPanel api={api} session={session} onAccessError={onAccessError}/></ScrollView></SafeAreaView>;
   if(recovering)return <LegacyRecoveryPanel api={api} session={session} client={client} onAccessError={onAccessError} onBack={()=>setRecovering(false)} onUsePrototype={data=>{const next=createTrainingPlan(data,{approvedCounts:data.approvedCounts});setDataset(data);setPlan(next);setSelected(next.readyClasses.slice(0,next.minimums.maxClassesPerGroup));setReport(null);setError('');setQuery('');setFilter('ready');setLimit(25);setProgress(`Prototipo experimental preparado: ${next.usableRecordings} grabaciones recuperadas. La prueba reserva otras grabaciones, sin garantizar personas distintas.`);setRecovering(false);}}/>;
   return <SafeAreaView style={styles.root}><ScrollView contentContainerStyle={styles.content}>
     <View style={styles.actions}><Text style={styles.title}>Entrenamiento LSCh</Text><Button label="Volver al administrador" onPress={onBack}/></View>
+    {sections}
     <Text style={styles.body}>Seguimiento de las {plan.totalClasses} entradas del vocabulario. Incorporamos primero las señas con muestras revisadas y suficientes para aprender y probar.</Text>
     <View style={styles.card}><Text style={styles.subtitle}>Cómo se entrenará</Text>
       <Text style={styles.body}>1. Revisar significado y permisos de cada fragmento. 2. Extraer puntos de manos y cara y comprobar su calidad. 3. Reservar personas para la prueba. 4. Aprender patrones de movimiento. 5. Medir errores por seña y probar con cámara antes de habilitar un modelo.</Text>
