@@ -13,3 +13,12 @@ training/sync-manifest.json
 training/sync-report.json
 training/participant-aliases.json
 training/pilot-private/
+
+# Local Python data, environments, and training candidates.
+backend/.venv/
+backend/__pycache__/
+backend/tests/__pycache__/
+backend/dataset/
+backend/contribuciones/
+backend/runs/
+backend/.runtime/

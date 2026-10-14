@@ -95,6 +95,13 @@ El tamaño se adapta al espacio disponible. Tener una entrada en el catálogo no
 
 ### Traductor de prueba (beta)
 
+El backend Python está incorporado en `backend/`. Para iniciar web y API desde este
+proyecto, usa **`iniciar-proyecto.bat`** o **`npm run proyecto`**. Dentro del administrador,
+**Entrenamiento LSCh → Modelo del traductor** reúne conexión, palabras reconocidas,
+resultados, importación de grabaciones aprobadas y entrenamiento de candidatos.
+**Capturas revisadas** conserva el entrenamiento experimental del navegador.
+Consulta [la integración de Python](backend/INTEGRACION.md) para instalación y detalles.
+
 Pantalla **«Probar el traductor»** (web: Más → Probar el traductor; celular: inicio). Traduce **una seña por clip**: cuenta
 atrás 3-2-1, captura de 30 fotogramas (igual que la grabación) y consulta a la API de LSCh, que responde con las **3 señas más
 probables** y sus porcentajes (y un aviso si no se ven las manos). El backend de prueba descrito para el proyecto se entrenó
@@ -108,8 +115,8 @@ conectado. Con pocos datos puede equivocarse: por eso muestra tres opciones.
 | Pantalla web (DOM + CSS) y pantalla nativa | [TranslatorScreen.web.js](TranslatorScreen.web.js) + [TranslatorScreen.css](TranslatorScreen.css), [TranslatorScreen.js](TranslatorScreen.js) |
 | Dirección de la API guardada en el dispositivo | [translatorSettingsStore.js](translatorSettingsStore.js) / [translatorSettingsStore.web.js](translatorSettingsStore.web.js) |
 
-La API no vive en la web (es Python con TensorFlow): corre en el PC del proyecto (`iniciar_api.bat` en el repo del backend,
-`Biizcochito/Proyecto_LSCh`, rama `puente-deafapp`) y se expone con un túnel HTTPS. La pantalla tiene un apartado **Servidor**
+La API utiliza Python con TensorFlow y corre en el PC desde `backend/` (`npm run backend` o `iniciar-proyecto.bat`).
+Se incorporó desde `Biizcochito/Proyecto_LSCh`, rama `puente-deafapp`, y puede exponerse con un túnel HTTPS. La pantalla tiene un apartado **Servidor**
 para escribir su dirección (`https://algo.trycloudflare.com`); se guarda en el dispositivo y puede fijarse al compilar con
 `EXPO_PUBLIC_LSCH_API`. Una página HTTPS no puede llamar a una API `http://` ajena, por eso se usa el túnel. El celular manda
 los fotogramas y el servidor calcula los puntos con el mismo MediaPipe con que se armó el dataset; los fotogramas con tu cara
