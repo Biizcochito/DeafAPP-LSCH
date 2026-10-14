@@ -1,0 +1,288 @@
+{
+  "fecha": "2026-10-08T16:23:12",
+  "formato": {
+    "secuencia": 30,
+    "valores": 270,
+    "espejar_entrada": false
+  },
+  "configuracion": {
+    "arquitectura": "cnn",
+    "rasgos": "manos",
+    "rellenar": 4,
+    "copias": 25,
+    "epocas": 80,
+    "pliegues": 5,
+    "semilla": 42,
+    "suavizado": 0.1
+  },
+  "clases": [
+    "aceite",
+    "ajo",
+    "aliño",
+    "arroz",
+    "azucar",
+    "carne",
+    "carne molida",
+    "cerdo",
+    "fideos",
+    "lentejas",
+    "longaniza",
+    "pavo",
+    "pescado",
+    "pimienta",
+    "pollo",
+    "porotos",
+    "pure",
+    "sal",
+    "vianesa"
+  ],
+  "clases_omitidas": {},
+  "apartadas": {
+    "copias_guardadas": 0,
+    "copias_antiguas_danadas": 551
+  },
+  "secuencias": 114,
+  "validacion_cruzada": {
+    "n": 114,
+    "exactitud": 0.5702,
+    "por_clase": {
+      "aceite": {
+        "n": 6,
+        "exactitud": 0.5
+      },
+      "ajo": {
+        "n": 6,
+        "exactitud": 0.667
+      },
+      "aliño": {
+        "n": 6,
+        "exactitud": 0.167
+      },
+      "arroz": {
+        "n": 6,
+        "exactitud": 0.5
+      },
+      "azucar": {
+        "n": 6,
+        "exactitud": 0.667
+      },
+      "carne": {
+        "n": 6,
+        "exactitud": 0.667
+      },
+      "carne molida": {
+        "n": 6,
+        "exactitud": 1.0
+      },
+      "cerdo": {
+        "n": 6,
+        "exactitud": 0.5
+      },
+      "fideos": {
+        "n": 6,
+        "exactitud": 0.333
+      },
+      "lentejas": {
+        "n": 6,
+        "exactitud": 0.5
+      },
+      "longaniza": {
+        "n": 6,
+        "exactitud": 0.667
+      },
+      "pavo": {
+        "n": 6,
+        "exactitud": 0.167
+      },
+      "pescado": {
+        "n": 6,
+        "exactitud": 0.167
+      },
+      "pimienta": {
+        "n": 6,
+        "exactitud": 0.833
+      },
+      "pollo": {
+        "n": 6,
+        "exactitud": 0.167
+      },
+      "porotos": {
+        "n": 6,
+        "exactitud": 1.0
+      },
+      "pure": {
+        "n": 6,
+        "exactitud": 1.0
+      },
+      "sal": {
+        "n": 6,
+        "exactitud": 0.333
+      },
+      "vianesa": {
+        "n": 6,
+        "exactitud": 1.0
+      }
+    },
+    "confusiones": [
+      {
+        "real": "aliño",
+        "predicha": "aceite",
+        "veces": 3
+      },
+      {
+        "real": "arroz",
+        "predicha": "fideos",
+        "veces": 3
+      },
+      {
+        "real": "pollo",
+        "predicha": "pescado",
+        "veces": 3
+      },
+      {
+        "real": "sal",
+        "predicha": "azucar",
+        "veces": 3
+      },
+      {
+        "real": "pescado",
+        "predicha": "pollo",
+        "veces": 3
+      },
+      {
+        "real": "pavo",
+        "predicha": "longaniza",
+        "veces": 3
+      },
+      {
+        "real": "fideos",
+        "predicha": "arroz",
+        "veces": 2
+      },
+      {
+        "real": "lentejas",
+        "predicha": "carne",
+        "veces": 2
+      },
+      {
+        "real": "longaniza",
+        "predicha": "pavo",
+        "veces": 2
+      },
+      {
+        "real": "pavo",
+        "predicha": "cerdo",
+        "veces": 2
+      }
+    ],
+    "top3": 0.8947,
+    "top5": 0.9123,
+    "umbral": 0.75,
+    "respondio": 62,
+    "acerto_entre_respondidas": 0.5484,
+    "confianza_media": 0.685,
+    "confianza_media_si_acierta": 0.682,
+    "confianza_media_si_falla": 0.69,
+    "curva_umbral": [
+      {
+        "umbral": 0.2,
+        "responde": 109,
+        "cobertura": 0.956,
+        "acierto": 0.569
+      },
+      {
+        "umbral": 0.25,
+        "responde": 108,
+        "cobertura": 0.947,
+        "acierto": 0.565
+      },
+      {
+        "umbral": 0.3,
+        "responde": 104,
+        "cobertura": 0.912,
+        "acierto": 0.567
+      },
+      {
+        "umbral": 0.35,
+        "responde": 99,
+        "cobertura": 0.868,
+        "acierto": 0.576
+      },
+      {
+        "umbral": 0.4,
+        "responde": 94,
+        "cobertura": 0.825,
+        "acierto": 0.564
+      },
+      {
+        "umbral": 0.45,
+        "responde": 87,
+        "cobertura": 0.763,
+        "acierto": 0.575
+      },
+      {
+        "umbral": 0.5,
+        "responde": 81,
+        "cobertura": 0.711,
+        "acierto": 0.593
+      },
+      {
+        "umbral": 0.55,
+        "responde": 76,
+        "cobertura": 0.667,
+        "acierto": 0.579
+      },
+      {
+        "umbral": 0.6,
+        "responde": 71,
+        "cobertura": 0.623,
+        "acierto": 0.563
+      },
+      {
+        "umbral": 0.65,
+        "responde": 66,
+        "cobertura": 0.579,
+        "acierto": 0.561
+      },
+      {
+        "umbral": 0.7,
+        "responde": 63,
+        "cobertura": 0.553,
+        "acierto": 0.54
+      },
+      {
+        "umbral": 0.75,
+        "responde": 62,
+        "cobertura": 0.544,
+        "acierto": 0.548
+      },
+      {
+        "umbral": 0.8,
+        "responde": 59,
+        "cobertura": 0.518,
+        "acierto": 0.525
+      },
+      {
+        "umbral": 0.85,
+        "responde": 45,
+        "cobertura": 0.395,
+        "acierto": 0.533
+      },
+      {
+        "umbral": 0.9,
+        "responde": 36,
+        "cobertura": 0.316,
+        "acierto": 0.583
+      },
+      {
+        "umbral": 0.95,
+        "responde": 8,
+        "cobertura": 0.07,
+        "acierto": 1.0
+      }
+    ],
+    "umbral_sugerido": null,
+    "confianza_informativa": false
+  },
+  "nota": "La exactitud esperada del modelo guardado es la de la validación cruzada: el modelo final se entrenó con todos los originales y no tiene datos de prueba propios."
+}

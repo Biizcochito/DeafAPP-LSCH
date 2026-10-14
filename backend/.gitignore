@@ -1,0 +1,13 @@
+# Entornos virtuales y cachés de Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Configuración y secretos locales
+.env
+.claude/
+
+# Datos y resultados locales del flujo de trabajo
+dataset_legado/
+contribuciones/

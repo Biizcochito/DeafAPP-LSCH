@@ -1,0 +1,12 @@
+# Versions verified on Python 3.12 for this integration.
+tensorflow==2.21.0
+keras==3.15.0
+mediapipe==0.10.35
+numpy==2.5.1
+scikit-learn==1.9.0
+opencv-python==5.0.0.93
+flask==3.1.3
+flask-cors==6.0.5
+requests==2.34.2
+supabase==2.31.0
+waitress==3.0.2
