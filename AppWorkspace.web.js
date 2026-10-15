@@ -49,11 +49,11 @@ function Cells({ category, timesOf }) {
 function Tracker({ category, timesOf, tone }) {
   const done = category.señas.filter(word => timesOf(category, word) > 0).length;
   return <section className="app-tracker" style={{ "--tone": tone }} data-complete={done === category.señas.length || undefined}>
-    <p className="app-tracker-count"><strong>{done}</strong><span>de {category.señas.length}<small>señas que has grabado</small></span></p>
+    <p className="app-tracker-count"><strong>{done}</strong><span>de {category.señas.length}<small>{category.id === "oraciones" ? "oraciones que has grabado" : "señas que has grabado"}</small></span></p>
     <Cells category={category} timesOf={timesOf} />
   </section>;
 }
-function Search({ value, onChange, placeholder = "Buscar una seña o categoría" }) {
+function Search({ value, onChange, placeholder = "Buscar una seña, oración o categoría" }) {
   return <div className="app-search"><AppIcon name="search" size={20} /><input aria-label={placeholder} placeholder={placeholder} type="search" value={value} onChange={e => onChange(e.target.value)} autoComplete="off" />{value && <button aria-label="Limpiar búsqueda" onClick={() => onChange("")}><AppIcon name="close" size={18} /></button>}</div>;
 }
 const feedbackTypes = [["sugerencia", "Sugerencia"], ["error", "Error"], ["seña_nueva", "Seña nueva"], ["otro", "Otro"]];
@@ -74,6 +74,8 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
       headingRef.current?.focus({ preventScroll: true }); previousScreen.current = screen;
     }
   }, [screen]);
+  const phrases = categories.find(cat => cat.id === "oraciones");
+  const isPhraseCategory = category?.id === "oraciones";
   const toneOf = cat => toneFor(categories, cat);
   const timesOf = (cat, word) => contributions[`${cat.id}/${word}`]?.n || 0;
   const doneOf = cat => cat.señas.filter(word => timesOf(cat, word) > 0).length;
@@ -87,11 +89,11 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
   const matched = all.filter(({ word, cat }) => normalize(`${word} ${cat.nombre}`).includes(normalize(query.trim())));
   const categoryWords = (category?.señas || []).filter(word => normalize(displayWord(word)).includes(normalize(query.trim())) && (filter === "all" || (filter === "needed" ? timesOf(category, word) === 0 : timesOf(category, word) > 0)));
   const categoriesShown = categories.filter(cat => normalize(cat.nombre).includes(normalize(query.trim())));
-  const title = { home: "¿Qué seña grabamos?", categoria: category?.nombre, aportes: "Tus aportes.", mas: "Más sobre DeafApp.", ayuda: "Antes de grabar.", feedback: "Te escuchamos." }[screen];
-  const subtitle = { home: "Elige una palabra. Tu aporte cuenta.", categoria: "Elige la palabra que quieres aportar.", aportes: "Las señas que has grabado desde este dispositivo.", mas: "Cómo vamos y qué nos importa.", ayuda: "Unos minutos de preparación hacen la diferencia.", feedback: "Ayúdanos a mejorar la experiencia." }[screen];
+  const title = { home: "¿Qué grabamos hoy?", categoria: category?.nombre, aportes: "Tus aportes.", mas: "Más sobre DeafApp.", ayuda: "Antes de grabar.", feedback: "Te escuchamos." }[screen];
+  const subtitle = { home: "Elige una palabra o una oración. Tu aporte cuenta.", categoria: isPhraseCategory ? "Frases cortas de todos los días. Elige una y compártela en LSCh." : "Elige la palabra que quieres aportar.", aportes: "Las señas que has grabado desde este dispositivo.", mas: "Cómo vamos y qué nos importa.", ayuda: "Unos minutos de preparación hacen la diferencia.", feedback: "Ayúdanos a mejorar la experiencia." }[screen];
   function WordRow({ word, cat }) {
     const n = timesOf(cat, word);
-    return <li className="app-word-row" data-done={n > 0 || undefined} style={{ "--tone": toneOf(cat) }}>
+    return <li className={`app-word-row${cat.id === "oraciones" ? " app-phrase-row" : ""}`} data-done={n > 0 || undefined} style={{ "--tone": toneOf(cat) }}>
       <div><h3>{displayWord(word)}</h3><p>{screen === "home" ? `${cat.nombre} · ` : ""}{n > 0 ? `La grabaste ${times(n)}` : "Aún no la has grabado"}</p></div>
       <button className="app-record-word" aria-label={`Grabar ${displayWord(word)}`} onClick={() => onRecord(word, cat)}><AppIcon name="camera" size={20} /><span>Grabar</span></button>
     </li>;
@@ -107,11 +109,15 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
       {screen === "home"
         ? <div className="app-home-top"><div className="app-page-heading">{heading}</div><Search value={query} onChange={setQuery} /></div>
         : screen === "categoria" && category
-          ? <div className="app-cat-banner" style={{ "--tone": toneOf(category) }}><div className="app-page-heading">{heading}<span className="app-cat-count">{category.señas.length} señas</span></div><span className="app-cat-emoji" aria-hidden="true">{category.emoji}</span></div>
+          ? <div className="app-cat-banner" data-phrases={isPhraseCategory || undefined} style={{ "--tone": toneOf(category) }}><div className="app-page-heading">{heading}<span className="app-cat-count">{category.señas.length} {isPhraseCategory ? "oraciones simples" : "señas"}</span></div><span className="app-cat-emoji" aria-hidden="true">{category.emoji}</span></div>
           : <div className="app-page-heading">{heading}</div>}
       {screen === "home" && <>
         {pending && <section className="app-draft"><AppIcon name="camera" /><div><h2>Tu grabación está pendiente</h2><p>«{displayWord(pending.label)}» · Revisa antes de enviar.</p></div><button aria-label="Revisar grabación pendiente" onClick={onResume}><AppIcon name="arrow" /></button></section>}
-        <div className="app-section-heading"><h2>{query.trim() ? "Resultados" : "Explora las categorías"}</h2><span>{query.trim() ? `${matched.length} ${matched.length === 1 ? "seña" : "señas"}` : `${categories.length} categorías`}</span></div>
+        {!query.trim() && phrases && <section className="app-phrases-entry" style={{ "--tone": toneOf(phrases) }} aria-labelledby="phrases-title">
+          <div className="app-phrases-copy"><span className="app-phrases-label"><AppIcon name="message" size={17} />{phrases.señas.length} oraciones simples</span><h2 id="phrases-title">Oraciones.</h2><p>Frases cortas, un aporte enorme. Graba una oración de todos los días en una sola toma.</p><AppButton onClick={() => onCategory(phrases)}>Ver las {phrases.señas.length} oraciones</AppButton></div>
+          <div className="app-phrases-art" aria-hidden="true"><span>{phrases.señas[0]}.</span><span>{phrases.señas[6]}.</span><i><AppIcon name="camera" size={18} />Una oración · Una toma</i></div>
+        </section>}
+        <div className="app-section-heading"><h2>{query.trim() ? "Resultados" : "Explora las categorías"}</h2><span>{query.trim() ? `${matched.length} ${matched.length === 1 ? "resultado" : "resultados"}` : `${categories.length} categorías`}</span></div>
         {query.trim() ? <>
           {categoriesShown.length > 0 && <div className="app-matched-categories">{categoriesShown.map(cat => <button key={cat.id} style={{ "--tone": toneOf(cat) }} onClick={() => onCategory(cat)}><i aria-hidden="true">{cat.emoji}</i>{cat.nombre}<AppIcon name="chevron" size={16} /></button>)}</div>}
           <ul className="app-word-list">{matched.map(({ word, cat }) => <WordRow key={`${cat.id}-${word}`} word={word} cat={cat} />)}</ul>
@@ -123,11 +129,11 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
           </section>
           {categories.map(cat => {
             const done = doneOf(cat);
-            return <button className="app-tile" key={cat.id} style={{ "--tone": toneOf(cat) }} aria-label={`${cat.nombre}: ${cat.señas.length} señas${done ? `, ${done} grabadas por ti` : ""}`} onClick={() => onCategory(cat)}>
+            return <button className="app-tile" key={cat.id} style={{ "--tone": toneOf(cat) }} aria-label={`${cat.nombre}: ${cat.señas.length} ${cat.id === "oraciones" ? "oraciones" : "señas"}${done ? `, ${done} grabadas por ti` : ""}`} onClick={() => onCategory(cat)}>
               <span className="app-tile-name">{cat.nombre}</span>
               <span className="app-tile-emoji" aria-hidden="true">{cat.emoji}</span>
               <span className="app-tile-bottom" aria-hidden="true">
-                <span className="app-tile-text"><b>{cat.señas.length} señas</b>{done > 0 && <span>{done === 1 ? "1 grabada por ti" : `${done} grabadas por ti`}</span>}</span>
+                <span className="app-tile-text"><b>{cat.señas.length} {cat.id === "oraciones" ? "oraciones" : "señas"}</b>{done > 0 && <span>{done === 1 ? "1 grabada por ti" : `${done} grabadas por ti`}</span>}</span>
                 {done > 0 && <span className="app-tile-bar"><i style={{ width: `${(done / cat.señas.length) * 100}%` }} /></span>}
               </span>
             </button>;
@@ -135,12 +141,13 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
         </div>}
       </>}
       {screen === "categoria" && category && <>
+        {isPhraseCategory && <section className="app-phrase-guide" aria-label="Cómo grabar una oración"><span className="app-phrase-guide-icon"><AppIcon name="camera" size={24} /></span><div><h2>Una oración, una sola toma.</h2><p>Espera la cuenta atrás. Haz la oración completa en LSCh y revisa la toma antes de enviarla.</p></div></section>}
         <Search value={query} onChange={setQuery} placeholder={`Buscar en ${category.nombre}`} />
         <Tracker category={category} timesOf={timesOf} tone={toneOf(category)} />
-        <div className="app-filter" aria-label="Filtrar señas">{[["all", "Todas"], ["needed", "Por grabar"], ["done", "Ya grabadas"]].map(([id, label]) => <button key={id} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label}</button>)}</div>
+        <div className="app-filter" aria-label={isPhraseCategory ? "Filtrar oraciones" : "Filtrar señas"}>{[["all", "Todas"], ["needed", "Por grabar"], ["done", "Ya grabadas"]].map(([id, label]) => <button key={id} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label}</button>)}</div>
         <ul className="app-word-list">{categoryWords.map(word => <WordRow key={word} word={word} cat={category} />)}</ul>
-        {categoryWords.length === 0 && <div className="app-empty"><h2>No hay señas con este filtro.</h2><p>Cambia la búsqueda o vuelve a «Todas».</p><AppButton secondary onClick={() => { setQuery(""); setFilter("all"); }}>Ver todas</AppButton></div>}
-        <p className="app-footnote">Tus aportes se guardan solo en este dispositivo. Puedes volver a grabar una seña cuando quieras.</p>
+        {categoryWords.length === 0 && <div className="app-empty"><h2>{isPhraseCategory ? "No hay oraciones con este filtro." : "No hay señas con este filtro."}</h2><p>Cambia la búsqueda o vuelve a «Todas».</p><AppButton secondary onClick={() => { setQuery(""); setFilter("all"); }}>Ver todas</AppButton></div>}
+        <p className="app-footnote">Tus aportes se guardan solo en este dispositivo. Puedes volver a grabar {isPhraseCategory ? "una oración" : "una seña"} cuando quieras.</p>
       </>}
       {screen === "aportes" && (recorded.length > 0 ? <>
         <dl className="app-stats app-stats-mine">

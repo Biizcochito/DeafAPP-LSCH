@@ -634,7 +634,7 @@ export default function App() {
 
   if (pantalla === "envioListo") {
     if (Platform.OS === "web") {
-      return <RecordingDone word={nombreDeSeña(señaActual)} tone={toneFor(CATEGORIAS, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
+      return <RecordingDone word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
         onAgain={() => abrirGrabacion(señaActual)} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { setPantalla("categoria"); setExito(false); }} />;
     }
     return (
@@ -778,7 +778,7 @@ export default function App() {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
     const volverDeGrabar = () => { cancelarCaptura(); if (repitiendo && borradorRef.current) mostrarVistaPrevia(); else setPantalla("categoria"); setExito(false); setError(null); };
     const textoInstruccion = capturando
-      ? "¡Haz la seña frente a la cámara!"
+      ? (catActual?.id === "oraciones" ? "¡Realiza la oración completa frente a la cámara!" : "¡Haz la seña frente a la cámara!")
       : preparando ? "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos."
       : countdown !== null ? "Mantén al menos una mano trazada. Graba al terminar la cuenta atrás."
       : `Pulsa Preparar grabación y después coloca ambas manos frente a la cámara para grabar: "${señaActual}".`;
