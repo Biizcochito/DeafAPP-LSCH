@@ -237,3 +237,7 @@ Aurora, BlurText, RotatingText, CountUp y SpotlightCard provienen de React Bits 
 - **Don't** usar vidrio sobre contenido que debe leerse con precisión.
 - **Don't** mostrar a quien graba cifras globales, metas ni si un aporte fue aprobado: solo lo suyo.
 - **Don't** usar los tonos de categoría como color de texto ni asignar el mismo a categorías contiguas.
+
+## Administración web
+
+El administrador comparte los tokens de `ui/theme.css`, con la misma barra lateral en escritorio y navegación de vidrio en móvil. `AdminWorkspace.web.js` contiene la navegación y `adminTheme.web.js` aplica las superficies, fuentes, controles y acentos a revisión, material y entrenamiento. Sus alternativas nativas conservan los estilos existentes. La tarjeta azul de interpretación vive dentro del entrenamiento privado.
