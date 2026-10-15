@@ -1,3 +1,11 @@
+// Etiquetas estables: las oraciones usan el mismo formato de captura y la categoría
+// propia evita mezclarlas con las señas aisladas al preparar el entrenamiento.
+export const ORACIONES = {
+  id: "oraciones", nombre: "Oraciones", emoji: "💬", color: "#FF8E72",
+  señas: ["quiero agua", "quiero comer", "tengo hambre", "tengo sed", "estoy bien",
+    "estoy cansado", "necesito ayuda", "voy a casa", "voy al trabajo", "hoy estudio"],
+};
+
 export const CATEGORIAS = [
  
   {
@@ -112,4 +120,5 @@ export const CATEGORIAS = [
     id: "tiempo", nombre: "Tiempo y Fechas", emoji: "🕐", color: "#607D8B",
     señas: ["hoy","ayer","manana","ahora","antes","despues","siempre","nunca","a veces","lunes","martes","miercoles","jueves","viernes","sabado","domingo","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre","año","mes","semana","dia","hora","minuto"],
   },
+  ORACIONES,
 ];
