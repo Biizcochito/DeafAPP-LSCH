@@ -40,7 +40,7 @@ export default function LschSources({ onBack, loadCatalog, onAccessError, backLa
     </View>
     <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.intro}>Explora recursos de Lengua de Señas Chilena y consulta quién los publicó.</Text>
-      <View style={styles.notice}><Text style={styles.note}>Estos enlaces ayudan a encontrar ejemplos. Cada seña y sus variantes deben revisarse antes de usarlas para enseñar o entrenar el traductor.</Text></View>
+      <View style={styles.notice}><Text style={styles.note}>Estos enlaces ayudan a encontrar ejemplos. Cada seña y sus variantes deben revisarse antes de usarlas para enseñar o entrenar el modelo de interpretación.</Text></View>
       <TextInput accessibilityLabel="Buscar material de LSCh" placeholder="Buscar tema o fuente…" placeholderTextColor="#888" value={query} onChangeText={text => { setQuery(text); setPage(1); }} style={styles.input} />
       <Text style={styles.section}>Recursos educativos</Text>
       {educational.map(source => <View key={source.id} style={styles.card}>

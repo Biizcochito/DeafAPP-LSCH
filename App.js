@@ -27,7 +27,6 @@ import AdminPanel from "./AdminPanel";
 import WelcomeScreen from "./WelcomeScreen";
 import AppWorkspace, { CameraPermission } from "./AppWorkspace";
 import { themeWebStyles } from "./appTheme";
-import TranslatorScreen from "./TranslatorScreen";
 import { createHiddenAdminEntry } from "./adminAccess";
 import { addContribution, emptyContributions, sanitizeContributions } from "./myContributions";
 import { myContributionsStore } from "./myContributionsStore";
@@ -660,9 +659,6 @@ export default function App() {
     setPantalla("home");
   }} onModerated={cargarConteos} />;
 
-  // Traductor (beta): una seña por clip, resuelta por la API de LSCh (ver translator.js). Se abre desde «Más» (web) o el inicio (celular).
-  if (pantalla === "traductor") return <TranslatorScreen onBack={() => setPantalla(Platform.OS === "web" ? "mas" : "home")} />;
-
   if (Platform.OS === "web" && ["home", "categoria", "aportes", "mas", "ayuda", "feedback"].includes(pantalla)) {
     return <AppWorkspace screen={pantalla} navigate={setPantalla} onLogo={pulsarLogo} categories={CATEGORIAS} category={catActual}
       contributions={aportes.items}
@@ -1029,10 +1025,6 @@ export default function App() {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.btnTraductor} onPress={() => setPantalla("traductor")}>
-          <Text style={styles.btnTraductorTexto}>🤟 Probar el traductor (beta)</Text>
-        </TouchableOpacity>
-
         <TouchableOpacity style={styles.btnFeedback} onPress={() => setPantalla("feedback")}>
           <Text style={styles.btnFeedbackTexto}>💬 Que opinas tu?</Text>
         </TouchableOpacity>
@@ -1081,8 +1073,6 @@ const styles = StyleSheet.create(themeWebStyles({
   btnFeedback:     { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#F39C12" },
   btnFeedbackTexto:{ fontSize: 16, fontWeight: "700", color: "#F39C12" },
 
-  btnTraductor:     { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#4ECDC4" },
-  btnTraductorTexto:{ fontSize: 16, fontWeight: "700", color: "#4ECDC4" },
 
   btnRevisar:          { marginHorizontal: 16, marginTop: 16, backgroundColor: "#1A1A2E", borderRadius: 16, paddingVertical: 16, alignItems: "center", borderWidth: 1, borderColor: "#3498DB" },
   btnRevisarLinkTexto: { fontSize: 16, fontWeight: "700", color: "#3498DB" },

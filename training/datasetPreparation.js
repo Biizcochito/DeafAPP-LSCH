@@ -103,7 +103,7 @@ export function prepareDataset(entries, { participantAliases = {} } = {}) {
   const accepted = [], quarantine = [], hashes = new Map();
   const report = { version: 1, targetClasses: TARGET_SIGNS.length, inputRecordings: entries.length, acceptedRecordings: 0,
     declaredParticipants: 0, trainingVariants: 0, evaluationRecordings: 0, evaluationStatus: "unavailable", translatorReady: false,
-    notes: ["La cantidad de aumentos no representa personas nuevas.", "Los perfiles son declarados y requieren comprobar que identifican personas diferentes.", "Este proceso prepara datos; no entrena ni publica un traductor."] };
+    notes: ["La cantidad de aumentos no representa personas nuevas.", "Los perfiles son declarados y requieren comprobar que identifican personas diferentes.", "Este proceso prepara datos; no entrena ni publica un sistema de interpretación."] };
   for (const entry of entries) {
     const audit = auditRecording(entry);
     if (!audit.eligible) { quarantine.push({ file: entry.file, classId: audit.classId, reasons: audit.reasons }); continue; }

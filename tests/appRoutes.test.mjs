@@ -13,6 +13,8 @@ test("la raíz informa, /app abre la app y /admin la administración", () => {
 test("una ruta desconocida muestra la información en lugar de una pantalla vacía", () => {
   assert.equal(pantallaDe("/otra-cosa"), "bienvenida");
   assert.equal(pantallaDe("/app/extra"), "bienvenida");
+  assert.equal(pantallaDe("/app/interpretacion"), "bienvenida");
+  assert.equal(pantallaDe("/app/traductor"), "bienvenida");
 });
 
 test("todas las pantallas de la app comparten la ruta /app", () => {
@@ -30,9 +32,4 @@ test("la barra final no cambia de ruta y cada sección tiene su título", () => 
   assert.match(tituloDe("home"), /Grabar señas/);
   assert.match(tituloDe("bienvenida"), /Lengua de Señas Chilena/);
   assert.match(tituloDe("admin"), /Administración/);
-});
-
-test("el traductor tiene título propio y vive dentro de /app", () => {
-  assert.equal(tituloDe("traductor"), "DeafApp — Probar el traductor");
-  assert.equal(rutaDe("traductor"), "/app");
 });
