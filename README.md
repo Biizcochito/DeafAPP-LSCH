@@ -18,7 +18,7 @@ DeafApp es una plataforma comunitaria para recolectar, validar y reconocer seña
 
 > ⚠️ **Proyecto en fase BETA.** Puede presentar cambios y errores mientras se sigue desarrollando.
 
-La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar candidatos desde el administrador. El traductor completo en tiempo real entre LSCh, voz y texto sigue siendo el objetivo del proyecto; todavía no está disponible como función pública.
+La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar candidatos desde el administrador. El sistema de interpretación completo en tiempo real entre LSCh, voz y texto sigue siendo el objetivo del proyecto; todavía no está disponible como función pública.
 
 | Vocabulario | Organización | Acceso público | Acceso privado |
 | :---: | :---: | :---: | :---: |
@@ -69,7 +69,7 @@ El rediseño organiza la bienvenida, el catálogo y las pantallas de grabación 
 | [deafapps.com/app](https://deafapps.com/app) | **Aplicación** | Catálogo, búsqueda, grabación, aportes del dispositivo y menú Más. |
 | [deafapps.com/admin](https://deafapps.com/admin) | **Administración** | Formulario de acceso con contraseña y herramientas privadas del equipo. |
 
-Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. La cabecera incluye **Sugerencias** y **Ayuda para grabar**; el menú Más permite volver a la bienvenida o abrir el traductor de prueba. El navegador conserva las rutas `/`, `/app` y `/admin` al recargar y al usar Atrás o Adelante.
+Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. La cabecera incluye **Sugerencias** y **Ayuda para grabar**; el menú Más permite volver a la bienvenida y consultar el estado del proyecto. El navegador conserva las rutas `/`, `/app` y `/admin` al recargar y al usar Atrás o Adelante.
 
 **Mis aportes** es un registro local de envíos; no muestra decisiones de moderación ni cifras globales. Borrar los datos del navegador elimina ese resumen. Los cinco clics sobre el logo abren el acceso al administrador; no autentican al usuario.
 
@@ -108,16 +108,16 @@ ni implican que el modelo actual ya reconozca oraciones.
 
 El tamaño se adapta al espacio disponible. Tener una entrada en el catálogo no significa que ya exista un modelo capaz de reconocerla.
 
-### Traductor de prueba (beta)
+### Prueba de interpretación (beta)
 
 El backend Python está incorporado en `backend/`. Para iniciar web y API desde este
 proyecto, usa **`iniciar-proyecto.bat`** o **`npm run proyecto`**. Dentro del administrador,
-**Entrenamiento LSCh → Modelo del traductor** reúne conexión, palabras reconocidas,
+**Entrenamiento LSCh → Modelo de interpretación** reúne conexión, palabras reconocidas,
 resultados, importación de grabaciones aprobadas y entrenamiento de candidatos.
 **Capturas revisadas** conserva el entrenamiento experimental del navegador.
 Consulta [la integración de Python](backend/INTEGRACION.md) para instalación y detalles.
 
-Pantalla **«Probar el traductor»** (web: Más → Probar el traductor; celular: inicio). Traduce **una seña por clip**: cuenta
+Pantalla privada **«Probar interpretación»**, en **Administrador → Entrenamiento LSCh → Modelo de interpretación → Probar interpretación (beta)**. Interpreta **una seña por clip**: cuenta
 atrás 3-2-1, captura de 30 fotogramas (igual que la grabación) y consulta a la API de LSCh, que responde con las **3 señas más
 probables** y sus porcentajes (y un aviso si no se ven las manos). El backend de prueba descrito para el proyecto se entrenó
 con **19 palabras de alimentos**; el apartado **Palabras que reconoce** muestra las clases informadas por el servidor
@@ -145,8 +145,8 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 | Material de LSCh | **Disponible en administración** | Referencias y catálogo para consulta y preparación posterior. |
 | Entrenamiento de señas aisladas | **Experimental** | Candidatos locales y primer experimento con “cerdo” y “día”. |
 | Reconocimiento para distintas personas | **Pendiente de validar** | Requiere más originales y evaluación con personas independientes. |
-| Traductor de una seña por clip | **Prueba (beta)** | 19 palabras de alimentos; muestra las 3 señas más probables. Necesita la API del backend encendida. |
-| Traducción continua entre LSCh, voz y texto | **Objetivo del proyecto** | Todavía no es una función pública. |
+| Interpretación de una seña por clip | **Prueba (beta)** | 19 palabras de alimentos; muestra las 3 señas más probables. Necesita la API del backend encendida. |
+| Interpretación continua entre LSCh, voz y texto | **Objetivo del proyecto** | Todavía no es una función pública. |
 
 **Este proyecto NO busca reemplazar a los intérpretes de lengua de señas.** Es una herramienta de apoyo y aprendizaje.
 
@@ -160,7 +160,7 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 | Interfaz web | Componentes DOM y CSS, Motion, OGL y tipografía Bricolage Grotesque; recursos visuales incluidos en `public/` |
 | Cámara | Expo Camera, trazados sobre la imagen y ajustes de compatibilidad web |
 | Despliegue | GitHub Actions + FTPS a HostGator para `deafapps.com`; Cloudflare Workers con archivos estáticos y vistas previas por rama |
-| API del traductor de prueba | Servicio externo en Python con TensorFlow y MediaPipe; dirección configurable en la pantalla o con `EXPO_PUBLIC_LSCH_API` |
+| API de la prueba de interpretación | Servicio externo en Python con TensorFlow y MediaPipe; dirección configurable en la pantalla o con `EXPO_PUBLIC_LSCH_API` |
 | Backend / datos | Supabase (PostgreSQL + Storage + RLS + RPC de administración) |
 | Seguimiento de cara | MediaPipe Face Mesh, cargado desde CDN |
 | Seguimiento de manos | TensorFlow.js + MediaPipe Hands en un Web Worker, con modelos incluidos en los archivos web y una alternativa de compatibilidad |
@@ -202,9 +202,9 @@ DeafAPP-LSCH/
 ├── myContributions.js           # Registro de aportes enviados sin contar duplicados
 ├── myContributionsStore.web.js  # Persistencia del resumen en este navegador
 ├── translator.js                # Captura y consulta a la API externa de LSCh
-├── useTranslator.js             # Estado del traductor compartido entre web y celular
-├── TranslatorScreen.web.js      # Pantalla web del traductor de prueba
-├── TranslatorScreen.js          # Pantalla nativa del traductor de prueba
+├── useTranslator.js             # Estado de la prueba de interpretación compartido entre web y celular
+├── TranslatorScreen.web.js      # Pantalla web de la prueba de interpretación
+├── TranslatorScreen.js          # Pantalla nativa de la prueba de interpretación
 ├── TrainingWorkbench.web.js     # Preparación y entrenamiento privados
 ├── admin/                       # SQL, catálogo privado y documentación
 ├── training/                    # Fuentes, preparación, recuperación y entrenamiento
@@ -228,7 +228,7 @@ DeafAPP-LSCH/
 
 </details>
 
-Los modelos de seguimiento de manos incluidos en `public/hand-model` detectan puntos de la mano: **no son modelos entrenados para traducir señas de LSCh**. Los candidatos creados desde el administrador se guardan por separado en el navegador.
+Los modelos de seguimiento de manos incluidos en `public/hand-model` detectan puntos de la mano: **no son modelos entrenados para interpretar señas de LSCh**. Los candidatos creados desde el administrador se guardan por separado en el navegador.
 
 ---
 
@@ -411,7 +411,7 @@ El entrenador actual utiliza una **Conv1D temporal**, con entrada de **32 pasos 
 | Separación | Participantes declarados separados, sujetos a revisión de identidad. | Se reserva una toma por seña; puede ser de la misma persona o de identidad desconocida. |
 | Interpretación | Los mínimos habilitan un experimento, sin garantizar precisión. | Prueba interna que no demuestra reconocimiento con otras personas. |
 
-Se separan los originales antes de generar variaciones de entrenamiento. Las variaciones temporales y de encuadre no cuentan como personas nuevas. Cada candidato guarda sus etiquetas, modo, informe y matriz de confusión en el navegador; entrenarlo no activa el traductor público.
+Se separan los originales antes de generar variaciones de entrenamiento. Las variaciones temporales y de encuadre no cuentan como personas nuevas. Cada candidato guarda sus etiquetas, modo, informe y matriz de confusión en el navegador; entrenarlo no habilita la interpretación para uso público.
 
 ### Resultado inicial comprobado el 4 de octubre de 2026
 
@@ -425,7 +425,7 @@ Se separan los originales antes de generar variaciones de entrenamiento. Las var
 | Evaluación | **1 original reservado por clase**. |
 | Aciertos | **1 de 2 pruebas internas**. |
 
-Este resultado no estima precisión general ni valida un traductor en tiempo real.
+Este resultado no estima precisión general ni valida un sistema de interpretación en tiempo real.
 
 El apartado **Material de LSCh** es un catálogo de consulta. Para utilizar una fuente externa en entrenamiento hace falta comprobar su autorización de uso, revisar la seña y preparar sus fragmentos y detecciones. La app no aprende automáticamente de todos los videos de internet ni de cada contribución recibida.
 
@@ -438,7 +438,7 @@ Preparación, recuperación y comandos del conjunto de datos: [training/README.m
 | Comando | Qué comprueba |
 | --- | --- |
 | `npm run test:admin` | Acceso y operaciones de administración. |
-| `npm run test:training` | Preparación de datos, captura, envío, aportes locales, rutas web y traductor de prueba. |
+| `npm run test:training` | Preparación de datos, captura, envío, aportes locales, rutas web y prueba de interpretación. |
 | `npm run test:model-training` | Entrenador, conjuntos del navegador y recuperación de grabaciones. |
 
 ```bash
@@ -447,7 +447,7 @@ npm run test:training
 npm run test:model-training
 ```
 
-Estos comandos comprueban el acceso y la moderación, la preparación de datos, la captura, el envío, la recuperación, el entrenador, las rutas y la lógica del traductor. La prueba contra la API real del traductor se omite si no está configurada `LSCH_API_TEST` con un servidor disponible.
+Estos comandos comprueban el acceso y la moderación, la preparación de datos, la captura, el envío, la recuperación, el entrenador, las rutas y la lógica de la prueba de interpretación. La prueba contra la API real de la prueba de interpretación se omite si no está configurada `LSCH_API_TEST` con un servidor disponible.
 
 La versión integrada el **11 de octubre de 2026** pasó **126 pruebas**, con **1 omitida** y ninguna fallida; también completó la exportación web. Se verificaron la interfaz en escritorio y móvil, las cinco pulsaciones, la ruta directa `/admin` y la recarga. La publicación en [deafapps.com](https://deafapps.com) quedó comprobada tras los PR [#5](https://github.com/Biizcochito/DeafAPP-LSCH/pull/5) y [#6](https://github.com/Biizcochito/DeafAPP-LSCH/pull/6), con los despliegues de HostGator y Cloudflare correctos.
 

@@ -6,7 +6,7 @@ import { TOTAL_FOTOGRAMAS, titularDeResultado } from "./translator";
 import "./ui/theme.css";
 import "./TranslatorScreen.css";
 
-// «Probar el traductor»: una seña por clip. Se cuenta 3, 2, 1, se capturan 30 fotogramas (igual que la grabación) y
+// «Probar interpretación»: una seña por clip. Se cuenta 3, 2, 1, se capturan 30 fotogramas (igual que la grabación) y
 // la API de LSCh responde con las 3 señas más probables. La API corre en el PC del proyecto (ver el README del backend).
 export default function TranslatorScreen({ onBack }) {
   const t = useTranslator({ protocoloPagina: typeof window !== "undefined" ? window.location.protocol : "" });
@@ -16,7 +16,7 @@ export default function TranslatorScreen({ onBack }) {
   return <div className="deaf-app tr-stage">
     <header className="tr-top">
       <button className="tr-back" aria-label="Volver" onClick={onBack} disabled={t.ocupada}><AppIcon name="back" size={19} /><span>Volver</span></button>
-      <div className="tr-title"><h1 tabIndex={-1}>Probar el traductor</h1><span className="tr-beta">Beta</span></div>
+      <div className="tr-title"><h1 tabIndex={-1}>Probar interpretación</h1><span className="tr-beta">Beta</span></div>
     </header>
     <main className="tr-main">
       <section className="tr-camera" aria-label="Cámara">
@@ -43,18 +43,18 @@ export default function TranslatorScreen({ onBack }) {
           <h2>{titularDeResultado(resumen)}</h2>
           {!resumen.sinManos && <ol className="tr-bars">{resumen.candidatos.map(c => <li key={c.sena} data-main={c.principal || undefined}><span>{c.nombre}</span><i style={{ "--p": `${c.porcentaje}%` }} /><b>{c.porcentaje}%</b></li>)}</ol>}
           <div className="tr-actions">
-            <button className="app-button" onClick={t.traducir} disabled={!t.listaParaTraducir}>Traducir otra seña<AppIcon name="refresh" size={19} /></button>
+            <button className="app-button" onClick={t.traducir} disabled={!t.listaParaTraducir}>Interpretar otra seña<AppIcon name="refresh" size={19} /></button>
             {!resumen.sinManos && <button className="app-button app-button-secondary" onClick={t.escuchar}>Escuchar<AppIcon name="play" size={19} /></button>}
           </div>
-          {!resumen.sinManos && <p className="tr-note">Con pocos datos el traductor puede equivocarse, por eso muestra tres opciones: la seña correcta suele estar entre ellas.</p>}
+          {!resumen.sinManos && <p className="tr-note">Con pocos datos el modelo puede equivocarse. Revisa las tres opciones; ninguna está garantizada.</p>}
         </section> : <>
           <ol className="tr-guide">
             <li><b>1</b><span>Colócate de modo que se vean tus manos y tu cara.</span></li>
-            <li><b>2</b><span>Pulsa «Traducir una seña» y espera la cuenta atrás.</span></li>
+            <li><b>2</b><span>Pulsa «Interpretar una seña» y espera la cuenta atrás.</span></li>
             <li><b>3</b><span>Haz una seña durante unos 3 segundos.</span></li>
           </ol>
           {fase === "error" && <p className="tr-error" role="alert">{t.error}</p>}
-          <button className="app-button tr-cta" onClick={t.traducir} disabled={!t.listaParaTraducir}>{t.ocupada ? (fase === "analizando" ? "Analizando…" : "Un momento…") : "Traducir una seña"}<AppIcon name="camera" size={19} /></button>
+          <button className="app-button tr-cta" onClick={t.traducir} disabled={!t.listaParaTraducir}>{t.ocupada ? (fase === "analizando" ? "Analizando…" : "Un momento…") : "Interpretar una seña"}<AppIcon name="camera" size={19} /></button>
         </>}
 
         {servidor.fase === "ok" && servidor.clases.length > 0 && <details className="tr-details">

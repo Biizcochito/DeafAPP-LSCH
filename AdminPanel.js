@@ -196,7 +196,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
         <Text style={styles.muted}>Informe del {new Date(preparation.snapshotAt).toLocaleDateString("es-CL")}. Es una auditoría guardada; las nuevas grabaciones se incorporan al ejecutar otra preparación.</Text>
         <Text style={styles.body}>{preparation.inputRecordings} grabaciones examinadas · {preparation.acceptedRecordings} aptas para el preparador actual · {preparation.declaredParticipants} participantes identificados.</Text>
         <Text style={styles.body}>{preparation.targetClasses} entradas de vocabulario · {preparation.quarantinedRecordings} grabaciones pendientes de preparación.</Text>
-        <Text style={styles.warning}>Todavía no hay un modelo de traducción entrenado. Las variaciones de una misma persona no equivalen a participantes nuevos.</Text>
+        <Text style={styles.warning}>Todavía no hay un modelo de interpretación validado para uso público. Las variaciones de una misma persona no equivalen a participantes nuevos.</Text>
         <TextInput accessibilityLabel="Buscar cobertura del vocabulario" placeholder="Buscar palabra o categoría…" placeholderTextColor="#9191A8" value={coverageQuery} onChangeText={value => { setCoverageQuery(value); setCoverageLimit(25); }} style={styles.input} />
         {coverage.slice(0, coverageLimit).map(item => <View key={item.classId} style={styles.coverageRow}><Text style={styles.rowTitle}>{item.label}</Text><Text style={styles.muted}>{item.category} · {item.recordings} muestras aptas · {item.declaredParticipants} personas</Text></View>)}
         {coverage.length > coverageLimit && <Action label="Mostrar más entradas" secondary onPress={() => setCoverageLimit(value => value + 25)} />}

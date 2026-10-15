@@ -8,9 +8,10 @@ secretos, videos ni archivos de audio del otro repositorio.
 
 El administrador reúne estas herramientas en **Entrenamiento LSCh**:
 
-- **Modelo del traductor**: conexión, palabras, informe, importación de aprobadas,
+- **Modelo de interpretación**: conexión, palabras, informe, importación de aprobadas,
   entrenamiento de candidatos y progreso. Requiere una sesión vigente del administrador,
   verificada por Python con la RPC existente de Supabase en cada solicitud.
+- **Probar interpretación (beta)**: prueba de una seña por toma dentro del modelo, disponible después de iniciar sesión en el administrador.
 - **Capturas revisadas**: conserva la preparación, recuperación y entrenamiento
   experimental en TensorFlow.js del navegador.
 
@@ -22,7 +23,7 @@ Python 3.12 ya tiene las dependencias necesarias en este equipo. En otro equipo,
 `npm run backend:setup` prepara `backend/.venv` con las versiones comprobadas.
 `DEAFAPP_PYTHON` permite elegir un ejecutable propio.
 
-`npm run backend` inicia solo Python. El apartado del administrador y el traductor
+`npm run backend` inicia solo Python. El apartado del administrador y la prueba de interpretación
 comparten la dirección guardada del servidor. Un celular debe utilizar la dirección
 de red del PC o una API HTTPS; `localhost` en el celular apunta al propio celular.
 El inicio integrado admite CORS desde deafapps.com y las direcciones locales de pruebas.

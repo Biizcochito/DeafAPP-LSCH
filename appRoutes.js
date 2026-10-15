@@ -13,5 +13,4 @@ export const mismaRuta = (a, b) => limpiar(a) === limpiar(b);
 export const tituloDe = pantalla => ({
   bienvenida: "DeafApp — Lengua de Señas Chilena",
   admin: "DeafApp — Administración",
-  traductor: "DeafApp — Probar el traductor",
 }[pantalla] || "DeafApp — Grabar señas");

@@ -25,7 +25,7 @@ if __name__ == "__main__":
     host = os.environ.get("LSCH_HOST", "127.0.0.1")
     port = int(os.environ.get("LSCH_PUERTO", "5000"))
     print(f"DeafApp · API Python: http://{host}:{port}", flush=True)
-    print("Entrenamiento: Administrador → Entrenamiento LSCh → Modelo del traductor", flush=True)
+    print("Entrenamiento: Administrador → Entrenamiento LSCh → Modelo de interpretación", flush=True)
     try:
         from waitress import serve
     except ImportError:

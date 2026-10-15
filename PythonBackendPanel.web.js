@@ -17,7 +17,7 @@ function Report({report, title}) {
   </View>;
 }
 
-export default function PythonBackendPanel({api, session, onAccessError, disabled}) {
+export default function PythonBackendPanel({api, session, onAccessError, disabled, onTest}) {
   const [url,setUrl] = useState(API_POR_DEFECTO), [draft,setDraft] = useState(API_POR_DEFECTO);
   const [status,setStatus] = useState(null), [data,setData] = useState(null), [error,setError] = useState('');
   const [busy,setBusy] = useState(false), [ready,setReady] = useState(false);
@@ -77,20 +77,24 @@ export default function PythonBackendPanel({api, session, onAccessError, disable
     });
   }
   return <View>
-    <View style={s.card}><Text style={s.subtitle}>Modelo del traductor</Text>
-      <Text style={s.body}>Consulta el modelo de Python que utiliza «Probar el traductor» y prepara nuevos candidatos con las grabaciones revisadas.</Text>
+    <View style={s.card}><Text style={s.subtitle}>Modelo de interpretación</Text>
+      <Text style={s.body}>Consulta el modelo de Python que utiliza «Probar interpretación» y prepara nuevos candidatos con las grabaciones revisadas.</Text>
       <Text accessibilityRole="status" style={s.body}>{status?.ok ? `Python conectado · ${status.clases.length} palabras disponibles` : busy ? 'Comprobando Python…' : 'Python sin conexión'}</Text>
-      <Text style={s.muted}>Inicia el backend con iniciar-proyecto.bat en este computador. El panel y el traductor comparten la dirección del servidor.</Text>
+      <Text style={s.muted}>Inicia el backend con iniciar-proyecto.bat en este computador. El panel y la prueba de interpretación comparten la dirección del servidor.</Text>
       <Text style={s.body}>Dirección del servidor</Text><TextInput accessibilityLabel="Dirección del backend Python" value={draft} onChangeText={setDraft} autoCapitalize="none" placeholder="http://localhost:5000" placeholderTextColor="#999" style={s.input}/>
       <View style={s.actions}><Button label="Guardar y comprobar servidor" onPress={connect} disabled={blocked}/><Button label="Actualizar resultados" onPress={() => act(signal => refresh(url,signal))} disabled={blocked}/></View>
       {notice && <Text style={s.warning}>{notice}</Text>}
       {error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
     </View>
+    <View style={s.card}><Text style={s.subtitle}>Prueba de interpretación (beta)</Text>
+      <Text style={s.body}>Evalúa una seña por toma y revisa las opciones que devuelve el modelo. Esta prueba forma parte de las herramientas de entrenamiento.</Text>
+      <Button label="Probar interpretación (beta)" onPress={onTest} disabled={disabled || !onTest}/>
+    </View>
     {data?.report && <Report report={data.report} title="Resultados del modelo en uso"/>}
     <View style={s.card}><Text style={s.subtitle}>Preparar y entrenar</Text>
       <Text style={s.body}>1. Aprobar y revisar las grabaciones. 2. Importarlas al conjunto de Python. 3. Entrenar un candidato y revisar sus resultados.</Text>
       <View style={s.actions}><Button label="Importar grabaciones aprobadas" onPress={() => start('import')} disabled={blocked || !data || Boolean(active)}/><Button label="Entrenar nuevo candidato" onPress={() => start('train')} disabled={blocked || !data || Boolean(active)}/></View>
-      <Text style={s.muted}>La importación prepara copias locales de las aprobadas. Cada entrenamiento guarda un candidato separado; el modelo del traductor sigue disponible hasta que el equipo decida reemplazarlo. Mantén Python abierto durante el proceso.</Text>
+      <Text style={s.muted}>La importación prepara copias locales de las aprobadas. Cada entrenamiento guarda un candidato separado; el modelo de interpretación sigue disponible hasta que el equipo decida reemplazarlo. Mantén Python abierto durante el proceso.</Text>
       {data?.jobs?.slice().reverse().map(job => <View key={job.id} style={s.job}><Text style={s.body}>{job.operation === 'import' ? 'Importación de grabaciones' : 'Entrenamiento del candidato'} · {({queued:'En espera',running:'En curso',complete:'Completado',error:'Requiere revisión',cancelled:'Cancelado'})[job.status] || job.status}</Text>
         {['queued','running'].includes(job.status) && <Button label="Cancelar proceso de Python" disabled={blocked} onPress={() => act(async signal => {await createPythonBackendClient(url,session).cancel(job.id,signal);await refresh(url,signal);})}/>}
         {!!job.logs?.length && <details><summary>Ver progreso</summary><pre style={{whiteSpace:'pre-wrap',fontSize:12,color:'#CCC'}}>{job.logs.slice(-12).join('\n')}</pre></details>}
