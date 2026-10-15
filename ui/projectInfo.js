@@ -2,7 +2,7 @@
 export const ROADMAP = [
   { id: "now", state: "Disponible", title: "Recopilar y revisar señas.", text: "Graba desde el celular o el computador; el equipo revisa cada aporte." },
   { id: "test", state: "Experimental", title: "Entrenar con grupos pequeños.", text: "Primeras pruebas internas con pocas señas. Todavía no reconocen a distintas personas." },
-  { id: "goal", state: "Objetivo", title: "Traducir en tiempo real.", text: "Entre LSCh, voz y texto.", note: "Todavía no está disponible." },
+  { id: "goal", state: "Objetivo", title: "Interpretar LSCh en tiempo real.", text: "Entre LSCh, voz y texto.", note: "Todavía no está disponible." },
 ];
 
 export const VALUES = [

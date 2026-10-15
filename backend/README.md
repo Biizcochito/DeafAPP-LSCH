@@ -18,7 +18,7 @@ Supabase).
                                                  ├─► preprocesado.json   (cómo preparar la entrada, incluido el umbral)
                                                  └─► informe_entrenamiento.json
                                                                              ▼
-                                              api_flask.py / reconocer.py  (traducción en vivo)
+                                              api_flask.py / reconocer.py  (interpretación en vivo)
 ```
 
 ## Formato de datos
@@ -292,11 +292,11 @@ El entrenamiento ya las ignora. `migrar_dataset.py` las mueve a `dataset_legado/
 * **Datos**: una sola persona y 5 tomas por palabra. Es el límite principal: más personas y más repeticiones
   valen más que cualquier cambio de modelo. DeafApp tiene 112 grabaciones aprobadas en 85 etiquetas, casi todas
   con 1 o 2 ejemplos; solo `carne`, `cerdo` y `pollo` coinciden con estas 19 palabras.
-* **Traducción en vivo**: se entrena con segmentos de seña completos reescalados a 30 fotogramas, y `/predecir` y
+* **Interpretación en vivo**: se entrena con segmentos de seña completos reescalados a 30 fotogramas, y `/predecir` y
   `reconocer.py` clasifican una ventana deslizante de 30 fotogramas sin saber cuándo empieza o termina la seña, y
   sin una clase «sin seña». Con una webcam no hay datos fiables para detectar el inicio y el fin automáticamente (ver
   «Recortar el reposo…»). Lo que encaja es **una seña por clip**, con inicio y fin marcados por la persona (cuenta
-  atrás o botón, como la grabación de la web): `/clasificar`. Una traducción continua de frases no está resuelta.
+  atrás o botón, como la grabación de la web): `/clasificar`. Una interpretación continua de frases no está resuelta.
 * **Vocabulario**: el modelo solo conoce 19 palabras de las 531 del catálogo; una palabra que no conoce recibe
   igualmente alguna de las 19 (aunque con poca confianza). Ampliarlo depende de tener grabaciones (ver
   `palabras_faltantes.py`).

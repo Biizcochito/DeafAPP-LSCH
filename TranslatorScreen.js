@@ -4,7 +4,7 @@ import { displayWord } from "./ui/signNames";
 import useTranslator from "./useTranslator";
 import { TOTAL_FOTOGRAMAS, titularDeResultado } from "./translator";
 
-// «Probar el traductor» en el celular: una seña por clip. La app (que no calcula puntos) manda los 30 fotogramas a la
+// «Probar interpretación» en el celular: una seña por clip. La app (que no calcula puntos) manda los 30 fotogramas a la
 // API de LSCh, que los procesa con el mismo MediaPipe con que se armó el dataset y responde con las 3 señas más probables.
 export default function TranslatorScreen({ onBack }) {
   const t = useTranslator();
@@ -14,7 +14,7 @@ export default function TranslatorScreen({ onBack }) {
   return <View style={s.root}>
     <View style={s.top}>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" onPress={onBack} disabled={t.ocupada} style={s.volver}><Text style={s.volverTexto}>‹ Volver</Text></TouchableOpacity>
-      <Text style={s.titulo}>Probar el traductor</Text>
+      <Text style={s.titulo}>Probar interpretación</Text>
       <Text style={s.beta}>BETA</Text>
     </View>
     <ScrollView contentContainerStyle={s.contenido} keyboardShouldPersistTaps="handled">
@@ -44,15 +44,15 @@ export default function TranslatorScreen({ onBack }) {
           <Text style={s.filaPorcentaje}>{c.porcentaje}%</Text>
         </View>) : null}
         <View style={s.acciones}>
-          <TouchableOpacity accessibilityRole="button" style={[s.primario, !t.listaParaTraducir && s.apagado]} onPress={t.traducir} disabled={!t.listaParaTraducir}><Text style={s.primarioTexto}>Traducir otra seña</Text></TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" style={[s.primario, !t.listaParaTraducir && s.apagado]} onPress={t.traducir} disabled={!t.listaParaTraducir}><Text style={s.primarioTexto}>Interpretar otra seña</Text></TouchableOpacity>
           {!resumen.sinManos ? <TouchableOpacity accessibilityRole="button" style={s.secundario} onPress={t.escuchar}><Text style={s.secundarioTexto}>Escuchar</Text></TouchableOpacity> : null}
         </View>
-        {!resumen.sinManos ? <Text style={s.nota}>Con pocos datos el traductor puede equivocarse, por eso muestra tres opciones: la seña correcta suele estar entre ellas.</Text> : null}
+        {!resumen.sinManos ? <Text style={s.nota}>Con pocos datos el modelo puede equivocarse. Revisa las tres opciones; ninguna está garantizada.</Text> : null}
       </View> : <View style={s.guia}>
-        {["Colócate de modo que se vean tus manos y tu cara.", "Pulsa «Traducir una seña» y espera la cuenta atrás.", "Haz una seña durante unos 3 segundos."].map((texto, i) => <View key={texto} style={s.guiaFila}><Text style={s.guiaNumero}>{i + 1}</Text><Text style={s.guiaTexto}>{texto}</Text></View>)}
+        {["Colócate de modo que se vean tus manos y tu cara.", "Pulsa «Interpretar una seña» y espera la cuenta atrás.", "Haz una seña durante unos 3 segundos."].map((texto, i) => <View key={texto} style={s.guiaFila}><Text style={s.guiaNumero}>{i + 1}</Text><Text style={s.guiaTexto}>{texto}</Text></View>)}
         {fase === "error" ? <Text style={s.error}>{t.error}</Text> : null}
         <TouchableOpacity accessibilityRole="button" style={[s.primario, s.grande, !t.listaParaTraducir && s.apagado]} onPress={t.traducir} disabled={!t.listaParaTraducir}>
-          <Text style={s.primarioTexto}>{t.ocupada ? (fase === "analizando" ? "Analizando…" : "Un momento…") : "Traducir una seña"}</Text>
+          <Text style={s.primarioTexto}>{t.ocupada ? (fase === "analizando" ? "Analizando…" : "Un momento…") : "Interpretar una seña"}</Text>
         </TouchableOpacity>
       </View>}
 

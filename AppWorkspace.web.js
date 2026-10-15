@@ -166,10 +166,9 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
       {screen === "mas" && <>
         <div className="app-about-grid">
           <section className="app-about-hero grain">
-            <div><h2>Un proyecto en construcción.</h2><p>Estamos reuniendo grabaciones para preparar un futuro reconocimiento de Lengua de Señas Chilena. La traducción en tiempo real aún no está disponible.</p><p>DeafApp es una herramienta de apoyo. No busca reemplazar a los intérpretes.</p><span className="app-version">DeafApp · LSCh · Beta</span></div>
+            <div><h2>Un proyecto en construcción.</h2><p>Estamos reuniendo grabaciones para preparar un futuro reconocimiento de Lengua de Señas Chilena. La interpretación en tiempo real aún no está disponible.</p><p>DeafApp es una herramienta de apoyo. No busca reemplazar a los intérpretes.</p><span className="app-version">DeafApp · LSCh · Beta</span></div>
             <div className="app-start-art" aria-hidden="true"><HandConstellation poses={["relaxed", "open", "soft", "point"]} hold={2400} /></div>
           </section>
-          <button className="app-about-link" onClick={() => navigate("traductor")}><span className="app-menu-icon"><AppIcon name="camera" /></span><span><strong>Probar el traductor (beta)</strong><small>Haz una seña y mira qué cree el sistema. Reconoce pocas palabras: es una prueba.</small></span><span className="app-about-arrow"><AppIcon name="arrow" size={20} /></span></button>
           <button className="app-about-link" onClick={() => navigate("bienvenida")}><span className="app-menu-icon"><AppIcon name="home" /></span><span><strong>Ver la bienvenida</strong><small>Conoce el proyecto y su propósito.</small></span><span className="app-about-arrow"><AppIcon name="arrow" size={20} /></span></button>
           <div className="app-section-heading app-about-title"><h2>Estado del proyecto</h2></div>
           <ol className="app-roadmap">{ROADMAP.map(item => <li key={item.id} data-step={item.id}><span className="app-state">{item.state}</span><h3>{item.title}</h3><p>{item.text}{item.note && <> <strong>{item.note}</strong></>}</p></li>)}</ol>

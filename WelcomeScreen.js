@@ -43,7 +43,7 @@ export default function WelcomeScreen({ onBegin, onLogo }) {
             <Text style={styles.bienvenidaSeccion}>🚀 En el futuro</Text>
             <Text style={styles.bienvenidaTexto}>
               La app podrá:{"\n"}
-              • Traducir señas a texto.{"\n"}
+              • Interpretar señas en texto.{"\n"}
               • Pasar señas a voz.{"\n"}
               • Funcionar sin internet.{"\n"}
               • Hablar con cualquier persona oyente sin problemas.
