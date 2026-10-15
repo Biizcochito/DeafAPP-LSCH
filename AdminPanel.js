@@ -1,3 +1,5 @@
+import AdminWorkspace from './AdminWorkspace';
+import {adminTheme} from './adminTheme';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Platform } from "react-native";
 import { AdminLogin } from "./AppWorkspace";
@@ -8,7 +10,7 @@ import TrainingWorkbench from "./TrainingWorkbench";
 function Action({ label, onPress, disabled, danger, secondary }) {
   return <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={onPress}
     style={[styles.action, secondary && styles.secondary, danger && styles.danger, disabled && styles.disabled]}>
-    <Text style={styles.actionText}>{label}</Text>
+    <Text style={[styles.actionText, secondary && !danger && styles.secondaryText]}>{label}</Text>
   </TouchableOpacity>;
 }
 
@@ -142,21 +144,26 @@ export default function AdminPanel({ client, onExit, onModerated }) {
     </ScrollView>
   </SafeAreaView>;
 
-  if (section === "material") return <LschSources loadCatalog={loadMaterial} onAccessError={fail} onBack={() => setSection("recordings")} backLabel="Volver al administrador" />;
-  if (section === "training") return <TrainingWorkbench api={api} session={session} client={client} onAccessError={fail} onBack={() => setSection("recordings")} onOpenMaterial={() => setSection("material")} />;
+  function navigateAdmin(next) {
+    setSection(next); setPreview(null); clipRequestRef.current++; setNotice(""); setError("");
+  }
+  const workspace = content => <AdminWorkspace section={section} onNavigate={navigateAdmin} onExit={exit} busy={busy}>{content}</AdminWorkspace>;
 
-  return <SafeAreaView style={styles.root}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-    <View style={styles.header}><View style={{ flex: 1 }}><Text style={styles.title}>Administración</Text><Text style={styles.muted}>DeafApp · LSCh</Text></View><Action label="Cerrar sesión" secondary onPress={exit} disabled={busy} /></View>
+  if (section === "material") return workspace(<LschSources loadCatalog={loadMaterial} onAccessError={fail} onBack={() => setSection("recordings")} backLabel="Volver al administrador" />);
+  if (section === "training") return workspace(<TrainingWorkbench api={api} session={session} client={client} onAccessError={fail} onBack={() => setSection("recordings")} onOpenMaterial={() => navigateAdmin("material")} />);
+
+  return workspace(<SafeAreaView dataSet={{adminRoot:true}} style={styles.root}><ScrollView dataSet={{adminScroll:true}} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    {Platform.OS === "web" ? <View style={{marginBottom:20}}><Text style={styles.eyebrow}>ADMINISTRACIÓN · LSCh</Text><Text accessibilityRole="header" aria-level={1} dataSet={{adminTitle:true}} style={styles.title}>{section === "tools" ? "Los datos del proyecto." : "Cada seña cuenta."}</Text><Text style={styles.pageLead}>{section === "tools" ? "Consulta la conexión, la cobertura y la preparación del entrenamiento." : "Revisa los aportes y prepara las próximas señas para aprender."}</Text></View> : <><View style={styles.header}><View style={{ flex: 1 }}><Text style={styles.title}>Administración</Text><Text style={styles.muted}>DeafApp · LSCh</Text></View><Action label="Cerrar sesión" secondary onPress={exit} disabled={busy} /></View>
     <View style={styles.actions}>
       <Action label="Grabaciones" secondary={section !== "recordings"} onPress={() => { setSection("recordings"); setNotice(""); setError(""); }} disabled={busy} />
       <Action label="Material de LSCh" secondary onPress={() => { setSection("material"); setPreview(null); clipRequestRef.current++; }} disabled={busy} />
       <Action label="Datos y diagnóstico" secondary={section !== "tools"} onPress={() => { setSection("tools"); setPreview(null); clipRequestRef.current++; setNotice(""); }} disabled={busy} />
       <Action label="Entrenamiento LSCh" secondary onPress={() => { setSection("training"); setPreview(null); clipRequestRef.current++; setNotice(""); }} disabled={busy} />
-    </View>
+    </View></>}
     {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
     {notice ? <Text accessibilityRole="status" style={styles.notice}>{notice}</Text> : null}
     {section === "recordings" && <>
-      <View style={styles.stats}>{["pending", "approved", "rejected"].map(key => <View key={key} style={styles.stat}><Text style={styles.statNumber}>{listing?.counts?.[key] ?? "—"}</Text><Text style={styles.muted}>{MODERATION_LABELS[key]}s</Text></View>)}</View>
+      <View style={styles.stats}>{["pending", "approved", "rejected"].map(key => <View key={key} style={[styles.stat, Platform.OS === "web" && styles[`${key}Stat`]]}><Text style={[styles.statNumber, Platform.OS === "web" && styles.statInk]}>{listing?.counts?.[key] ?? "—"}</Text><Text style={Platform.OS === "web" ? styles.statLabel : styles.muted}>{MODERATION_LABELS[key]}s</Text></View>)}</View>
       <Text style={styles.muted}>Revisa cada seña antes de decidir. Rechazar conserva el archivo y lo excluye de las aprobadas.</Text>
       <View style={styles.actions}>{["pending", "approved", "rejected", "all"].map(key => <Action key={key} label={key === "all" ? "Todas" : `${MODERATION_LABELS[key]}s`} secondary={status !== key} onPress={() => { setStatus(key); setPage(0); setNotice(""); }} disabled={busy} />)}</View>
       <TextInput accessibilityLabel="Buscar grabaciones" placeholder="Buscar palabra o categoría…" placeholderTextColor="#9191A8" value={query} onChangeText={value => { setQuery(value); setPage(0); }} editable={!busy} style={styles.input} />
@@ -178,8 +185,8 @@ export default function AdminPanel({ client, onExit, onModerated }) {
         </View>
       </View>}
       {!loading && !error && rows.length === 0 && <Text style={styles.muted}>No hay grabaciones con este filtro.</Text>}
-      {rows.map(row => <View key={row.id} style={styles.row}>
-        <TouchableOpacity accessibilityRole="checkbox" accessibilityLabel={`Seleccionar grabación ${row.id}`} accessibilityState={{ checked: selected.includes(row.id), disabled: busy || loading }} disabled={busy || loading} style={styles.checkbox}
+      {rows.map(row => <View key={row.id} dataSet={{adminRow:true}} style={styles.row}>
+        <TouchableOpacity accessibilityRole="checkbox" aria-checked={selected.includes(row.id)} accessibilityLabel={`Seleccionar grabación ${row.id}`} accessibilityState={{ checked: selected.includes(row.id), disabled: busy || loading }} disabled={busy || loading} style={styles.checkbox}
           onPress={() => setSelected(value => value.includes(row.id) ? value.filter(id => id !== row.id) : [...value, row.id])}><Text style={styles.checkText}>{selected.includes(row.id) ? "☑" : "☐"}</Text></TouchableOpacity>
         <View style={{ flex: 1 }}><Text style={styles.rowTitle}>{row.label}</Text><Text style={styles.muted}>{row.category || "Sin categoría"} · #{row.id}</Text><Text style={styles.tag}>{MODERATION_LABELS[row.status]}</Text></View>
         <Action label={`Ver grabación ${row.id}`} secondary onPress={() => openRecording(row)} disabled={busy || loading} />
@@ -203,10 +210,10 @@ export default function AdminPanel({ client, onExit, onModerated }) {
       </View>}
       {!loading && overview && !preparation && <Text style={styles.muted}>No hay un informe de preparación guardado todavía.</Text>}
     </>}
-  </ScrollView></SafeAreaView>;
+  </ScrollView></SafeAreaView>);
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(adminTheme({
   root: { flex: 1, backgroundColor: "#0F0F1E" }, content: { width: "100%", maxWidth: 940, alignSelf: "center", padding: 20, paddingBottom: 48 },
   header: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 22 }, title: { color: "#FFF", fontSize: 25, fontWeight: "800", flex: 1 },
   card: { backgroundColor: "#1A1A2E", borderRadius: 16, padding: 20, marginVertical: 12 }, cardTitle: { color: "#FFF", fontSize: 19, fontWeight: "700", marginBottom: 10 },
@@ -219,4 +226,4 @@ const styles = StyleSheet.create({
   stats: { flexDirection: "row", flexWrap: "wrap", gap: 12, marginVertical: 18 }, stat: { flex: 1, minWidth: 120, backgroundColor: "#1A1A2E", padding: 18, borderRadius: 12 }, statNumber: { color: "#FFF", fontWeight: "800", fontSize: 27 },
   row: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: "#1A1A2E", borderRadius: 12, padding: 14, marginVertical: 5 }, rowTitle: { color: "#FFF", fontSize: 15, fontWeight: "700" },
   checkbox: { padding: 8 }, checkText: { color: "#4ECDC4", fontSize: 25 }, tag: { color: "#9EDDD7", fontSize: 12, marginTop: 4 }, coverageRow: { borderBottomColor: "#343447", borderBottomWidth: 1, paddingVertical: 10 },
-});
+}));

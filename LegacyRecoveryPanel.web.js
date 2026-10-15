@@ -1,3 +1,4 @@
+import {adminTheme} from './adminTheme';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {SafeAreaView,ScrollView,View,Text,TextInput,TouchableOpacity,Image,ActivityIndicator,StyleSheet} from 'react-native';
 import {CATEGORIAS} from './signCatalog';
@@ -61,7 +62,7 @@ export default function LegacyRecoveryPanel({api,session,client,onBack,onUseProt
     finally{lock.current=false;if(alive.current)setBusy(false);}
   }
   const term=query.trim().toLocaleLowerCase('es'),visible=rows.filter(row=>!term||`${row.label} ${row.category} ${row.id}`.toLocaleLowerCase('es').includes(term));
-  return <SafeAreaView style={styles.root}><ScrollView contentContainerStyle={styles.content}>
+  return <SafeAreaView dataSet={{adminRoot:true}} style={styles.root}><ScrollView dataSet={{adminScroll:true}} contentContainerStyle={styles.content}>
     <View style={styles.actions}><Text style={styles.title}>Recuperar grabaciones antiguas</Text><Button label="Volver a entrenamiento" onPress={onBack}/></View>
     <Text style={styles.body}>Extraemos puntos de las imágenes JPEG, PNG o WebP guardadas. Cada fotograma se procesa de nuevo. Las grabaciones originales se conservan.</Text>
     <Text style={styles.warning}>Si faltan tiempos, usamos el orden de imágenes y lo indicamos. Un participante sin confirmar permanece desconocido. Este material permite experimentos privados; no demuestra funcionamiento con otras personas.</Text>
@@ -88,4 +89,4 @@ export default function LegacyRecoveryPanel({api,session,client,onBack,onUseProt
     {visible.length>limit&&<Button label="Mostrar más recuperadas" onPress={()=>setLimit(value=>value+20)}/>}
   </ScrollView></SafeAreaView>;
 }
-const styles=StyleSheet.create({root:{flex:1,backgroundColor:'#0F0F1E'},content:{maxWidth:940,width:'100%',alignSelf:'center',padding:20,paddingBottom:50},title:{color:'#FFF',fontSize:24,fontWeight:'800',flex:1},subtitle:{color:'#FFF',fontSize:18,fontWeight:'700'},body:{color:'#D0D0DF',fontSize:14,lineHeight:23,marginVertical:8},muted:{color:'#AAAABC',fontSize:13,lineHeight:21},warning:{color:'#D8BD84',fontSize:13,lineHeight:22,marginVertical:8},error:{color:'#FF9BAD',lineHeight:22},actions:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center',marginVertical:10},button:{backgroundColor:'#23877F',borderRadius:10,padding:13},buttonText:{color:'#FFF',fontWeight:'700'},card:{backgroundColor:'#1A1A2E',padding:18,borderRadius:14,marginVertical:8},input:{color:'#FFF',backgroundColor:'#171729',borderColor:'#55556A',borderWidth:1,padding:14,borderRadius:10,marginVertical:12},stat:{backgroundColor:'#1A1A2E',padding:14,borderRadius:12,minWidth:160,flex:1},number:{color:'#FFF',fontSize:27,fontWeight:'800'},select:{color:'#FFF',backgroundColor:'#171729',padding:12,width:'100%',borderRadius:8}});
+const styles=StyleSheet.create(adminTheme({root:{flex:1,backgroundColor:'#0F0F1E'},content:{maxWidth:940,width:'100%',alignSelf:'center',padding:20,paddingBottom:50},title:{color:'#FFF',fontSize:24,fontWeight:'800',flex:1},subtitle:{color:'#FFF',fontSize:18,fontWeight:'700'},body:{color:'#D0D0DF',fontSize:14,lineHeight:23,marginVertical:8},muted:{color:'#AAAABC',fontSize:13,lineHeight:21},warning:{color:'#D8BD84',fontSize:13,lineHeight:22,marginVertical:8},error:{color:'#FF9BAD',lineHeight:22},actions:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center',marginVertical:10},button:{backgroundColor:'#23877F',borderRadius:10,padding:13},buttonText:{color:'#FFF',fontWeight:'700'},card:{backgroundColor:'#1A1A2E',padding:18,borderRadius:14,marginVertical:8},input:{color:'#FFF',backgroundColor:'#171729',borderColor:'#55556A',borderWidth:1,padding:14,borderRadius:10,marginVertical:12},stat:{backgroundColor:'#1A1A2E',padding:14,borderRadius:12,minWidth:160,flex:1},number:{color:'#FFF',fontSize:27,fontWeight:'800'},select:{color:'#FFF',backgroundColor:'#171729',padding:12,width:'100%',borderRadius:8}}));

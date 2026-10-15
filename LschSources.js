@@ -1,3 +1,4 @@
+import {adminTheme} from './adminTheme';
 import { useEffect, useMemo, useState } from "react";
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Linking, StyleSheet } from "react-native";
 import { EDUCATIONAL_SOURCES } from "./training/educationalSources";
@@ -33,12 +34,12 @@ export default function LschSources({ onBack, loadCatalog, onAccessError, backLa
     if (!safe) return;
     try { await Linking.openURL(safe); } catch { setError("No se pudo abrir el enlace. Inténtalo de nuevo."); }
   };
-  return <SafeAreaView style={styles.root}>
-    <View style={styles.header}>
+  return <SafeAreaView dataSet={{adminRoot:true}} style={styles.root}>
+    <View dataSet={{adminMaterialHeader:true}} style={styles.header}>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={backLabel} onPress={onBack}><Text style={styles.back}>‹</Text></TouchableOpacity>
-      <Text style={styles.title}>Material de LSCh</Text>
+      <Text accessibilityRole="header" aria-level={1} dataSet={{adminTitle:true}} style={styles.title}>Material de LSCh.</Text>
     </View>
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView dataSet={{adminScroll:true}} contentContainerStyle={styles.content}>
       <Text style={styles.intro}>Explora recursos de Lengua de Señas Chilena y consulta quién los publicó.</Text>
       <View style={styles.notice}><Text style={styles.note}>Estos enlaces ayudan a encontrar ejemplos. Cada seña y sus variantes deben revisarse antes de usarlas para enseñar o entrenar el modelo de interpretación.</Text></View>
       <TextInput accessibilityLabel="Buscar material de LSCh" placeholder="Buscar tema o fuente…" placeholderTextColor="#888" value={query} onChangeText={text => { setQuery(text); setPage(1); }} style={styles.input} />
@@ -60,7 +61,7 @@ export default function LschSources({ onBack, loadCatalog, onAccessError, backLa
         <Text style={styles.note}>{catalog.channels.length} fuentes · {Math.round(catalog.totalDurationSeconds / 3600)} horas de material catalogado. La disponibilidad de cada video puede cambiar.</Text>
         <Text style={styles.note}>Recopilación TUB / DFKI. Los títulos y subtítulos todavía no están validados como etiquetas de señas. Las condiciones de uso de cada video se revisan por separado.</Text>
         <Text style={styles.results}>{matching.length} resultados por título o fuente</Text>
-        {matching.slice(0, page * 20).map(video => <View key={video.id} style={styles.card}>
+        {matching.slice(0, page * 20).map(video => <View key={`${video.id}:${video.url}`} style={styles.card}>
           <Text style={styles.cardTitle}>{video.title}</Text><Text style={styles.note}>{video.channel}</Text>
           <Text style={styles.tag}>Pendiente de revisar · licencia indicada: {video.reportedLicense}</Text>
           <TouchableOpacity accessibilityRole="link" accessibilityLabel={`Abrir original: ${video.title}`} onPress={() => open(video.url)}><Text style={styles.link}>Abrir original ↗</Text></TouchableOpacity>
@@ -72,7 +73,7 @@ export default function LschSources({ onBack, loadCatalog, onAccessError, backLa
     </ScrollView>
   </SafeAreaView>;
 }
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(adminTheme({
   root: { flex: 1, backgroundColor: "#0F0F1E" },
   header: { width: "100%", maxWidth: 800, alignSelf: "center", paddingHorizontal: 18, paddingVertical: 10, flexDirection: "row", alignItems: "center", gap: 18 },
   back: { color: "#FFF", fontSize: 34, paddingHorizontal: 8 }, title: { color: "#FFF", fontSize: 22, fontWeight: "800", flex: 1 },
@@ -88,4 +89,4 @@ const styles = StyleSheet.create({
   actions: { flexDirection: "row", flexWrap: "wrap", gap: 20 },
   link: { color: "#4ECDC4", fontWeight: "700", fontSize: 13, paddingVertical: 10 },
   results: { color: "#AAA", marginVertical: 12 }, more: { alignItems: "center", borderWidth: 1, borderColor: "#4ECDC4", borderRadius: 12 },
-});
+}));
