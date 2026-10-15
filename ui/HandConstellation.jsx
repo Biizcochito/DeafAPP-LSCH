@@ -84,7 +84,7 @@ export default function HandConstellation({ poses = ['open', 'relaxed', 'point',
     const start = performance.now() - offset;
     const frame = now => {
       raf = requestAnimationFrame(frame);
-      const elapsed = now - start;
+      const elapsed = Math.max(0, now - start);
       const cycle = hold + 1100;
       const index = Math.floor(elapsed / cycle) % sequence.length;
       const into = (elapsed % cycle) - hold;

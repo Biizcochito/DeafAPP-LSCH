@@ -41,7 +41,7 @@
     "admin:snapshot": "node scripts/build-admin-snapshot.mjs",
     "test:admin": "node --test tests/adminAccess.test.mjs tests/adminClient.test.mjs",
     "test:model-training": "node --test tests/modelTraining.test.mjs tests/browserDataset.test.mjs tests/legacyRecovery.test.mjs",
-    "test:training": "node --test tests/trainingCapture.test.mjs tests/datasetPreparation.test.mjs tests/sourceCatalog.test.mjs tests/recordingSubmission.test.mjs tests/myContributions.test.mjs tests/appRoutes.test.mjs tests/translator.test.mjs"
+    "test:training": "node --test tests/trainingCapture.test.mjs tests/datasetPreparation.test.mjs tests/sourceCatalog.test.mjs tests/recordingSubmission.test.mjs tests/myContributions.test.mjs tests/appRoutes.test.mjs tests/translator.test.mjs tests/oraciones.test.mjs"
   },
   "private": true
 }

@@ -22,7 +22,7 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 
 | Vocabulario | Organización | Acceso público | Acceso privado |
 | :---: | :---: | :---: | :---: |
-| **531 entradas** | **28 categorías** | Catálogo y grabación | Revisión, material y entrenamiento |
+| **541 entradas** | **29 categorías** | Catálogo y grabación | Revisión, material y entrenamiento |
 
 **Sitio oficial:** [deafapps.com](https://deafapps.com) · **Repositorio:** [Biizcochito/DeafAPP-LSCH](https://github.com/Biizcochito/DeafAPP-LSCH) · **Trabajo del equipo:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -43,7 +43,8 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 | Función | Qué permite |
 | --- | --- |
 | 🌐 **Portada y navegación renovadas** | Conocer el proyecto en la bienvenida y acceder a la app con una interfaz adaptable a computador y celular. |
-| 🤟 **Catálogo comunitario** | Grabar señas desde celular o computador para las 531 entradas del vocabulario. |
+| 🤟 **Catálogo comunitario** | Grabar señas desde celular o computador para las 541 entradas del vocabulario. |
+| 💬 **Oraciones simples** | Grabar 10 oraciones cotidianas completas, con búsqueda, filtros y progreso local. |
 | 🔎 **Búsqueda y filtros** | Buscar señas o categorías y filtrar una categoría por todas, por grabar o ya grabadas en este dispositivo. |
 | 🎥 **Grabación guiada** | Preparar la cámara, confirmar las manos y comenzar con una cuenta regresiva. |
 | ✋ **Trazados en vivo** | Mostrar u ocultar puntos de cara y manos, consultar su estado y recibir mensajes de ayuda. |
@@ -83,6 +84,20 @@ Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. 
 | **5** | Revisar la vista previa y enviar o repetir. | La contribución enviada queda pendiente de revisión. |
 
 Los votos públicos ya no conceden aprobación. Los candidatos de entrenamiento se guardan en el navegador y no activan automáticamente reconocimiento público.
+
+### Oraciones simples
+
+En **Grabar → Ver las 10 oraciones**, cada oración se captura en una sola toma con el
+mismo flujo de cámara, revisión, borrador y envío del catálogo. Las etiquetas estables
+se definen en `ORACIONES` dentro de `signCatalog.js`: quiero agua, quiero comer,
+tengo hambre, tengo sed, estoy bien, estoy cansado, necesito ayuda, voy a casa,
+voy al trabajo y hoy estudio.
+
+Las grabaciones mantienen el JSON de captura v2, los 30 fotogramas y los metadatos de
+seguimiento, y se organizan como `oraciones/<etiqueta>/`. La preparación de datos las
+incluye como clases propias después de la revisión habitual. Son enunciados en español
+para aportar su realización en LSCh; no representan una secuencia de señas prescrita
+ni implican que el modelo actual ya reconozca oraciones.
 
 ### Encuadre por dispositivo
 
