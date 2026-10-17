@@ -4,6 +4,7 @@ import { CATEGORIAS, ORACIONES } from '../signCatalog.js';
 import { captureTrackingSample, createTrainingCapture } from '../trainingCapture.js';
 import { createRecordingDraft, submitRecordingDraft } from '../recordingSubmission.js';
 import { auditRecording, prepareDataset } from '../training/datasetPreparation.js';
+import { testConsent } from './fixtures/consent.mjs';
 
 function capture() {
   const samples = Array.from({ length: 30 }, (_, index) => {
@@ -33,7 +34,7 @@ test('las diez oraciones conservan el JSON de captura, el registro y la preparac
   const entries = [];
   for (const [index, label] of ORACIONES.señas.entries()) {
     const draft = createRecordingDraft({ category: ORACIONES.id, label, id: `phrase-${index}`,
-      frames: Array(30).fill('/9j/AAAA=='), intervalMs: 100, training: capture() });
+      frames: Array(30).fill('/9j/AAAA=='), intervalMs: 100, training: capture(), consent: testConsent });
     let payload;
     let registration;
     let uploaded;
@@ -67,6 +68,7 @@ test('las diez oraciones conservan el JSON de captura, el registro y la preparac
     assert.equal(payload.categoria, 'oraciones');
     assert.equal(payload.n_frames, 30);
     assert.equal(payload.training.samples.length, 30);
+    assert.deepEqual(payload.consent, testConsent);
     const entry = { file: draft.storagePath, contentHash: String(index).repeat(64), recording: payload,
       serverReview: { approved: true } };
     assert.equal(auditRecording(entry).eligible, true);

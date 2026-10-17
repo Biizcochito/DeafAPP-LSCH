@@ -1,6 +1,7 @@
 import { isTrainingCapture } from "./trainingCapture.js";
+import { assertRecordingConsent, recordingRetentionPeriod } from "./privacyConsent.js";
 
-export function createRecordingDraft({ label, category, frames, intervalMs = 100, frameAspectRatio = 4 / 3, now = Date.now(), id, training }) {
+export function createRecordingDraft({ label, category, frames, intervalMs = 100, frameAspectRatio = 4 / 3, now = Date.now(), id, training, consent }) {
   const draftId = id || (typeof crypto !== "undefined" && crypto.randomUUID
     ? crypto.randomUUID() : `${now}-${Math.random().toString(36).slice(2)}`);
   const draft = {
@@ -8,6 +9,7 @@ export function createRecordingDraft({ label, category, frames, intervalMs = 100
     createdAt: now, uploaded: false,
     storagePath: `${category}/${label}/${label}_${draftId}.json`,
     ...(training ? { training } : {}),
+    ...(consent ? { consent: JSON.parse(JSON.stringify(consent)) } : {}),
   };
   if (!isRecordingDraft(draft)) throw new Error("La grabación no está completa. Vuelve a grabar.");
   return draft;
@@ -32,17 +34,22 @@ function assetAlreadyExists(error) {
 
 // One stable path per recording makes interrupted uploads safe to retry.
 // Check the registration too: an uploaded object alone is not a saved sign.
-export async function submitRecordingDraft({ draft, client, onUploaded = async () => {} }) {
+export async function submitRecordingDraft({ draft, client, onUploaded = async () => {}, getCurrentConsent = () => draft?.consent }) {
   if (!isRecordingDraft(draft)) throw new Error("No se pudo recuperar la grabación.");
+  assertRecordingConsent(draft, getCurrentConsent());
   const existing = await client.from("grabaciones").select("id").eq("archivo_path", draft.storagePath).limit(1);
   if (existing.error) throw new Error(existing.error.message || "No se pudo comprobar el envío anterior.");
+  assertRecordingConsent(draft, getCurrentConsent());
   if (existing.data?.length) return { alreadySubmitted: true };
   if (!draft.uploaded) {
+    assertRecordingConsent(draft, getCurrentConsent());
     const payload = JSON.stringify({
       schemaVersion: 2, recordingId: draft.id, language: "csg",
       label: draft.label, categoria: draft.category, frames: draft.frames,
       timestamp: draft.createdAt, n_frames: draft.frames.length,
       intervalMs: draft.intervalMs, frameAspectRatio: draft.frameAspectRatio,
+      consent: draft.consent,
+      retention: recordingRetentionPeriod(),
       ...(draft.training ? { training: draft.training } : {}),
     });
     const uploaded = await client.storage.from("contribuciones").upload(
@@ -54,6 +61,7 @@ export async function submitRecordingDraft({ draft, client, onUploaded = async (
     }
     await onUploaded({ ...draft, uploaded: true });
   }
+  assertRecordingConsent(draft, getCurrentConsent());
   const registered = await client.from("grabaciones").insert({
     label: draft.label, categoria: draft.category, archivo_path: draft.storagePath,
   });

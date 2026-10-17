@@ -227,7 +227,7 @@
 .app-login-error { padding: 12px 16px; border-radius: 16px; background: rgba(255, 142, 114, .12); color: var(--coral); font-size: 13.5px; }
 
 /* Navegación flotante de vidrio (móvil) */
-.app-bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: calc(100% - 28px); max-width: 420px; padding: 8px; border: 1px solid var(--line-2); border-radius: 999px; background: rgba(12, 19, 15, .94); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); box-shadow: 0 18px 50px -12px rgba(0, 0, 0, .75); }
+.app-bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: calc(58px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: calc(100% - 28px); max-width: 420px; padding: 8px; border: 1px solid var(--line-2); border-radius: 999px; background: rgba(12, 19, 15, .94); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); box-shadow: 0 18px 50px -12px rgba(0, 0, 0, .75); }
 .app-nav-pill { position: absolute; top: 8px; bottom: 8px; left: 8px; width: calc((100% - 16px) / 3); border-radius: 999px; background: var(--lime); transform: translateX(calc(var(--i, 0) * 100%)); transition: transform 520ms var(--ease); }
 .app-bottom-nav button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; padding: 4px; border-radius: 999px; color: var(--muted); font-size: 11.5px; font-weight: 650; transition: color 240ms; }
 .app-bottom-nav button span { display: grid; place-items: center; height: 26px; }
@@ -235,6 +235,11 @@
 .app-bottom-nav button[aria-current=page] { color: var(--ink); }
 .app-bottom-nav button:hover:not([aria-current]) { color: var(--cream); }
 .app-bottom-nav button:focus-visible { outline-color: var(--cream); outline-offset: -3px; }
+.app-legal-footer { position: relative; z-index: 21; flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 24px; min-height: 44px; padding: 4px 20px calc(4px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--ink); color: var(--muted); font-size: 12px; }
+.app-legal-footer > span { display: none; }
+.app-legal-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px; }
+.app-legal-footer a { display: inline-flex; align-items: center; min-height: 36px; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.app-legal-footer a:hover { color: var(--lime); }
 
 @media (min-width: 700px) {
   .app-topbar { padding: 22px 36px 14px; }
@@ -260,7 +265,7 @@
 
 /* Escritorio: barra lateral */
 @media (min-width: 1000px) {
-  .deaf-app.has-side { display: grid; grid-template-columns: 288px minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; grid-template-areas: "brand main" "nav main" "fill main" "help main"; }
+  .deaf-app.has-side { display: grid; grid-template-columns: 288px minmax(0, 1fr); grid-template-rows: auto auto 1fr auto auto; grid-template-areas: "brand main" "nav main" "fill main" "help main" "help legal"; }
   .deaf-app.has-side::after { content: ''; position: absolute; inset: 0 auto 0 0; z-index: 0; width: 288px; border-right: 1px solid var(--line); background: linear-gradient(180deg, rgba(255, 255, 255, .035), transparent 45%); pointer-events: none; }
   .has-side .app-topbar { display: contents; }
   .has-side .app-brand { grid-area: brand; position: relative; z-index: 2; padding: 34px 32px 8px; }
@@ -273,7 +278,9 @@
   .has-side .app-nav-pill { left: 8px; right: 8px; bottom: auto; width: auto; height: 60px; border-radius: 22px; transform: translateY(calc(var(--i, 0) * 66px)); }
   .has-side .app-bottom-nav button { flex-direction: row; justify-content: flex-start; gap: 14px; min-height: 60px; padding: 0 20px; border-radius: 22px; font-size: 15px; }
   .has-side .app-bottom-nav button span { height: auto; }
-  .has-side .app-scroll { grid-area: main; grid-row: 1 / -1; }
+  .has-side .app-scroll { grid-area: main; grid-row: 1 / -2; }
+  .has-side .app-legal-footer { grid-area: legal; justify-content: space-between; padding: 8px 56px; }
+  .has-side .app-legal-footer > span { display: inline; }
   .has-side .app-content { padding: 48px 56px 64px; }
   .has-side .app-page-heading h1 { font-size: clamp(44px, 4.4vw, 64px); }
   .app-home-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 460px); align-items: end; gap: 24px 40px; margin-bottom: 8px; }

@@ -11,6 +11,7 @@ import { ROADMAP, VALUES } from "./ui/projectInfo";
 import { CATEGORIAS } from "./signCatalog";
 import "./ui/theme.css";
 import "./WelcomeScreen.css";
+import "./PrivacyScreens.css";
 
 const ROADMAP_CLASS = { now: "dw-now", test: "dw-test", goal: "dw-goal-step" };
 
@@ -64,7 +65,7 @@ function GoLink({ onBegin, className, children }) {
   }}>{children}</a>;
 }
 
-export default function WelcomeScreen({ onBegin, onLogo }) {
+export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
   useEffect(() => {
     const previousColor = document.body.style.backgroundColor;
     document.body.style.backgroundColor = "#080c0a";
@@ -187,7 +188,7 @@ export default function WelcomeScreen({ onBegin, onLogo }) {
         </section>
       </main>
 
-      <footer className="dw-footer dw-shell"><Brand footer /><p>Lengua de Señas Chilena<span>Hecho con la comunidad, para la comunidad.</span></p><span className="dw-footer-country">LSCh · Chile</span></footer>
+      <footer className="dw-footer dw-shell"><Brand footer /><p>Lengua de Señas Chilena<span>Hecho con la comunidad, para la comunidad.</span></p><div className="dw-legal-links"><a href="/privacidad" onClick={event => { event.preventDefault(); onLegal("privacidad"); }}>Privacidad</a><a href="/terminos" onClick={event => { event.preventDefault(); onLegal("terminos"); }}>Términos y condiciones</a></div><span className="dw-footer-country">LSCh · Chile</span></footer>
     </div>
   );
 }
