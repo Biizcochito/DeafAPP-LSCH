@@ -33,3 +33,12 @@ test("la barra final no cambia de ruta y cada sección tiene su título", () => 
   assert.match(tituloDe("bienvenida"), /Lengua de Señas Chilena/);
   assert.match(tituloDe("admin"), /Administración/);
 });
+
+test("los avisos y la autorización tienen enlaces directos y conservan Atrás/Adelante", () => {
+  for (const pantalla of ["privacidad", "terminos", "consentimiento"]) {
+    assert.equal(rutaDe(pantalla), `/${pantalla}`);
+    assert.equal(pantallaDe(`/${pantalla}`), pantalla);
+    assert.equal(pantallaDe(`/${pantalla}/`), pantalla);
+    assert.ok(tituloDe(pantalla).startsWith("DeafApp —"));
+  }
+});
