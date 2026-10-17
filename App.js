@@ -33,6 +33,9 @@ import { myContributionsStore } from "./myContributionsStore";
 import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "./appRoutes";
 import { RecordingStage, RecordingReview, RecordingDone } from "./RecordingScreens";
 import { toneFor } from "./ui/categoryTones";
+import { assertRecordingConsent, createConsentReceipt, createPrivacyPreviewFetch, isConsentReceipt, isLocalPrivacyPreview, privacyReady } from "./privacyConsent";
+import { CONSENT_STORAGE_KEY, privacyConsentStore } from "./privacyConsentStore";
+import { PrivacyConsent, PrivacyDocument, PrivacyPreviewComplete } from "./PrivacyScreens";
 import { displayWord as nombreDeSeña } from "./ui/signNames";
 
 const { width, height } = Dimensions.get("window");
@@ -59,7 +62,11 @@ if (typeof document !== "undefined") {
 
 const SUPABASE_URL = "https://didlffnluqqurelgnqdp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZGxmZm5sdXFxdXJlbGducWRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MDMwNTYsImV4cCI6MjA5OTk3OTA1Nn0.G6MqUFXNJleUTBtZu7kQb58E-rGWk3w-rLbvRu6xOVE";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { global: { fetch: createTimedFetch(fetch.bind(globalThis)) } });
+const privacyPreview = Platform.OS === "web" && isLocalPrivacyPreview({
+  enabled: process.env.EXPO_PUBLIC_PRIVACY_PREVIEW,
+  hostname: typeof window !== "undefined" ? window.location.hostname : "",
+});
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { global: { fetch: createTimedFetch(createPrivacyPreviewFetch(fetch.bind(globalThis), privacyPreview)) } });
 
 // Panel de administración simulado, solo para revisar la interfaz en local (npm run web:mock-admin).
 // Exige la variable de entorno y localhost; en el dominio publicado nunca se activa.
@@ -145,6 +152,26 @@ export default function App() {
   const anchoCamara = estiloCamaraWeb ? Math.max(220, Math.min(estiloCamaraWeb.maxWidth, (viewport.height - (proporcionCamara < 1 ? 330 : 200)) * proporcionCamara)) : undefined;
   const [permission, requestPermission] = useCameraPermissions();
   const [pantalla,   setPantalla]   = useState(() => Platform.OS === "web" && typeof window !== "undefined" ? pantallaDe(window.location.pathname) : "bienvenida");
+  const [consentimiento, setConsentimiento] = useState(null);
+  const consentimientoRef = useRef(null);
+  const [mensajePrivacidad, setMensajePrivacidad] = useState("");
+  const consentimientoActivo = isConsentReceipt(consentimiento, { allowPreview: privacyPreview });
+  const actualizarConsentimiento = value => {
+    const vigente = isConsentReceipt(value, { allowPreview: privacyPreview }) ? value : null;
+    consentimientoRef.current = vigente;
+    setConsentimiento(vigente);
+  };
+  useEffect(() => {
+    let mounted = true;
+    privacyConsentStore.load().then(value => { if (mounted) actualizarConsentimiento(value); });
+    const changed = event => {
+      if (event.key === CONSENT_STORAGE_KEY || event.key === null) {
+        privacyConsentStore.load().then(value => { if (mounted) actualizarConsentimiento(value); });
+      }
+    };
+    if (Platform.OS === "web") window.addEventListener("storage", changed);
+    return () => { mounted = false; if (Platform.OS === "web") window.removeEventListener("storage", changed); };
+  }, []);
   const entradaAdminRef = useRef(null);
   if (!entradaAdminRef.current) entradaAdminRef.current = createHiddenAdminEntry();
   const pulsarLogo = () => {
@@ -192,6 +219,15 @@ export default function App() {
   const grabacionInvalidaRef = useRef(false);
   const vigilarCapturaRef = useRef(false);
   const grabacionSesionRef = useRef(0);
+  useEffect(() => {
+    if (!consentimientoActivo) {
+      grabacionSesionRef.current++;
+      vigilarCapturaRef.current = false;
+      setPreparando(false);
+      setCountdown(null);
+      setCapturando(false);
+    }
+  }, [consentimientoActivo]);
   const actualizarTrazado = useCallback(tracking => {
     ultimaDeteccionRef.current = tracking;
     const { blocked } = filtroGestosRef.current.update(tracking, performance.now());
@@ -241,10 +277,10 @@ export default function App() {
     }
   }, [estadoManos, manosConfirmadas]);
   useEffect(() => {
-    if (Platform.OS === "web" && permission?.granted) {
+    if (Platform.OS === "web" && permission?.granted && consentimientoActivo && !privacyPreview && privacyReady()) {
       warmSignTracking().catch(error => console.warn("Preparación del trazado:", error));
     }
-  }, [permission?.granted]);
+  }, [permission?.granted, consentimientoActivo]);
 
   // Feedback
   const [tipoFeedback,    setTipoFeedback]    = useState("sugerencia");
@@ -445,6 +481,10 @@ export default function App() {
   };
 
   const iniciarCaptura = async () => {
+    if (!consentimientoActivo || privacyPreview || !privacyReady()) {
+      setPantalla("consentimiento");
+      return;
+    }
     if (!cameraRef.current || grabacionEnCursoRef.current || capturando || subiendo) return;
     if (!borradorRecuperado || !origenGrabacion) return;
     const origenCaptura = origenGrabacion;
@@ -515,7 +555,7 @@ export default function App() {
         sessionId: sesionDatosRef.current, samples: muestrasSeguimiento,
         platform: Platform.OS, frameSize: tamañoFotograma, jpegQuality: 0.15,
       }) : undefined;
-      const draft = createRecordingDraft({ label: señaActual, category: catActual.id, frames, intervalMs: intervaloSecuencia, frameAspectRatio: aspectoSecuencia, training });
+      const draft = createRecordingDraft({ label: señaActual, category: catActual.id, frames, intervalMs: intervaloSecuencia, frameAspectRatio: aspectoSecuencia, training, consent: consentimientoRef.current });
       borradorRef.current = draft;
       setBorrador(draft);
       setEnvioFallido(false);
@@ -544,11 +584,13 @@ export default function App() {
     setError(null);
     setEnvioFallido(false);
     try {
+      if (privacyPreview || !privacyReady()) throw new Error("Esta es una prueba local del aviso; los envíos reales están deshabilitados.");
+      assertRecordingConsent(draft, consentimientoRef.current);
       if (typeof navigator !== "undefined" && navigator.onLine === false) {
         throw new Error("Sin conexión a internet. Conéctate y pulsa Reintentar envío.");
       }
       await withRecordingSendLock(draft.id, () => submitRecordingDraft({
-        draft, client: supabase,
+        draft, client: supabase, getCurrentConsent: () => consentimientoRef.current,
         onUploaded: async updated => {
           borradorRef.current = updated;
           setBorrador(updated);
@@ -570,6 +612,31 @@ export default function App() {
       setSubiendo(false);
     }
   };
+
+  const volverAlCatalogo = () => setPantalla(catActual ? "categoria" : "home");
+  if (["privacidad", "terminos"].includes(pantalla)) {
+    return <PrivacyDocument kind={pantalla} preview={privacyPreview} consent={consentimientoActivo ? consentimiento : null} message={mensajePrivacidad}
+      onBack={volverAlCatalogo} onConsent={() => setPantalla("consentimiento")}
+      onWithdraw={async () => {
+        try {
+          await privacyConsentStore.remove();
+          actualizarConsentimiento(null);
+          setMensajePrivacidad("Autorización retirada de este dispositivo. Tendrás que volver a autorizar antes de una nueva captura.");
+        } catch { setMensajePrivacidad("No se pudo borrar el comprobante local. Inténtalo de nuevo."); }
+      }} />;
+  }
+  if (pantalla === "consentimiento" || ["grabar", "pruebaConsentimiento"].includes(pantalla) && (!consentimientoActivo || !privacyPreview && !privacyReady())) {
+    return <PrivacyConsent preview={privacyPreview} onBack={volverAlCatalogo} onAccept={async choices => {
+      const receipt = createConsentReceipt(choices, { preview: privacyPreview });
+      await privacyConsentStore.save(receipt);
+      actualizarConsentimiento(receipt);
+      setMensajePrivacidad("");
+      setPantalla(privacyPreview ? "pruebaConsentimiento" : señaActual ? "grabar" : "home");
+    }} />;
+  }
+  if (privacyPreview && (pantalla === "grabar" || pantalla === "pruebaConsentimiento")) {
+    return <PrivacyPreviewComplete consent={consentimiento} onBack={volverAlCatalogo} onPrivacy={() => setPantalla("privacidad")} />;
+  }
 
   if (pantalla === "vistaPrevia" && borrador) {
     if (Platform.OS === "web") {
@@ -695,7 +762,7 @@ export default function App() {
 
   // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
-    return <WelcomeScreen onBegin={() => setPantalla("home")} onLogo={pulsarLogo} />;
+    return <WelcomeScreen onBegin={() => setPantalla("home")} onLogo={pulsarLogo} onLegal={setPantalla} />;
   }
 
   // ── FEEDBACK ─────────────────────────────────────────────────────

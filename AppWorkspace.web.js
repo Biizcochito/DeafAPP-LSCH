@@ -170,6 +170,8 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
             <div className="app-start-art" aria-hidden="true"><HandConstellation poses={["relaxed", "open", "soft", "point"]} hold={2400} /></div>
           </section>
           <button className="app-about-link" onClick={() => navigate("bienvenida")}><span className="app-menu-icon"><AppIcon name="home" /></span><span><strong>Ver la bienvenida</strong><small>Conoce el proyecto y su propósito.</small></span><span className="app-about-arrow"><AppIcon name="arrow" size={20} /></span></button>
+          <button className="app-about-link" onClick={() => navigate("privacidad")}><span className="app-menu-icon"><AppIcon name="lock" /></span><span><strong>Privacidad y tus datos</strong><small>Conoce, revisa o retira tu autorización.</small></span><span className="app-about-arrow"><AppIcon name="arrow" size={20} /></span></button>
+          <button className="app-about-link" onClick={() => navigate("terminos")}><span className="app-menu-icon"><AppIcon name="users" /></span><span><strong>Términos y condiciones</strong><small>Las condiciones de tu participación.</small></span><span className="app-about-arrow"><AppIcon name="arrow" size={20} /></span></button>
           <div className="app-section-heading app-about-title"><h2>Estado del proyecto</h2></div>
           <ol className="app-roadmap">{ROADMAP.map(item => <li key={item.id} data-step={item.id}><span className="app-state">{item.state}</span><h3>{item.title}</h3><p>{item.text}{item.note && <> <strong>{item.note}</strong></>}</p></li>)}</ol>
           <div className="app-section-heading app-about-title"><h2>Hecha con la comunidad</h2></div>
@@ -188,6 +190,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
       </form>}
     </div></main>
     <nav className="app-bottom-nav" aria-label="Navegación de la app" style={{ "--i": navIndex }} data-idle={nav ? undefined : ""}><span className="app-nav-pill" aria-hidden="true" />{navItems.map(([id, icon, label]) => <button key={id} aria-current={nav === id ? "page" : undefined} onClick={() => navigate(id)}><span><AppIcon name={icon} /></span>{label}</button>)}</nav>
+    <footer className="app-legal-footer"><span>DeafApp · LSCh</span><nav aria-label="Documentos legales"><a href="/terminos" onClick={event => { if (event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigate("terminos"); } }}>Términos y condiciones</a><a href="/privacidad" onClick={event => { if (event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigate("privacidad"); } }}>Privacidad</a></nav></footer>
   </div>;
 }
 

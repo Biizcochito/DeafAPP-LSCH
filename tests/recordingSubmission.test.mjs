@@ -3,8 +3,9 @@ import { test } from 'node:test';
 import { createClient } from '@supabase/supabase-js';
 import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch } from '../recordingSubmission.js';
 import { captureTrackingSample, createTrainingCapture } from '../trainingCapture.js';
+import { testConsent } from './fixtures/consent.mjs';
 
-const recording = () => createRecordingDraft({ label: 'hola', category: 'saludos', frames: Array.from({ length: 30 }, (_, i) => `frame-${i}`), id: 'sample-recording', now: 123456789 });
+const recording = () => createRecordingDraft({ label: 'hola', category: 'saludos', frames: Array.from({ length: 30 }, (_, i) => `frame-${i}`), id: 'sample-recording', now: 123456789, consent: testConsent });
 function service({ failUpload = false, failInsert = false, existing = false, duplicateAsset = false, lookupError = false } = {}) {
   const calls = [];
   const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -20,6 +21,7 @@ function service({ failUpload = false, failInsert = false, existing = false, dup
         const payload = JSON.parse(await options.body.get('').text());
         assert.deepEqual(payload.frames, recording().frames);
         assert.equal(payload.timestamp, recording().createdAt);
+        assert.deepEqual(payload.consent, testConsent);
         assert.equal(new Headers(options.headers).get('x-upsert'), 'false');
         return json({ Id: 'storage-id', Key: url.pathname.slice('/storage/v1/object/'.length) });
       }
@@ -47,7 +49,7 @@ test('creating and restoring a draft does not perform any upload and retains eve
 test('the actual SDK sends training metadata and real timing without adding database columns', async () => {
   const samples = Array.from({ length: 30 }, (_, i) => captureTrackingSample({ enabled: false }, i * 100, 0));
   const training = createTrainingCapture({ participantId: 'same-person', sessionId: 'session', samples, platform: 'android', frameSize: { width: 640, height: 480 }, jpegQuality: 0.15 });
-  const draft = createRecordingDraft({ label: 'hola', category: 'saludos', frames: recording().frames, intervalMs: 113, id: 'sample-recording', now: 123456789, training });
+  const draft = createRecordingDraft({ label: 'hola', category: 'saludos', frames: recording().frames, intervalMs: 113, id: 'sample-recording', now: 123456789, training, consent: testConsent });
   assert.equal(isRecordingDraft(JSON.parse(JSON.stringify(draft))), true);
   assert.equal(isRecordingDraft({ ...draft, training: { ...training, samples: [] } }), false);
   let uploadedPayload;

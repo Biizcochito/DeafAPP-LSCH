@@ -24,6 +24,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "web:mock-admin": "node scripts/web-mock-admin.cjs",
+    "web:privacy-preview": "node scripts/web-privacy-preview.cjs",
+    "test:privacy": "node --test tests/privacyConsent.test.mjs tests/recordingSubmission.test.mjs tests/appRoutes.test.mjs tests/oraciones.test.mjs",
     "proyecto": "node scripts/backend.cjs full",
     "backend": "node scripts/backend.cjs start",
     "backend:setup": "node scripts/backend.cjs setup",
