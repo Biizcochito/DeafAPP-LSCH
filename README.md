@@ -171,7 +171,7 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 | Captura y revisión de grabaciones | **Implementadas** | Cámara, trazados, vista previa y moderación administrativa. |
 | Privacidad y autorización | **Implementadas en el cliente** | Aviso, términos, comprobante previo a la captura y plazo de 24 meses registrado por aporte. Supresión remota y validación del consentimiento en servidor requieren su gestión específica. |
 | Material de LSCh | **Disponible en administración** | Referencias y catálogo para consulta y preparación posterior. |
-| Entrenamiento de señas aisladas | **Experimental** | Candidatos locales y primer experimento con “cerdo” y “día”. |
+| Entrenamiento de señas aisladas | **Experimental** | Grupos pequeños de señas revisadas, evaluación separada y candidatos guardados en el navegador. |
 | Reconocimiento para distintas personas | **Pendiente de validar** | Requiere más originales y evaluación con personas independientes. |
 | Interpretación de una seña por clip | **Prueba (beta)** | 19 palabras de alimentos; muestra las 3 señas más probables. Necesita la API del backend encendida. |
 | Interpretación continua entre LSCh, voz y texto | **Objetivo del proyecto** | Todavía no es una función pública. |
@@ -269,18 +269,6 @@ DeafAPP-LSCH/
 </details>
 
 Los modelos de seguimiento de manos incluidos en `public/hand-model` detectan puntos de la mano: **no son modelos entrenados para interpretar señas de LSCh**. Los candidatos creados desde el administrador se guardan por separado en el navegador.
-
-### Archivos locales y carpetas auxiliares
-
-El código de la aplicación, los recursos de `public/`, la documentación y los scripts permanecen versionados. Las configuraciones de herramientas y sus entregables de trabajo se conservan localmente y se excluyen mediante [.gitignore](.gitignore).
-
-| Carpetas | Uso |
-| --- | --- |
-| `.claude/`, `.codex*/`, `.impeccable/` | Configuraciones, revisiones, informes y archivos auxiliares de las herramientas de desarrollo. |
-| `.expo/`, `node_modules/`, `dist/` | Estado local de Expo, dependencias y exportación web generada. |
-| `.admin-private/`, `backend/.venv/`, `backend/.runtime/`, `backend/runs/` | Diagnósticos privados, entornos y candidatos locales. |
-
-Estas carpetas locales no se incluyen en nuevas publicaciones del repositorio. Las reglas de GitHub Actions en `.github/` y el archivo `deploy/.htaccess` forman parte de la configuración versionada del despliegue.
 
 ---
 
@@ -475,16 +463,16 @@ Instalación y detalles de moderación: [admin/README.md](admin/README.md).
 | `moderation_status` | `pending`, `approved` o `rejected` |
 | `moderation_version` | Versión de la decisión, usada para detectar conflictos |
 | `moderated_at` | Fecha de la última revisión |
-| `votos_positivos` / `votos_negativos` | Campos históricos; no otorgan aprobación en el flujo actual |
+| `votos_positivos` / `votos_negativos` | Compatibilidad con registros existentes; no otorgan aprobación en el flujo actual |
 | `timestamp` | Fecha de creación |
 
 **Storage bucket:** `contribuciones` — cada grabación se guarda como un archivo `.json` con el arreglo de fotogramas en base64.
 
 Los nuevos archivos añaden versión de esquema, ID estable de grabación, idioma `csg`, intervalo de captura, proporción del encuadre y datos `training` con puntos de cara/manos y tiempos observados. Los aportes nuevos también incorporan `consent` y `retention`, con el comprobante previo y las fechas de conservación. Estos datos acompañan al JSON y no requieren nuevas columnas en la tabla. Se conservan las imágenes para poder reprocesarlas. Los puntos incluyen información de antigüedad; no se consideran perfectamente sincronizados con cada foto.
 
-La app ya no pide seleccionar «Persona 1, Persona 2…». Utiliza un código anónimo de origen local, que no identifica a una persona ni demuestra que dos dispositivos pertenezcan a participantes distintos.
+La app utiliza un código anónimo de origen local, que no identifica a una persona ni demuestra que dos dispositivos pertenezcan a participantes distintos.
 
-Las sesiones, configuración y auditoría administrativas están en el esquema privado `deafapp_private`. La protección de las decisiones no convierte en privados los archivos históricos del bucket, que conserva su configuración pública anterior.
+Las sesiones, configuración y auditoría administrativas están en el esquema privado `deafapp_private`. La protección de las decisiones no convierte en privados los archivos existentes del bucket, que conserva su configuración pública.
 
 ---
 
@@ -497,9 +485,9 @@ El administrador reúne dos recorridos de entrenamiento y evaluación:
 | **Capturas revisadas, en el navegador** | **Conv1D temporal**, con **32 pasos × 171 características** de cara y manos normalizadas. | Experimentos con grupos pequeños y candidatos guardados en este navegador. |
 | **Modelo de interpretación, en Python** | El informe incluido configura una **CNN temporal** con rasgos de manos y **19 clases de alimentos**. | Una seña por clip, tres propuestas de resultado y entrenamiento de candidatos desde el panel privado. |
 
-El nombre histórico del archivo `modelo_lsch_lstm.keras` no determina su arquitectura: la configuración del modelo incluido indica `cnn`. El entrenador Python permite también probar LSTM. El informe y el modelo conectado deben comprobarse juntos; ninguna de estas pruebas habilita interpretación continua pública.
+La arquitectura se consulta en la configuración del modelo: el archivo `modelo_lsch_lstm.keras` incluido está configurado como `cnn`. El entrenador Python permite también probar LSTM. El informe y el modelo conectado deben comprobarse juntos; ninguna de estas pruebas habilita interpretación continua pública.
 
-El informe Python del **8 de octubre de 2026** registra **114 secuencias**, **57,02 %** de aciertos globales y **89,47 %** entre las tres primeras opciones. Son resultados históricos de validación cruzada por tomas, no una medición con nuevas personas. Archivos y detalles: [backend/INTEGRACION.md](backend/INTEGRACION.md).
+El informe Python incluido registra **114 secuencias**, **57,02 %** de aciertos globales y **89,47 %** entre las tres primeras opciones. Son resultados de validación cruzada por tomas, no una medición con nuevas personas. Archivos y detalles: [backend/INTEGRACION.md](backend/INTEGRACION.md).
 
 ### Modos de entrenamiento
 
@@ -513,20 +501,6 @@ Los criterios siguientes corresponden al entrenador de **capturas revisadas del 
 | Interpretación | Los mínimos habilitan un experimento, sin garantizar precisión. | Prueba interna que no demuestra reconocimiento con otras personas. |
 
 Se separan los originales antes de generar variaciones de entrenamiento. Las variaciones temporales y de encuadre no cuentan como personas nuevas. Cada candidato guarda sus etiquetas, modo, informe y matriz de confusión en el navegador; entrenarlo no habilita la interpretación para uso público.
-
-### Resultado inicial comprobado el 4 de octubre de 2026
-
-| Indicador | Resultado |
-| --- | --- |
-| Grabaciones aprobadas procesadas | **110**, sin errores de archivo o procesamiento. |
-| Secuencias con puntos técnicamente utilizables | **44** para experimentar. |
-| Secuencias con etiquetas compatibles y aprobadas | **12** de las secuencias utilizables. |
-| Primer grupo | **“Cerdo” y “día”**. |
-| Aprendizaje | **1 original por clase**, con sus variaciones. |
-| Evaluación | **1 original reservado por clase**. |
-| Aciertos | **1 de 2 pruebas internas**. |
-
-Este resultado no estima precisión general ni valida un sistema de interpretación en tiempo real.
 
 El apartado **Material de LSCh** es un catálogo de consulta. Para utilizar una fuente externa en entrenamiento hace falta comprobar su autorización de uso, revisar la seña y preparar sus fragmentos y detecciones. La app no aprende automáticamente de todos los videos de internet ni de cada contribución recibida.
 
@@ -554,10 +528,6 @@ npm run test:python-backend
 ```
 
 Estos comandos comprueban el acceso y la moderación, la preparación de datos, la captura, el envío, la recuperación, el entrenador, las rutas y la lógica de la prueba de interpretación. La prueba contra la API real de la prueba de interpretación se omite si no está configurada `LSCH_API_TEST` con un servidor disponible.
-
-La versión integrada el **11 de octubre de 2026** pasó **126 pruebas**, con **1 omitida** y ninguna fallida; también completó la exportación web. Se verificaron la interfaz en escritorio y móvil, las cinco pulsaciones, la ruta directa `/admin` y la recarga. La publicación en [deafapps.com](https://deafapps.com) quedó comprobada tras los PR [#5](https://github.com/Biizcochito/DeafAPP-LSCH/pull/5) y [#6](https://github.com/Biizcochito/DeafAPP-LSCH/pull/6), con los despliegues de HostGator y Cloudflare correctos.
-
-La corrección del **19 de octubre de 2026**, integrada en el [PR #19](https://github.com/Biizcochito/DeafAPP-LSCH/pull/19), pasó **29 pruebas** de manos, moderación y datos de captura. En navegador, con cámara y detección simuladas, se completaron los **30 fotogramas y 30 muestras** conservando cualquiera de las manos después de la confirmación inicial, y se comprobó el rechazo de una pérdida prolongada. Estas comprobaciones no enviaron aportes reales.
 
 Las pruebas sintéticas verifican el software; no representan precisión de reconocimiento de LSCh. Las pruebas de cámara física y validación lingüística requieren comprobaciones adicionales.
 
