@@ -1,4 +1,5 @@
 export const HAND_RESULT_MAX_AGE = 350;
+export const HAND_CONTINUITY_GRACE_MS = 1200;
 
 export function hasTrackedHand(points) {
   return points?.length === 21 && points.every(point => Number.isFinite(point.x) && Number.isFinite(point.y));
@@ -8,6 +9,24 @@ export function handsReadyForRecording(tracking, now, minimumHands = 2) {
   const age = now - tracking?.handTime;
   return !!tracking?.enabled && age >= 0 && age <= HAND_RESULT_MAX_AGE &&
     Number(hasTrackedHand(tracking.leftHandLandmarks)) + Number(hasTrackedHand(tracking.rightHandLandmarks)) >= minimumHands;
+}
+
+// Switching from two hands to one can briefly interrupt detector results.
+// Measure that gap from the last real detection, never from polling time.
+export function createRecordingHandContinuity() {
+  let lastHandTime;
+  return {
+    reset() { lastHandTime = undefined; },
+    update(tracking, now) {
+      if (!tracking?.enabled || tracking.handStatus && tracking.handStatus !== "ready") {
+        lastHandTime = undefined;
+        return false;
+      }
+      if (handsReadyForRecording(tracking, now, 1)) lastHandTime = tracking.handTime;
+      const age = now - lastHandTime;
+      return age >= 0 && age <= HAND_CONTINUITY_GRACE_MS;
+    },
+  };
 }
 
 export function cameraFrameReady(video) {
