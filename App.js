@@ -15,7 +15,7 @@ import { cameraStartupMessage } from "./cameraStartup";
 import { createClient } from "@supabase/supabase-js";
 import CameraLandmarks from "./CameraLandmarks";
 import { warmSignTracking } from "./landmarkTracking";
-import { handsReadyForRecording, hasTrackedHand, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./recordingHandGuard";
+import { handsReadyForRecording, hasTrackedHand, createRecordingHandContinuity, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./recordingHandGuard";
 import { createGestureGate, assertGestureAllowed, BLOCKED_GESTURE_MESSAGE } from "./gestureModeration";
 import { getWebCameraLayout } from "./cameraLayout";
 import { recordingDraftStore } from "./recordingDraftStore";
@@ -215,6 +215,8 @@ export default function App() {
   const estadoManosClaveRef = useRef("");
   const contenedorCamaraRef = useRef(null);
   const ultimaDeteccionRef = useRef({ enabled: false });
+  const continuidadManosRef = useRef(null);
+  if (!continuidadManosRef.current) continuidadManosRef.current = createRecordingHandContinuity();
   const grabacionEnCursoRef = useRef(false);
   const grabacionInvalidaRef = useRef(false);
   const vigilarCapturaRef = useRef(false);
@@ -230,14 +232,16 @@ export default function App() {
   }, [consentimientoActivo]);
   const actualizarTrazado = useCallback(tracking => {
     ultimaDeteccionRef.current = tracking;
-    const { blocked } = filtroGestosRef.current.update(tracking, performance.now());
+    const now = performance.now();
+    const { blocked } = filtroGestosRef.current.update(tracking, now);
     if (blocked !== gestoBloqueadoRef.current) {
       gestoBloqueadoRef.current = blocked;
       setGestoBloqueado(blocked);
     }
     if (grabacionEnCursoRef.current && blocked) gestoEnGrabacionRef.current = true;
-    const ready = handsReadyForRecording(tracking, performance.now(), 1);
-    if (vigilarCapturaRef.current && !ready) grabacionInvalidaRef.current = true;
+    const ready = handsReadyForRecording(tracking, now, 1);
+    const continua = continuidadManosRef.current.update(tracking, now);
+    if (vigilarCapturaRef.current && !continua) grabacionInvalidaRef.current = true;
     const phase = tracking.handStatus || "disabled";
     const left = ready && hasTrackedHand(tracking.leftHandLandmarks);
     const right = ready && hasTrackedHand(tracking.rightHandLandmarks);
@@ -493,11 +497,14 @@ export default function App() {
     const cancelada = () => sesion !== grabacionSesionRef.current;
     const verificarManos = (minimumHands = 2) => !cancelada() && (Platform.OS !== "web" ||
       (cameraFrameReady(contenedorCamaraRef.current?.querySelector("video")) &&
-        handsReadyForRecording(ultimaDeteccionRef.current, performance.now(), minimumHands)));
+        (minimumHands === 1
+          ? continuidadManosRef.current.update(ultimaDeteccionRef.current, performance.now())
+          : handsReadyForRecording(ultimaDeteccionRef.current, performance.now(), minimumHands))));
     const capturaValida = () => !grabacionInvalidaRef.current && verificarManos(1);
     const gestoPermitido = () => assertGestureAllowed(gestoBloqueadoRef.current || gestoEnGrabacionRef.current);
     grabacionEnCursoRef.current = true;
     grabacionInvalidaRef.current = false;
+    continuidadManosRef.current.reset();
     gestoEnGrabacionRef.current = false;
     setManosConfirmadas(false);
     setTrazadoActivo(true);
