@@ -10,7 +10,7 @@
 ![Supabase](https://img.shields.io/badge/Datos-Supabase-3ECF8E?style=flat-square)
 ![Cloudflare Workers](https://img.shields.io/badge/Web-Cloudflare_Workers-F38020?style=flat-square)
 
-**[Abrir DeafApp](https://deafapps.com)** · **[Funciones](#funciones)** · **[Instalación](#desarrollo-local)** · **[Administración](#panel-de-administración)**
+**[Abrir DeafApp](https://deafapps.com)** · **[Funciones](#funciones)** · **[Privacidad](#privacidad-y-consentimiento)** · **[Instalación](#desarrollo-local)** · **[Administración](#panel-de-administración)**
 
 </div>
 
@@ -18,11 +18,11 @@ DeafApp es una plataforma comunitaria para recolectar, validar y reconocer seña
 
 > ⚠️ **Proyecto en fase BETA.** Puede presentar cambios y errores mientras se sigue desarrollando.
 
-La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar candidatos desde el administrador. El sistema de interpretación completo en tiempo real entre LSCh, voz y texto sigue siendo el objetivo del proyecto; todavía no está disponible como función pública.
+La versión actual permite aportar señas y oraciones con autorización previa, revisar las grabaciones y entrenar candidatos desde el administrador. Incluye una prueba privada de interpretación conectada al backend Python. El sistema de interpretación completo en tiempo real entre LSCh, voz y texto sigue siendo el objetivo del proyecto; todavía no está disponible como función pública.
 
 | Vocabulario | Organización | Acceso público | Acceso privado |
 | :---: | :---: | :---: | :---: |
-| **541 entradas** | **29 categorías** | Catálogo y grabación | Revisión, material y entrenamiento |
+| **541 entradas** | **29 categorías** | Catálogo, 10 oraciones y aportes autorizados | Revisión, material, entrenamiento e interpretación beta |
 
 **Sitio oficial:** [deafapps.com](https://deafapps.com) · **Repositorio:** [Biizcochito/DeafAPP-LSCH](https://github.com/Biizcochito/DeafAPP-LSCH) · **Trabajo del equipo:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -35,6 +35,7 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 | [Estado del proyecto](#estado-del-proyecto) | [Desarrollo local](#desarrollo-local) | [Modelo y resultados](#sobre-el-modelo-de-reconocimiento) |
 | [Autores](#autores) | [Build y despliegue](#build-y-despliegue) | [Pruebas](#pruebas) |
 | [Experiencia web actual](#experiencia-web-actual) | [Flujo del equipo](#flujo-del-equipo) | [Acceso al administrador](https://deafapps.com/admin) |
+| [Privacidad y consentimiento](#privacidad-y-consentimiento) | [Web y backend Python](#web-y-backend-python) | [Detalle de privacidad](PRIVACIDAD-LEY-21719.md) |
 
 ---
 
@@ -46,7 +47,8 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 | 🤟 **Catálogo comunitario** | Grabar señas desde celular o computador para las 541 entradas del vocabulario. |
 | 💬 **Oraciones simples** | Grabar 10 oraciones cotidianas completas, con búsqueda, filtros y progreso local. |
 | 🔎 **Búsqueda y filtros** | Buscar señas o categorías y filtrar una categoría por todas, por grabar o ya grabadas en este dispositivo. |
-| 🎥 **Grabación guiada** | Preparar la cámara, confirmar las manos y comenzar con una cuenta regresiva. |
+| 🎥 **Grabación guiada** | Confirmar ambas manos al inicio y continuar con una o dos durante la cuenta regresiva y la toma. Tolera interrupciones breves del detector. |
+| 📄 **Privacidad y consentimiento** | Consultar el aviso y los términos, autorizar cada finalidad antes de abrir la cámara y retirar la autorización local. |
 | ✋ **Trazados en vivo** | Mostrar u ocultar puntos de cara y manos, consultar su estado y recibir mensajes de ayuda. |
 | 📱 **Encuadre adaptable** | Utilizar una vista horizontal en computador y vertical en celular. |
 | ▶️ **Vista previa** | Reproducir, repetir o descartar la grabación antes de enviarla. |
@@ -54,8 +56,10 @@ La versión actual permite recopilar, revisar y preparar grabaciones, y entrenar
 | 📊 **Mis aportes** | Consultar las señas enviadas, repeticiones y avance por categoría desde este dispositivo. |
 | 💬 **Ayuda y sugerencias** | Revisar cómo preparar una grabación y enviar sugerencias, errores o propuestas de señas. |
 | 🔐 **Revisión administrativa** | Aprobar, rechazar o devolver a pendientes las contribuciones recibidas. |
+| 🎛️ **Administrador renovado** | Navegar entre revisión, entrenamiento, material y diagnóstico con el diseño compartido de DeafApp y una interfaz adaptable. |
 | 🛑 **Control de gesto** | Bloquear la configuración específica del dedo medio levantado cuando el detector la confirma. |
 | 🧪 **Entrenamiento experimental** | Recuperar grabaciones antiguas, revisar etiquetas y entrenar grupos pequeños desde el administrador. |
+| 🐍 **Backend Python integrado** | Iniciar la API local, consultar sus 19 clases de alimentos y entrenar candidatos desde el panel privado. |
 
 La cara y las manos se procesan por separado para actualizar sus resultados. El botón **Reiniciar cámara** permite volver a iniciar la captura. El control del dedo medio es específico: no clasifica todos los gestos obscenos ni reemplaza la revisión administrativa.
 
@@ -68,8 +72,11 @@ El rediseño organiza la bienvenida, el catálogo y las pantallas de grabación 
 | [deafapps.com](https://deafapps.com) | **Bienvenida** | Presentación, cómo participar, estado del proyecto y comunidad. |
 | [deafapps.com/app](https://deafapps.com/app) | **Aplicación** | Catálogo, búsqueda, grabación, aportes del dispositivo y menú Más. |
 | [deafapps.com/admin](https://deafapps.com/admin) | **Administración** | Formulario de acceso con contraseña y herramientas privadas del equipo. |
+| [deafapps.com/privacidad](https://deafapps.com/privacidad) | **Privacidad** | Datos del aporte, finalidades, conservación y contacto del responsable. |
+| [deafapps.com/terminos](https://deafapps.com/terminos) | **Términos** | Condiciones de participación y uso autorizado de los aportes. |
+| [deafapps.com/consentimiento](https://deafapps.com/consentimiento) | **Tu autorización** | Decisiones separadas antes de captar una nueva grabación. |
 
-Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. La cabecera incluye **Sugerencias** y **Ayuda para grabar**; el menú Más permite volver a la bienvenida y consultar el estado del proyecto. El navegador conserva las rutas `/`, `/app` y `/admin` al recargar y al usar Atrás o Adelante.
+Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. La cabecera incluye **Sugerencias** y **Ayuda para grabar**; el menú Más permite volver a la bienvenida y consultar el estado del proyecto. El pie de la aplicación mantiene accesibles privacidad y términos. Las seis rutas admiten enlaces directos y navegación con Atrás o Adelante.
 
 **Mis aportes** es un registro local de envíos; no muestra decisiones de moderación ni cifras globales. Borrar los datos del navegador elimina ese resumen. Los cinco clics sobre el logo abren el acceso al administrador; no autentican al usuario.
 
@@ -77,11 +84,15 @@ Dentro de la app, la navegación reúne **Grabar**, **Mis aportes** y **Más**. 
 
 | Paso | Acción | Resultado |
 | :---: | --- | --- |
-| **1** | Elegir una categoría y una seña. | Se abre su pantalla de grabación. |
-| **2** | Pulsar **Preparar grabación** y mostrar ambas manos. | Se comprueba la detección inicial. |
-| **3** | Esperar la cuenta regresiva. | Se puede retirar una mano después de la confirmación inicial. |
-| **4** | Realizar la seña con una o dos manos. | Debe mantenerse al menos una mano detectada durante la captura. |
-| **5** | Revisar la vista previa y enviar o repetir. | La contribución enviada queda pendiente de revisión. |
+| **1** | Elegir una categoría y una seña u oración. | Se puede explorar el catálogo sin activar la cámara. |
+| **2** | Revisar el aviso y autorizar la participación si aún no hay un comprobante vigente. | La autorización se registra antes de acceder a la captura. |
+| **3** | Pulsar **Preparar grabación** y mostrar ambas manos. | En web se exige una detección inicial estable durante **500 ms**. |
+| **4** | Esperar la cuenta regresiva 3-2-1. | Después de confirmar ambas manos se puede retirar cualquiera de ellas. |
+| **5** | Realizar la seña u oración con una o dos manos. | Se capturan **30 fotogramas** y sus observaciones de seguimiento. |
+| **6** | Revisar, repetir o guardar para después. | El borrador permanece en el dispositivo cuando el almacenamiento está disponible. |
+| **7** | Pulsar **Enviar**. | Se sube el aporte con su comprobante y queda pendiente de revisión. |
+
+La continuidad de manos en web tolera hasta **1,2 segundos desde la última detección válida**, para que retirar una mano o una interrupción breve del detector no invalide toda la toma. Una pérdida prolongada de todas las manos o un fallo de cámara o del detector detiene la grabación. Los puntos ausentes se conservan como ausentes; no se completan con detecciones inventadas. Cada intento nuevo vuelve a exigir la confirmación inicial de ambas manos.
 
 Los votos públicos ya no conceden aprobación. Los candidatos de entrenamiento se guardan en el navegador y no activan automáticamente reconocimiento público.
 
@@ -98,6 +109,22 @@ seguimiento, y se organizan como `oraciones/<etiqueta>/`. La preparación de dat
 incluye como clases propias después de la revisión habitual. Son enunciados en español
 para aportar su realización en LSCh; no representan una secuencia de señas prescrita
 ni implican que el modelo actual ya reconozca oraciones.
+
+### Privacidad y consentimiento
+
+El catálogo y los documentos se pueden consultar sin autorizar una grabación. Antes de captar un aporte nuevo, la app presenta **Tu autorización** con decisiones separadas y sin casillas premarcadas.
+
+| Control | Comportamiento actual |
+| --- | --- |
+| **Finalidades separadas** | Aceptación de términos, captación de imagen y puntos de manos/rostro, y uso para entrenamiento y evaluación. |
+| **Quién autoriza** | Participación personal o autorización de un representante declarado, según el grupo de edad indicado en el formulario. |
+| **Comprobante versionado** | Conserva la fecha, las decisiones y una copia del aviso; acompaña al archivo enviado. Versión actual: **2026-10-17-v1**. |
+| **Conservación** | Cada envío nuevo registra un plazo de **24 meses desde el aporte**, con fecha de inicio y vencimiento. |
+| **Retirada local** | Borra la autorización de este dispositivo y exige autorizar de nuevo antes de otra captura. Las comprobaciones de envío se repiten entre etapas. |
+| **Grabaciones anteriores** | Una toma sin autorización previa puede recuperarse para revisión, pero no recibe consentimiento retroactivo para su envío. |
+| **Demostración local** | `npm run web:privacy-preview` permite recorrer el aviso y el formulario sin activar la cámara ni enviar aportes reales. |
+
+Registrar el vencimiento no elimina los archivos automáticamente. La supresión de aportes remotos y la atención de solicitudes corresponden al procedimiento del responsable; retirar el comprobante local tampoco borra aportes ya enviados ni modelos entrenados. El alcance técnico y las responsabilidades pendientes se detallan en [Privacidad y consentimiento de DeafApp](PRIVACIDAD-LEY-21719.md).
 
 ### Encuadre por dispositivo
 
@@ -142,6 +169,7 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 | Área | Estado | Alcance actual |
 | --- | --- | --- |
 | Captura y revisión de grabaciones | **Implementadas** | Cámara, trazados, vista previa y moderación administrativa. |
+| Privacidad y autorización | **Implementadas en el cliente** | Aviso, términos, comprobante previo a la captura y plazo de 24 meses registrado por aporte. Supresión remota y validación del consentimiento en servidor requieren su gestión específica. |
 | Material de LSCh | **Disponible en administración** | Referencias y catálogo para consulta y preparación posterior. |
 | Entrenamiento de señas aisladas | **Experimental** | Candidatos locales y primer experimento con “cerdo” y “día”. |
 | Reconocimiento para distintas personas | **Pendiente de validar** | Requiere más originales y evaluación con personas independientes. |
@@ -160,11 +188,11 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 | Interfaz web | Componentes DOM y CSS, Motion, OGL y tipografía Bricolage Grotesque; recursos visuales incluidos en `public/` |
 | Cámara | Expo Camera, trazados sobre la imagen y ajustes de compatibilidad web |
 | Despliegue | GitHub Actions + FTPS a HostGator para `deafapps.com`; Cloudflare Workers con archivos estáticos y vistas previas por rama |
-| API de la prueba de interpretación | Servicio externo en Python con TensorFlow y MediaPipe; dirección configurable en la pantalla o con `EXPO_PUBLIC_LSCH_API` |
+| API de la prueba de interpretación | Backend Python incluido en `backend/`, con TensorFlow y MediaPipe; ejecución local o dirección configurable con `EXPO_PUBLIC_LSCH_API` |
 | Backend / datos | Supabase (PostgreSQL + Storage + RLS + RPC de administración) |
 | Seguimiento de cara | MediaPipe Face Mesh, cargado desde CDN |
 | Seguimiento de manos | TensorFlow.js + MediaPipe Hands en un Web Worker, con modelos incluidos en los archivos web y una alternativa de compatibilidad |
-| Modelo experimental actual | Red temporal Conv1D en TensorFlow.js; entrenamiento y evaluación desde el administrador |
+| Modelos de reconocimiento | Conv1D temporal experimental en el navegador y CNN temporal de 19 clases en el backend Python incluido |
 | Persistencia local | IndexedDB para borradores, recuperaciones y candidatos de entrenamiento en la versión web |
 
 La implementación actual de entrenamiento utiliza cara y manos. El código conserva utilidades de Holistic para funciones opcionales, pero no se necesita pose para mostrar los trazados de grabación.
@@ -179,11 +207,16 @@ La implementación actual de entrenamiento utiliza cara y manos. El código cons
 ```text
 DeafAPP-LSCH/
 ├── App.js                       # Estado compartido, navegación y flujo de grabación
-├── appRoutes.js                 # Rutas /, /app y /admin; títulos y navegación web
+├── appRoutes.js                 # Rutas públicas, administración, privacidad y autorización
 ├── WelcomeScreen.web.js         # Portada web y presentación del proyecto
 ├── WelcomeScreen.css            # Diseño de la bienvenida
 ├── AppWorkspace.web.js          # Catálogo, búsqueda, aportes, ayuda y acceso al admin
 ├── AppWorkspace.css             # Diseño de la aplicación web
+├── PrivacyScreens.web.js        # Aviso, términos y autorización en la web
+├── PrivacyScreens.css           # Diseño de los documentos y el formulario
+├── privacyConsent.js            # Comprobantes, finalidades y conservación de 24 meses
+├── privacyConsentStore.web.js   # Autorización guardada en el dispositivo
+├── privacyDocuments.js          # Contenido del aviso y los términos
 ├── RecordingScreens.web.js      # Interfaz web de captura y vista previa
 ├── RecordingScreens.css         # Diseño de las pantallas de grabación
 ├── ui/                          # Tema visual, animaciones y componentes compartidos
@@ -193,11 +226,14 @@ DeafAPP-LSCH/
 ├── handTrackingWorker.js        # Comunicación con el detector de manos
 ├── cameraLayout.js              # Encuadre según dispositivo
 ├── cameraStartup.js             # Mensajes de errores de cámara
-├── recordingHandGuard.js        # Requisitos iniciales y control de captura
+├── recordingHandGuard.js        # Confirmación de ambas manos y continuidad con una
 ├── gestureModeration.js         # Bloqueo del gesto específico
 ├── recordingSubmission.js       # Borradores y envío sin duplicados
 ├── trainingCapture.js           # Datos de seguimiento asociados a cada toma
 ├── AdminPanel.js                # Acceso y revisión de grabaciones
+├── AdminWorkspace.web.js        # Navegación y marco visual del administrador
+├── AdminWorkspace.css           # Diseño del panel en escritorio y móvil
+├── adminTheme.web.js            # Tema compartido por las herramientas privadas
 ├── adminAccess.js               # Cinco pulsaciones abren el formulario de acceso
 ├── myContributions.js           # Registro de aportes enviados sin contar duplicados
 ├── myContributionsStore.web.js  # Persistencia del resumen en este navegador
@@ -206,6 +242,9 @@ DeafAPP-LSCH/
 ├── TranslatorScreen.web.js      # Pantalla web de la prueba de interpretación
 ├── TranslatorScreen.js          # Pantalla nativa de la prueba de interpretación
 ├── TrainingWorkbench.web.js     # Preparación y entrenamiento privados
+├── PythonBackendPanel.web.js    # Conexión, informe y entrenamiento de la API Python
+├── backend/                     # API, modelos y herramientas de entrenamiento Python
+├── iniciar-proyecto.bat         # Inicio integrado de web y backend en Windows
 ├── admin/                       # SQL, catálogo privado y documentación
 ├── training/                    # Fuentes, preparación, recuperación y entrenamiento
 ├── public/
@@ -222,6 +261,7 @@ DeafAPP-LSCH/
 ├── deploy/.htaccess             # HTTPS, rutas y cabeceras para HostGator
 ├── wrangler.jsonc               # Archivos estáticos y rutas SPA en Cloudflare
 ├── CONTRIBUTING.md              # Ramas y flujo de trabajo del equipo
+├── PRIVACIDAD-LEY-21719.md       # Alcance del consentimiento y responsabilidades
 ├── AGENTS.md                    # Reglas que deben seguir los agentes de IA
 └── dist/                        # Exportación web generada para publicar
 ```
@@ -229,6 +269,18 @@ DeafAPP-LSCH/
 </details>
 
 Los modelos de seguimiento de manos incluidos en `public/hand-model` detectan puntos de la mano: **no son modelos entrenados para interpretar señas de LSCh**. Los candidatos creados desde el administrador se guardan por separado en el navegador.
+
+### Archivos locales y carpetas auxiliares
+
+El código de la aplicación, los recursos de `public/`, la documentación y los scripts permanecen versionados. Las configuraciones de herramientas y sus entregables de trabajo se conservan localmente y se excluyen mediante [.gitignore](.gitignore).
+
+| Carpetas | Uso |
+| --- | --- |
+| `.claude/`, `.codex*/`, `.impeccable/` | Configuraciones, revisiones, informes y archivos auxiliares de las herramientas de desarrollo. |
+| `.expo/`, `node_modules/`, `dist/` | Estado local de Expo, dependencias y exportación web generada. |
+| `.admin-private/`, `backend/.venv/`, `backend/.runtime/`, `backend/runs/` | Diagnósticos privados, entornos y candidatos locales. |
+
+Estas carpetas locales no se incluyen en nuevas publicaciones del repositorio. Las reglas de GitHub Actions en `.github/` y el archivo `deploy/.htaccess` forman parte de la configuración versionada del despliegue.
 
 ---
 
@@ -272,6 +324,42 @@ npx expo start --web
 
 `npm ci` instala las versiones de `package-lock.json` y ejecuta el ajuste de compatibilidad de Expo Camera mediante [scripts/patch-expo-camera.cjs](scripts/patch-expo-camera.cjs). Al modificar dependencias deliberadamente, `npm install` actualiza el archivo de bloqueo y también ejecuta ese ajuste.
 
+Si Expo detecta TypeScript en archivos auxiliares locales, este proyecto JavaScript puede iniciarse en PowerShell sin su configuración automática:
+
+```powershell
+$env:EXPO_NO_TYPESCRIPT_SETUP = "1"
+npx expo start --web --localhost --port 8081
+```
+
+### Web y backend Python
+
+Para la prueba privada de interpretación y el entrenamiento Python, usar **Python 3.12**. En una instalación nueva, preparar primero sus dependencias:
+
+```bash
+npm run backend:setup
+npm run proyecto
+```
+
+En Windows también se puede abrir **`iniciar-proyecto.bat`** después de preparar el entorno. El comando integrado inicia la API en **`http://127.0.0.1:5000`** y reutiliza la web del puerto **8081** si ya está abierta; si está libre, exporta y sirve `dist/`.
+
+| Comando | Uso |
+| --- | --- |
+| `npm run backend` | Iniciar únicamente la API Python. |
+| `npm run backend:check` | Comprobar la API con el script de diagnóstico del proyecto. |
+| `npm run backend:import` | Importar grabaciones aprobadas para preparar datos locales. |
+| `npm run backend:train` | Entrenar un candidato en una carpeta nueva de `backend/runs/`. |
+| `npm run backend:test` | Ejecutar las pruebas Python integradas. |
+
+El apartado privado **Entrenamiento LSCh → Modelo de interpretación** comparte la dirección de servidor con **Probar interpretación (beta)**. Un celular debe usar una dirección accesible del PC o una API HTTPS. Instalación y alcance: [backend/INTEGRACION.md](backend/INTEGRACION.md).
+
+### Probar privacidad sin cámara ni envíos
+
+```bash
+npm run web:privacy-preview
+```
+
+Abrir **[http://localhost:8083/consentimiento](http://localhost:8083/consentimiento)**. Este modo sustituye la cámara por una confirmación ilustrada y bloquea las escrituras al servidor. Su comprobante de demostración no autoriza aportes reales.
+
 ### Comprobar la exportación web
 
 Para comprobar la versión exportada, como en las pruebas locales del proyecto:
@@ -281,7 +369,7 @@ npx expo export -p web
 node scripts/serve-web.cjs
 ```
 
-Abrir **[http://127.0.0.1:8081/](http://127.0.0.1:8081/)** para la información del proyecto y **[http://127.0.0.1:8081/app](http://127.0.0.1:8081/app)** para la app de grabación, y permitir el acceso a la cámara. El seguimiento requiere cargar sus modelos; la primera inicialización puede tardar según el dispositivo y la conexión. La compatibilidad debe comprobarse en el navegador y la cámara utilizados.
+Abrir **[http://127.0.0.1:8081/](http://127.0.0.1:8081/)** para la información del proyecto y **[http://127.0.0.1:8081/app](http://127.0.0.1:8081/app)** para la app. Para grabar, completar la autorización y permitir el acceso a la cámara. El servidor local también admite las rutas `/admin`, `/privacidad`, `/terminos` y `/consentimiento` al abrirlas directamente o recargar. El seguimiento requiere cargar sus modelos; la primera inicialización puede tardar según el dispositivo y la conexión.
 
 ---
 
@@ -351,11 +439,13 @@ El formulario de administración se puede abrir de dos formas:
 
 Ambos métodos abren el formulario y exigen la contraseña configurada por el propietario. **Cinco pulsaciones no inician sesión ni conceden permisos.** La interfaz pública no muestra un enlace al panel; la ruta directa sigue disponible. La contraseña se comprueba en el servidor y no se incluye en el README ni en el código del navegador. No hace falta activar la cámara para administrar. El acceso nativo conserva las cinco pulsaciones del logo en la misma ventana de tiempo.
 
+El administrador comparte logo, tipografía, colores y componentes con la app pública. En escritorio organiza las cuatro áreas principales con navegación lateral; en móvil utiliza una navegación compacta. Cambiar de sección lleva el foco al contenido y cerrar sesión permanece accesible.
+
 | Sección | Herramientas | Alcance |
 | --- | --- | --- |
 | **Grabaciones** | Búsqueda, filtros, reproducción y decisiones individuales o por lote. | Pendientes, aprobadas y rechazadas. |
 | **Material de LSCh** | Referencias educativas y catálogo académico de **379 videos**. | Consulta; los enlaces no equivalen a muestras revisadas ni permisos de entrenamiento. |
-| **Entrenamiento LSCh** | Análisis de aprobaciones, disponibilidad de muestras, importación y entrenamiento. | Candidatos de grupos pequeños de señas. |
+| **Entrenamiento LSCh** | Modelo de interpretación conectado a Python, prueba beta y capturas revisadas del navegador. | Importación de aprobadas, informes y candidatos; las herramientas Python verifican la sesión administrativa. |
 | **Recuperar grabaciones antiguas** | Extracción de puntos, reproducción y revisión de etiquetas. | Conserva el orden; no inventa tiempos ni identidades ausentes. |
 | **Modelos guardados** | Carga de candidatos e informes anteriores. | Datos almacenados en ese navegador. |
 | **Datos y diagnóstico** | Conexión, cobertura del vocabulario e informes. | Seguimiento de la preparación de datos. |
@@ -390,7 +480,7 @@ Instalación y detalles de moderación: [admin/README.md](admin/README.md).
 
 **Storage bucket:** `contribuciones` — cada grabación se guarda como un archivo `.json` con el arreglo de fotogramas en base64.
 
-Los nuevos archivos añaden versión de esquema, ID estable de grabación, idioma `csg`, intervalo de captura, proporción del encuadre y datos `training` con puntos de cara/manos y tiempos observados. Se conservan las imágenes para poder reprocesarlas. Los puntos incluyen información de antigüedad; no se consideran perfectamente sincronizados con cada foto.
+Los nuevos archivos añaden versión de esquema, ID estable de grabación, idioma `csg`, intervalo de captura, proporción del encuadre y datos `training` con puntos de cara/manos y tiempos observados. Los aportes nuevos también incorporan `consent` y `retention`, con el comprobante previo y las fechas de conservación. Estos datos acompañan al JSON y no requieren nuevas columnas en la tabla. Se conservan las imágenes para poder reprocesarlas. Los puntos incluyen información de antigüedad; no se consideran perfectamente sincronizados con cada foto.
 
 La app ya no pide seleccionar «Persona 1, Persona 2…». Utiliza un código anónimo de origen local, que no identifica a una persona ni demuestra que dos dispositivos pertenezcan a participantes distintos.
 
@@ -400,9 +490,20 @@ Las sesiones, configuración y auditoría administrativas están en el esquema p
 
 ## Sobre el modelo de reconocimiento
 
-El entrenador actual utiliza una **Conv1D temporal**, con entrada de **32 pasos × 171 características** de cara y manos, normalizadas y preparadas a partir de las grabaciones. El LSTM del planteamiento original sigue como línea de desarrollo; no se presenta un modelo LSTM de 19 clases como función disponible de esta versión.
+El administrador reúne dos recorridos de entrenamiento y evaluación:
+
+| Recorrido | Modelo y datos | Uso actual |
+| --- | --- | --- |
+| **Capturas revisadas, en el navegador** | **Conv1D temporal**, con **32 pasos × 171 características** de cara y manos normalizadas. | Experimentos con grupos pequeños y candidatos guardados en este navegador. |
+| **Modelo de interpretación, en Python** | El informe incluido configura una **CNN temporal** con rasgos de manos y **19 clases de alimentos**. | Una seña por clip, tres propuestas de resultado y entrenamiento de candidatos desde el panel privado. |
+
+El nombre histórico del archivo `modelo_lsch_lstm.keras` no determina su arquitectura: la configuración del modelo incluido indica `cnn`. El entrenador Python permite también probar LSTM. El informe y el modelo conectado deben comprobarse juntos; ninguna de estas pruebas habilita interpretación continua pública.
+
+El informe Python del **8 de octubre de 2026** registra **114 secuencias**, **57,02 %** de aciertos globales y **89,47 %** entre las tres primeras opciones. Son resultados históricos de validación cruzada por tomas, no una medición con nuevas personas. Archivos y detalles: [backend/INTEGRACION.md](backend/INTEGRACION.md).
 
 ### Modos de entrenamiento
+
+Los criterios siguientes corresponden al entrenador de **capturas revisadas del navegador**:
 
 | Criterio | Evaluación independiente | Prototipo experimental |
 | --- | --- | --- |
@@ -440,16 +541,23 @@ Preparación, recuperación y comandos del conjunto de datos: [training/README.m
 | `npm run test:admin` | Acceso y operaciones de administración. |
 | `npm run test:training` | Preparación de datos, captura, envío, aportes locales, rutas web y prueba de interpretación. |
 | `npm run test:model-training` | Entrenador, conjuntos del navegador y recuperación de grabaciones. |
+| `npm run test:privacy` | Decisiones de autorización, conservación, retirada, rutas y envío de aportes. |
+| `npm run test:python-backend` | Cliente de administración Python y lógica de interpretación. |
+| `node --test tests/recordingHandGuard.test.mjs tests/gestureModeration.test.mjs tests/trainingCapture.test.mjs` | Confirmación inicial, continuidad con una mano, interrupciones del detector y datos de captura. |
 
 ```bash
 npm run test:admin
 npm run test:training
 npm run test:model-training
+npm run test:privacy
+npm run test:python-backend
 ```
 
 Estos comandos comprueban el acceso y la moderación, la preparación de datos, la captura, el envío, la recuperación, el entrenador, las rutas y la lógica de la prueba de interpretación. La prueba contra la API real de la prueba de interpretación se omite si no está configurada `LSCH_API_TEST` con un servidor disponible.
 
 La versión integrada el **11 de octubre de 2026** pasó **126 pruebas**, con **1 omitida** y ninguna fallida; también completó la exportación web. Se verificaron la interfaz en escritorio y móvil, las cinco pulsaciones, la ruta directa `/admin` y la recarga. La publicación en [deafapps.com](https://deafapps.com) quedó comprobada tras los PR [#5](https://github.com/Biizcochito/DeafAPP-LSCH/pull/5) y [#6](https://github.com/Biizcochito/DeafAPP-LSCH/pull/6), con los despliegues de HostGator y Cloudflare correctos.
+
+La corrección del **19 de octubre de 2026**, integrada en el [PR #19](https://github.com/Biizcochito/DeafAPP-LSCH/pull/19), pasó **29 pruebas** de manos, moderación y datos de captura. En navegador, con cámara y detección simuladas, se completaron los **30 fotogramas y 30 muestras** conservando cualquiera de las manos después de la confirmación inicial, y se comprobó el rechazo de una pérdida prolongada. Estas comprobaciones no enviaron aportes reales.
 
 Las pruebas sintéticas verifican el software; no representan precisión de reconocimiento de LSCh. Las pruebas de cámara física y validación lingüística requieren comprobaciones adicionales.
 
