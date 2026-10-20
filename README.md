@@ -61,6 +61,7 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 | 🧪 **Entrenamiento experimental** | Recuperar grabaciones antiguas, revisar etiquetas y entrenar grupos pequeños desde el administrador. |
 | 📊 **Avance privado del catálogo** | Consultar candidatos, cobertura y pruebas reservadas; cargar los modelos de señas para probar una toma nueva con cámara. |
 | 🎬 **Oraciones completas** | Capturar las tres oraciones, entrenar un prototipo personal en el navegador y probarlo sin indicar la respuesta esperada. |
+| 🧭 **Asistente privado de entrenamiento** | Recomendar próximas tomas, revisar calidad, comparar candidatos y coordinar el aprendizaje y las pruebas reservadas. |
 | 🐍 **Backend Python integrado** | Iniciar la API local, consultar sus 19 clases de alimentos y entrenar candidatos desde el panel privado. |
 
 La cara y las manos se procesan por separado para actualizar sus resultados. El botón **Reiniciar cámara** permite volver a iniciar la captura. El control del dedo medio es específico: no clasifica todos los gestos obscenos ni reemplaza la revisión administrativa.
@@ -147,6 +148,21 @@ probar una captura nueva, sin enviarle la etiqueta elegida para grabar. Las toma
 persisten en el dispositivo; el modelo personal permanece en la sesión. Este flujo
 no concatena señas individuales, no tiene una precisión independiente validada y no
 activa automáticamente un intérprete público.
+
+El **asistente de entrenamiento** organiza el siguiente paso según tres objetivos:
+mejorar las oraciones, completar las señas visibles o revisar fallos. Sus
+recomendaciones combinan reglas de calidad, cobertura del informe y predicciones
+de los modelos reales. Puede preparar una captura prioritaria, iniciar el
+entrenamiento personal y comparar una seña nueva con los candidatos privados,
+agrupados por el mismo vocabulario. Las abstenciones y discrepancias requieren
+revisión; no cambian etiquetas automáticamente.
+
+Después de una prueba de oración se confirma qué se realizó. Esa toma queda
+**reservada para evaluar** y se excluye de los entrenamientos posteriores, incluso
+si aparece una copia con otro identificador. Se distinguen los aciertos en
+oraciones conocidas y las aceptaciones erróneas de otros movimientos. Los códigos
+de perfil son declarados y no verifican identidad. Las tomas, revisiones y pruebas
+permanecen en el navegador; el informe del servidor se muestra por separado.
 
 ### Privacidad y consentimiento
 

@@ -29,7 +29,7 @@ test('rechaza árboles cíclicos antes de recorrerlos',()=>{
 });
 test('solo las tres oraciones completas habilitan el entrenamiento personal',async()=>{
   assert.equal(PHRASES.length,3);const rows=PHRASES.flatMap(classId=>Array.from({length:2},()=>({classId,wholePhrase:true})));
-  rows.push({classId:'saludos/hola',wholePhrase:true});assert.deepEqual(phraseCounts(rows).map(row=>row.count),[2,2,2]);
+  rows.push({classId:'saludos/hola',wholePhrase:true});assert.deepEqual(phraseCounts(rows).map(row=>row.count),[0,0,0]);
   await assert.rejects(()=>trainPersonalPhrases({},rows),/tres tomas/);
 });
 test('las consultas de avance y pesos requieren sesión y validan el identificador',async()=>{

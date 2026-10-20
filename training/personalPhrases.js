@@ -1,4 +1,5 @@
 import {PHRASES} from './visibleTraining.js';
+import {trainingPhraseRows,validSequence} from './assistantData.js';
 
 const DATABASE='deafapp-private-phrases-v1';
 export function phraseStore(action, value) {
@@ -18,13 +19,14 @@ export function phraseStore(action, value) {
 }
 
 export function phraseCounts(rows) {
-  return PHRASES.map(classId=>({classId,count:rows.filter(row=>row.classId===classId&&row.wholePhrase===true).length}));
+  const learning=trainingPhraseRows(rows);
+  return PHRASES.map(classId=>({classId,count:learning.filter(row=>row.classId===classId).length}));
 }
 
 export async function trainPersonalPhrases(tf, rows, onEpoch, cancelled=()=>false) {
   if(phraseCounts(rows).some(row=>row.count<3))throw Error('Graba tres tomas completas de cada oración.');
-  const originals=rows.filter(row=>PHRASES.includes(row.classId)&&row.wholePhrase===true);
-  if(originals.some(row=>row.features?.length!==32||row.features.some(frame=>frame.length!==171||frame.some(v=>!Number.isFinite(v)))))throw Error('Una captura no es compatible.');
+  const originals=trainingPhraseRows(rows);
+  if(originals.some(row=>!validSequence(row.features)))throw Error('Una captura no es compatible.');
   const model=tf.sequential();
   model.add(tf.layers.conv1d({inputShape:[32,171],filters:16,kernelSize:3,activation:'relu'}));
   model.add(tf.layers.maxPooling1d({poolSize:2}));model.add(tf.layers.flatten());
