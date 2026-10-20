@@ -1,3 +1,4 @@
+import {REVIEW_PAGE_SIZE,validCandidateKey} from './training/signReview.js';
 export const ADMIN_PAGE_SIZE = 25;
 export const MODERATION_LABELS = { pending: "Pendiente", approved: "Aprobada", rejected: "Rechazada" };
 
@@ -19,7 +20,7 @@ export function createAdminClient(client) {
       const code = result.error.code;
       if (code === "PGRST202" || code === "42883") throw new AdminError("El panel todavía no está activado en Supabase.", "not_configured");
       if (code === "28000") throw new AdminError("La sesión terminó. Vuelve a ingresar.", "session_expired");
-      if (code === "40001") throw new AdminError("Otra revisión cambió esta grabación. Actualiza la lista y revísala nuevamente.", "conflict");
+      if (code === "40001") throw new AdminError("Otra persona cambió esta revisión. Actualiza la lista y revísala nuevamente.", "conflict");
       throw new AdminError("No se pudo completar la operación. Actualiza e inténtalo nuevamente.", "server");
     }
     if (result.data?.ok !== true) {
@@ -58,6 +59,18 @@ export function createAdminClient(client) {
     trainingCandidate(session, modelId) {
       if(typeof modelId!=="string"||!/^[a-f0-9]{32}$/.test(modelId)) throw new AdminError("Candidato no válido.","invalid_input");
       return call("deafapp_admin_training_candidate", {p_token:token(session),p_model_id:modelId});
+    },
+    signReviewList(session,{scope='visible',status='pending',query='',page=0}={}) {
+      if(!['visible','all'].includes(scope)||!['all','pending','approved','rejected'].includes(status)||!Number.isInteger(page)||page<0||page*REVIEW_PAGE_SIZE>10000)throw new AdminError('Filtro de revisión no válido.','invalid_input');
+      return call('deafapp_admin_sign_review_list',{p_token:token(session),p_scope:scope,p_status:status,p_query:String(query).slice(0,120),p_offset:page*REVIEW_PAGE_SIZE,p_limit:REVIEW_PAGE_SIZE});
+    },
+    signReviewDecide(session,row,status,label=null) {
+      if(!validCandidateKey(row?.key)||!Number.isInteger(row.version)||row.version<0||!['pending','approved','rejected'].includes(status)||(status==='approved'?(typeof label!=='string'||!label.trim()||label.length>80):label!==null))throw new AdminError('Decisión de revisión no válida.','invalid_input');
+      return call('deafapp_admin_sign_review_decide',{p_token:token(session),p_key:row.key,p_version:row.version,p_status:status,p_label:label});
+    },
+    signReviewExport(session,scope='visible') {
+      if(!['visible','all'].includes(scope))throw new AdminError('Filtro de revisión no válido.','invalid_input');
+      return call('deafapp_admin_sign_review_export',{p_token:token(session),p_scope:scope});
     },
     async logout(session) {
       if (validAdminSession(session)) await call("deafapp_admin_logout", { p_token: session.token });
