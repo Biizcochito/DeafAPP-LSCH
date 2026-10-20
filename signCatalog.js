@@ -124,7 +124,7 @@ export const CATEGORIAS = [
   ORACIONES,
 ];
 
-// Selección pública para concentrar los aportes en las tres oraciones prioritarias.
+// Selección pública para concentrar los aportes en las oraciones prioritarias.
 // Ocultar una etiqueta aquí no elimina sus grabaciones ni cambia su clase original.
 const SEÑAS_PRIORITARIAS = {
   saludos: ["hola", "bien", "gracias"],
@@ -133,10 +133,12 @@ const SEÑAS_PRIORITARIAS = {
   pronombres: ["yo", "tu", "nosotros"],
   necesidades: ["agua", "comida", "hambre", "sed", "ayuda", "cansado", "casa"],
   tiempo: ["hoy", "manana", "ahora", "despues"],
-  oraciones: ["quiero agua", "quiero comer", "necesito ayuda"],
+  oraciones: ["quiero agua", "quiero comer", "necesito ayuda", "estoy bien"],
 };
 
 export const CATEGORIAS_VISIBLES = CATEGORIAS.flatMap(category => {
-  const señas = category.señas.filter(label => SEÑAS_PRIORITARIAS[category.id]?.includes(label));
+  const señas = category.id === "oraciones"
+    ? SEÑAS_PRIORITARIAS.oraciones.filter(label => category.señas.includes(label))
+    : category.señas.filter(label => SEÑAS_PRIORITARIAS[category.id]?.includes(label));
   return señas.length ? [{ ...category, señas }] : [];
 });

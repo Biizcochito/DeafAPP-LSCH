@@ -94,7 +94,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
   function WordRow({ word, cat }) {
     const n = timesOf(cat, word);
     return <li className={`app-word-row${cat.id === "oraciones" ? " app-phrase-row" : ""}`} data-done={n > 0 || undefined} style={{ "--tone": toneOf(cat) }}>
-      <div><h3>{displayWord(word)}</h3><p>{screen === "home" ? `${cat.nombre} · ` : ""}{n > 0 ? `La grabaste ${times(n)}` : "Aún no la has grabado"}</p></div>
+      <div><h3>{displayWord(word)}</h3>{cat.id === "oraciones" && word === "estoy bien" && <p>Referencia de entrenamiento: YO · BIEN</p>}<p>{screen === "home" ? `${cat.nombre} · ` : ""}{n > 0 ? `La grabaste ${times(n)}` : "Aún no la has grabado"}</p></div>
       <button className="app-record-word" aria-label={`Grabar ${displayWord(word)}`} onClick={() => onRecord(word, cat)}><AppIcon name="camera" size={20} /><span>Grabar</span></button>
     </li>;
   }

@@ -1,3 +1,4 @@
+import {canonicalPhraseClassId} from './phraseLabels.js';
 import { frameDataUri } from '../adminClient.js';
 import { FEATURE_LAYOUT, TARGET_SIGNS, featureVector, resampleFeatures, augmentTrainingSample } from './datasetPreparation.js';
 import { TRAINING_FACE_INDICES } from '../trainingCapture.js';
@@ -13,7 +14,7 @@ export function inspectLegacyRecording(recording, row) {
   const frames = recording.frames.map(frameDataUri);
   if (frames.some(frame => !frame)) throw new Error('Hay imágenes con un formato que no se puede recuperar.');
   const sourceClassId = `${row.category}/${row.label}`;
-  return { frames, sourceClassId, classId: targets.has(sourceClassId) ? sourceClassId : null,
+  return { frames, sourceClassId, classId: targets.has(canonicalPhraseClassId(sourceClassId)) ? canonicalPhraseClassId(sourceClassId) : null,
     intervalMs: Number.isFinite(recording.intervalMs) && recording.intervalMs > 0 && recording.intervalMs <= 2000 ? recording.intervalMs : null };
 }
 
@@ -44,13 +45,14 @@ export function validateRecoveredItem(item) {
       !Number.isInteger(frame.hands) || frame.hands < 0 || frame.hands > 2 || frame.vector !== null && (!Array.isArray(frame.vector) || frame.vector.length !== 171 ||
       frame.vector.some(n => !Number.isFinite(n) || Math.abs(n) > 50) || frame.vector[170] !== 1 || ![frame.vector[168], frame.vector[169]].every(n => n === 0 || n === 1) || frame.vector[168] + frame.vector[169] !== frame.hands)))
     throw new Error('La recuperación no contiene puntos válidos.');
-  if (item.classId !== null && !targets.has(item.classId)) throw new Error('La seña corregida no pertenece al vocabulario.');
+  if (item.classId !== null && !targets.has(canonicalPhraseClassId(item.classId))) throw new Error('La seña corregida no pertenece al vocabulario.');
   if (item.participantId != null && (typeof item.participantId !== 'string' || !/^[\w-]{1,100}$/.test(item.participantId)))
     throw new Error('Usa un código de participante sin nombres, espacios ni caracteres especiales.');
   return item;
 }
 
 export function preparePersonalPrototype(items) {
+  items=items.map(item=>canonicalPhraseClassId(item.classId)!==item.classId?{...item,sourceClassId:item.sourceClassId||item.classId,classId:canonicalPhraseClassId(item.classId)}:item);
   const originals = [], quarantine = [], byHash = new Map();
   for (const item of items) {
     validateRecoveredItem(item);
@@ -70,7 +72,7 @@ export function preparePersonalPrototype(items) {
     const observations = item.observations.filter(frame => frame.vector).map(frame => ({ timeMs: frame.frameIndex, vector: frame.vector }));
     // frameIndex is only an interpolation coordinate. It is never persisted or
     // reported as a recovered capture timestamp or actual movement speed.
-    originals.push({ classId: item.classId, parentHash: item.parentHash, participantId: item.participantId || 'legacy-unknown-origin',
+    originals.push({ classId: item.classId, ...(item.sourceClassId!==item.classId?{sourceClassId:item.sourceClassId}:{}), parentHash: item.parentHash, participantId: item.participantId || 'legacy-unknown-origin',
       participantIdentity: item.participantId ? 'admin-declared' : 'unknown', recordingId: `legacy-${item.id}`, file: String(item.id), observations,
       timingBasis: item.intervalMs ? 'stored-nominal-interval-not-capture-timestamps' : 'frame-order-only' });
   }

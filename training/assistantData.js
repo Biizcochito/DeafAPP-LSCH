@@ -1,3 +1,4 @@
+import {canonicalPhraseRow,canonicalPhraseClassId} from './phraseLabels.js';
 import {PHRASES} from './visibleTraining.js';
 
 export function validSequence(features) {
@@ -14,7 +15,7 @@ export function sequenceKey(features) {return validSequence(features)?JSON.strin
 
 // A reserved sequence can never be reintroduced as learning material under another ID.
 export function trainingPhraseRows(rows) {
-  rows=Array.isArray(rows)?rows.filter(row=>row&&typeof row==='object'):[];
+  rows=Array.isArray(rows)?rows.filter(row=>row&&typeof row==='object').map(canonicalPhraseRow):[];
   const reserved=new Set(rows.filter(row=>row.split==='evaluation').map(row=>sequenceKey(row.features)).filter(Boolean));
   const seen=new Map(),conflicts=new Set();
   for(const row of rows){
@@ -27,7 +28,7 @@ export function trainingPhraseRows(rows) {
 }
 
 export function evaluationSummary(rows,modelId) {
-  const tests=rows.filter(row=>row.split==='evaluation'&&row.modelId===modelId&&row.confirmed===true);
+  const tests=rows.filter(row=>row.split==='evaluation'&&row.modelId===modelId&&row.confirmed===true).map(row=>({...row,classId:canonicalPhraseClassId(row.classId),prediction:row.prediction?{...row.prediction,classId:canonicalPhraseClassId(row.prediction.classId)}:row.prediction}));
   const known=tests.filter(row=>PHRASES.includes(row.classId)),unknown=tests.filter(row=>row.classId==='unknown');
   return {samples:known.length,correct:known.filter(row=>row.prediction?.accepted&&row.prediction.classId===row.classId).length,
     unknownSamples:unknown.length,falseAccepts:unknown.filter(row=>row.prediction?.accepted).length};

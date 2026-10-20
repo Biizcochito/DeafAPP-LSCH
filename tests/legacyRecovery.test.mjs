@@ -93,3 +93,10 @@ test('frame extraction preserves originals, isolates recordings, and stops on mo
   await assert.rejects(()=>recoverApprovedLegacy({...options,detectorFactory:async()=>{starts++;throw new Error('Model unavailable');}}),/iniciar la recuperación/);
   assert.equal(starts,1);assert.equal(saved.length,1);
 });
+
+test('la recuperación de yo bien mantiene su procedencia al preparar el prototipo',()=>{
+ const item=recovered(9,'yo bien','oraciones'),prepared=preparePersonalPrototype([item]);
+ assert.equal(prepared.report.acceptedRecordings,1);
+ for(const sample of prepared.train){assert.equal(sample.classId,'oraciones/estoy bien');assert.equal(sample.sourceClassId,'oraciones/yo bien');}
+ assert.equal(item.classId,'oraciones/yo bien');
+});
