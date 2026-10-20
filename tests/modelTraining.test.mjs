@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {FEATURE_LAYOUT} from '../training/datasetPreparation.js';
+import {FEATURE_LAYOUT,TARGET_SIGNS} from '../training/datasetPreparation.js';
 import {assertPreparedDataset,createTrainingPlan,selectTrainingGroup} from '../training/trainingPlan.js';
 import {trainReviewedModel} from '../training/modelTraining.js';
 // Synthetic points exercise the software. They are never LSCh training data
@@ -16,7 +16,8 @@ function fixture(){
 }
 test('priorities cover the whole vocabulary and require original samples',()=>{
   const dataset=fixture(),plan=createTrainingPlan(dataset);
-  assert.equal(plan.totalClasses,531);assert.equal(plan.readyClasses.length,2);assert.equal(plan.trainingAvailable,true);
+  assert.equal(plan.totalClasses,TARGET_SIGNS.length);assert.equal(plan.readyClasses.length,2);assert.equal(plan.trainingAvailable,true);
+  for(const id of ['alimentos/arroz','verbos/necesitar','oraciones/necesito ayuda'])assert.ok(plan.rows.some(row=>row.classId===id));
   const original=dataset.train[0];
   dataset.train=dataset.train.filter(s=>s.parentHash!==original.parentHash);
   const source=dataset.train[0];dataset.train.push({...source,variant:'time-warp-0.85'});
