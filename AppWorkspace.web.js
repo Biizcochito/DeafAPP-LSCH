@@ -115,7 +115,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
         {pending && <section className="app-draft"><AppIcon name="camera" /><div><h2>Tu grabación está pendiente</h2><p>«{displayWord(pending.label)}» · Revisa antes de enviar.</p></div><button aria-label="Revisar grabación pendiente" onClick={onResume}><AppIcon name="arrow" /></button></section>}
         {!query.trim() && phrases && <section className="app-phrases-entry" style={{ "--tone": toneOf(phrases) }} aria-labelledby="phrases-title">
           <div className="app-phrases-copy"><span className="app-phrases-label"><AppIcon name="message" size={17} />{phrases.señas.length} oraciones simples</span><h2 id="phrases-title">Oraciones.</h2><p>Frases cortas, un aporte enorme. Graba una oración de todos los días en una sola toma.</p><AppButton onClick={() => onCategory(phrases)}>Ver las {phrases.señas.length} oraciones</AppButton></div>
-          <div className="app-phrases-art" aria-hidden="true"><span>{phrases.señas[0]}.</span><span>{phrases.señas[6]}.</span><i><AppIcon name="camera" size={18} />Una oración · Una toma</i></div>
+          <div className="app-phrases-art" aria-hidden="true"><span>{phrases.señas[0]}.</span><span>{phrases.señas[phrases.señas.length - 1]}.</span><i><AppIcon name="camera" size={18} />Una oración · Una toma</i></div>
         </section>}
         <div className="app-section-heading"><h2>{query.trim() ? "Resultados" : "Explora las categorías"}</h2><span>{query.trim() ? `${matched.length} ${matched.length === 1 ? "resultado" : "resultados"}` : `${categories.length} categorías`}</span></div>
         {query.trim() ? <>
