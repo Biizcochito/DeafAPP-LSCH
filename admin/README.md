@@ -7,7 +7,7 @@ Pulsa cinco veces el logo «DeafApp» en un máximo de 3,5 segundos desde bienve
 - **Grabaciones:** todas las categorías, búsqueda, filtros pendientes/aprobadas/rechazadas y páginas de 25 registros. «Ver grabación» reproduce sus imágenes y permite aprobar, rechazar o devolver a pendientes. También se pueden seleccionar registros de la página y decidir por lote. Seleccionar por sí solo no cambia su estado.
 - **Material de LSCh:** referencias y catálogo académico de 379 videos, disponibles después de iniciar sesión. Son candidatos que requieren revisión lingüística y de permisos de uso.
 - **Entrenamiento LSCh:** prioridades de las 531 entradas, análisis de aprobaciones vigentes e importación de conjuntos externos revisados. Permite seleccionar grupos de 2 a 12 señas aptas y entrenar una red temporal local. Cada candidato guarda sus etiquetas e informe por separado en el navegador; no activa reconocimiento público.
-- **Avance y oraciones**, dentro de Entrenamiento: informe protegido de los cuatro candidatos del catálogo visible, con 10/32 clases y 15 originales; los dos experimentos reservados obtuvieron 0/4 predicciones aceptadas correctas cada uno. Permite cargar sus pesos privados y probar señas con cámara. Las tres oraciones completas tienen un laboratorio personal separado: mínimo tres tomas por oración, puntos guardados en IndexedDB y modelo temporal en memoria de la sesión. La prueba no utiliza la etiqueta de grabación. Eliminar las tomas o salir invalida ese modelo personal; no se activa interpretación pública.
+- **Avance y oraciones**, dentro de Entrenamiento: informe protegido de siete candidatos del catálogo visible, con 10/32 clases y 18 secuencias disponibles: 16 de aprendizaje y dos reservadas de la última tanda. Los nuevos experimentos de agua/comer obtuvieron 0/2 predicciones aceptadas correctas cada uno; los anteriores obtuvieron 0/4 con otro vocabulario. Permite cargar sus pesos privados y probar señas con cámara. Las tres oraciones completas tienen un laboratorio personal separado: mínimo tres tomas por oración, puntos guardados en IndexedDB y modelo temporal en memoria de la sesión. La prueba no utiliza la etiqueta de grabación. Eliminar las tomas o salir invalida ese modelo personal; no se activa interpretación pública.
 - **Asistente de entrenamiento**, en Avance y oraciones: planifica próximas tomas a partir de la cobertura y las muestras utilizables. Usa reglas de calidad y comparación de los clasificadores LSCh existentes; las consultas guiadas explican la recomendación y sus datos. Prepara capturas, inicia el entrenamiento personal cuando hay suficientes originales y compara una seña nueva sin mezclar vocabularios de modelos. No asigna significado ni aprueba etiquetas a partir de sus predicciones. Las confirmaciones de pruebas se guardan separadas por candidato y quedan fuera del aprendizaje, al igual que sus copias exactas. Los códigos de perfil no prueban identidad. Este asistente se ejecuta en el navegador después del acceso administrativo y utiliza los mismos RPC protegidos; no requiere un servicio de chat generativo.
 - **Recuperar grabaciones antiguas**, dentro de Entrenamiento: extrae puntos de JPEG/PNG/WebP existentes, conserva su orden y mantiene desconocidos los tiempos y participantes que no se registraron. Guarda la recuperación local para continuar después. Incluye reproducción y corrección de etiquetas con confirmación. No modifica las aprobaciones del servidor.
 - **Datos y diagnóstico:** comprobación de conexión, auditoría fechada y cobertura del vocabulario. Es un informe guardado; no declara que exista un modelo entrenado ni que las contribuciones nuevas se preparen automáticamente.
@@ -27,10 +27,12 @@ Para instalar en otro proyecto, el propietario debe ejecutar `install.sql`, lueg
 El avance del catálogo visible añade la migración
 `supabase/migrations/20261020024109_private_training_progress.sql` después de la
 instalación base. `py scripts/package-visible-training.py <carpeta-privada>` prepara
-el informe y cuatro candidatos revisados, sin imágenes, rutas locales ni datos de
+el informe y los candidatos revisados, sin imágenes, rutas locales ni datos de
 grabaciones. Sus JSON se cargan como valores en `deafapp_private.admin_data`, usando
 los nombres del manifiesto generado. No se versionan ni se copian a la exportación
-web. Los RPC nuevos comprueban la sesión en el servidor antes de leer cada valor.
+web. El empaquetado obtiene los recuentos del candidato principal, comprueba las
+secuencias reservadas de la última tanda y rechaza su presencia en cualquier ajuste.
+Los RPC nuevos comprueban la sesión en el servidor antes de leer cada valor.
 
 ## Actualizar el material y la auditoría
 
