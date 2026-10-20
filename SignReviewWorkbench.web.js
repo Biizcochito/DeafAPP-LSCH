@@ -1,3 +1,4 @@
+import {canonicalPhraseLabel} from './training/phraseLabels';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {REVIEW_PAGE_SIZE,REVIEW_STATUSES,reviewExportText,segmentTime,segmentWatchUrl,validSegment} from './training/signReview';
 import SignReviewPlayer from './SignReviewPlayer';
@@ -19,7 +20,7 @@ export default function SignReviewWorkbench({api,session,onAccessError,onBusyCha
     return()=>{clearTimeout(timer);sequence.current++;};
   },[api,session,scope,status,query,page,refresh]);
   const rows=listing?.rows||[],selected=rows.find(row=>row.key===selectedKey),counts=listing?.counts||{};
-  useEffect(()=>{setLabel(selected?.confirmedLabel||selected?.proposedLabel||'');},[selected?.key,selected?.version]);
+  useEffect(()=>{setLabel(canonicalPhraseLabel(selected?.confirmedLabel||selected?.proposedLabel||''));},[selected?.key,selected?.version]);
   function filter(setter,value){setter(value);setPage(0);setListing(null);setSelectedKey(null);setNotice('');}
   async function task(action){if(working.current)return;working.current=true;setBusy(true);onBusyChange?.(true);setError('');setNotice('');try{await action();}catch(e){fail(e);}finally{working.current=false;onBusyChange?.(false);if(alive.current)setBusy(false);}}
   function decide(next){if(!selected||loading)return;void task(async()=>{
@@ -32,7 +33,7 @@ export default function SignReviewWorkbench({api,session,onAccessError,onBusyCha
     a.href=url;a.download=`revision_${new Date().toISOString().slice(0,19).replaceAll(':','-').replace('T','_')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
     setNotice(`${Object.keys(data.decisions).length} decisiones exportadas. Se incluyen confirmaciones y descartes del filtro de catálogo.`);
   });}
-  const labels=[...new Set([...(listing?.labels||[]),...(selected?.proposedLabel?[selected.proposedLabel]:[])])].sort((a,b)=>a.localeCompare(b,'es'));
+  const labels=[...new Set([...(listing?.labels||[]),...(selected?.proposedLabel?[selected.proposedLabel]:[])].map(canonicalPhraseLabel))].sort((a,b)=>a.localeCompare(b,'es'));
   return <div className="sign-review" data-admin-root><div className="sr-scroll" data-admin-scroll><div>
     <div className="sr-heading"><div><p className="sr-eyebrow">ADMINISTRACIÓN · REVISIÓN HUMANA</p><h1 data-admin-title>Una seña, bien revisada.</h1><p>Comprueba el movimiento y confirma su significado en LSCh. Las propuestas automáticas siguen pendientes hasta tu revisión.</p></div><button type="button" onClick={exportDecisions} disabled={busy||!listing}>Exportar decisiones</button></div>
     <div className="sr-stats"><div><strong>{counts.total??'—'}</strong><span>segmentos candidatos</span></div><div><strong>{counts.visible??'—'}</strong><span>del catálogo visible</span></div><div><strong>{counts.approved??'—'}</strong><span>confirmados</span></div><div><strong>{counts.pending??'—'}</strong><span>pendientes de revisión</span></div></div>
@@ -43,7 +44,7 @@ export default function SignReviewWorkbench({api,session,onAccessError,onBusyCha
       <section className="sr-detail" aria-label="Revisar segmento seleccionado">{selected?<>
         <div className="sr-detail-title"><div><span className="sr-eyebrow">SEGMENTO SELECCIONADO</span><h2>{selected.confirmedLabel||selected.proposedLabel||'Identifica esta seña'}</h2></div><a href={segmentWatchUrl(selected)} target="_blank" rel="noopener noreferrer">Vídeo original ↗</a></div>
         <SignReviewPlayer row={selected}/><div className="sr-source"><strong>{selected.metadata.title}</strong><span>{selected.metadata.channel} · {segmentTime(selected.start)} – {segmentTime(selected.end)}</span>{selected.metadata.license&&<span>Licencia declarada en la fuente: {selected.metadata.license}</span>}</div>
-        <div className="sr-proposal"><strong>Propuesta: {selected.proposedLabel||'sin etiqueta'}</strong><p>Fuente de la propuesta: {selected.metadata.source||'sin asignar'} · puntuación automática {Math.round(selected.confidence*100)} %. Esta puntuación no confirma que la seña sea correcta.</p>{selected.metadata.evidence&&<details><summary>Ver evidencia de la propuesta</summary><p>{selected.metadata.evidence}</p></details>}</div>
+        <div className="sr-proposal"><strong>Propuesta: {selected.proposedLabel||'sin etiqueta'}</strong><p>Fuente de la propuesta: {selected.metadata.source||'sin asignar'} · puntuación automática {Math.round(selected.confidence*100)} %. Esta puntuación no confirma que la seña sea correcta.</p>{selected.metadata.sourceLabel&&selected.metadata.sourceLabel!==selected.proposedLabel&&<p>Etiqueta de origen: «{selected.metadata.sourceLabel}».</p>}{selected.metadata.evidence&&<details><summary>Ver evidencia de la propuesta</summary><p>{selected.metadata.evidence}</p></details>}</div>
         <label className="sr-confirm-label" htmlFor="sr-label">Seña que reconoces en el tramo<select id="sr-label" value={label} disabled={busy||loading} onChange={e=>setLabel(e.target.value)}><option value="">Selecciona una seña</option>{labels.map(text=><option key={text} value={text}>{text}</option>)}</select></label>
         <p className="sr-help">Confirma solo si ves una seña completa y su significado coincide. Si falta contexto o aparecen varias señas, déjalo pendiente o descártalo.</p>
         <div className="sr-actions"><button type="button" className="sr-primary" disabled={busy||loading||!label} onClick={()=>decide('approved')}>{busy?'Guardando…':'Confirmar seña'}</button><button type="button" className="sr-danger" disabled={busy||loading} onClick={()=>decide('rejected')}>Descartar segmento</button>{selected.status!=='pending'&&<button type="button" disabled={busy||loading} onClick={()=>decide('pending')}>Dejar pendiente</button>}</div>

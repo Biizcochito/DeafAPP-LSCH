@@ -1,5 +1,6 @@
 // Shared input contract for the private candidates: 32 frames, 171 face-relative coordinates.
-export const PHRASES = ['oraciones/quiero agua', 'oraciones/quiero comer', 'oraciones/necesito ayuda'];
+import {CATEGORIAS_VISIBLES} from '../signCatalog.js';
+export const PHRASES = CATEGORIAS_VISIBLES.find(category=>category.id==='oraciones').señas.map(label=>`oraciones/${label}`);
 export const FACE_INDICES = [70,63,105,66,107,336,296,334,293,300,33,160,158,133,153,144,362,385,387,263,373,380,1,2,98,327,61,291,0,17,39,269,78,308,14,317,234,454,10,338,152,175];
 
 export function trackingVector(result, width, height) {

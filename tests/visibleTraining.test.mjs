@@ -27,9 +27,9 @@ test('el clasificador respeta float32 de sklearn y puede abstenerse',()=>{
 test('rechaza árboles cíclicos antes de recorrerlos',()=>{
   const forest=model();forest.trees[0].left[0]=0;assert.throws(()=>validateForest(forest),/Nodo/);
 });
-test('solo las tres oraciones completas habilitan el entrenamiento personal',async()=>{
-  assert.equal(PHRASES.length,3);const rows=PHRASES.flatMap(classId=>Array.from({length:2},()=>({classId,wholePhrase:true})));
-  rows.push({classId:'saludos/hola',wholePhrase:true});assert.deepEqual(phraseCounts(rows).map(row=>row.count),[0,0,0]);
+test('solo las oraciones completas del catálogo habilitan el entrenamiento personal',async()=>{
+  assert.equal(PHRASES.length,4);const rows=PHRASES.flatMap(classId=>Array.from({length:2},()=>({classId,wholePhrase:true})));
+  rows.push({classId:'saludos/hola',wholePhrase:true});assert.deepEqual(phraseCounts(rows).map(row=>row.count),[0,0,0,0]);
   await assert.rejects(()=>trainPersonalPhrases({},rows),/tres tomas/);
 });
 test('las consultas de avance y pesos requieren sesión y validan el identificador',async()=>{

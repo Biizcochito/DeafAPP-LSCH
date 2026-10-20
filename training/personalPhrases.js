@@ -31,7 +31,7 @@ export async function trainPersonalPhrases(tf, rows, onEpoch, cancelled=()=>fals
   model.add(tf.layers.conv1d({inputShape:[32,171],filters:16,kernelSize:3,activation:'relu'}));
   model.add(tf.layers.maxPooling1d({poolSize:2}));model.add(tf.layers.flatten());
   model.add(tf.layers.dense({units:32,activation:'relu'}));model.add(tf.layers.dropout({rate:.2}));
-  model.add(tf.layers.dense({units:3,activation:'softmax'}));
+  model.add(tf.layers.dense({units:PHRASES.length,activation:'softmax'}));
   model.compile({optimizer:tf.train.adam(.002),loss:'categoricalCrossentropy'});
   const x=tf.tensor3d(originals.map(row=>row.features));
   const y=tf.tensor2d(originals.map(row=>PHRASES.map(id=>Number(id===row.classId))));
