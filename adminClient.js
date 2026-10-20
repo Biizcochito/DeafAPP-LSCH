@@ -54,6 +54,11 @@ export function createAdminClient(client) {
     },
     overview(session) { return call("deafapp_admin_overview", { p_token: token(session) }); },
     material(session) { return call("deafapp_admin_material", { p_token: token(session) }); },
+    trainingProgress(session) { return call("deafapp_admin_training_progress", { p_token: token(session) }); },
+    trainingCandidate(session, modelId) {
+      if(typeof modelId!=="string"||!/^[a-f0-9]{32}$/.test(modelId)) throw new AdminError("Candidato no válido.","invalid_input");
+      return call("deafapp_admin_training_candidate", {p_token:token(session),p_model_id:modelId});
+    },
     async logout(session) {
       if (validAdminSession(session)) await call("deafapp_admin_logout", { p_token: session.token });
     },

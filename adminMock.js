@@ -34,6 +34,10 @@ export function createMockAdminBackend() {
   }
 
   const handlers = {
+    deafapp_admin_training_progress({p_token}) {
+      if(!auth(p_token))return fail('28000');
+      return reply({ok:true,progress:{updatedAt:new Date().toISOString(),targetCount:32,trainedCount:0,originals:0,models:[],sources:[],targets:[],mock:true}});
+    },
     deafapp_admin_login({ p_password }) {
       const now = Date.now();
       if (lockedUntil > now) return reply({ ok: false, code: "rate_limited" });

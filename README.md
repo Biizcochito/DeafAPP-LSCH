@@ -59,6 +59,8 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 | 🎛️ **Administrador renovado** | Navegar entre revisión, entrenamiento, material y diagnóstico con el diseño compartido de DeafApp y una interfaz adaptable. |
 | 🛑 **Control de gesto** | Bloquear la configuración específica del dedo medio levantado cuando el detector la confirma. |
 | 🧪 **Entrenamiento experimental** | Recuperar grabaciones antiguas, revisar etiquetas y entrenar grupos pequeños desde el administrador. |
+| 📊 **Avance privado del catálogo** | Consultar candidatos, cobertura y pruebas reservadas; cargar los modelos de señas para probar una toma nueva con cámara. |
+| 🎬 **Oraciones completas** | Capturar las tres oraciones, entrenar un prototipo personal en el navegador y probarlo sin indicar la respuesta esperada. |
 | 🐍 **Backend Python integrado** | Iniciar la API local, consultar sus 19 clases de alimentos y entrenar candidatos desde el panel privado. |
 
 La cara y las manos se procesan por separado para actualizar sus resultados. El botón **Reiniciar cámara** permite volver a iniciar la captura. El control del dedo medio es específico: no clasifica todos los gestos obscenos ni reemplaza la revisión administrativa.
@@ -131,6 +133,20 @@ seguimiento, y se organizan como `oraciones/<etiqueta>/`. La preparación de dat
 incluye como clases propias después de la revisión habitual. Son enunciados en español
 para aportar su realización en LSCh; no representan una secuencia de señas prescrita
 ni implican que el modelo actual ya reconozca oraciones.
+
+En **Administración → Entrenamiento → Avance y oraciones** se muestran los cuatro
+candidatos del catálogo visible: 10 de las 32 clases tienen datos de aprendizaje,
+con 15 grabaciones originales. Los dos experimentos con vídeos reservados obtuvieron
+**0/4 predicciones aceptadas correctas** cada uno; todavía no permiten afirmar que
+reconozcan a personas nuevas. Los pesos y los informes se consultan con una sesión
+administrativa válida y no se incluyen en el paquete público de la web.
+
+El laboratorio privado permite guardar puntos de al menos tres tomas completas por
+oración en este navegador. Con esas tomas se puede entrenar un candidato personal y
+probar una captura nueva, sin enviarle la etiqueta elegida para grabar. Las tomas
+persisten en el dispositivo; el modelo personal permanece en la sesión. Este flujo
+no concatena señas individuales, no tiene una precisión independiente validada y no
+activa automáticamente un intérprete público.
 
 ### Privacidad y consentimiento
 

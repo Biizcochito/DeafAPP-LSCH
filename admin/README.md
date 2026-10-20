@@ -7,6 +7,7 @@ Pulsa cinco veces el logo «DeafApp» en un máximo de 3,5 segundos desde bienve
 - **Grabaciones:** todas las categorías, búsqueda, filtros pendientes/aprobadas/rechazadas y páginas de 25 registros. «Ver grabación» reproduce sus imágenes y permite aprobar, rechazar o devolver a pendientes. También se pueden seleccionar registros de la página y decidir por lote. Seleccionar por sí solo no cambia su estado.
 - **Material de LSCh:** referencias y catálogo académico de 379 videos, disponibles después de iniciar sesión. Son candidatos que requieren revisión lingüística y de permisos de uso.
 - **Entrenamiento LSCh:** prioridades de las 531 entradas, análisis de aprobaciones vigentes e importación de conjuntos externos revisados. Permite seleccionar grupos de 2 a 12 señas aptas y entrenar una red temporal local. Cada candidato guarda sus etiquetas e informe por separado en el navegador; no activa reconocimiento público.
+- **Avance y oraciones**, dentro de Entrenamiento: informe protegido de los cuatro candidatos del catálogo visible, con 10/32 clases y 15 originales; los dos experimentos reservados obtuvieron 0/4 predicciones aceptadas correctas cada uno. Permite cargar sus pesos privados y probar señas con cámara. Las tres oraciones completas tienen un laboratorio personal separado: mínimo tres tomas por oración, puntos guardados en IndexedDB y modelo temporal en memoria de la sesión. La prueba no utiliza la etiqueta de grabación. Eliminar las tomas o salir invalida ese modelo personal; no se activa interpretación pública.
 - **Recuperar grabaciones antiguas**, dentro de Entrenamiento: extrae puntos de JPEG/PNG/WebP existentes, conserva su orden y mantiene desconocidos los tiempos y participantes que no se registraron. Guarda la recuperación local para continuar después. Incluye reproducción y corrección de etiquetas con confirmación. No modifica las aprobaciones del servidor.
 - **Datos y diagnóstico:** comprobación de conexión, auditoría fechada y cobertura del vocabulario. Es un informe guardado; no declara que exista un modelo entrenado ni que las contribuciones nuevas se preparen automáticamente.
 
@@ -21,6 +22,14 @@ El 4 de octubre de 2026 se instaló en el proyecto **DeafApp**, referencia `didl
 `install.sql` crea las tablas privadas, inicializa los estados de los registros existentes, restringe las escrituras públicas y agrega los RPC de acceso/revisión. `material.sql` agrega el RPC del catálogo privado. La contraseña inicial se configuró directamente en el proyecto con un hash; no se incluye en estos archivos ni en la exportación web.
 
 Para instalar en otro proyecto, el propietario debe ejecutar `install.sql`, luego `material.sql`, configurar por sí mismo su contraseña en `deafapp_private.admin_config` mediante `extensions.crypt`/`extensions.gen_salt('bf',11)`, y cargar `update-snapshot.sql` y `update-catalog.sql`. No hace falta repetir estos pasos en DeafApp. Ninguna clave de servicio se entrega al cliente.
+
+El avance del catálogo visible añade la migración
+`supabase/migrations/20261020024109_private_training_progress.sql` después de la
+instalación base. `py scripts/package-visible-training.py <carpeta-privada>` prepara
+el informe y cuatro candidatos revisados, sin imágenes, rutas locales ni datos de
+grabaciones. Sus JSON se cargan como valores en `deafapp_private.admin_data`, usando
+los nombres del manifiesto generado. No se versionan ni se copian a la exportación
+web. Los RPC nuevos comprueban la sesión en el servidor antes de leer cada valor.
 
 ## Actualizar el material y la auditoría
 
