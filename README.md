@@ -22,7 +22,7 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 
 | Vocabulario | Organización | Acceso público | Acceso privado |
 | :---: | :---: | :---: | :---: |
-| **29 señas + 3 oraciones** | **7 categorías visibles** | Catálogo y aportes autorizados | Revisión, material, entrenamiento e interpretación beta |
+| **29 señas + 4 oraciones** | **7 categorías visibles** | Catálogo y aportes autorizados | Revisión, material, entrenamiento e interpretación beta |
 
 **Sitio oficial:** [deafapps.com](https://deafapps.com) · **Repositorio:** [Biizcochito/DeafAPP-LSCH](https://github.com/Biizcochito/DeafAPP-LSCH) · **Trabajo del equipo:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -44,8 +44,8 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 | Función | Qué permite |
 | --- | --- |
 | 🌐 **Portada y navegación renovadas** | Conocer el proyecto en la bienvenida y acceder a la app con una interfaz adaptable a computador y celular. |
-| 🤟 **Catálogo comunitario** | Aportar 29 señas prioritarias y 3 oraciones completas desde celular o computador para preparar su entrenamiento. |
-| 💬 **Oraciones simples** | Grabar 3 oraciones cotidianas completas, con búsqueda, filtros y progreso local. |
+| 🤟 **Catálogo comunitario** | Aportar 29 señas prioritarias y 4 oraciones completas desde celular o computador para preparar su entrenamiento. |
+| 💬 **Oraciones simples** | Grabar 4 oraciones cotidianas completas, con búsqueda, filtros y progreso local. |
 | 🔎 **Búsqueda y filtros** | Buscar señas o categorías y filtrar una categoría por todas, por grabar o ya grabadas en este dispositivo. |
 | 🎥 **Grabación guiada** | Confirmar ambas manos al inicio y continuar con una o dos durante la cuenta regresiva y la toma. Tolera interrupciones breves del detector. |
 | 📄 **Privacidad y consentimiento** | Consultar el aviso y los términos, autorizar cada finalidad antes de abrir la cámara y retirar la autorización local. |
@@ -60,7 +60,7 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 | 🛑 **Control de gesto** | Bloquear la configuración específica del dedo medio levantado cuando el detector la confirma. |
 | 🧪 **Entrenamiento experimental** | Recuperar grabaciones antiguas, revisar etiquetas y entrenar grupos pequeños desde el administrador. |
 | 📊 **Avance privado del catálogo** | Consultar candidatos, cobertura y pruebas reservadas; cargar los modelos de señas para probar una toma nueva con cámara. |
-| 🎬 **Oraciones completas** | Capturar las tres oraciones, entrenar un prototipo personal en el navegador y probarlo sin indicar la respuesta esperada. |
+| 🎬 **Oraciones completas** | Capturar las cuatro oraciones, entrenar un prototipo personal en el navegador y probarlo sin indicar la respuesta esperada. |
 | 🧭 **Asistente privado de entrenamiento** | Recomendar próximas tomas, revisar calidad, comparar candidatos y coordinar el aprendizaje y las pruebas reservadas. |
 | 🐍 **Backend Python integrado** | Iniciar la API local, consultar sus 19 clases de alimentos y entrenar candidatos desde el panel privado. |
 
@@ -102,7 +102,7 @@ Los votos públicos ya no conceden aprobación. Los candidatos de entrenamiento 
 ### Oraciones simples
 
 El catálogo visible concentra la recolección y preparación del entrenamiento en
-**29 señas individuales y 3 oraciones completas**. Las demás etiquetas se conservan
+**29 señas individuales y 4 oraciones completas**. Las demás etiquetas se conservan
 para revisar aportes anteriores y preparar datos desde administración.
 
 | Categoría | Señas prioritarias |
@@ -114,18 +114,24 @@ para revisar aportes anteriores y preparar datos desde administración.
 | **Saludos** | Hola, bien, gracias. |
 | **Conversación** | Sí, no, no entiendo, repite. |
 
-Las tres oraciones se eligieron por su relación con las señas individuales visibles:
+Las cuatro oraciones se eligieron por su relación con las señas individuales visibles:
 
 | Oración (referencia en español) | Señas relacionadas |
 | --- | --- |
 | **Quiero agua** | Querer, agua. |
 | **Quiero comer** | Querer, comer. |
 | **Necesito ayuda** | Necesitar, ayuda. |
+| **Estoy bien** | Yo, bien; referencia de entrenamiento: «yo bien». |
+
+La etiqueta de entrenamiento **«yo bien»** corresponde a la oración **«estoy bien»**.
+Se conserva la etiqueta de origen de las muestras y se usa el nombre «estoy bien»
+en el catálogo, la preparación y la presentación de resultados. Esta equivalencia
+se aplica a la oración completa; «yo» y «bien» siguen siendo señas individuales.
 
 La realización en LSCh requiere validación con la persona sorda que colabora en el
 proyecto, sin asumir una traducción palabra por palabra del español.
 
-En **Grabar → Ver las 3 oraciones**, cada oración se captura en una sola toma con el
+En **Grabar → Ver las 4 oraciones**, cada oración se captura en una sola toma con el
 mismo flujo de cámara, revisión, borrador y envío del catálogo. `CATEGORIAS_VISIBLES`
 en `signCatalog.js` define esta selección y conserva las etiquetas originales.
 
@@ -136,7 +142,7 @@ para aportar su realización en LSCh; no representan una secuencia de señas pre
 ni implican que el modelo actual ya reconozca oraciones.
 
 En **Administración → Entrenamiento → Avance y oraciones** se muestran siete
-candidatos del catálogo visible: 10 de las 32 clases tienen datos de aprendizaje.
+candidatos del catálogo visible: 10 de las 33 clases tienen datos de aprendizaje.
 Hay 18 secuencias originales disponibles: 16 de aprendizaje y dos reservadas de la
 última tanda. Los nuevos recortes corresponden a agua y comer, dentro de frases de
 JuegoEduca; su revisión visual asistida requiere validación lingüística experta.

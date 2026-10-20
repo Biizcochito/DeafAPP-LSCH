@@ -11,10 +11,10 @@ const row=(classId,seed,split='train')=>({id:String(seed),classId,wholePhrase:tr
 const progress={targets:VISIBLE_TARGETS.map(target=>({...target,originals:0})),models:[]};
 const full=()=>PHRASES.flatMap((classId,i)=>Array.from({length:3},(_,j)=>row(classId,i*3+j)));
 
-test('prioriza solo las tres oraciones visibles y adapta el siguiente paso a las tomas',()=>{
-  let plan=buildTrainingPlan({progress});assert.equal(plan.next.classId,PHRASES[0]);assert.equal(plan.targetCount,32);
+test('prioriza las cuatro oraciones visibles y adapta el siguiente paso a las tomas',()=>{
+  let plan=buildTrainingPlan({progress});assert.equal(plan.next.classId,PHRASES[0]);assert.equal(plan.targetCount,33);
   plan=buildTrainingPlan({progress,rows:[row(PHRASES[0],1)]});assert.equal(plan.next.classId,PHRASES[1]);
-  plan=buildTrainingPlan({progress,rows:full()});assert.equal(plan.next.type,'train');assert.equal(plan.learningOriginals,9);
+  plan=buildTrainingPlan({progress,rows:full()});assert.equal(plan.next.type,'train');assert.equal(plan.learningOriginals,12);
   plan=buildTrainingPlan({progress,rows:full(),personal:{modelId:'one'}});assert.equal(plan.next.type,'evaluate');
   assert.equal(buildTrainingPlan({progress:null}).next.type,'wait');
 });
@@ -26,10 +26,10 @@ test('el catálogo sugiere apoyos de las oraciones y mantiene informe/local sepa
 });
 test('una reserva y sus copias quedan fuera del entrenamiento aunque cambien ID o etiqueta',()=>{
   const learning=full(),heldout={...learning[0],id:'reserved',split:'evaluation'};
-  assert.equal(trainingPhraseRows([...learning,heldout]).length,8);
+  assert.equal(trainingPhraseRows([...learning,heldout]).length,11);
   assert.equal(buildTrainingPlan({progress,rows:[...learning,heldout]}).readyToTrain,false);
-  assert.equal(trainingPhraseRows([...learning,{...learning[0],id:'copy'}]).length,9);
-  assert.equal(trainingPhraseRows([...learning,{...learning[0],id:'wrong-label',classId:PHRASES[1]}]).length,8);
+  assert.equal(trainingPhraseRows([...learning,{...learning[0],id:'copy'}]).length,12);
+  assert.equal(trainingPhraseRows([...learning,{...learning[0],id:'wrong-label',classId:PHRASES[1]}]).length,11);
 });
 
 test('prioriza clases con menos material disponible aunque otras no tengan nuevas tomas locales',()=>{
@@ -40,7 +40,7 @@ test('prioriza clases con menos material disponible aunque otras no tengan nueva
 test('ignora puntos incompletos, datos aumentados y señas ajenas al entrenamiento de oraciones',()=>{
   const valid=full();valid[0].features[1][1]=NaN;
   const augmented={...row(PHRASES[0],20),variant:'time-warp'};
-  assert.equal(trainingPhraseRows([...valid,augmented,row('alimentos/pan',12),null]).length,8);
+  assert.equal(trainingPhraseRows([...valid,augmented,row('alimentos/pan',12),null]).length,11);
 });
 test('la retirada de una mano se acepta y un fallo de seguimiento da evidencia concreta',()=>{
   const frames=Array.from({length:40},(_,i)=>({timeMs:i*100,vector:[...Array(168).fill(0),1,Number(i<20),1]}));
@@ -64,7 +64,7 @@ test('prioriza revisar discrepancias y pide material nuevo ante una oración fal
   assert.equal(plan.next.type,'capture');assert.equal(plan.next.classId,PHRASES[2]);assert.match(plan.next.reason,/permanecerá reservada/);
 });
 test('compara modelos reales mediante la API autenticada; no mezcla vocabularios ni relabela la toma',async()=>{
-  const classes=['saludos/hola','saludos/gracias'],models=[['a',classes,[1,0]],['b',classes,[0,1]],['c',PHRASES,[1,0,0]]].map(([id,labels,probabilities])=>({id:id.repeat(32),format:'deafapp-lsch-python-forest',version:1,inputShape:[32,171],classes:labels,decision:{minimumScore:.75,minimumMargin:.15},trees:[{left:[-1],right:[-1],feature:[-2],threshold:[-2],probabilities:[probabilities]}]}));
+  const classes=['saludos/hola','saludos/gracias'],models=[['a',classes,[1,0]],['b',classes,[0,1]],['c',PHRASES,PHRASES.map((_,i)=>Number(i===0))]].map(([id,labels,probabilities])=>({id:id.repeat(32),format:'deafapp-lsch-python-forest',version:1,inputShape:[32,171],classes:labels,decision:{minimumScore:.75,minimumMargin:.15},trees:[{left:[-1],right:[-1],feature:[-2],threshold:[-2],probabilities:[probabilities]}]}));
   const calls=[],session={token:'x'},cache=new Map(),sample=features();
   const api={trainingCandidate:async(received,id)=>{assert.equal(received,session);calls.push(id);return {candidate:{encoding:'gzip-base64',data:gzipSync(JSON.stringify(models.find(model=>model.id===id))).toString('base64')}};}};
   const current={models:models.map(model=>({modelId:model.id,classes:model.classes,name:model.id[0]}))};

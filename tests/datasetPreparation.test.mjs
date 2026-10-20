@@ -84,3 +84,12 @@ test('spatial features preserve hand location and are invariant to whole-frame t
   sample.face[TRAINING_FACE_INDICES.indexOf(454)] = [...sample.face[TRAINING_FACE_INDICES.indexOf(234)]];
   assert.equal(featureVector(sample), null);
 });
+
+test('la oración yo bien se prepara como estoy bien y conserva la etiqueta y grabación de origen',()=>{
+ const entry=recording('person-a','a','yo bien','oraciones'),prepared=prepareDataset([entry]);
+ assert.equal(prepared.report.acceptedRecordings,1);assert.equal(prepared.train.length,5);
+ for(const item of prepared.train){assert.equal(item.classId,'oraciones/estoy bien');assert.equal(item.sourceClassId,'oraciones/yo bien');}
+ assert.equal(entry.recording.label,'yo bien');
+ const individual=prepareDataset([recording('person-a','b','yo','pronombres'),recording('person-a','c','bien','saludos')]);
+ assert.ok(individual.train.every(item=>item.classId!=='oraciones/estoy bien'));
+});

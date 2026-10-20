@@ -1,3 +1,4 @@
+import {canonicalPhraseClassId} from './phraseLabels.js';
 import { CATEGORIAS } from "../signCatalog.js";
 import { isTrainingCapture, TRAINING_FACE_INDICES } from "../trainingCapture.js";
 import { safeSourceUrl } from "./sourceCatalog.js";
@@ -10,7 +11,7 @@ export const FEATURE_LAYOUT = { version: 1, dimensions: 171, hands: ["anatomical
 
 export function auditRecording(entry) {
   const recording = entry?.recording || {};
-  const classId = `${recording.categoria}/${recording.label}`;
+  const classId = canonicalPhraseClassId(`${recording.categoria}/${recording.label}`);
   const reasons = [];
   if (!targets.has(classId)) reasons.push("unknown-label-or-category");
   if (recording.training?.source === "public-reviewed-clip") {
@@ -126,7 +127,7 @@ export function prepareDataset(entries, { participantAliases = {} } = {}) {
     }
     const originalId = recording.training.participantId;
     const participantId = participantAliases[originalId] || originalId;
-    accepted.push({ classId: audit.classId, participantId, recordingId: recording.recordingId || entry.contentHash,
+    accepted.push({ classId: audit.classId, ...(`${recording.categoria}/${recording.label}`!==audit.classId?{sourceClassId:`${recording.categoria}/${recording.label}`} : {}), participantId, recordingId: recording.recordingId || entry.contentHash,
       parentHash: entry.contentHash, sessionId: recording.training.sessionId, file: entry.file, observations });
   }
   const people = [...new Set(accepted.map(sample => sample.participantId))].sort();
