@@ -31,6 +31,12 @@ test('una reserva y sus copias quedan fuera del entrenamiento aunque cambien ID 
   assert.equal(trainingPhraseRows([...learning,{...learning[0],id:'copy'}]).length,9);
   assert.equal(trainingPhraseRows([...learning,{...learning[0],id:'wrong-label',classId:PHRASES[1]}]).length,8);
 });
+
+test('prioriza clases con menos material disponible aunque otras no tengan nuevas tomas locales',()=>{
+  const snapshot={...progress,targets:progress.targets.map(target=>({...target,originals:target.classId==='verbos/querer'?0:3}))};
+  const plan=buildTrainingPlan({progress:snapshot,goal:'catalog',rows:[{...row('verbos/querer',2),wholePhrase:false}]});
+  assert.equal(plan.next.classId,'verbos/querer');assert.match(plan.next.reason,/Informe: 0/);
+});
 test('ignora puntos incompletos, datos aumentados y señas ajenas al entrenamiento de oraciones',()=>{
   const valid=full();valid[0].features[1][1]=NaN;
   const augmented={...row(PHRASES[0],20),variant:'time-warp'};

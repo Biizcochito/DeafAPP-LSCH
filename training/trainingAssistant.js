@@ -24,7 +24,7 @@ export function buildTrainingPlan({progress,rows=[],goal='phrases',personal=null
   for(const row of rows){const key=sequenceKey(row.features);if(!key||seen.has(key)||!allowed.has(row.classId)||row.wholePhrase||row.split!=='train')continue;seen.add(key);local.set(row.classId,(local.get(row.classId)||0)+1);}
   const catalog=VISIBLE_TARGETS.filter(row=>row.category!=='oraciones').map(row=>({...row,snapshot:snapshot.get(row.classId)||0,local:local.get(row.classId)||0})).sort((a,b)=>{
     const missingA=Number(a.snapshot+a.local===0),missingB=Number(b.snapshot+b.local===0);
-    return missingB-missingA||a.local-b.local||(support.includes(a.classId)?support.indexOf(a.classId):100)-(support.includes(b.classId)?support.indexOf(b.classId):100)||a.snapshot-b.snapshot||a.classId.localeCompare(b.classId);
+    return missingB-missingA||(a.snapshot+a.local)-(b.snapshot+b.local)||(support.includes(a.classId)?support.indexOf(a.classId):100)-(support.includes(b.classId)?support.indexOf(b.classId):100)||a.local-b.local||a.classId.localeCompare(b.classId);
   });
   const reviews=rows.filter(row=>allowed.has(row.classId)&&Array.isArray(row.committee)&&row.committee.length&&row.committeeReviewed!==true).map(row=>({id:row.id,classId:row.classId,priority:row.committee.reduce((score,group)=>score+(group.disagreement?5:0)+count(group.abstentions),0)})).sort((a,b)=>b.priority-a.priority);
   const failures=rows.filter(row=>row.split==='evaluation'&&row.modelId===personal?.modelId&&row.confirmed&&PHRASES.includes(row.classId)&&(!row.prediction?.accepted||row.prediction.classId!==row.classId));
