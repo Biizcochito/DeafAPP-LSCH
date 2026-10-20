@@ -22,7 +22,7 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 
 | Vocabulario | Organización | Acceso público | Acceso privado |
 | :---: | :---: | :---: | :---: |
-| **29 señas + 10 oraciones** | **7 categorías visibles** | Catálogo y aportes autorizados | Revisión, material, entrenamiento e interpretación beta |
+| **29 señas + 3 oraciones** | **7 categorías visibles** | Catálogo y aportes autorizados | Revisión, material, entrenamiento e interpretación beta |
 
 **Sitio oficial:** [deafapps.com](https://deafapps.com) · **Repositorio:** [Biizcochito/DeafAPP-LSCH](https://github.com/Biizcochito/DeafAPP-LSCH) · **Trabajo del equipo:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -44,8 +44,8 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 | Función | Qué permite |
 | --- | --- |
 | 🌐 **Portada y navegación renovadas** | Conocer el proyecto en la bienvenida y acceder a la app con una interfaz adaptable a computador y celular. |
-| 🤟 **Catálogo comunitario** | Aportar 29 señas prioritarias y 10 oraciones completas desde celular o computador para preparar su entrenamiento. |
-| 💬 **Oraciones simples** | Grabar 10 oraciones cotidianas completas, con búsqueda, filtros y progreso local. |
+| 🤟 **Catálogo comunitario** | Aportar 29 señas prioritarias y 3 oraciones completas desde celular o computador para preparar su entrenamiento. |
+| 💬 **Oraciones simples** | Grabar 3 oraciones cotidianas completas, con búsqueda, filtros y progreso local. |
 | 🔎 **Búsqueda y filtros** | Buscar señas o categorías y filtrar una categoría por todas, por grabar o ya grabadas en este dispositivo. |
 | 🎥 **Grabación guiada** | Confirmar ambas manos al inicio y continuar con una o dos durante la cuenta regresiva y la toma. Tolera interrupciones breves del detector. |
 | 📄 **Privacidad y consentimiento** | Consultar el aviso y los términos, autorizar cada finalidad antes de abrir la cámara y retirar la autorización local. |
@@ -99,7 +99,7 @@ Los votos públicos ya no conceden aprobación. Los candidatos de entrenamiento 
 ### Oraciones simples
 
 El catálogo visible concentra la recolección y preparación del entrenamiento en
-**29 señas individuales y las 10 oraciones completas**. Las demás etiquetas se conservan
+**29 señas individuales y 3 oraciones completas**. Las demás etiquetas se conservan
 para revisar aportes anteriores y preparar datos desde administración.
 
 | Categoría | Señas prioritarias |
@@ -111,16 +111,20 @@ para revisar aportes anteriores y preparar datos desde administración.
 | **Saludos** | Hola, bien, gracias. |
 | **Conversación** | Sí, no, no entiendo, repite. |
 
-La prioridad de grabación es **quiero agua, quiero comer, necesito ayuda, voy a casa
-y hoy estudio**. «Trabajar» mantiene su etiqueta propia; «voy al trabajo» se aporta
-como oración completa. La realización en LSCh requiere validación con la persona
-sorda que colabora en el proyecto, sin asumir una traducción palabra por palabra del español.
+Las tres oraciones se eligieron por su relación con las señas individuales visibles:
 
-En **Grabar → Ver las 10 oraciones**, cada oración se captura en una sola toma con el
-mismo flujo de cámara, revisión, borrador y envío del catálogo. Las etiquetas estables
-se definen en `ORACIONES` dentro de `signCatalog.js`: quiero agua, quiero comer,
-tengo hambre, tengo sed, estoy bien, estoy cansado, necesito ayuda, voy a casa,
-voy al trabajo y hoy estudio.
+| Oración (referencia en español) | Señas relacionadas |
+| --- | --- |
+| **Quiero agua** | Querer, agua. |
+| **Quiero comer** | Querer, comer. |
+| **Necesito ayuda** | Necesitar, ayuda. |
+
+La realización en LSCh requiere validación con la persona sorda que colabora en el
+proyecto, sin asumir una traducción palabra por palabra del español.
+
+En **Grabar → Ver las 3 oraciones**, cada oración se captura en una sola toma con el
+mismo flujo de cámara, revisión, borrador y envío del catálogo. `CATEGORIAS_VISIBLES`
+en `signCatalog.js` define esta selección y conserva las etiquetas originales.
 
 Las grabaciones mantienen el JSON de captura v2, los 30 fotogramas y los metadatos de
 seguimiento, y se organizan como `oraciones/<etiqueta>/`. La preparación de datos las
