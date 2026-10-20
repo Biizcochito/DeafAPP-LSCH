@@ -6,6 +6,7 @@ export const ORACIONES = {
     "estoy cansado", "necesito ayuda", "voy a casa", "voy al trabajo", "hoy estudio"],
 };
 
+// Catálogo completo: conserva las etiquetas de aportes anteriores y del entrenamiento.
 export const CATEGORIAS = [
  
   {
@@ -30,7 +31,7 @@ export const CATEGORIAS = [
   },
   {
     id: "verbos", nombre: "Verbos", emoji: "⚡", color: "#96CEB4",
-    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir"],
+    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir","necesitar"],
   },
   {
     id: "adjetivos", nombre: "Adjetivos", emoji: "🎨", color: "#E74C3C",
@@ -122,3 +123,20 @@ export const CATEGORIAS = [
   },
   ORACIONES,
 ];
+
+// Selección pública para concentrar los aportes en las diez oraciones actuales.
+// Ocultar una etiqueta aquí no elimina sus grabaciones ni cambia su clase original.
+const SEÑAS_PRIORITARIAS = {
+  saludos: ["hola", "bien", "gracias"],
+  conversacion: ["si", "no", "no entiendo", "repite"],
+  verbos: ["querer", "tener", "comer", "beber", "ir", "trabajar", "estudiar", "necesitar"],
+  pronombres: ["yo", "tu", "nosotros"],
+  necesidades: ["agua", "comida", "hambre", "sed", "ayuda", "cansado", "casa"],
+  tiempo: ["hoy", "manana", "ahora", "despues"],
+};
+
+export const CATEGORIAS_VISIBLES = CATEGORIAS.flatMap(category => {
+  if (category.id === ORACIONES.id) return [category];
+  const señas = category.señas.filter(label => SEÑAS_PRIORITARIAS[category.id]?.includes(label));
+  return señas.length ? [{ ...category, señas }] : [];
+});

@@ -8,16 +8,17 @@ import HandConstellation from "./ui/HandConstellation";
 import RotatingText from "./ui/RotatingText";
 import SpotlightCard from "./ui/SpotlightCard";
 import { ROADMAP, VALUES } from "./ui/projectInfo";
-import { CATEGORIAS } from "./signCatalog";
+import { CATEGORIAS_VISIBLES } from "./signCatalog";
 import "./ui/theme.css";
 import "./WelcomeScreen.css";
 import "./PrivacyScreens.css";
 
 const ROADMAP_CLASS = { now: "dw-now", test: "dw-test", goal: "dw-goal-step" };
 
-const TOTAL_SEÑAS = CATEGORIAS.reduce((total, category) => total + category.señas.length, 0);
+const TOTAL_SEÑAS = CATEGORIAS_VISIBLES.filter(category => category.id !== "oraciones").reduce((total, category) => total + category.señas.length, 0);
+const TOTAL_ORACIONES = CATEGORIAS_VISIBLES.find(category => category.id === "oraciones").señas.length;
 // Palabras reales del catálogo: es lo que la app le pide grabar a cada persona.
-const PALABRAS = ["hola", "gracias", "por favor", "familia", "mucho gusto", "bienvenido"];
+const PALABRAS = ["hola", "gracias", "agua", "ayuda", "quiero comer", "necesito ayuda"];
 const AURORA = ["#d6f36a", "#2dd4bf", "#8b5cf6"];
 const TILE_VARS = { "--spotlight-card-surface": "transparent", "--spotlight-card-shadow": "none", "--spotlight-card-border": "rgba(245,242,235,.12)" };
 
@@ -100,8 +101,8 @@ export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
               </div>
               <dl className="dw-proof">
                 <div><dt>señas</dt><dd>{TOTAL_SEÑAS}</dd></div>
-                <div><dt>categorías</dt><dd>{CATEGORIAS.length}</dd></div>
-                <div><dt>visual</dt><dd>100 %</dd></div>
+                <div><dt>oraciones</dt><dd>{TOTAL_ORACIONES}</dd></div>
+                <div><dt>categorías</dt><dd>{CATEGORIAS_VISIBLES.length}</dd></div>
               </dl>
             </div>
 
@@ -123,8 +124,8 @@ export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
         </section>
 
         <section className="dw-band" aria-label="Categorías del catálogo">
-          <Marquee items={CATEGORIAS} />
-          <Marquee items={[...CATEGORIAS].reverse()} reverse />
+          <Marquee items={CATEGORIAS_VISIBLES} />
+          <Marquee items={[...CATEGORIAS_VISIBLES].reverse()} reverse />
         </section>
 
         <section id="como-participar" className="dw-section dw-shell" aria-labelledby="dw-process-title">
@@ -152,16 +153,16 @@ export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
             <Tile tone="dark" className="dw-stat">
               <p className="dw-stat-number"><CountUp to={TOTAL_SEÑAS} duration={2.4} /></p>
               <h3>señas en el catálogo</h3>
-              <p>Palabras y frases de la vida diaria.</p>
+              <p>Más {TOTAL_ORACIONES} oraciones completas para aportar en LSCh.</p>
             </Tile>
             <Tile tone="photo" className="dw-photo-tile">
               <img src="/brand/deafapp-welcome.jpg" alt="Fotografía ilustrativa de dos manos expresándose, con mangas coral y crema sobre un fondo oscuro." loading="lazy" decoding="async" width="1122" height="1402" />
               <div><p>Una lengua.<br /><strong>Muchas formas de conectar.</strong></p><span>Imagen ilustrativa</span></div>
             </Tile>
             <Tile tone="dark" className="dw-stat">
-              <p className="dw-stat-number dw-stat-sky"><CountUp to={CATEGORIAS.length} duration={1.8} /></p>
+              <p className="dw-stat-number dw-stat-sky"><CountUp to={CATEGORIAS_VISIBLES.length} duration={1.8} /></p>
               <h3>categorías</h3>
-              <p>De {CATEGORIAS[0].nombre} a {CATEGORIAS[CATEGORIAS.length - 1].nombre}.</p>
+              <p>De {CATEGORIAS_VISIBLES[0].nombre} a {CATEGORIAS_VISIBLES[CATEGORIAS_VISIBLES.length - 1].nombre}.</p>
             </Tile>
           </Reveal>
         </section>
