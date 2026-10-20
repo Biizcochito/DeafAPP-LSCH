@@ -135,11 +135,15 @@ incluye como clases propias después de la revisión habitual. Son enunciados en
 para aportar su realización en LSCh; no representan una secuencia de señas prescrita
 ni implican que el modelo actual ya reconozca oraciones.
 
-En **Administración → Entrenamiento → Avance y oraciones** se muestran los cuatro
-candidatos del catálogo visible: 10 de las 32 clases tienen datos de aprendizaje,
-con 15 grabaciones originales. Los dos experimentos con vídeos reservados obtuvieron
-**0/4 predicciones aceptadas correctas** cada uno; todavía no permiten afirmar que
-reconozcan a personas nuevas. Los pesos y los informes se consultan con una sesión
+En **Administración → Entrenamiento → Avance y oraciones** se muestran siete
+candidatos del catálogo visible: 10 de las 32 clases tienen datos de aprendizaje.
+Hay 18 secuencias originales disponibles: 16 de aprendizaje y dos reservadas de la
+última tanda. Los nuevos recortes corresponden a agua y comer, dentro de frases de
+JuegoEduca; su revisión visual asistida requiere validación lingüística experta.
+Los dos experimentos nuevos obtuvieron **0/2 predicciones aceptadas correctas** cada
+uno; los anteriores obtuvieron **0/4** cada uno con otro vocabulario. Estas pruebas
+pequeñas no permiten afirmar que reconozcan a personas nuevas ni oraciones completas.
+Los pesos y los informes se consultan con una sesión
 administrativa válida y no se incluyen en el paquete público de la web.
 
 El laboratorio privado permite guardar puntos de al menos tres tomas completas por
