@@ -1,7 +1,10 @@
 node_modules/
-.expo/dev/logs/start.log
-.impeccable/review/
-.impeccable/concepts/
+
+# Local tool settings, reports and generated working files.
+/.claude/
+/.codex*/
+/.expo/
+/.impeccable/
 dist/
 *.zip
 .admin-private/

@@ -15,12 +15,12 @@ import { cameraStartupMessage } from "./cameraStartup";
 import { createClient } from "@supabase/supabase-js";
 import CameraLandmarks from "./CameraLandmarks";
 import { warmSignTracking } from "./landmarkTracking";
-import { handsReadyForRecording, hasTrackedHand, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./recordingHandGuard";
+import { handsReadyForRecording, hasTrackedHand, createRecordingHandContinuity, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./recordingHandGuard";
 import { createGestureGate, assertGestureAllowed, BLOCKED_GESTURE_MESSAGE } from "./gestureModeration";
 import { getWebCameraLayout } from "./cameraLayout";
 import { recordingDraftStore } from "./recordingDraftStore";
 import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch, withRecordingSendLock } from "./recordingSubmission";
-import { CATEGORIAS } from "./signCatalog";
+import { CATEGORIAS, CATEGORIAS_VISIBLES } from "./signCatalog";
 import { createTrainingCapture, captureTrackingSample, makeParticipantId } from "./trainingCapture";
 import { useRecordingSource } from "./RecordingProfiles";
 import AdminPanel from "./AdminPanel";
@@ -215,6 +215,8 @@ export default function App() {
   const estadoManosClaveRef = useRef("");
   const contenedorCamaraRef = useRef(null);
   const ultimaDeteccionRef = useRef({ enabled: false });
+  const continuidadManosRef = useRef(null);
+  if (!continuidadManosRef.current) continuidadManosRef.current = createRecordingHandContinuity();
   const grabacionEnCursoRef = useRef(false);
   const grabacionInvalidaRef = useRef(false);
   const vigilarCapturaRef = useRef(false);
@@ -230,14 +232,16 @@ export default function App() {
   }, [consentimientoActivo]);
   const actualizarTrazado = useCallback(tracking => {
     ultimaDeteccionRef.current = tracking;
-    const { blocked } = filtroGestosRef.current.update(tracking, performance.now());
+    const now = performance.now();
+    const { blocked } = filtroGestosRef.current.update(tracking, now);
     if (blocked !== gestoBloqueadoRef.current) {
       gestoBloqueadoRef.current = blocked;
       setGestoBloqueado(blocked);
     }
     if (grabacionEnCursoRef.current && blocked) gestoEnGrabacionRef.current = true;
-    const ready = handsReadyForRecording(tracking, performance.now(), 1);
-    if (vigilarCapturaRef.current && !ready) grabacionInvalidaRef.current = true;
+    const ready = handsReadyForRecording(tracking, now, 1);
+    const continua = continuidadManosRef.current.update(tracking, now);
+    if (vigilarCapturaRef.current && !continua) grabacionInvalidaRef.current = true;
     const phase = tracking.handStatus || "disabled";
     const left = ready && hasTrackedHand(tracking.leftHandLandmarks);
     const right = ready && hasTrackedHand(tracking.rightHandLandmarks);
@@ -333,7 +337,7 @@ export default function App() {
 
   const mostrarVistaPrevia = (draft = borradorRef.current) => {
     if (!draft) return;
-    setCatActual(CATEGORIAS.find(c => c.id === draft.category));
+    setCatActual(CATEGORIAS_VISIBLES.find(c => c.id === draft.category) || CATEGORIAS.find(c => c.id === draft.category));
     setSeñaActual(draft.label);
     setRepitiendo(false);
     setFotogramaVista(0);
@@ -493,11 +497,14 @@ export default function App() {
     const cancelada = () => sesion !== grabacionSesionRef.current;
     const verificarManos = (minimumHands = 2) => !cancelada() && (Platform.OS !== "web" ||
       (cameraFrameReady(contenedorCamaraRef.current?.querySelector("video")) &&
-        handsReadyForRecording(ultimaDeteccionRef.current, performance.now(), minimumHands)));
+        (minimumHands === 1
+          ? continuidadManosRef.current.update(ultimaDeteccionRef.current, performance.now())
+          : handsReadyForRecording(ultimaDeteccionRef.current, performance.now(), minimumHands))));
     const capturaValida = () => !grabacionInvalidaRef.current && verificarManos(1);
     const gestoPermitido = () => assertGestureAllowed(gestoBloqueadoRef.current || gestoEnGrabacionRef.current);
     grabacionEnCursoRef.current = true;
     grabacionInvalidaRef.current = false;
+    continuidadManosRef.current.reset();
     gestoEnGrabacionRef.current = false;
     setManosConfirmadas(false);
     setTrazadoActivo(true);
@@ -613,7 +620,11 @@ export default function App() {
     }
   };
 
-  const volverAlCatalogo = () => setPantalla(catActual ? "categoria" : "home");
+  const volverAlCatalogo = () => {
+    const visible = CATEGORIAS_VISIBLES.find(category => category.id === catActual?.id);
+    setCatActual(visible || null);
+    setPantalla(visible ? "categoria" : "home");
+  };
   if (["privacidad", "terminos"].includes(pantalla)) {
     return <PrivacyDocument kind={pantalla} preview={privacyPreview} consent={consentimientoActivo ? consentimiento : null} message={mensajePrivacidad}
       onBack={volverAlCatalogo} onConsent={() => setPantalla("consentimiento")}
@@ -641,10 +652,10 @@ export default function App() {
   if (pantalla === "vistaPrevia" && borrador) {
     if (Platform.OS === "web") {
       const categoriaBorrador = CATEGORIAS.find(c => c.id === borrador.category) || catActual;
-      return <RecordingReview word={nombreDeSeña(borrador.label)} category={categoriaBorrador} tone={toneFor(CATEGORIAS, categoriaBorrador)} camMax={anchoCamara}
+      return <RecordingReview word={nombreDeSeña(borrador.label)} category={categoriaBorrador} tone={toneFor(CATEGORIAS_VISIBLES, categoriaBorrador)} camMax={anchoCamara}
         ratio={borrador.frameAspectRatio || 4 / 3} frameUri={armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0])}
         index={fotogramaVista} total={borrador.frames.length} playing={reproduciendo} seconds={(borrador.frames.length * borrador.intervalMs / 1000).toFixed(1)}
-        onTogglePlay={() => setReproduciendo(value => !value)} onBack={() => setPantalla("categoria")} onLater={() => setPantalla("categoria")}
+        onTogglePlay={() => setReproduciendo(value => !value)} onBack={volverAlCatalogo} onLater={volverAlCatalogo}
         onSend={enviarBorrador} onRepeat={() => { setReproduciendo(false); setRepitiendo(true); setError(null); setProgreso(0); setPantalla("grabar"); }}
         sending={subiendo} failed={envioFallido} saved={guardadoLocal} localMessage={mensajeLocal} error={error} />;
     }
@@ -653,7 +664,7 @@ export default function App() {
         <StatusBar barStyle="light-content" />
         <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.grabarContenido}>
           <View style={styles.grabarHeader}>
-            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" disabled={subiendo} onPress={() => setPantalla("categoria")} style={styles.btnBack}>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" disabled={subiendo} onPress={volverAlCatalogo} style={styles.btnBack}>
               <Text style={styles.btnBackTexto}>‹</Text>
             </TouchableOpacity>
             <Text style={styles.grabarTitulo}>{borrador.label.toUpperCase()}</Text>
@@ -689,7 +700,7 @@ export default function App() {
               <Text style={styles.btnTextoBlanco}>Repetir grabación</Text>
             </TouchableOpacity>
             {subiendo && <ActivityIndicator size="large" color="#E94560" />}
-            <TouchableOpacity accessibilityRole="button" accessibilityLabel={guardadoLocal ? "Guardar para después" : "Volver a la lista"} disabled={subiendo} onPress={() => setPantalla("categoria")}>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel={guardadoLocal ? "Guardar para después" : "Volver a la lista"} disabled={subiendo} onPress={volverAlCatalogo}>
               <Text style={styles.trazadoBotonTexto}>{guardadoLocal ? "Guardar para después" : "Volver a la lista"}</Text>
             </TouchableOpacity>
           </View>
@@ -700,8 +711,8 @@ export default function App() {
 
   if (pantalla === "envioListo") {
     if (Platform.OS === "web") {
-      return <RecordingDone word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
-        onAgain={() => abrirGrabacion(señaActual)} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { setPantalla("categoria"); setExito(false); }} />;
+      return <RecordingDone word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
+        onAgain={() => abrirGrabacion(señaActual)} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { volverAlCatalogo(); setExito(false); }} />;
     }
     return (
       <SafeAreaView style={[styles.root, styles.centrado]}>
@@ -713,7 +724,7 @@ export default function App() {
           <TouchableOpacity accessibilityRole="button" accessibilityLabel="Grabar otra vez" style={[styles.btnOtraVez, styles.previewAccion]} onPress={() => abrirGrabacion(señaActual)}>
             <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>Grabar otra vez</Text>
           </TouchableOpacity>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" style={[styles.btnVolver, styles.previewAccion]} onPress={() => { setPantalla("categoria"); setExito(false); }}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" style={[styles.btnVolver, styles.previewAccion]} onPress={() => { volverAlCatalogo(); setExito(false); }}>
             <Text style={styles.btnTextoGris}>‹ Volver a la lista</Text>
           </TouchableOpacity>
         </View>
@@ -727,7 +738,7 @@ export default function App() {
   }} onModerated={cargarConteos} />;
 
   if (Platform.OS === "web" && ["home", "categoria", "aportes", "mas", "ayuda", "feedback"].includes(pantalla)) {
-    return <AppWorkspace screen={pantalla} navigate={setPantalla} onLogo={pulsarLogo} categories={CATEGORIAS} category={catActual}
+    return <AppWorkspace screen={pantalla} navigate={setPantalla} onLogo={pulsarLogo} categories={CATEGORIAS_VISIBLES} category={catActual}
       contributions={aportes.items}
       pending={borrador} onResume={() => mostrarVistaPrevia()}
       onCategory={cat => { setCatActual(cat); setPantalla("categoria"); }}
@@ -738,7 +749,7 @@ export default function App() {
 
   if (Platform.OS === "web" && pantalla === "grabar" && !permission?.granted) {
     return <CameraPermission onAllow={requestPermission} loading={!permission} pending={borrador}
-      onResume={() => mostrarVistaPrevia()} onBack={() => setPantalla("categoria")} />;
+      onResume={() => mostrarVistaPrevia()} onBack={volverAlCatalogo} />;
   }
 
   if (pantalla === "grabar" && !permission) return <View style={styles.root} />;
@@ -839,7 +850,7 @@ export default function App() {
   // ── REVISAR (validación comunitaria) ────────────────────────────
   if (pantalla === "grabar") {
     const pctProgreso = (progreso / TOTAL_FRAMES) * 100;
-    const volverDeGrabar = () => { cancelarCaptura(); if (repitiendo && borradorRef.current) mostrarVistaPrevia(); else setPantalla("categoria"); setExito(false); setError(null); };
+    const volverDeGrabar = () => { cancelarCaptura(); if (repitiendo && borradorRef.current) mostrarVistaPrevia(); else volverAlCatalogo(); setExito(false); setError(null); };
     const textoInstruccion = capturando
       ? (catActual?.id === "oraciones" ? "¡Realiza la oración completa frente a la cámara!" : "¡Haz la seña frente a la cámara!")
       : preparando ? "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos."
@@ -882,7 +893,7 @@ export default function App() {
       const sinPreparar = !borradorRecuperado || !origenGrabacion;
       const enProceso = preparando || countdown !== null || capturando;
       const reposo = !enProceso && !subiendo && !exito;
-      return <RecordingStage word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS, catActual)} onBack={volverDeGrabar}
+      return <RecordingStage word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} onBack={volverDeGrabar}
         camera={camaraNodo} camMax={anchoCamara}
         step={capturando ? 3 : countdown !== null ? 2 : preparando ? 1 : 0}
         instruction={textoInstruccion} repeating={repitiendo}
@@ -966,7 +977,7 @@ export default function App() {
               <TouchableOpacity style={styles.btnOtraVez} onPress={() => { setExito(false); setProgreso(0); }}>
                 <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>⊙ Grabar otra vez</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnVolver} onPress={() => { setPantalla("categoria"); setExito(false); }}>
+              <TouchableOpacity style={styles.btnVolver} onPress={() => { volverAlCatalogo(); setExito(false); }}>
                 <Text style={styles.btnTextoGris}>‹ Volver a la lista</Text>
               </TouchableOpacity>
             </View>
@@ -1029,8 +1040,8 @@ export default function App() {
   }
 
   // ── HOME ─────────────────────────────────────────────────────────
-  const totalCategoriasApp     = CATEGORIAS.length;
-  const categoriasCompletasApp = CATEGORIAS.filter(
+  const totalCategoriasApp     = CATEGORIAS_VISIBLES.length;
+  const categoriasCompletasApp = CATEGORIAS_VISIBLES.filter(
     cat => cat.señas.every(s => (conteos[s] || 0) >= META_POR_SEÑA)
   ).length;
   const pctGeneralApp = totalCategoriasApp > 0 ? categoriasCompletasApp / totalCategoriasApp : 0;
@@ -1086,7 +1097,7 @@ export default function App() {
           )}
         </View>
         <View style={styles.grid}>
-          {CATEGORIAS.map(cat => (
+          {CATEGORIAS_VISIBLES.map(cat => (
             <CategoriaCard key={cat.id} cat={cat} conteos={conteos}
               onPress={() => { setCatActual(cat); setPantalla("categoria"); }} />
           ))}

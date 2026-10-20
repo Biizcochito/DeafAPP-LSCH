@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { handsReadyForRecording, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from '../recordingHandGuard.js';
+import { handsReadyForRecording, createRecordingHandContinuity, HAND_CONTINUITY_GRACE_MS, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from '../recordingHandGuard.js';
 
 const hand = () => Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5 }));
 const tracked = () => ({ enabled: true, handTime: 1000, leftHandLandmarks: hand(), rightHandLandmarks: hand() });
@@ -26,6 +26,68 @@ test('after confirmation, either hand alone is enough, but stale or absent hands
   assert.equal(handsReadyForRecording(leftOnly, 1400, 1), false);
   assert.equal(handsReadyForRecording({ ...leftOnly, enabled: false }, 1100, 1), false);
   assert.equal(handsReadyForRecording({ ...tracked(), leftHandLandmarks: undefined, rightHandLandmarks: undefined }, 1100, 1), false);
+});
+
+for (const remainingHand of ['leftHandLandmarks', 'rightHandLandmarks']) {
+  test(`confirming both hands then keeping ${remainingHand} survives brief detector gaps and captures all 30 frames`, async () => {
+    let time = 0;
+    let capturing = false;
+    let invalid = false;
+    const continuity = createRecordingHandContinuity();
+    const tracking = () => ({
+      enabled: true, handStatus: 'ready', handTime: time,
+      ...(time < 600 ? { leftHandLandmarks: hand(), rightHandLandmarks: hand() }
+        : time < 900 || time >= 3800 && time < 4200 ? {} : { [remainingHand]: hand() }),
+    });
+    const observe = () => {
+      const ready = continuity.update(tracking(), time);
+      if (capturing && !ready) invalid = true;
+      return ready;
+    };
+    const advance = async ms => {
+      for (const end = time + ms; time < end;) {
+        time = Math.min(end, time + 50);
+        observe();
+      }
+    };
+    const countdowns = [];
+    await prepareTrackedRecording({
+      isReady: () => { observe(); return handsReadyForRecording(tracking(), time); },
+      isCountdownReady: observe, isCancelled: () => false, now: () => time,
+      delay: advance, onWaiting() {}, onCountdown: number => countdowns.push(number),
+    });
+    assert.deepEqual(countdowns, [3, 2, 1]);
+    capturing = true;
+    let captures = 0;
+    const frames = await captureTrackedFrames({
+      count: 30, isReady: () => !invalid && observe(),
+      capture: async () => `frame-${++captures}`, onFrame() {}, delay: () => advance(100),
+    });
+    assert.equal(frames.length, 30);
+    assert.equal(invalid, false);
+  });
+}
+
+test('the brief gap allowance expires from the last detection even when old results are polled repeatedly', () => {
+  const continuity = createRecordingHandContinuity();
+  assert.equal(continuity.update(tracked(), 1000), true);
+  const missing = { enabled: true, handStatus: 'ready', handTime: 1400 };
+  assert.equal(continuity.update(missing, 1400), true);
+  assert.equal(continuity.update(tracked(), 1000 + HAND_CONTINUITY_GRACE_MS), true);
+  assert.equal(continuity.update(tracked(), 1001 + HAND_CONTINUITY_GRACE_MS), false);
+  assert.equal(continuity.update(missing, 2000 + HAND_CONTINUITY_GRACE_MS), false);
+});
+
+test('turning tracking off, a detector error, and a new attempt immediately clear the gap allowance', () => {
+  const continuity = createRecordingHandContinuity();
+  for (const unavailable of [{ enabled: false }, { enabled: true, handStatus: 'error' }, { enabled: true, handStatus: 'camera' }]) {
+    assert.equal(continuity.update(tracked(), 1000), true);
+    assert.equal(continuity.update(unavailable, 1050), false);
+    assert.equal(continuity.update({ enabled: true }, 1100), false);
+  }
+  continuity.update(tracked(), 1000);
+  continuity.reset();
+  assert.equal(continuity.update({ enabled: true }, 1100), false);
 });
 
 test('both hands are confirmed once, then one hand can remain through countdown and capture', async () => {
