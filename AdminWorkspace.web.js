@@ -3,6 +3,7 @@ import {AppIcon} from './AppWorkspace';
 import './AdminWorkspace.css';
 const items = [
   ['recordings','camera','Grabaciones','Revisión'],
+  ['video-review','check','Revisión de señas','Vídeos'],
   ['training','play','Entrenamiento LSCh','Entrenar'],
   ['material','search','Material de LSCh','Material'],
   ['tools','more','Datos y diagnóstico','Datos'],

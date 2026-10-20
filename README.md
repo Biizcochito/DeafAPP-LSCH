@@ -485,12 +485,13 @@ El formulario de administración se puede abrir de dos formas:
 
 Ambos métodos abren el formulario y exigen la contraseña configurada por el propietario. **Cinco pulsaciones no inician sesión ni conceden permisos.** La interfaz pública no muestra un enlace al panel; la ruta directa sigue disponible. La contraseña se comprueba en el servidor y no se incluye en el README ni en el código del navegador. No hace falta activar la cámara para administrar. El acceso nativo conserva las cinco pulsaciones del logo en la misma ventana de tiempo.
 
-El administrador comparte logo, tipografía, colores y componentes con la app pública. En escritorio organiza las cuatro áreas principales con navegación lateral; en móvil utiliza una navegación compacta. Cambiar de sección lleva el foco al contenido y cerrar sesión permanece accesible.
+El administrador comparte logo, tipografía, colores y componentes con la app pública. En escritorio organiza las cinco áreas principales con navegación lateral; en móvil utiliza una navegación compacta. Cambiar de sección lleva el foco al contenido y cerrar sesión permanece accesible.
 
 | Sección | Herramientas | Alcance |
 | --- | --- | --- |
 | **Grabaciones** | Búsqueda, filtros, reproducción y decisiones individuales o por lote. | Pendientes, aprobadas y rechazadas. |
 | **Material de LSCh** | Referencias educativas y catálogo académico de **379 videos**. | Consulta; los enlaces no equivalen a muestras revisadas ni permisos de entrenamiento. |
+| **Revisión de señas** | Segmentos de vídeo con etiqueta propuesta, prioridad para el catálogo visible y confirmación humana. | Decisiones privadas sincronizadas, versiones para evitar sobrescrituras y exportación para preparar el dataset; no entrena automáticamente. |
 | **Entrenamiento LSCh** | Modelo de interpretación conectado a Python, prueba beta y capturas revisadas del navegador. | Importación de aprobadas, informes y candidatos; las herramientas Python verifican la sesión administrativa. |
 | **Recuperar grabaciones antiguas** | Extracción de puntos, reproducción y revisión de etiquetas. | Conserva el orden; no inventa tiempos ni identidades ausentes. |
 | **Modelos guardados** | Carga de candidatos e informes anteriores. | Datos almacenados en ese navegador. |
