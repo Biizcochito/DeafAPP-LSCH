@@ -1,3 +1,4 @@
+import SignReviewWorkbench from './SignReviewWorkbench';
 import AdminWorkspace from './AdminWorkspace';
 import {adminTheme} from './adminTheme';
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -149,6 +150,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   }
   const workspace = content => <AdminWorkspace section={section} onNavigate={navigateAdmin} onExit={exit} busy={busy}>{content}</AdminWorkspace>;
 
+  if (section === "video-review") return workspace(<SignReviewWorkbench api={api} session={session} onAccessError={fail} onBusyChange={setBusy} />);
   if (section === "material") return workspace(<LschSources loadCatalog={loadMaterial} onAccessError={fail} onBack={() => setSection("recordings")} backLabel="Volver al administrador" />);
   if (section === "training") return workspace(<TrainingWorkbench api={api} session={session} client={client} onAccessError={fail} onBack={() => setSection("recordings")} onOpenMaterial={() => navigateAdmin("material")} />);
 
