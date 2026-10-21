@@ -141,16 +141,30 @@ incluye como clases propias después de la revisión habitual. Son enunciados en
 para aportar su realización en LSCh; no representan una secuencia de señas prescrita
 ni implican que el modelo actual ya reconozca oraciones.
 
-En **Administración → Entrenamiento → Avance y oraciones** se muestran siete
-candidatos del catálogo visible: 10 de las 33 clases tienen datos de aprendizaje.
-Hay 18 secuencias originales disponibles: 16 de aprendizaje y dos reservadas de la
-última tanda. Los nuevos recortes corresponden a agua y comer, dentro de frases de
-JuegoEduca; su revisión visual asistida requiere validación lingüística experta.
-Los dos experimentos nuevos obtuvieron **0/2 predicciones aceptadas correctas** cada
-uno; los anteriores obtuvieron **0/4** cada uno con otro vocabulario. Estas pruebas
-pequeñas no permiten afirmar que reconozcan a personas nuevas ni oraciones completas.
-Los pesos y los informes se consultan con una sesión
-administrativa válida y no se incluyen en el paquete público de la web.
+En **Administración → Entrenamiento → Avance y oraciones** se muestran ocho
+candidatos del catálogo visible. El candidato de cámara predeterminado compara la
+forma y el movimiento de las manos, con 28 originales de aprendizaje y tres tomas
+reservadas. Sus referencias abarcan 18 clases; el reconocimiento está habilitado
+para **hola y agua**. Las demás clases ayudan a detectar movimientos diferentes.
+El panel muestra las señas habilitadas para el candidato elegido.
+
+Los vídeos reales de hola y agua pasan por el detector de cámara y devuelven la
+etiqueta correspondiente. Esa reproducción usa material fuente de entrenamiento y
+comprueba la integración, no precisión con personas nuevas. Una captura aprobada de
+hola, excluida del nuevo candidato, también se reconoce. La toma reservada de agua
+en contexto todavía falla; el candidato se abstiene en las dos secuencias de contexto
+reservadas. No hay precisión general validada. Los pesos y los informes requieren
+una sesión administrativa y no se incluyen en el paquete público de la web.
+
+En **Prueba de reconocimiento con cámara**, el candidato se carga al iniciar la
+prueba. Se muestra el resultado, las tres coincidencias más cercanas y el motivo
+de una abstención. La similitud y los votos de árboles no son porcentajes de acierto.
+
+**Entrenar con mis señas** adapta un candidato a las capturas de este navegador:
+requiere tres tomas distintas de al menos dos señas individuales. Las pruebas
+reservadas, sus copias y los aumentos no entran al aprendizaje. La toma de prueba
+no utiliza la etiqueta seleccionada para grabar; el candidato personal permanece
+en memoria de la sesión y necesita evaluación con movimientos nuevos.
 
 El laboratorio privado permite guardar puntos de al menos tres tomas completas por
 oración en este navegador. Con esas tomas se puede entrenar un candidato personal y

@@ -103,7 +103,8 @@ export function combineSignResults(image, faceResults, handResults, poseResults 
   (handResults.multiHandLandmarks || []).forEach((landmarks, index) => {
     // MediaPipe Hands assumes a mirrored input. Expo's video pixels are raw;
     // only the preview's CSS is mirrored, so swap the anatomical hand labels.
-    const label = handResults.multiHandedness?.[index]?.label;
+    const learned = handResults.multiAnatomicalHandedness?.[index]?.label;
+    const label = learned === "Left" || learned === "Right" ? learned : handResults.multiHandedness?.[index]?.label;
     let side = label === "Left" ? "rightHandLandmarks" : "leftHandLandmarks";
     if (results[side]) side = side === "rightHandLandmarks" ? "leftHandLandmarks" : "rightHandLandmarks";
     results[side] = landmarks;
@@ -120,6 +121,7 @@ export function mapCroppedHands(results, crop) {
       z: point.z * crop.width,
     }))),
     multiHandedness: results.multiHandedness || [],
+    multiAnatomicalHandedness: results.multiAnatomicalHandedness || [],
   };
 }
 

@@ -13,7 +13,7 @@ async function infer(image, face) {
   try {
     const seeds = HandRegions.seeds(face, canvas.width, canvas.height, searchPhase++);
     const candidates = await Promise.all(slots.map((slot, index) => detector.handLandmarks(slot.roi || seeds[index], tensor)));
-    const hands = [], labels = [];
+    const hands = [], labels = [], anatomical = [];
     candidates.forEach((hand, index) => {
       const slot = slots[index];
       if (!HandRegions.valid(hand) || hands.some(other => HandRegions.duplicate(other, hand.landmarks))) {
@@ -25,6 +25,7 @@ async function infer(image, face) {
       hands.push(hand.landmarks);
       // Keep a tracked identity instead of changing sides when hands cross.
       labels.push({label:index === 0 ? 'Left' : 'Right'});
+      anatomical.push({label:hand.handedness});
     });
     // Conventional palm acquisition covers new hands in other positions or
     // orientations. Direct regions recover palms this stage misses.
@@ -39,9 +40,11 @@ async function infer(image, face) {
         slots[index].misses = 0;
         slots[index].roi = detector.handLandmarksToRoi(hand.landmarks, {width:canvas.width,height:canvas.height});
         hands.push(hand.landmarks);labels.push({label:index === 0 ? 'Left' : 'Right'});
+        anatomical.push({label:hand.handedness});
       }
     }
-    return {multiHandLandmarks:hands,multiHandedness:labels};
+    // Region slots are tracking identities; inference needs the handedness predicted by ML.
+    return {multiHandLandmarks:hands,multiHandedness:labels,multiAnatomicalHandedness:anatomical};
   } finally { tensor.dispose(); }
 }
 self.onmessage = async ({data}) => {
