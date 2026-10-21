@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {FEATURE_LAYOUT,TARGET_SIGNS} from '../training/datasetPreparation.js';
-import {assertPreparedDataset,createTrainingPlan,selectTrainingGroup} from '../training/trainingPlan.js';
-import {trainReviewedModel} from '../training/modelTraining.js';
+import {FEATURE_LAYOUT,TARGET_SIGNS} from '../src/training/datasetPreparation.js';
+import {assertPreparedDataset,createTrainingPlan,selectTrainingGroup} from '../src/training/trainingPlan.js';
+import {trainReviewedModel} from '../src/training/modelTraining.js';
 // Synthetic points exercise the software. They are never LSCh training data
 // and are not exported, published, or used as evidence of recognition quality.
 function fixture(){

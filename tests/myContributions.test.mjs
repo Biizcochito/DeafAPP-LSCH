@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { addContribution, contributionKey, emptyContributions, sanitizeContributions } from "../myContributions.js";
+import { addContribution, contributionKey, emptyContributions, sanitizeContributions } from "../src/contributions/myContributions.js";
 
 test("cada envío suma una vez a la seña y categoría correctas", () => {
   let state = emptyContributions();

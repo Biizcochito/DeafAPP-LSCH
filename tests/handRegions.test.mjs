@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {test} from 'node:test';
-import {createHandWorker} from '../handTrackingWorker.js';
+import {createHandWorker} from '../src/camera/handTrackingWorker.js';
 
 const context=vm.createContext({self:{}});
 vm.runInContext(await readFile(new URL('../public/hand-regions.js',import.meta.url),'utf8'),context);
@@ -40,7 +40,7 @@ test('worker transfers the frame and face region, and releases pending frames on
   globalThis.document={baseURI:'https://example.test/'};
   globalThis.createImageBitmap=async()=>({close(){closed++;}});
   globalThis.Worker=class{
-    constructor(url){assert.equal(url.href,'https://example.test/hand-tracking-worker.js');worker=this;}
+    constructor(url){assert.equal(url.href,'https://example.test/hand-tracking-worker.js?v=learned-hands-20261020');worker=this;}
     postMessage(data,transfer){if(data.type==='init')queueMicrotask(()=>this.onmessage({data:{id:data.id,type:'ready'}}));else{this.frame=data;assert.equal(transfer[0],data.image);}}
     terminate(){this.terminated=true;}
   };
@@ -60,7 +60,7 @@ test('browser prewarming starts face and hands together and reuses both initiali
   globalThis.createImageBitmap=async()=>({close(){}});
   globalThis.Worker=class{constructor(){workerCount++;}postMessage(data){if(data.type==='init')queueMicrotask(()=>this.onmessage({data:{id:data.id,type:'ready'}}));else{handStarted=true;finishHands=()=>this.onmessage({data:{id:data.id,type:'result',result:{}}});}}terminate(){}};
   try{
-    const {warmSignTracking}=await import('../landmarkTracking.js');const first=warmSignTracking();assert.equal(warmSignTracking(),first);
+    const {warmSignTracking}=await import('../src/camera/landmarkTracking.js');const first=warmSignTracking();assert.equal(warmSignTracking(),first);
     for(let i=0;i<35;i++)await Promise.resolve();assert.equal(faceStarted,true);assert.equal(handStarted,true);
     finishHands();finishFace();tracker=await first;assert.equal(tracker.handBackend,'direct-regions');assert.equal(await warmSignTracking(),tracker);assert.equal(workerCount,1);
   }finally{await tracker?.close();delete globalThis.document;delete globalThis.window;delete globalThis.createImageBitmap;delete globalThis.Worker;}

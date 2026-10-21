@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { combineSignResults, createSignTracker, drawSignLandmarks, loadHolistic, mapCroppedHands, mergeHandDetections, warmSignTracking } from "../landmarkTracking.js";
-import { freshLandmarks, landmarkViewport, withTrackingTimeout } from "../trackingOverlay.js";
+import { combineSignResults, createSignTracker, drawSignLandmarks, loadHolistic, mapCroppedHands, mergeHandDetections, warmSignTracking } from "../src/camera/landmarkTracking.js";
+import { freshLandmarks, landmarkViewport, withTrackingTimeout } from "../src/camera/trackingOverlay.js";
 
 test("a failed download can retry, and concurrent callers wait for the same script", async () => {
   const scripts = [];

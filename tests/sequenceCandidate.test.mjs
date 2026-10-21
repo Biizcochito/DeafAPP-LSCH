@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {handSequence,sequenceDistance,sequenceReferences,predictSequenceCandidate,validateSequenceCandidate,SEQUENCE_CANDIDATE_FORMAT,createPersonalSignCandidate} from '../training/sequenceCandidate.js';
-import {validateForest,predictForest} from '../training/visibleTraining.js';
+import {handSequence,sequenceDistance,sequenceReferences,predictSequenceCandidate,validateSequenceCandidate,SEQUENCE_CANDIDATE_FORMAT,createPersonalSignCandidate} from '../src/training/sequenceCandidate.js';
+import {validateForest,predictForest} from '../src/training/visibleTraining.js';
 // Geometry fixtures exercise contracts only. They are not LSCh examples or an accuracy measurement.
 const features=seed=>Array.from({length:32},(_,t)=>[...Array.from({length:84},(_,k)=>k%2?.4+Math.sin(t/8)*.1:(k%42)*.02+seed),...Array(84).fill(0),1,1,1]);
 const row=(id,classId,seed)=>({parentHash:id,recordingId:id,classId,split:'train',variant:'original',features:features(seed)});

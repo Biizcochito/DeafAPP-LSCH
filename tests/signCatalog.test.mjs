@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CATEGORIAS, CATEGORIAS_VISIBLES, ORACIONES } from '../signCatalog.js';
-import { TARGET_SIGNS } from '../training/datasetPreparation.js';
+import { CATEGORIAS, CATEGORIAS_VISIBLES, ORACIONES } from '../src/catalog/signCatalog.js';
+import { TARGET_SIGNS } from '../src/training/datasetPreparation.js';
 
 test('la selección pública contiene exactamente 29 señas y las cuatro oraciones prioritarias', () => {
   const expected = {

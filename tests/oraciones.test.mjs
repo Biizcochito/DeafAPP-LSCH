@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CATEGORIAS, ORACIONES } from '../signCatalog.js';
-import { captureTrackingSample, createTrainingCapture } from '../trainingCapture.js';
-import { createRecordingDraft, submitRecordingDraft } from '../recordingSubmission.js';
-import { auditRecording, prepareDataset } from '../training/datasetPreparation.js';
+import { CATEGORIAS, ORACIONES } from '../src/catalog/signCatalog.js';
+import { captureTrackingSample, createTrainingCapture } from '../src/recording/trainingCapture.js';
+import { createRecordingDraft, submitRecordingDraft } from '../src/recording/recordingSubmission.js';
+import { auditRecording, prepareDataset } from '../src/training/datasetPreparation.js';
 import { testConsent } from './fixtures/consent.mjs';
 
 function capture() {

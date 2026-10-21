@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createAdminClient} from '../adminClient.js';
-import {segmentWatchUrl,validSegment,reviewExportText} from '../training/signReview.js';
+import {createAdminClient} from '../src/admin/adminClient.js';
+import {segmentWatchUrl,validSegment,reviewExportText} from '../src/training/signReview.js';
 const session=()=>({token:'a'.repeat(64),expiresAt:Date.now()+60000});
 const row={key:'abcdefghijk@1250',videoId:'abcdefghijk',start:1.25,end:3.75,version:2};
 test('la cola privada pagina y transmite la sesión sin aprobar candidatos',async()=>{

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { getWebCameraLayout } from '../cameraLayout.js';
+import { getWebCameraLayout } from '../src/camera/cameraLayout.js';
 
 const desktop = { maxWidth: 600, aspectRatio: 4 / 3 };
 const phone = { maxWidth: 450, aspectRatio: 9 / 16 };

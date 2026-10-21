@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "../appRoutes.js";
+import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "../src/app/appRoutes.js";
 
 test("la raíz informa, /app abre la app y /admin la administración", () => {
   assert.equal(pantallaDe("/"), "bienvenida");

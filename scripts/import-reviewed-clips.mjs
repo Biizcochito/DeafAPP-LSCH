@@ -2,8 +2,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { createTrainingCapture } from '../trainingCapture.js';
-import { auditRecording } from '../training/datasetPreparation.js';
+import { createTrainingCapture } from '../src/recording/trainingCapture.js';
+import { auditRecording } from '../src/training/datasetPreparation.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const input = resolve(root, 'training/clips');
 try {

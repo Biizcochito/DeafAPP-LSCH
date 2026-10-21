@@ -39,7 +39,7 @@ npm run dataset:prepare
 4. Se seleccionan las primeras señas aptas, hasta 12 por grupo. Se pueden cambiar mediante las casillas de las entradas listas para avanzar a otros grupos del vocabulario. Pulsar **Entrenar primeras señas disponibles** inicia el aprendizaje local en el navegador. Se puede cancelar.
 5. Se informa el resultado por seña con las personas reservadas para prueba. Se guarda un candidato por grupo en IndexedDB del mismo navegador, con sus etiquetas, representación de entrada e informe. Reentrenar el mismo grupo reemplaza su candidato anterior; otros grupos se conservan. No se publica ni se conecta automáticamente a la cámara del traductor.
 
-El entrenador (`training/modelTraining.js`) usa TensorFlow.js 4.22.0 y una red temporal Conv1D: recibe 32 pasos de 171 valores de manos/cara, aprende durante 30 pasadas y devuelve probabilidades sobre las clases seleccionadas. Los videos no se memorizan como respuestas: sus patrones de movimiento se usan para ajustar los pesos. Las personas de prueba no intervienen en el ajuste, la selección de pasadas ni la creación de aumentos. Se comprueban las versiones de aprobación antes y después del aprendizaje; una aprobación revocada o cambiada impide guardar el candidato.
+El entrenador (`src/training/modelTraining.js`) usa TensorFlow.js 4.22.0 y una red temporal Conv1D: recibe 32 pasos de 171 valores de manos/cara, aprende durante 30 pasadas y devuelve probabilidades sobre las clases seleccionadas. Los videos no se memorizan como respuestas: sus patrones de movimiento se usan para ajustar los pesos. Las personas de prueba no intervienen en el ajuste, la selección de pasadas ni la creación de aumentos. Se comprueban las versiones de aprobación antes y después del aprendizaje; una aprobación revocada o cambiada impide guardar el candidato.
 
 Se debe revisar que los códigos correspondan a personas realmente distintas, evaluar gestos desconocidos y verificar la cámara antes de habilitar reconocimiento público. Los candidatos entrenados por separado tampoco constituyen por sí solos un único clasificador de 531 señas: habrá que integrar y evaluar los grupos antes de ese despliegue. La traducción de frases continuas y la salida de voz/texto hacia LSCh son etapas adicionales.
 
@@ -81,7 +81,7 @@ Si solo hay una persona, los datos pueden servir para desarrollar un prototipo p
 
 1. Localizar una seña exacta en un recurso de LSCh y revisar significado, variante e intervalo con alguien competente en LSCh. Los subtítulos del discurso español no se asumen equivalentes a la seña.
 2. Comprobar que la licencia o autorización permite el uso de entrenamiento previsto y registrar su evidencia. «CC» en el catálogo por sí solo no identifica todas las condiciones.
-3. Preparar un fragmento local con imágenes JPEG y detecciones de cara/manos en el esquema `trainingCapture.js`. Actualmente este paso de extracción de videos externos y la revisión lingüística siguen pendientes; el importador trabaja sobre detecciones ya preparadas.
+3. Preparar un fragmento local con imágenes JPEG y detecciones de cara/manos en el esquema `src/recording/trainingCapture.js`. Actualmente este paso de extracción de videos externos y la revisión lingüística siguen pendientes; el importador trabaja sobre detecciones ya preparadas.
 4. Añadir la anotación a `training/reviewed-clips.json`, y ejecutar `dataset:import-clips` y `dataset:prepare`.
 
 Cada entrada de `reviewed-clips.json` necesita:

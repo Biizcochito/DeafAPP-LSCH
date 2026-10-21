@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFileSync} from 'node:fs';
-import {isMiddleFingerGesture, createGestureGate, assertGestureAllowed} from '../gestureModeration.js';
-import {prepareTrackedRecording, captureTrackedFrames} from '../recordingHandGuard.js';
+import {isMiddleFingerGesture, createGestureGate, assertGestureAllowed} from '../src/camera/gestureModeration.js';
+import {prepareTrackedRecording, captureTrackedFrames} from '../src/recording/recordingHandGuard.js';
 
 function hand(extended = [9], {rotation = 0, mirror = 1, aspect = 1, scale = .7} = {}) {
   const points = Array.from({length: 21}, () => ({x: 0, y: .2}));
