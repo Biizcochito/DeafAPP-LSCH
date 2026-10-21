@@ -35,7 +35,7 @@ La versión actual permite aportar señas y oraciones con autorización previa, 
 | [Estado del proyecto](#estado-del-proyecto) | [Desarrollo local](#desarrollo-local) | [Modelo y resultados](#sobre-el-modelo-de-reconocimiento) |
 | [Autores](#autores) | [Build y despliegue](#build-y-despliegue) | [Pruebas](#pruebas) |
 | [Experiencia web actual](#experiencia-web-actual) | [Flujo del equipo](#flujo-del-equipo) | [Acceso al administrador](https://deafapps.com/admin) |
-| [Privacidad y consentimiento](#privacidad-y-consentimiento) | [Web y backend Python](#web-y-backend-python) | [Detalle de privacidad](PRIVACIDAD-LEY-21719.md) |
+| [Privacidad y consentimiento](#privacidad-y-consentimiento) | [Web y backend Python](#web-y-backend-python) | [Detalle de privacidad](docs/PRIVACIDAD-LEY-21719.md) |
 
 ---
 
@@ -133,7 +133,7 @@ proyecto, sin asumir una traducción palabra por palabra del español.
 
 En **Grabar → Ver las 4 oraciones**, cada oración se captura en una sola toma con el
 mismo flujo de cámara, revisión, borrador y envío del catálogo. `CATEGORIAS_VISIBLES`
-en `signCatalog.js` define esta selección y conserva las etiquetas originales.
+en `src/catalog/signCatalog.js` define esta selección y conserva las etiquetas originales.
 
 Las grabaciones mantienen el JSON de captura v2, los 30 fotogramas y los metadatos de
 seguimiento, y se organizan como `oraciones/<etiqueta>/`. La preparación de datos las
@@ -202,7 +202,7 @@ El catálogo y los documentos se pueden consultar sin autorizar una grabación. 
 | **Grabaciones anteriores** | Una toma sin autorización previa puede recuperarse para revisión, pero no recibe consentimiento retroactivo para su envío. |
 | **Demostración local** | `npm run web:privacy-preview` permite recorrer el aviso y el formulario sin activar la cámara ni enviar aportes reales. |
 
-Registrar el vencimiento no elimina los archivos automáticamente. La supresión de aportes remotos y la atención de solicitudes corresponden al procedimiento del responsable; retirar el comprobante local tampoco borra aportes ya enviados ni modelos entrenados. El alcance técnico y las responsabilidades pendientes se detallan en [Privacidad y consentimiento de DeafApp](PRIVACIDAD-LEY-21719.md).
+Registrar el vencimiento no elimina los archivos automáticamente. La supresión de aportes remotos y la atención de solicitudes corresponden al procedimiento del responsable; retirar el comprobante local tampoco borra aportes ya enviados ni modelos entrenados. El alcance técnico y las responsabilidades pendientes se detallan en [Privacidad y consentimiento de DeafApp](docs/PRIVACIDAD-LEY-21719.md).
 
 ### Encuadre por dispositivo
 
@@ -230,10 +230,10 @@ conectado. Con pocos datos puede equivocarse: por eso muestra tres opciones.
 
 | Pieza | Archivo |
 | --- | --- |
-| Lógica (captura, consulta, mensajes de error, resumen del resultado) | [translator.js](translator.js), probada con [tests/translator.test.mjs](tests/translator.test.mjs) |
-| Estado compartido web/celular | [useTranslator.js](useTranslator.js) |
-| Pantalla web (DOM + CSS) y pantalla nativa | [TranslatorScreen.web.js](TranslatorScreen.web.js) + [TranslatorScreen.css](TranslatorScreen.css), [TranslatorScreen.js](TranslatorScreen.js) |
-| Dirección de la API guardada en el dispositivo | [translatorSettingsStore.js](translatorSettingsStore.js) / [translatorSettingsStore.web.js](translatorSettingsStore.web.js) |
+| Lógica (captura, consulta, mensajes de error, resumen del resultado) | [translator.js](src/translator/translator.js), probada con [tests/translator.test.mjs](tests/translator.test.mjs) |
+| Estado compartido web/celular | [useTranslator.js](src/translator/useTranslator.js) |
+| Pantalla web (DOM + CSS) y pantalla nativa | [TranslatorScreen.web.js](src/translator/TranslatorScreen.web.js) + [TranslatorScreen.css](src/translator/TranslatorScreen.css), [TranslatorScreen.js](src/translator/TranslatorScreen.js) |
+| Dirección de la API guardada en el dispositivo | [translatorSettingsStore.js](src/translator/translatorSettingsStore.js) / [translatorSettingsStore.web.js](src/translator/translatorSettingsStore.web.js) |
 
 La API utiliza Python con TensorFlow y corre en el PC desde `backend/` (`npm run backend` o `iniciar-proyecto.bat`).
 Se incorporó desde `Biizcochito/Proyecto_LSCh`, rama `puente-deafapp`, y puede exponerse con un túnel HTTPS. La pantalla tiene un apartado **Servidor**
@@ -284,67 +284,41 @@ La implementación actual de entrenamiento utiliza cara y manos. El código cons
 
 ```text
 DeafAPP-LSCH/
-├── App.js                       # Estado compartido, navegación y flujo de grabación
-├── appRoutes.js                 # Rutas públicas, administración, privacidad y autorización
-├── WelcomeScreen.web.js         # Portada web y presentación del proyecto
-├── WelcomeScreen.css            # Diseño de la bienvenida
-├── AppWorkspace.web.js          # Catálogo, búsqueda, aportes, ayuda y acceso al admin
-├── AppWorkspace.css             # Diseño de la aplicación web
-├── PrivacyScreens.web.js        # Aviso, términos y autorización en la web
-├── PrivacyScreens.css           # Diseño de los documentos y el formulario
-├── privacyConsent.js            # Comprobantes, finalidades y conservación de 24 meses
-├── privacyConsentStore.web.js   # Autorización guardada en el dispositivo
-├── privacyDocuments.js          # Contenido del aviso y los términos
-├── RecordingScreens.web.js      # Interfaz web de captura y vista previa
-├── RecordingScreens.css         # Diseño de las pantallas de grabación
-├── ui/                          # Tema visual, animaciones y componentes compartidos
-├── signCatalog.js               # Categorías y vocabulario
-├── CameraLandmarks.web.js       # Trazados sobre la cámara web
-├── landmarkTracking.js          # Detectores y resultados de seguimiento
-├── handTrackingWorker.js        # Comunicación con el detector de manos
-├── cameraLayout.js              # Encuadre según dispositivo
-├── cameraStartup.js             # Mensajes de errores de cámara
-├── recordingHandGuard.js        # Confirmación de ambas manos y continuidad con una
-├── gestureModeration.js         # Bloqueo del gesto específico
-├── recordingSubmission.js       # Borradores y envío sin duplicados
-├── trainingCapture.js           # Datos de seguimiento asociados a cada toma
-├── AdminPanel.js                # Acceso y revisión de grabaciones
-├── AdminWorkspace.web.js        # Navegación y marco visual del administrador
-├── AdminWorkspace.css           # Diseño del panel en escritorio y móvil
-├── adminTheme.web.js            # Tema compartido por las herramientas privadas
-├── adminAccess.js               # Cinco pulsaciones abren el formulario de acceso
-├── myContributions.js           # Registro de aportes enviados sin contar duplicados
-├── myContributionsStore.web.js  # Persistencia del resumen en este navegador
-├── translator.js                # Captura y consulta a la API externa de LSCh
-├── useTranslator.js             # Estado de la prueba de interpretación compartido entre web y celular
-├── TranslatorScreen.web.js      # Pantalla web de la prueba de interpretación
-├── TranslatorScreen.js          # Pantalla nativa de la prueba de interpretación
-├── TrainingWorkbench.web.js     # Preparación y entrenamiento privados
-├── PythonBackendPanel.web.js    # Conexión, informe y entrenamiento de la API Python
-├── backend/                     # API, modelos y herramientas de entrenamiento Python
-├── iniciar-proyecto.bat         # Inicio integrado de web y backend en Windows
-├── admin/                       # SQL, catálogo privado y documentación
-├── training/                    # Fuentes, preparación, recuperación y entrenamiento
-├── public/
-│   ├── brand/                   # Logo y recursos de la bienvenida
-│   ├── fonts/                   # Tipografía y licencia incluidas en la web
-│   ├── _redirects               # Rutas de la app para Cloudflare
-│   ├── hand-model/              # Librerías y modelos del detector de manos
-│   ├── hand-tracking-worker.js   # Procesamiento de manos en segundo plano
-│   └── hand-regions.js          # Regiones de búsqueda de manos
-├── scripts/                     # Preparación de datos, compatibilidad y servidor local
-├── tests/                       # Pruebas de cámara, grabación, administración y datos
-├── .github/workflows/
-│   └── deploy-hostgator.yml      # Publicación automática al integrar en master
-├── deploy/.htaccess             # HTTPS, rutas y cabeceras para HostGator
+├── App.js                       # Entrada y estado compartido de la app
+├── index.js                     # Registro del componente principal de Expo
+├── src/                         # Código de la aplicación, por función
+│   ├── app/                     # Bienvenida, catálogo y navegación
+│   ├── admin/                   # Panel privado, revisión y entrenamiento
+│   ├── camera/                  # Cámara, detección y trazados
+│   ├── catalog/                 # Vocabulario, categorías y oraciones
+│   ├── contributions/           # Resumen de aportes y persistencia local
+│   ├── privacy/                 # Avisos, autorización y comprobantes
+│   ├── recording/               # Captura, borradores y envío de grabaciones
+│   ├── training/                # Preparación de datos y modelos del navegador
+│   ├── translator/              # Prueba de interpretación y API Python
+│   └── ui/                      # Tema, componentes visuales y licencias
+├── backend/                     # API y entrenamiento Python
+├── admin/                       # SQL y metadatos del administrador
+├── training/                    # Guías, fuentes y datos de trabajo locales
+├── public/                      # Recursos web, fuentes y detectores de manos
+├── assets/                      # Recursos de Expo
+├── scripts/                     # Comandos de desarrollo y preparación
+├── tests/                       # Pruebas automatizadas
+├── docs/                        # Diseño, producto y detalle de privacidad
+├── archive/                     # Exportaciones y prototipos anteriores
+├── artifacts/                   # Evidencias y experimentos técnicos
+├── Capstone/                    # Documentación y entregables académicos
+├── .github/workflows/           # Publicación automática por FTPS a HostGator
+├── deploy/.htaccess             # HTTPS, rutas y cabeceras de la web
+├── app.json                     # Configuración de Expo
 ├── wrangler.jsonc               # Archivos estáticos y rutas SPA en Cloudflare
-├── CONTRIBUTING.md              # Ramas y flujo de trabajo del equipo
-├── PRIVACIDAD-LEY-21719.md       # Alcance del consentimiento y responsabilidades
-├── AGENTS.md                    # Reglas que deben seguir los agentes de IA
-└── dist/                        # Exportación web generada para publicar
+├── iniciar-proyecto.bat          # Inicio de web y backend en Windows
+└── CONTRIBUTING.md              # Ramas y flujo de trabajo del equipo
 ```
 
 </details>
+
+El mapa de carpetas y las guías principales están en [docs/README.md](docs/README.md). El código actual vive en `App.js` y `src/`; las copias de `archive/` se conservan como referencia y no se usan para compilar. Las fuentes y los datos locales de `training/` se mantienen separados de los módulos ejecutables de `src/training/`.
 
 Los modelos de seguimiento de manos incluidos en `public/hand-model` detectan puntos de la mano: **no son modelos entrenados para interpretar señas de LSCh**. Los candidatos creados desde el administrador se guardan por separado en el navegador.
 
@@ -636,4 +610,4 @@ Gracias también a la comunidad sorda que participa activamente grabando, valida
 
 Pendiente de definir.
 
-Los componentes visuales adaptados, sus atribuciones y las licencias de terceros se detallan en [ui/NOTICE.md](ui/NOTICE.md) y [ui/LICENSE-react-bits.md](ui/LICENSE-react-bits.md). La licencia del proyecto completo sigue pendiente.
+Los componentes visuales adaptados, sus atribuciones y las licencias de terceros se detallan en [ui/NOTICE.md](src/ui/NOTICE.md) y [ui/LICENSE-react-bits.md](src/ui/LICENSE-react-bits.md). La licencia del proyecto completo sigue pendiente.

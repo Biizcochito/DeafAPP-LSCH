@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHiddenAdminEntry } from '../adminAccess.js';
+import { createHiddenAdminEntry } from '../src/admin/adminAccess.js';
 test('el acceso requiere cinco pulsaciones y vuelve a empezar después de abrir', () => {
   const entry = createHiddenAdminEntry();
   for(let i=0;i<4;i++) assert.equal(entry.press(i*200),false);

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { captureTrackingSample, createTrainingCapture, isTrainingCapture, TRAINING_FACE_INDICES } from '../trainingCapture.js';
-import { loadRecordingSource } from '../recordingSource.js';
+import { captureTrackingSample, createTrainingCapture, isTrainingCapture, TRAINING_FACE_INDICES } from '../src/recording/trainingCapture.js';
+import { loadRecordingSource } from '../src/recording/recordingSource.js';
 const hand = () => Array.from({ length: 21 }, (_, i) => ({ x: 0.2 + i / 100, y: 0.4, z: 0 }));
 const face = () => Array.from({ length: 468 }, (_, i) => ({ x: 0.3 + i / 1000, y: 0.3, z: 0 }));
 const tracking = () => ({ enabled: true, handTime: 990, faceTime: 980, sourceWidth: 640, sourceHeight: 480, leftHandLandmarks: hand(), faceLandmarks: face() });

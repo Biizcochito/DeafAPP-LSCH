@@ -11,32 +11,32 @@ import {
   Platform, useWindowDimensions,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { cameraStartupMessage } from "./cameraStartup";
+import { cameraStartupMessage } from "./src/camera/cameraStartup";
 import { createClient } from "@supabase/supabase-js";
-import CameraLandmarks from "./CameraLandmarks";
-import { warmSignTracking } from "./landmarkTracking";
-import { handsReadyForRecording, hasTrackedHand, createRecordingHandContinuity, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./recordingHandGuard";
-import { createGestureGate, assertGestureAllowed, BLOCKED_GESTURE_MESSAGE } from "./gestureModeration";
-import { getWebCameraLayout } from "./cameraLayout";
-import { recordingDraftStore } from "./recordingDraftStore";
-import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch, withRecordingSendLock } from "./recordingSubmission";
-import { CATEGORIAS, CATEGORIAS_VISIBLES } from "./signCatalog";
-import { createTrainingCapture, captureTrackingSample, makeParticipantId } from "./trainingCapture";
-import { useRecordingSource } from "./RecordingProfiles";
-import AdminPanel from "./AdminPanel";
-import WelcomeScreen from "./WelcomeScreen";
-import AppWorkspace, { CameraPermission } from "./AppWorkspace";
-import { themeWebStyles } from "./appTheme";
-import { createHiddenAdminEntry } from "./adminAccess";
-import { addContribution, emptyContributions, sanitizeContributions } from "./myContributions";
-import { myContributionsStore } from "./myContributionsStore";
-import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "./appRoutes";
-import { RecordingStage, RecordingReview, RecordingDone } from "./RecordingScreens";
-import { toneFor } from "./ui/categoryTones";
-import { assertRecordingConsent, createConsentReceipt, createPrivacyPreviewFetch, isConsentReceipt, isLocalPrivacyPreview, privacyReady } from "./privacyConsent";
-import { CONSENT_STORAGE_KEY, privacyConsentStore } from "./privacyConsentStore";
-import { PrivacyConsent, PrivacyDocument, PrivacyPreviewComplete } from "./PrivacyScreens";
-import { displayWord as nombreDeSeña } from "./ui/signNames";
+import CameraLandmarks from "./src/camera/CameraLandmarks";
+import { warmSignTracking } from "./src/camera/landmarkTracking";
+import { handsReadyForRecording, hasTrackedHand, createRecordingHandContinuity, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./src/recording/recordingHandGuard";
+import { createGestureGate, assertGestureAllowed, BLOCKED_GESTURE_MESSAGE } from "./src/camera/gestureModeration";
+import { getWebCameraLayout } from "./src/camera/cameraLayout";
+import { recordingDraftStore } from "./src/recording/recordingDraftStore";
+import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch, withRecordingSendLock } from "./src/recording/recordingSubmission";
+import { CATEGORIAS, CATEGORIAS_VISIBLES } from "./src/catalog/signCatalog";
+import { createTrainingCapture, captureTrackingSample, makeParticipantId } from "./src/recording/trainingCapture";
+import { useRecordingSource } from "./src/recording/RecordingProfiles";
+import AdminPanel from "./src/admin/AdminPanel";
+import WelcomeScreen from "./src/app/WelcomeScreen";
+import AppWorkspace, { CameraPermission } from "./src/app/AppWorkspace";
+import { themeWebStyles } from "./src/app/appTheme";
+import { createHiddenAdminEntry } from "./src/admin/adminAccess";
+import { addContribution, emptyContributions, sanitizeContributions } from "./src/contributions/myContributions";
+import { myContributionsStore } from "./src/contributions/myContributionsStore";
+import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "./src/app/appRoutes";
+import { RecordingStage, RecordingReview, RecordingDone } from "./src/recording/RecordingScreens";
+import { toneFor } from "./src/ui/categoryTones";
+import { assertRecordingConsent, createConsentReceipt, createPrivacyPreviewFetch, isConsentReceipt, isLocalPrivacyPreview, privacyReady } from "./src/privacy/privacyConsent";
+import { CONSENT_STORAGE_KEY, privacyConsentStore } from "./src/privacy/privacyConsentStore";
+import { PrivacyConsent, PrivacyDocument, PrivacyPreviewComplete } from "./src/privacy/PrivacyScreens";
+import { displayWord as nombreDeSeña } from "./src/ui/signNames";
 
 const { width, height } = Dimensions.get("window");
 
@@ -72,7 +72,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { global: { fetch: cre
 // Exige la variable de entorno y localhost; en el dominio publicado nunca se activa.
 const adminBackend = process.env.EXPO_PUBLIC_ADMIN_MOCK === "1" && Platform.OS === "web" && typeof window !== "undefined" &&
   /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)
-  ? require("./adminMock").createMockAdminBackend() : supabase;
+  ? require("./src/admin/adminMock").createMockAdminBackend() : supabase;
 
 // Algunos navegadores (sobre todo la cámara en versión web) ya devuelven el base64
 // con el prefijo "data:image/..." incluido. Esta función evita duplicarlo.

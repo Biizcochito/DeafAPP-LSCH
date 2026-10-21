@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { parseCsv, buildLschSourceCatalog, safeSourceUrl } from '../training/sourceCatalog.js';
+import { parseCsv, buildLschSourceCatalog, safeSourceUrl } from '../src/training/sourceCatalog.js';
 test('CSV preserves accents, quoted commas, newlines and escaped quotes', () => {
   assert.deepEqual(parseCsv('\uFEFFID,Name\r\n1,"Señas, Chile"\r\n2,"Una ""frase""\ny otra"\r\n'), [{ ID: '1', Name: 'Señas, Chile' }, { ID: '2', Name: 'Una "frase"\ny otra' }]);
   assert.throws(() => parseCsv('A,B\n1\n'), /incompleta/);

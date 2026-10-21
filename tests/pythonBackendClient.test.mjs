@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createPythonBackendClient,trainingMetrics} from '../training/pythonBackendClient.js';
+import {createPythonBackendClient,trainingMetrics} from '../src/training/pythonBackendClient.js';
 
 const session = {token:'a'.repeat(64),expiresAt:Date.now()+3600000};
 test('the private training requests carry the existing admin session',async () => {

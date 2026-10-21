@@ -1,10 +1,10 @@
-import {canonicalPhraseLabel} from '../training/phraseLabels.js';
+import {canonicalPhraseLabel} from '../src/training/phraseLabels.js';
 // Prepara metadatos privados para importar; no confirma candidatos ni modifica el entrenamiento.
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,relative,isAbsolute} from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {CATEGORIAS,CATEGORIAS_VISIBLES} from '../signCatalog.js';
-import {validCandidateKey,validSegment} from '../training/signReview.js';
+import {CATEGORIAS,CATEGORIAS_VISIBLES} from '../src/catalog/signCatalog.js';
+import {validCandidateKey,validSegment} from '../src/training/signReview.js';
 const [sourceArg,outputArg]=process.argv.slice(2);
 if(!sourceArg||!outputArg)throw Error('Uso: node scripts/prepare-sign-review.mjs <Proyecto_LSCh> <carpeta .admin-private>');
 const root=process.cwd(),source=resolve(sourceArg),output=resolve(outputArg),privateRoot=resolve(root,'.admin-private');

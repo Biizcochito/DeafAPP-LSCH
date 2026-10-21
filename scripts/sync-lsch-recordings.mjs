@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
-import { createTimedFetch } from '../recordingSubmission.js';
+import { createTimedFetch } from '../src/recording/recordingSubmission.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 try {
   // Reuse only the app's existing public configuration; no privileged key is needed.

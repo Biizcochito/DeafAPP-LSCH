@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { handsReadyForRecording, createRecordingHandContinuity, HAND_CONTINUITY_GRACE_MS, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from '../recordingHandGuard.js';
+import { handsReadyForRecording, createRecordingHandContinuity, HAND_CONTINUITY_GRACE_MS, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from '../src/recording/recordingHandGuard.js';
 
 const hand = () => Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5 }));
 const tracked = () => ({ enabled: true, handTime: 1000, leftHandLandmarks: hand(), rightHandLandmarks: hand() });

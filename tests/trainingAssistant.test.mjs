@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {gzipSync} from 'node:zlib';
-import {PHRASES} from '../training/visibleTraining.js';
-import {trainingPhraseRows,evaluationSummary} from '../training/assistantData.js';
-import {buildTrainingPlan,compareCandidates,captureQuality,VISIBLE_TARGETS} from '../training/trainingAssistant.js';
+import {PHRASES} from '../src/training/visibleTraining.js';
+import {trainingPhraseRows,evaluationSummary} from '../src/training/assistantData.js';
+import {buildTrainingPlan,compareCandidates,captureQuality,VISIBLE_TARGETS} from '../src/training/trainingAssistant.js';
 
 // Synthetic points exercise data flow only; they are never uploaded or evidence of LSCh accuracy.
 const features=(seed=0)=>Array.from({length:32},(_,t)=>Array.from({length:171},(_,i)=>i>=168?1:Math.sin(t/10+i/30)*.1+seed));
