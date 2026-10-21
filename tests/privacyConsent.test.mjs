@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { PRIVACY_NOTICE, CONSENT_CHOICES, privacyReady, recordingRetentionPeriod, isConsentAuthorizer, isLocalPrivacyPreview, createConsentReceipt, isConsentReceipt, assertRecordingConsent, createPrivacyPreviewFetch } from "../privacyConsent.js";
-import { createRecordingDraft, isRecordingDraft, submitRecordingDraft } from "../recordingSubmission.js";
+import { PRIVACY_NOTICE, CONSENT_CHOICES, privacyReady, recordingRetentionPeriod, isConsentAuthorizer, isLocalPrivacyPreview, createConsentReceipt, isConsentReceipt, assertRecordingConsent, createPrivacyPreviewFetch } from "../src/privacy/privacyConsent.js";
+import { createRecordingDraft, isRecordingDraft, submitRecordingDraft } from "../src/recording/recordingSubmission.js";
 import { testNotice, testChoices, testConsent } from "./fixtures/consent.mjs";
 
 test("cada finalidad exige una acción afirmativa separada; aceptar términos no basta", () => {

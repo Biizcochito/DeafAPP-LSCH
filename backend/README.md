@@ -125,7 +125,7 @@ Con el objetivo de 10 grabaciones por palabra, hoy (2026-10-08): de 506 palabras
 34 tienen algo y 472 no tienen ninguna; faltarían unas 4.900 grabaciones en total. Cubrir todo el catálogo no es
 realista de golpe. Un vocabulario inicial de **Alimentos + Saludos** son 35 palabras: si 10 personas distintas
 graban cada una una vez, faltan 247 grabaciones. `catalogo_palabras.json` es una copia del catálogo de la web
-(`signCatalog.js`); si cambia, se regenera con `node exportar_catalogo.cjs <ruta a signCatalog.js> catalogo_palabras.json`.
+(`src/catalog/signCatalog.js`); si cambia, se regenera con `node exportar_catalogo.cjs <ruta a signCatalog.js> catalogo_palabras.json`.
 Solo ve las aprobadas: una palabra con grabaciones pendientes de moderación aparece con menos de las que tiene.
 
 ### Entrenamiento (`entrenar_modelo.py`)

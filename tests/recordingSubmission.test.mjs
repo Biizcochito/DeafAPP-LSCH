@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createClient } from '@supabase/supabase-js';
-import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch } from '../recordingSubmission.js';
-import { captureTrackingSample, createTrainingCapture } from '../trainingCapture.js';
+import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch } from '../src/recording/recordingSubmission.js';
+import { captureTrackingSample, createTrainingCapture } from '../src/recording/trainingCapture.js';
 import { testConsent } from './fixtures/consent.mjs';
 
 const recording = () => createRecordingDraft({ label: 'hola', category: 'saludos', frames: Array.from({ length: 30 }, (_, i) => `frame-${i}`), id: 'sample-recording', now: 123456789, consent: testConsent });

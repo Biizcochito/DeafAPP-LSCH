@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildReviewedBrowserDataset,listApprovedRows,assertReviewSnapshotCurrent} from '../training/browserDataset.js';
+import {buildReviewedBrowserDataset,listApprovedRows,assertReviewSnapshotCurrent} from '../src/training/browserDataset.js';
 
 test('admin preparation paginates approved rows and never downloads unknown vocabulary',async()=>{
   const rows=[{id:1,version:2,category:'saludos',label:'hola',path:'hola.json'},{id:2,version:1,category:'other',label:'unreviewed-label',path:'other.json'}];

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { createTrainingCapture, captureTrackingSample, TRAINING_FACE_INDICES } from '../trainingCapture.js';
-import { prepareDataset, auditRecording, featureVector, augmentTrainingSample } from '../training/datasetPreparation.js';
+import { createTrainingCapture, captureTrackingSample, TRAINING_FACE_INDICES } from '../src/recording/trainingCapture.js';
+import { prepareDataset, auditRecording, featureVector, augmentTrainingSample } from '../src/training/datasetPreparation.js';
 
 function recording(person = 'friend', hash = 'a', label = 'hola', category = 'saludos') {
   const samples = Array.from({ length: 30 }, (_, i) => {

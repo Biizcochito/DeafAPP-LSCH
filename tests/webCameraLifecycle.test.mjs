@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { test } from 'node:test';
-import { cameraStartupMessage } from '../cameraStartup.js';
+import { cameraStartupMessage } from '../src/camera/cameraStartup.js';
 
 const source = readFileSync(new URL('../scripts/expo-camera-web-stream.js', import.meta.url), 'utf8');
 const deferred = () => {

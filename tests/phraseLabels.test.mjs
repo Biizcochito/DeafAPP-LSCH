@@ -1,13 +1,13 @@
 import test from 'node:test';
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
-import {PHRASES} from '../training/visibleTraining.js';
-import {canonicalPhraseClassId,canonicalPhraseLabel} from '../training/phraseLabels.js';
-import {trainingPhraseRows,evaluationSummary} from '../training/assistantData.js';
-import {trainPersonalPhrases,predictPersonalPhrase,phraseCounts} from '../training/personalPhrases.js';
-import {inspectLegacyRecording} from '../training/legacyRecovery.js';
-import {displayWord} from '../ui/signNames.js';
-import {resumirResultado,titularDeResultado} from '../translator.js';
+import {PHRASES} from '../src/training/visibleTraining.js';
+import {canonicalPhraseClassId,canonicalPhraseLabel} from '../src/training/phraseLabels.js';
+import {trainingPhraseRows,evaluationSummary} from '../src/training/assistantData.js';
+import {trainPersonalPhrases,predictPersonalPhrase,phraseCounts} from '../src/training/personalPhrases.js';
+import {inspectLegacyRecording} from '../src/training/legacyRecovery.js';
+import {displayWord} from '../src/ui/signNames.js';
+import {resumirResultado,titularDeResultado} from '../src/translator/translator.js';
 // Puntos sintéticos para comprobar flujo y reservas; nunca son muestras de entrenamiento reales.
 const features=seed=>Array.from({length:32},()=>[...Array(168).fill(seed),1,1,1]);
 test('«yo bien» identifica la cuarta oración y conserva las señas individuales',()=>{

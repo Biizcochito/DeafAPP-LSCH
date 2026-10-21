@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createAdminClient, validAdminSession, recordingPreview, frameDataUri } from '../adminClient.js';
+import { createAdminClient, validAdminSession, recordingPreview, frameDataUri } from '../src/admin/adminClient.js';
 const session = () => ({ token:'a'.repeat(64), expiresAt:Date.now()+60000 });
 test('el cliente autentica en el servidor y no permite operar con sesión vencida', async () => {
   const calls=[];

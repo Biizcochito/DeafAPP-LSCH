@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {inspectLegacyRecording,recoverFrameObservation,summarizeRecovery,validateRecoveredItem,preparePersonalPrototype,LEGACY_FEATURE_LAYOUT} from '../training/legacyRecovery.js';
-import {createTrainingPlan,assertPreparedDataset} from '../training/trainingPlan.js';
-import {trainReviewedModel} from '../training/modelTraining.js';
-import {currentRecovery,recoverApprovedLegacy} from '../training/legacyRecoveryBrowser.js';
+import {inspectLegacyRecording,recoverFrameObservation,summarizeRecovery,validateRecoveredItem,preparePersonalPrototype,LEGACY_FEATURE_LAYOUT} from '../src/training/legacyRecovery.js';
+import {createTrainingPlan,assertPreparedDataset} from '../src/training/trainingPlan.js';
+import {trainReviewedModel} from '../src/training/modelTraining.js';
+import {currentRecovery,recoverApprovedLegacy} from '../src/training/legacyRecoveryBrowser.js';
 
 function result(position=0.2) {
   const face=Array.from({length:468},()=>({x:.5,y:.4,z:0}));face[234].x=.35;face[454].x=.65;

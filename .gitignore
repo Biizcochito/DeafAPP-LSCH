@@ -25,3 +25,7 @@ backend/dataset/
 backend/contribuciones/
 backend/runs/
 backend/.runtime/
+
+# Generated web exports belong in dist/, not at the repository root.
+/DeafApp-*/
+/web-preview/

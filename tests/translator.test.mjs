@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   ErrorTraductor, advertenciaDeUrl, capturarClip, clasificarClip, consultarEstado, normalizarUrlApi,
   resumirResultado, titularDeResultado, TOTAL_FOTOGRAMAS,
-} from "../translator.js";
+} from "../src/translator/translator.js";
 
 const respuesta = (estado, cuerpo) => ({ ok: estado >= 200 && estado < 300, status: estado, json: async () => { if (cuerpo === undefined) throw new Error("sin cuerpo"); return cuerpo; } });
 const fetchQue = (estado, cuerpo) => async () => respuesta(estado, cuerpo);

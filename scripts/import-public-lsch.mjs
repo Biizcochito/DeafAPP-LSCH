@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
-import { parseCsv, buildLschSourceCatalog, TUB_REVISION } from '../training/sourceCatalog.js';
+import { parseCsv, buildLschSourceCatalog, TUB_REVISION } from '../src/training/sourceCatalog.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const rawBase = `https://raw.githubusercontent.com/DFKI-SignLanguage/TUB-Sign-Language-Corpus-Collection/${TUB_REVISION}/`;

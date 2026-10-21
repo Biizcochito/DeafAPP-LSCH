@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {captureFeatures,validateForest,predictForest,PHRASES} from '../training/visibleTraining.js';
-import {phraseCounts,trainPersonalPhrases} from '../training/personalPhrases.js';
-import {createAdminClient} from '../adminClient.js';
+import {captureFeatures,validateForest,predictForest,PHRASES} from '../src/training/visibleTraining.js';
+import {phraseCounts,trainPersonalPhrases} from '../src/training/personalPhrases.js';
+import {createAdminClient} from '../src/admin/adminClient.js';
 
 const frames=()=>Array.from({length:40},(_,i)=>({timeMs:100*i,vector:[...Array.from({length:168},(_,j)=>j===0?i*.01:j===42?i*.02:0),1,i<20?1:0,1]}));
 const model=()=>({format:'deafapp-lsch-python-forest',version:1,inputShape:[32,171],classes:['saludos/hola','saludos/gracias'],decision:{minimumScore:.75,minimumMargin:.15},trees:[{left:[1,-1,-1],right:[2,-1,-1],feature:[0,-2,-2],threshold:[.1,-2,-2],probabilities:[[.5,.5],[1,0],[0,1]]}]});
