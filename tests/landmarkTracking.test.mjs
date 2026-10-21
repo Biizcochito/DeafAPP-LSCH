@@ -280,3 +280,9 @@ test("preloading retries failures, initializes hands first and reuses warm graph
   assert.equal(handInstances, 2);
   assert.equal(sends.length, 3, "reopening a sign must not repeat detector initialization");
 });
+
+test('camera model handedness is used independently of regional tracking slots and survives coordinate mapping',()=>{
+ const hand=Array.from({length:21},()=>({x:.2,y:.4,z:0}));
+ const mapped=mapCroppedHands({multiHandLandmarks:[hand],multiHandedness:[{label:'Left'}],multiAnatomicalHandedness:[{label:'Right'}]},{x:0,y:0,width:1,height:1});
+ const result=combineSignResults({}, {}, mapped);assert.deepEqual(result.leftHandLandmarks,hand);assert.equal(result.rightHandLandmarks,undefined);
+});

@@ -1,3 +1,4 @@
+import {createPersonalSignCandidate} from './training/sequenceCandidate';
 import {canonicalPhraseLabel,ESTOY_BIEN_CLASS} from './training/phraseLabels';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createSignTracker,drawSignLandmarks} from './landmarkTracking';
@@ -16,8 +17,8 @@ export default function VisibleTrainingPanel({api,session,onAccessError}) {
   const [rows,setRows]=useState([]),[selected,setSelected]=useState(PHRASES[0]),[candidateId,setCandidateId]=useState('');
   const [active,setActive]=useState(false),[busy,setBusy]=useState(false),[personal,setPersonal]=useState(null),[loaded,setLoaded]=useState('');
   const [quality,setQuality]=useState([]),[comparison,setComparison]=useState(null),[participant,setParticipant]=useState('P1');
-  const [pendingTest,setPendingTest]=useState(null),[expected,setExpected]=useState('');
-  const committeeCache=useRef(new Map()),captureSection=useRef(null);
+  const [pendingTest,setPendingTest]=useState(null),[expected,setExpected]=useState(''),[signResult,setSignResult]=useState(null),[personalSigns,setPersonalSigns]=useState(null);
+  const committeeCache=useRef(new Map()),captureSection=useRef(null),localSignCandidate=useRef(null);
   const video=useRef(null),canvas=useRef(null),live=useRef(null),alive=useRef(true),capture=useRef(null),model=useRef(null),candidate=useRef(null),working=useRef(false);
   function stop(){const state=live.current;live.current=null;capture.current=null;if(state){clearTimeout(state.timer);state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current)setActive(false);}
   useEffect(()=>{
@@ -51,6 +52,7 @@ export default function VisibleTrainingPanel({api,session,onAccessError}) {
     if(mode==='record'&&!VISIBLE_TARGETS.some(row=>row.classId===selected))throw Error('Selecciona una seña u oración visible.');
     const wholePhrase=mode==='record'?PHRASES.includes(selected):mode==='phrase';
     const state=live.current;if(!state?.tracker)throw Error('Primero activa la cámara.');
+    if(mode==='sign'){setSignResult(null);if(!localSignCandidate.current&&(!candidate.current||loaded!==candidateId))await readCandidate();}
     for(let n=3;n;n--){setMessage(`Prepárate… ${n}`);await wait(1000);if(live.current!==state)throw Error('La cámara se apagó.');}
     state.started=performance.now();capture.current=[];
     for(let n=4;n;n--){setMessage(`Haz ${wholePhrase?'la oración completa':'la seña'}. Capturando… ${n}`);await wait(1000);if(live.current!==state)throw Error('La toma se interrumpió.');}
@@ -63,10 +65,10 @@ export default function VisibleTrainingPanel({api,session,onAccessError}) {
       if(rows.some(row=>sequenceKey(row.features)===fingerprint)){const reason='Esta captura ya está guardada o reservada; graba una toma nueva.';setQuality(value=>[...value.slice(0,-1),{...assessment,accepted:false,classId:selected,reason}]);throw Error(reason);}
       const row={id:crypto.randomUUID(),classId:selected,wholePhrase,split:'train',participantCode:participant,participantVerified:false,features,createdAt:new Date().toISOString()};
       await phraseStore('put',row);const next=await phraseStore('list');
-      if(alive.current){setRows(next);if(wholePhrase){model.current?.dispose();model.current=null;setPersonal(null);}setMessage(`Toma de «${label(selected)}» guardada en este navegador. Graba otra toma nueva.`);}
+      if(alive.current){setRows(next);if(wholePhrase){model.current?.dispose();model.current=null;setPersonal(null);}if(!wholePhrase){localSignCandidate.current=null;setPersonalSigns(null);}setMessage(`Toma de «${label(selected)}» guardada en este navegador. Graba otra toma nueva.`);}
     }else{
-      const result=mode==='sign'?predictForest(candidate.current,features):predictPersonalPhrase(await loadTrainingTensorflow(),model.current,features);
-      if(alive.current){setMessage(result.accepted?`Propuesta experimental: «${label(result.classId)}». Comprueba si coincide con tu movimiento.`:'El candidato no encontró una coincidencia suficiente. Revisa la toma completa.');
+      const result=mode==='sign'?predictForest(localSignCandidate.current||candidate.current,features):predictPersonalPhrase(await loadTrainingTensorflow(),model.current,features);
+      if(alive.current){if(mode==='sign')setSignResult({...result,modelName:localSignCandidate.current?'Personal de este navegador':progress.models.find(row=>row.modelId===candidateId)?.name});setMessage(result.accepted?`Propuesta experimental: «${label(result.classId)}». Comprueba si coincide con tu movimiento.`:'El candidato no encontró una coincidencia suficiente. Revisa la toma completa.');
         if(mode==='phrase'){setExpected('');setPendingTest({features,prediction:result,modelId:personal.modelId,participantCode:participant});}}
     }
   });}
@@ -102,11 +104,13 @@ export default function VisibleTrainingPanel({api,session,onAccessError}) {
     else if(action.type==='evaluate'){setMessage('Activa la cámara y realiza cualquier oración con «Interpretar mi oración con cámara». Confirma la respuesta después de ver el resultado.');}
     captureSection.current?.scrollIntoView({behavior:'smooth',block:'start'});
   }
-  async function load(){await task(async()=>{
+  async function readCandidate(){
     const data=await api.trainingCandidate(session,candidateId),decoded=await decodeCandidate(data.candidate);
     if(decoded.id!==candidateId||decoded.classes.some(id=>!progress.targets.some(row=>row.classId===id)))throw Error('El candidato no coincide con el catálogo visible.');
-    if(alive.current){candidate.current=decoded;setLoaded(candidateId);setMessage('Candidato cargado para una prueba privada de una seña aislada.');}
-  });}
+    if(alive.current){candidate.current=decoded;localSignCandidate.current=null;setPersonalSigns(null);setLoaded(candidateId);setSignResult(null);}
+  }
+  async function load(){await task(async()=>{await readCandidate();setMessage('Candidato cargado para una prueba privada de una seña aislada.');});}
+  async function trainSigns(){await task(async()=>{const trained=await createPersonalSignCandidate(rows,VISIBLE_TARGETS.filter(row=>row.category!=='oraciones').map(row=>row.classId));localSignCandidate.current=trained;setPersonalSigns(trained.report);setSignResult(null);setMessage('Modelo personal de señas preparado con tus tomas. Prueba un movimiento nuevo sin indicar su etiqueta.');});}
   const counts=useMemo(()=>phraseCounts(rows),[rows]),ready=counts.every(row=>row.count>=3);
   return <section className="visible-training" aria-label="Avance de entrenamiento del catálogo visible">
     <TrainingAssistant progress={progress} rows={rows} quality={quality} personal={personal} comparison={comparison} busy={busy} onAction={assistantAction} onCompare={compare} onReview={reviewComparison} lastSign={lastSign}/>
@@ -128,9 +132,9 @@ export default function VisibleTrainingPanel({api,session,onAccessError}) {
       <p className="vt-note">Prototipo personal sin prueba independiente. Sus umbrales son experimentales y puede equivocarse incluso con una puntuación alta.</p></div></div>
       <p className="vt-message" role="status">{message}</p>
       {pendingTest&&<div className="vt-feedback"><h3>Confirma qué hiciste en esta prueba</h3><p>Predicción registrada: {pendingTest.prediction.accepted?`«${label(pendingTest.prediction.classId)}»`:'el candidato se abstuvo'}. Esta confirmación se usa para evaluar.</p><label htmlFor="vt-expected">Oración realmente realizada</label><select id="vt-expected" value={expected} disabled={busy} onChange={event=>setExpected(event.target.value)}><option value="">Elige la respuesta después de ver la predicción</option>{PHRASES.map(id=><option key={id} value={id}>{label(id)}</option>)}<option value="unknown">Otro movimiento o ninguna de estas oraciones</option></select><div className="vt-actions"><button disabled={busy||!expected} onClick={confirmTest}>Guardar prueba reservada</button><button className="vt-secondary" disabled={busy} onClick={()=>setPendingTest(null)}>Descartar esta prueba</button></div></div>}
-      <button className="vt-secondary" disabled={busy||rows.length===0} onClick={()=>task(async()=>{stop();await phraseStore('clear');model.current?.dispose();model.current=null;setRows([]);setPersonal(null);setPendingTest(null);setComparison(null);setQuality([]);setMessage('Tomas personales eliminadas de este navegador.');})}>Eliminar mis tomas personales</button>
+      <button className="vt-secondary" disabled={busy||rows.length===0} onClick={()=>task(async()=>{stop();await phraseStore('clear');model.current?.dispose();model.current=null;setRows([]);setPersonal(null);localSignCandidate.current=null;setPersonalSigns(null);setPendingTest(null);setComparison(null);setQuality([]);setMessage('Tomas personales eliminadas de este navegador.');})}>Eliminar mis tomas personales</button>
     </div>
-    {progress&&<div className="vt-card"><h2>Probar los candidatos de señas</h2><p>Prueba una seña aislada de las clases del candidato. Estos modelos no reconocen oraciones completas.</p><label htmlFor="vt-model">Candidato privado</label><select id="vt-model" value={candidateId} disabled={busy} onChange={e=>{setCandidateId(e.target.value);candidate.current=null;setLoaded('');}}>{progress.models.map(row=><option key={row.modelId} value={row.modelId}>{row.name}</option>)}</select><div className="vt-actions"><button disabled={busy||!candidateId} onClick={load}>Cargar candidato privado</button><button disabled={busy||!active||loaded!==candidateId} onClick={()=>collect('sign')}>Probar una seña con cámara</button></div>{loaded&&<p>Clases disponibles: {candidate.current?.classes.map(label).join(' · ')}</p>}</div>}
+    {progress&&<div className="vt-card"><h2>Prueba de reconocimiento con cámara</h2><p>Prueba una seña aislada de las clases del candidato. Estos modelos no reconocen oraciones completas.</p><label htmlFor="vt-model">Candidato privado</label><select id="vt-model" value={candidateId} disabled={busy} onChange={e=>{setCandidateId(e.target.value);candidate.current=null;localSignCandidate.current=null;setPersonalSigns(null);setLoaded('');setSignResult(null);}}>{progress.models.map(row=><option key={row.modelId} value={row.modelId}>{row.name}</option>)}</select><div className="vt-actions"><button disabled={busy||!candidateId} onClick={load}>Cargar candidato privado</button><button disabled={busy||!active||!candidateId} onClick={()=>collect('sign')}>Probar una seña con cámara</button></div>{signResult&&<div className="vt-recognition-result" role="status" aria-live="polite"><h3>{signResult.accepted?`Resultado del modelo: ${label(signResult.classId)}`:'Sin coincidencia suficiente'}</h3><p>{signResult.modelName}. {signResult.reason==='no-active-hands'?'No se encontró un tramo suficiente con las manos activas.':signResult.reason==='unsupported-sign'?'La coincidencia más cercana pertenece a una clase todavía no habilitada en este candidato.':signResult.reason==='ambiguous'?'Los primeros resultados son demasiado parecidos para elegir uno.':signResult.accepted?'Comprueba que el resultado coincide con el gesto que realizaste.':'El movimiento queda demasiado lejos de las referencias aprendidas.'}</p>{signResult.candidates?.length>0&&<><p>Resultados más cercanos{signResult.accepted?'':', sin reconocimiento confirmado'}:</p><ol>{signResult.candidates.map(row=><li key={row.classId}>{label(row.classId)} · {Math.round((row.similarity??row.score)*100)} % {signResult.scoreKind==='similarity'?'de similitud':'de votos de árboles'}</li>)}</ol><p className="vt-small">Estas puntuaciones comparan el movimiento con el candidato; no son porcentajes de acierto.</p></>}</div>}{(personalSigns||loaded)&&<p>Señas habilitadas para esta prueba: {(localSignCandidate.current?.classes||candidate.current?.enabledClasses||candidate.current?.classes)?.map(label).join(' · ')}</p>}<h3>Adaptar a mis movimientos</h3><p>Guarda tres tomas distintas de al menos dos señas en el apartado de grabación, por ejemplo hola y agua. Después entrena con tus tomas y prueba un gesto nuevo. Se conservan solo puntos en este navegador.</p><button disabled={busy} onClick={trainSigns}>Entrenar con mis señas</button>{personalSigns&&<p>Modelo personal activo: {personalSigns.originals} tomas y {personalSigns.classes.length} señas. Sin evaluación independiente; la prueba no recibe la etiqueta seleccionada para grabar.</p>}</div>}
     {error&&<p role="alert" className="vt-error">{error}</p>}
   </section>;
 }

@@ -1,3 +1,4 @@
+import {SEQUENCE_CANDIDATE_FORMAT,validateSequenceCandidate,predictSequenceCandidate} from './sequenceCandidate.js';
 // Shared input contract for the private candidates: 32 frames, 171 face-relative coordinates.
 import {CATEGORIAS_VISIBLES} from '../signCatalog.js';
 export const PHRASES = CATEGORIAS_VISIBLES.find(category=>category.id==='oraciones').señas.map(label=>`oraciones/${label}`);
@@ -48,6 +49,7 @@ export function captureFeatures(frames, {wholePhrase=false}={}) {
 }
 
 export function validateForest(model) {
+  if(model?.format===SEQUENCE_CANDIDATE_FORMAT)return validateSequenceCandidate(model);
   if(model?.format!=='deafapp-lsch-python-forest'||model.version!==1||model.inputShape?.join()!=='32,171'||!Array.isArray(model.classes)||model.classes.length<2||!Array.isArray(model.trees)||!model.trees.length||model.trees.length>512) throw Error('Formato de candidato incompatible.');
   if(!Number.isFinite(model.decision?.minimumScore)||!Number.isFinite(model.decision?.minimumMargin))throw Error('Falta la regla de decisión del candidato.');
   for(const tree of model.trees){
@@ -62,12 +64,13 @@ export function validateForest(model) {
 }
 
 export function predictForest(model, features) {
+  if(model?.format===SEQUENCE_CANDIDATE_FORMAT)return predictSequenceCandidate(model,features);
   if(features?.length!==32||features.some(frame=>frame.length!==171||frame.some(v=>!Number.isFinite(v))))throw Error('Secuencia incompatible.');
   const vector=features.flat().map(Math.fround),probabilities=model.classes.map(()=>0);
   for(const tree of model.trees){let node=0;while(tree.left[node]!==-1)node=vector[tree.feature[node]]<=tree.threshold[node]?tree.left[node]:tree.right[node];tree.probabilities[node].forEach((p,i)=>{probabilities[i]+=p/model.trees.length;});}
   const order=probabilities.map((score,i)=>({score,i})).sort((a,b)=>b.score-a.score),score=order[0].score,margin=score-order[1].score;
   const accepted=score>=model.decision.minimumScore&&margin>=model.decision.minimumMargin;
-  return {accepted,classId:accepted?model.classes[order[0].i]:null,score,margin};
+  return {accepted,classId:accepted?model.classes[order[0].i]:null,suggestedClassId:model.classes[order[0].i],score,margin,scoreKind:"tree-votes",reason:score<model.decision.minimumScore?"outside-reference":!accepted?"ambiguous":"matched",candidates:order.slice(0,3).map(row=>({classId:model.classes[row.i],score:row.score}))};
 }
 
 export async function decodeCandidate(payload) {
