@@ -9,4 +9,3 @@ export function validSequence(features) {
 }
 
 export function sequenceKey(features) {return validSequence(features)?JSON.stringify(features):null;}
-
