@@ -137,7 +137,16 @@ export default function App() {
   const sesionDatosRef = useRef(null);
   if (!sesionDatosRef.current) sesionDatosRef.current = makeParticipantId();
   const viewport = useWindowDimensions();
-  const estiloCamaraWeb = Platform.OS === "web" ? getWebCameraLayout() : undefined;
+  const estiloCamaraWeb = Platform.OS === "web" ? getWebCameraLayout({
+    mobile: typeof navigator !== "undefined" ? navigator.userAgentData?.mobile : undefined,
+    userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+    touchPoints: typeof navigator !== "undefined" ? navigator.maxTouchPoints : 0,
+    coarsePointer: typeof window !== "undefined" && !!window.matchMedia?.("(pointer: coarse)").matches,
+    screenWidth: typeof window !== "undefined" ? window.screen?.width : 0,
+    screenHeight: typeof window !== "undefined" ? window.screen?.height : 0,
+    viewportWidth: viewport.width,
+    viewportHeight: viewport.height,
+  }) : undefined;
   // La cámara conserva su proporción; solo se acota el ancho para que quepan guía, cámara y acción principal.
   const proporcionCamara = estiloCamaraWeb?.aspectRatio || 4 / 3;
   const anchoCamara = estiloCamaraWeb ? Math.max(220, Math.min(estiloCamaraWeb.maxWidth, (viewport.height - (proporcionCamara < 1 ? 330 : 200)) * proporcionCamara)) : undefined;
