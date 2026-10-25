@@ -17,7 +17,7 @@ import CameraLandmarks from "./src/camera/CameraLandmarks";
 import { warmSignTracking } from "./src/camera/landmarkTracking";
 import { handsReadyForRecording, hasTrackedHand, createRecordingHandContinuity, captureTrackedFrames, prepareTrackedRecording, cameraFrameReady } from "./src/recording/recordingHandGuard";
 import { createGestureGate, assertGestureAllowed, BLOCKED_GESTURE_MESSAGE } from "./src/camera/gestureModeration";
-import { getWebCameraLayout } from "./src/camera/cameraLayout";
+import { getWebCameraLayout, isMobileCameraDevice } from "./src/camera/cameraLayout";
 import { recordingDraftStore } from "./src/recording/recordingDraftStore";
 import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch, withRecordingSendLock } from "./src/recording/recordingSubmission";
 import { CATEGORIAS, CATEGORIAS_VISIBLES } from "./src/catalog/signCatalog";
@@ -137,7 +137,7 @@ export default function App() {
   const sesionDatosRef = useRef(null);
   if (!sesionDatosRef.current) sesionDatosRef.current = makeParticipantId();
   const viewport = useWindowDimensions();
-  const estiloCamaraWeb = Platform.OS === "web" ? getWebCameraLayout({
+  const esMovil = Platform.OS === "web" ? isMobileCameraDevice({
     mobile: typeof navigator !== "undefined" ? navigator.userAgentData?.mobile : undefined,
     userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "",
     touchPoints: typeof navigator !== "undefined" ? navigator.maxTouchPoints : 0,
@@ -146,7 +146,9 @@ export default function App() {
     screenHeight: typeof window !== "undefined" ? window.screen?.height : 0,
     viewportWidth: viewport.width,
     viewportHeight: viewport.height,
-  }) : undefined;
+  }) : Platform.OS === "android" || Platform.OS === "ios";
+  const manosParaIniciar = esMovil ? 1 : 2;
+  const estiloCamaraWeb = Platform.OS === "web" ? getWebCameraLayout({ mobile: esMovil }) : undefined;
   // La cámara conserva su proporción; solo se acota el ancho para que quepan guía, cámara y acción principal.
   const proporcionCamara = estiloCamaraWeb?.aspectRatio || 4 / 3;
   const anchoCamara = estiloCamaraWeb ? Math.max(220, Math.min(estiloCamaraWeb.maxWidth, (viewport.height - (proporcionCamara < 1 ? 330 : 200)) * proporcionCamara)) : undefined;
@@ -259,13 +261,15 @@ export default function App() {
   useEffect(() => {
     setAyudaManos("");
     if (estadoManos.phase === "loading") {
-      setAyudaManos("La primera detección de manos puede tardar un poco. Mantén las manos frente a la cámara mientras preparamos el trazado.");
+      setAyudaManos(esMovil
+        ? "La primera detección de manos puede tardar un poco. Mantén al menos una mano frente a la cámara mientras preparamos el trazado."
+        : "La primera detección de manos puede tardar un poco. Mantén las manos frente a la cámara mientras preparamos el trazado.");
       return;
     }
     if (estadoManos.phase !== "ready") return;
     const { left, right } = estadoManos;
     let message = "";
-    if (manosConfirmadas) {
+    if (manosConfirmadas || manosParaIniciar === 1) {
       if (!left && !right) message = "No vemos ninguna mano. Vuelve a mostrar al menos una dentro del encuadre para continuar.";
     } else if (left && !right) {
       message = "No vemos tu mano derecha. Sácala un momento del encuadre y vuelve a mostrarla frente a la cámara, con buena luz y los dedos visibles.";
@@ -279,7 +283,7 @@ export default function App() {
       const timer = setTimeout(() => setAyudaManos(message), 1200);
       return () => clearTimeout(timer);
     }
-  }, [estadoManos, manosConfirmadas]);
+  }, [estadoManos, manosConfirmadas, esMovil, manosParaIniciar]);
   useEffect(() => {
     if (Platform.OS === "web" && permission?.granted && consentimientoActivo && !privacyPreview && privacyReady()) {
       warmSignTracking().catch(error => console.warn("Preparación del trazado:", error));
@@ -495,12 +499,13 @@ export default function App() {
     if (borradorRef.current && !repitiendo) { mostrarVistaPrevia(); return; }
     const sesion = ++grabacionSesionRef.current;
     const cancelada = () => sesion !== grabacionSesionRef.current;
-    const verificarManos = (minimumHands = 2) => !cancelada() && (Platform.OS !== "web" ||
-      (cameraFrameReady(contenedorCamaraRef.current?.querySelector("video")) &&
-        (minimumHands === 1
-          ? continuidadManosRef.current.update(ultimaDeteccionRef.current, performance.now())
-          : handsReadyForRecording(ultimaDeteccionRef.current, performance.now(), minimumHands))));
-    const capturaValida = () => !grabacionInvalidaRef.current && verificarManos(1);
+    const camaraLista = () => !cancelada() && (Platform.OS !== "web" ||
+      cameraFrameReady(contenedorCamaraRef.current?.querySelector("video")));
+    const verificarManosIniciales = () => camaraLista() && (Platform.OS !== "web" ||
+      handsReadyForRecording(ultimaDeteccionRef.current, performance.now(), manosParaIniciar));
+    const continuarConMano = () => camaraLista() && (Platform.OS !== "web" ||
+      continuidadManosRef.current.update(ultimaDeteccionRef.current, performance.now()));
+    const capturaValida = () => !grabacionInvalidaRef.current && continuarConMano();
     const gestoPermitido = () => assertGestureAllowed(gestoBloqueadoRef.current || gestoEnGrabacionRef.current);
     grabacionEnCursoRef.current = true;
     grabacionInvalidaRef.current = false;
@@ -512,7 +517,8 @@ export default function App() {
     try {
       await prepareTrackedRecording({
         assertAllowed: gestoPermitido,
-        isReady: verificarManos, isCountdownReady: () => verificarManos(1), isCancelled: cancelada, now: () => performance.now(),
+        isReady: verificarManosIniciales, isCountdownReady: continuarConMano, isCancelled: cancelada, now: () => performance.now(),
+        timeoutMessage: esMovil ? "No se inició la grabación. Comprueba la cámara y muestra al menos una mano con trazado; después vuelve a pulsar Preparar grabación." : undefined,
         delay: ms => new Promise(r => setTimeout(r, ms)),
         stableMs: Platform.OS === "web" ? 500 : 0,
         onWaiting: () => { setPreparando(true); setCountdown(null); },
@@ -853,9 +859,11 @@ export default function App() {
     const volverDeGrabar = () => { cancelarCaptura(); if (repitiendo && borradorRef.current) mostrarVistaPrevia(); else volverAlCatalogo(); setExito(false); setError(null); };
     const textoInstruccion = capturando
       ? (catActual?.id === "oraciones" ? "¡Realiza la oración completa frente a la cámara!" : "¡Haz la seña frente a la cámara!")
-      : preparando ? "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos."
+      : preparando ? (esMovil
+        ? "Muestra al menos una mano frente a la cámara al inicio. Puedes hacer la seña con una o las dos manos."
+        : "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos.")
       : countdown !== null ? "Mantén al menos una mano trazada. Graba al terminar la cuenta atrás."
-      : `Pulsa Preparar grabación y después coloca ambas manos frente a la cámara para grabar: "${señaActual}".`;
+      : `Pulsa Preparar grabación y después coloca ${esMovil ? "al menos una mano" : "ambas manos"} frente a la cámara para grabar: "${señaActual}".`;
     // La cámara y sus avisos son los mismos en web y nativo; solo cambia el marco que los rodea.
     const camaraNodo = (
         <View ref={contenedorCamaraRef} style={[styles.camaraBox, estiloCamaraWeb, Platform.OS === "web" && { maxWidth: anchoCamara, borderRadius: 22 }]}>

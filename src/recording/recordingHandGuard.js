@@ -37,13 +37,13 @@ export function cameraFrameReady(video) {
 // The click arms recording. It does not require the user to keep their mouse
 // hand in the camera. After the initial confirmation, the countdown can use
 // a less restrictive requirement without losing that confirmation.
-export async function prepareTrackedRecording({ isReady, isCountdownReady = isReady, isCancelled, assertAllowed = () => {}, now, delay, onWaiting, onCountdown, stableMs = 500, maxWaitMs = 30000 }) {
+export async function prepareTrackedRecording({ isReady, isCountdownReady = isReady, isCancelled, assertAllowed = () => {}, now, delay, onWaiting, onCountdown, stableMs = 500, maxWaitMs = 30000, timeoutMessage = "No se inició la grabación. Comprueba la cámara y muestra ambas manos con trazado; después vuelve a pulsar Preparar grabación." }) {
   const deadline = now() + maxWaitMs;
   let confirmed = false;
   const check = () => {
     if (isCancelled()) throw Object.assign(new Error("Grabación cancelada."), { code: "CANCELLED" });
     assertAllowed();
-    if (now() >= deadline) throw new Error("No se inició la grabación. Comprueba la cámara y muestra ambas manos con trazado; después vuelve a pulsar Preparar grabación.");
+    if (now() >= deadline) throw new Error(timeoutMessage);
   };
   while (true) {
     onWaiting();
