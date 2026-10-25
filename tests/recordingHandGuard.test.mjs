@@ -28,6 +28,47 @@ test('after confirmation, either hand alone is enough, but stale or absent hands
   assert.equal(handsReadyForRecording({ ...tracked(), leftHandLandmarks: undefined, rightHandLandmarks: undefined }, 1100, 1), false);
 });
 
+for (const initialHand of ['leftHandLandmarks', 'rightHandLandmarks']) {
+  test(`mobile can prepare and capture 30 frames with only ${initialHand} from the start`, async () => {
+    let time = 0;
+    const tracking = () => ({ enabled: true, handStatus: 'ready', handTime: time, [initialHand]: hand() });
+    const continuity = createRecordingHandContinuity();
+    const countdowns = [];
+    await prepareTrackedRecording({
+      isReady: () => handsReadyForRecording(tracking(), time, 1),
+      isCountdownReady: () => continuity.update(tracking(), time),
+      isCancelled: () => false, now: () => time,
+      delay: async ms => { time += ms; }, onWaiting() {},
+      onCountdown: number => countdowns.push(number),
+    });
+    assert.deepEqual(countdowns, [3, 2, 1]);
+    let captures = 0;
+    const frames = await captureTrackedFrames({
+      count: 30, isReady: () => continuity.update(tracking(), time),
+      capture: async () => `frame-${++captures}`, onFrame() {},
+      delay: async () => { time += 100; },
+    });
+    assert.equal(frames.length, 30);
+  });
+}
+
+test('mobile preparation rejects absent, incomplete and stale hands and explains its one-hand requirement', async () => {
+  for (const tracking of [
+    { enabled: true, handTime: 1000 },
+    { enabled: true, handTime: 1000, leftHandLandmarks: hand().slice(1) },
+    { enabled: true, handTime: 500, rightHandLandmarks: hand() },
+  ]) {
+    let time = 1000;
+    await assert.rejects(prepareTrackedRecording({
+      isReady: () => handsReadyForRecording(tracking, time, 1),
+      isCancelled: () => false, now: () => time, maxWaitMs: 200,
+      delay: async ms => { time += ms; }, onWaiting() {},
+      onCountdown() { assert.fail('invalid mobile tracking must not start the countdown'); },
+      timeoutMessage: 'Muestra al menos una mano con trazado.',
+    }), /al menos una mano/);
+  }
+});
+
 for (const remainingHand of ['leftHandLandmarks', 'rightHandLandmarks']) {
   test(`confirming both hands then keeping ${remainingHand} survives brief detector gaps and captures all 30 frames`, async () => {
     let time = 0;
