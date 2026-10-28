@@ -38,7 +38,7 @@ export function auditRecording(entry) {
   return { eligible: reasons.length === 0, classId, reasons };
 }
 
-export function featureVector(sample) {
+export function featureVector(sample, {maximumHandAgeMs=200}={}) {
   const aspect = sample.sourceWidth / sample.sourceHeight;
   const face = sample.face;
   // Anchors preserve hand location relative to the face, unlike centering each hand.
@@ -47,8 +47,8 @@ export function featureVector(sample) {
   const b = face?.[TRAINING_FACE_INDICES.indexOf(454)];
   const scale = a && b ? Math.hypot((a[0] - b[0]) * aspect, a[1] - b[1]) : 0;
   if (!nose || scale < 0.02) return null;
-  const groups = [sample.handAgeMs >= 0 && sample.handAgeMs <= 200 ? sample.left : null,
-    sample.handAgeMs >= 0 && sample.handAgeMs <= 200 ? sample.right : null, face];
+  const groups = [sample.handAgeMs >= 0 && sample.handAgeMs <= maximumHandAgeMs ? sample.left : null,
+    sample.handAgeMs >= 0 && sample.handAgeMs <= maximumHandAgeMs ? sample.right : null, face];
   const vector = [];
   for (let i = 0; i < groups.length; i++) {
     for (let index = 0; index < (i === 2 ? TRAINING_FACE_INDICES.length : 21); index++) {

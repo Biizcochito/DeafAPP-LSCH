@@ -16,7 +16,7 @@ function movement(frames) {
 
 // A bounded rolling window replaces the manual 3-second countdown + 4-second take.
 // The model still sees movement only; no selected recording label is an input.
-export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.now(),intervalMs=150}) {
+export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.now(),intervalMs=150,wholePhrases=false}) {
   let frames=[], lastInput, lastMotion, lastAttempt=-Infinity, busy=false, closed=false, generation=0;
   let proposed=null, presentation='', failure=null;
   function emit(phase,prediction=null,details={}) {
@@ -40,12 +40,12 @@ export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.n
       if (lastInput!==undefined && frame.timeMs-lastInput>350) reset('position');
       lastInput=frame.timeMs; lastMotion ??= frame.timeMs;
       frames.push(frame);
-      frames=frames.filter(row=>frame.timeMs-row.timeMs<=2500).slice(-120);
+      frames=frames.filter(row=>frame.timeMs-row.timeMs<=(wholePhrases?4900:2500)).slice(wholePhrases?-160:-120);
       if (movement(frames.filter(row=>frame.timeMs-row.timeMs<=450))>=.025) lastMotion=frame.timeMs;
       if (frame.timeMs-lastMotion>650) { reset(); return; }
       if (busy || frame.timeMs-lastAttempt<intervalMs) return;
       const windows=[];
-      for (const duration of [900,1500,2400]) {
+      for (const duration of wholePhrases?[900,1500,2400,3600,4800]:[900,1500,2400]) {
         const recent=frames.filter(row=>frame.timeMs-row.timeMs<=duration);
         if (recent.length<12 || recent.at(-1).timeMs-recent[0].timeMs<800) continue;
         // Do not repeat the same short history for every not-yet-full window.
@@ -62,16 +62,21 @@ export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.n
         if (closed || epoch!==generation) return;
         if (now()-lastInput>400) { reset('position'); return; }
         if (now()-started>600) { proposed=null; emit('tracking'); return; }
-        const accepted=predictions.filter(result=>result?.accepted && result.classId);
-        const classes=new Set(accepted.map(result=>result.classId));
+        const accepted=predictions.filter((result,index)=>result?.accepted && result.classId &&
+          (!result.classId.startsWith('oraciones/')||wholePhrases&&windows[index]?.durationMs>=1800));
+        // A full phrase can overlap a short window containing its last word.
+        // It still requires a whole-sequence match, never word assembly.
+        const phrases=accepted.filter(result=>result.classId.startsWith('oraciones/'));
+        const evidence=phrases.length?phrases:accepted;
+        const classes=new Set(evidence.map(result=>result.classId));
         if (classes.size!==1) { proposed=null; emit('uncertain'); return; }
-        const result=accepted[0], time=now();
+        const result=evidence[0], time=now();
         if (proposed?.classId!==result.classId) {
           proposed={classId:result.classId,since:time,count:1}; emit('recognizing'); return;
         }
         proposed.count++;
         if (proposed.count<2 || time-proposed.since<120) return;
-        emit('matched',result,{computeMs,responseMs:time-started,evidenceMs:windows[0].durationMs});
+        emit('matched',result,{computeMs,responseMs:time-started,evidenceMs:windows[predictions.indexOf(result)]?.durationMs});
       }).catch(error=>{
         if (!closed && epoch===generation) { proposed=null; failure=error; emit('error',null,{message:error.message}); }
       }).finally(()=>{busy=false;});

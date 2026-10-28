@@ -23,11 +23,17 @@ export function handSequence(features,reflected=false){
  }
  return out;
 }
-export function sequenceDistance(a,b){
+export function sequenceDistance(a,b,maximum=Infinity){
  if(!a.length||!b.length)return Infinity;
+ const limit=maximum*(a.length+b.length);
  let previous=Array(b.length+1).fill(Infinity);previous[0]=0;
  for(const frame of a){const current=Array(b.length+1).fill(Infinity);
-  for(let j=1;j<=b.length;j++){let cost=0;for(let k=0;k<88;k++)cost+=(frame[k]-b[j-1][k])**2;current[j]=cost+Math.min(previous[j],current[j-1],previous[j-1]);}previous=current;
+  let minimum=Infinity;
+  for(let j=1;j<=b.length;j++){let cost=0;for(let k=0;k<88;k++)cost+=(frame[k]-b[j-1][k])**2;current[j]=cost+Math.min(previous[j],current[j-1],previous[j-1]);minimum=Math.min(minimum,current[j]);}
+  // All remaining costs are nonnegative. A reference already worse than this
+  // class's best cannot change its distance or the classifier's decision.
+  if(minimum>limit)return Infinity;
+  previous=current;
  }
  return previous[b.length]/(a.length+b.length);
 }
@@ -43,7 +49,7 @@ export function predictSequenceCandidate(model,features){
  const query=handSequence(features),reflection=handSequence(features,true);
  if(query.length<3)return {accepted:false,classId:null,suggestedClassId:null,reason:'no-active-hands',candidates:[]};
  const distances=new Map(model.classes.map(id=>[id,Infinity]));
- for(const row of model.references){const distance=Math.min(sequenceDistance(query,row.sequence),sequenceDistance(reflection,row.sequence));distances.set(row.classId,Math.min(distances.get(row.classId),distance));}
+ for(const row of model.references){const best=distances.get(row.classId),direct=sequenceDistance(query,row.sequence,best),distance=Math.min(direct,sequenceDistance(reflection,row.sequence,Math.min(best,direct)));distances.set(row.classId,Math.min(best,distance));}
  return rankSequenceDistances(model,distances);
 }
 // Shared by manual inference and the live worker; keep the same abstention rules.

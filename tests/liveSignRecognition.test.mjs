@@ -11,9 +11,9 @@ const vector=(time,seed=0)=>[...Array.from({length:84},(_,index)=>index%2?.3+Mat
 const match=(classId='saludos/hola')=>({accepted:true,classId,reason:'matched'});
 const rejected={accepted:false,classId:null,reason:'outside-reference'};
 const flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
-function harness(predict=async windows=>({predictions:windows.map(()=>match()),computeMs:2})) {
+function harness(predict=async windows=>({predictions:windows.map(()=>match()),computeMs:2}),options={}) {
   let time=0;const updates=[],calls=[];
-  const recognizer=createLiveSignRecognizer({predict:windows=>{calls.push(windows);return predict(windows);},now:()=>time,onUpdate:value=>updates.push({...value,time})});
+  const recognizer=createLiveSignRecognizer({...options,predict:windows=>{calls.push(windows);return predict(windows);},now:()=>time,onUpdate:value=>updates.push({...value,time})});
   return {recognizer,updates,calls,get time(){return time;},set time(value){time=value;},async feed(until,{step=40,make=vector}={}){for(;time<=until;time+=step){recognizer.push({timeMs:time,vector:make(time)});await flush();}}};
 }
 
@@ -95,4 +95,25 @@ test('closing an inference client cancels its pending job and terminates the wor
   const client=createSignInferenceClient({format:'deafapp-lsch-python-forest'},{WorkerClass:Worker});
   const pending=client.predict([{features:[]}]);client.close();await assert.rejects(pending,/cerrado/);assert.equal(terminated,true);
   await assert.rejects(client.predict([]),/cerrado/);
+});
+
+test('whole-phrase recognition waits for full evidence and accepts longer takes over their last word',async()=>{
+  const h=harness(async windows=>({predictions:windows.map(window=>window.durationMs>=3400?match('oraciones/quiero agua'):match('necesidades/agua'))}),{wholePhrases:true});
+  await h.feed(3000);assert.equal(h.updates.some(row=>row.prediction?.classId==='oraciones/quiero agua'),false);
+  await h.feed(4200);const phrase=h.updates.find(row=>row.prediction?.classId==='oraciones/quiero agua');
+  assert.ok(phrase);assert.ok(phrase.time>=3400);assert.ok(phrase.evidenceMs>=3400);
+  assert.ok(h.calls.some(windows=>windows.some(window=>window.durationMs>=3600)));h.recognizer.close();
+});
+
+test('a short phrase proposal is withheld and isolated word proposals never assemble a phrase',async()=>{
+  const early=harness(async windows=>({predictions:windows.map(()=>match('oraciones/necesito ayuda'))}),{wholePhrases:true});
+  await early.feed(1700);assert.equal(early.updates.some(row=>row.phase==='matched'),false);
+  await early.feed(2400);assert.ok(early.updates.some(row=>row.phase==='matched'&&row.time>=1800));early.recognizer.close();
+  const words=harness(async windows=>({predictions:windows.map((_,i)=>match(i?'necesidades/agua':'verbos/querer'))}),{wholePhrases:true});
+  await words.feed(5500);assert.equal(words.updates.some(row=>row.prediction?.classId.startsWith('oraciones/')),false);words.recognizer.close();
+});
+
+test('conflicting complete phrases abstain even if a short word window agrees with one of them',async()=>{
+  const h=harness(async windows=>({predictions:windows.map((window,i)=>window.durationMs>=1800?match(i%2?'oraciones/quiero agua':'oraciones/quiero comer'):match('necesidades/agua'))}),{wholePhrases:true});
+  await h.feed(5000);assert.equal(h.updates.at(-1).phase,'uncertain');h.recognizer.close();
 });
