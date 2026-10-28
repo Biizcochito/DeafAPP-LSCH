@@ -14,8 +14,9 @@ function workerRuntime(distance, rank, forest, sequenceFormat) {
         if (window.query.length < 3) return {accepted:false,classId:null,reason:'no-active-hands',candidates:[]};
         const distances = new Map(model.classes.map(id => [id, Infinity]));
         for (const row of model.references) {
-          const value = Math.min(distance(window.query,row.sequence),distance(window.reflection,row.sequence));
-          distances.set(row.classId, Math.min(distances.get(row.classId),value));
+          const best=distances.get(row.classId),direct=distance(window.query,row.sequence,best);
+          const value = Math.min(direct,distance(window.reflection,row.sequence,Math.min(best,direct)));
+          distances.set(row.classId, Math.min(best,value));
         }
         return rank(model,distances);
       });

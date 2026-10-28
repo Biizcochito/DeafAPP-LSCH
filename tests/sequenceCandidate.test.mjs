@@ -45,3 +45,15 @@ test('a nearer unenabled class is rejected instead of forcing hola or agua',()=>
  const m=model();m.classes.push('saludos/bien');m.references.push({...m.references[0],classId:'saludos/bien',sequence:handSequence(features(4))});m.enabledClasses=['saludos/hola','necesidades/agua'];
  const result=predictSequenceCandidate(m,features(4));assert.equal(result.accepted,false);assert.equal(result.classId,null);assert.equal(result.reason,'unsupported-sign');
 });
+
+test('distance pruning preserves every possible improvement and only discards worse references',()=>{
+ const a=handSequence(features(.2));
+ for(const seed of [.2,.21,.6,2,10]){
+  const b=handSequence(features(seed)),exact=sequenceDistance(a,b);
+  for(const bound of [0,.001,.05,.35,5,Infinity]){
+   const bounded=sequenceDistance(a,b,bound);
+   assert.ok(bounded===exact||bounded===Infinity&&exact>bound);
+   if(exact<=bound)assert.equal(bounded,exact);
+  }
+ }
+});
