@@ -1,4 +1,5 @@
 import {REVIEW_PAGE_SIZE,validCandidateKey} from '../training/signReview.js';
+import {notifyRecordingReview} from '../training/recordingLibrarySync.js';
 export const ADMIN_PAGE_SIZE = 25;
 export const MODERATION_LABELS = { pending: "Pendiente", approved: "Aprobada", rejected: "Rechazada" };
 
@@ -51,7 +52,8 @@ export function createAdminClient(client) {
         rows.some(row => !/^\d+$/.test(String(row.id)) || !Number.isInteger(row.version) || row.version < 0) || new Set(rows.map(r => String(r.id))).size !== rows.length) {
         throw new AdminError("Selecciona grabaciones válidas.", "invalid_input");
       }
-      return call("deafapp_admin_review", { p_token: token(session), p_items: rows.map(row => ({ id: String(row.id), version: row.version })), p_status: status });
+      return call("deafapp_admin_review", { p_token: token(session), p_items: rows.map(row => ({ id: String(row.id), version: row.version })), p_status: status })
+        .then(data=>{if(data.changed>0)notifyRecordingReview();return data;});
     },
     overview(session) { return call("deafapp_admin_overview", { p_token: token(session) }); },
     material(session) { return call("deafapp_admin_material", { p_token: token(session) }); },

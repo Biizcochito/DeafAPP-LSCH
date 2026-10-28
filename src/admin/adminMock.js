@@ -62,7 +62,7 @@ export function createMockAdminBackend() {
       if (!auth(p_token)) return fail("28000");
       const targets = p_items.map(item => rows.find(r => r.id === item.id && r.version === item.version));
       if (targets.some(r => !r)) return fail("40001");
-      targets.forEach(r => { r.status = p_status; r.version++; });
+      targets.forEach(r => { r.status = p_status; r.version++; r.moderatedAt=Date.now(); });
       return reply({ ok: true, changed: targets.length, status: p_status });
     },
     deafapp_admin_overview({ p_token }) {
@@ -81,6 +81,12 @@ export function createMockAdminBackend() {
 
   return {
     rpc(name, args) { return handlers[name] ? handlers[name](args) : fail("PGRST202"); },
+    from() {
+      const query={select:()=>query,eq:()=>query,order:()=>query,limit:()=>query,abortSignal:async()=>{
+        const approved=rows.filter(row=>row.status==='approved').sort((a,b)=>(b.moderatedAt||0)-(a.moderatedAt||0)||Number(b.id)-Number(a.id)),latest=approved[0];
+        return {count:approved.length,data:latest?[{id:latest.id,moderation_version:latest.version,moderated_at:latest.moderatedAt||null}]:[]};
+      }};return query;
+    },
     storage: {
       from: () => ({
         async download(path) {
