@@ -65,6 +65,10 @@ export function validateForest(model) {
 
 export function predictForest(model, features) {
   if(model?.format===SEQUENCE_CANDIDATE_FORMAT)return predictSequenceCandidate(model,features);
+  return predictForestVotes(model,features);
+}
+
+export function predictForestVotes(model, features) {
   if(features?.length!==32||features.some(frame=>frame.length!==171||frame.some(v=>!Number.isFinite(v))))throw Error('Secuencia incompatible.');
   const vector=features.flat().map(Math.fround),probabilities=model.classes.map(()=>0);
   for(const tree of model.trees){let node=0;while(tree.left[node]!==-1)node=vector[tree.feature[node]]<=tree.threshold[node]?tree.left[node]:tree.right[node];tree.probabilities[node].forEach((p,i)=>{probabilities[i]+=p/model.trees.length;});}
