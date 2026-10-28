@@ -44,6 +44,10 @@ export function predictSequenceCandidate(model,features){
  if(query.length<3)return {accepted:false,classId:null,suggestedClassId:null,reason:'no-active-hands',candidates:[]};
  const distances=new Map(model.classes.map(id=>[id,Infinity]));
  for(const row of model.references){const distance=Math.min(sequenceDistance(query,row.sequence),sequenceDistance(reflection,row.sequence));distances.set(row.classId,Math.min(distances.get(row.classId),distance));}
+ return rankSequenceDistances(model,distances);
+}
+// Shared by manual inference and the live worker; keep the same abstention rules.
+export function rankSequenceDistances(model,distances){
  const ranked=[...distances].map(([classId,distance])=>({classId,distance,similarity:1/(1+distance)})).sort((a,b)=>a.distance-b.distance),first=ranked[0],second=ranked[1];
  const margin=(second.distance-first.distance)/Math.max(second.distance,1e-9),near=first.distance<=model.decision.maximumDistance,clear=margin>=model.decision.minimumRelativeMargin,enabled=!model.enabledClasses||model.enabledClasses.includes(first.classId),accepted=near&&clear&&enabled;
  return {accepted,classId:accepted?first.classId:null,suggestedClassId:first.classId,distance:first.distance,score:first.similarity,margin,reason:!enabled?'unsupported-sign':!near?'outside-reference':!clear?'ambiguous':'matched',candidates:ranked.slice(0,3),scoreKind:'similarity'};
