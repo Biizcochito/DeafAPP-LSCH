@@ -25,6 +25,7 @@ import { createTrainingCapture, captureTrackingSample, makeParticipantId } from 
 import { useRecordingSource } from "./src/recording/RecordingProfiles";
 import AdminPanel from "./src/admin/AdminPanel";
 import WelcomeScreen from "./src/app/WelcomeScreen";
+import LiveInterpretation from "./src/app/LiveInterpretation";
 import AppWorkspace, { CameraPermission } from "./src/app/AppWorkspace";
 import { themeWebStyles } from "./src/app/appTheme";
 import { createHiddenAdminEntry } from "./src/admin/adminAccess";
@@ -738,6 +739,8 @@ export default function App() {
     );
   }
 
+  if (pantalla === "interpretar") return <LiveInterpretation client={supabase} onBack={() => setPantalla("bienvenida")} />;
+
   if (pantalla === "admin") return <AdminPanel client={adminBackend} onExit={() => {
     if (Platform.OS === "web" && typeof window !== "undefined") window.history.replaceState(null, "", "/app");
     setPantalla("home");
@@ -779,7 +782,7 @@ export default function App() {
 
   // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
-    return <WelcomeScreen onBegin={() => setPantalla("home")} onLogo={pulsarLogo} onLegal={setPantalla} />;
+    return <WelcomeScreen onBegin={() => setPantalla("home")} onInterpret={() => setPantalla("interpretar")} onLogo={pulsarLogo} onLegal={setPantalla} />;
   }
 
   // ── FEEDBACK ─────────────────────────────────────────────────────
