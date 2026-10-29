@@ -42,3 +42,9 @@ test("los avisos y la autorización tienen enlaces directos y conservan Atrás/A
     assert.ok(tituloDe(pantalla).startsWith("DeafApp —"));
   }
 });
+
+test("la interpretación tiene enlace directo y título propios, también al recargar",()=>{
+  assert.equal(rutaDe('interpretar'),'/interpretar');
+  assert.equal(pantallaDe('/interpretar/'),'interpretar');
+  assert.match(tituloDe('interpretar'),/Interpretar en vivo/);
+});

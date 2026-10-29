@@ -3,6 +3,8 @@
 /app/   /index.html  200
 /admin  /index.html  200
 /admin/ /index.html  200
+/interpretar /index.html 200
+/interpretar/ /index.html 200
 /privacidad /index.html 200
 /privacidad/ /index.html 200
 /terminos /index.html 200

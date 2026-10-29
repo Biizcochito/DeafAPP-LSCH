@@ -32,6 +32,9 @@
 .dw-btn-dark { background: var(--ink); color: var(--cream); }
 .dw-btn-dark:hover { background: #000; box-shadow: 0 14px 44px -12px rgba(0, 0, 0, .6); }
 .dw-btn-dark > span { background: var(--lime); color: var(--ink); }
+.dw-btn.dw-btn-live { background: var(--iris); color: var(--ink); }
+.dw-btn.dw-btn-live:hover { background: #c4baff; box-shadow: 0 14px 44px -12px rgba(169,155,255,.55); }
+.dw-btn-live > span { color: var(--iris); }
 
 /* Hero */
 .dw-hero { position: relative; isolation: isolate; overflow: hidden; margin-top: -90px; padding: 152px 0 96px; }
@@ -154,11 +157,11 @@
 .dw-roadmap li { position: relative; padding: 34px 30px 38px; border: 1px solid var(--line); border-radius: 32px; background: var(--surface); }
 .dw-roadmap li + li::before { content: ''; position: absolute; top: 64px; left: -19px; width: 20px; height: 2px; background: var(--line-2); }
 .dw-roadmap .dw-now { border-color: rgba(214, 243, 106, .32); background: linear-gradient(160deg, rgba(214, 243, 106, .14), transparent 60%), var(--surface); }
-.dw-roadmap .dw-goal-step { border-style: dashed; border-color: var(--line-2); background: transparent; }
+.dw-roadmap .dw-goal-step { border-color: rgba(169,155,255,.35); background: rgba(169,155,255,.06); }
 .dw-state { display: inline-block; margin-bottom: 56px; padding: 6px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 650; }
 .dw-now .dw-state { background: var(--lime); color: var(--ink); }
-.dw-test .dw-state { border: 1px solid rgba(255, 142, 114, .4); background: rgba(255, 142, 114, .16); color: var(--coral); }
-.dw-goal-step .dw-state { border: 1px dashed var(--line-2); color: var(--muted); }
+.dw-test .dw-state { border: 1px solid rgba(78,224,181,.4); background: rgba(78,224,181,.12); color: var(--mint); }
+.dw-goal-step .dw-state { border: 1px solid rgba(169,155,255,.4); background: rgba(169,155,255,.12); color: var(--iris); }
 .dw-roadmap h3 { font: 650 28px/1.12 var(--display); letter-spacing: -.03em; }
 .dw-roadmap p { margin-top: 12px; color: var(--muted); font-size: 15px; }
 .dw-roadmap p strong { color: var(--coral); font-weight: 600; }
