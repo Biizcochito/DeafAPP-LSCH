@@ -1,8 +1,8 @@
 // Textos del proyecto que comparten la bienvenida y la sección «Más» de la app.
 export const ROADMAP = [
   { id: "now", state: "Disponible", title: "Recopilar y revisar señas.", text: "Graba desde el celular o el computador; el equipo revisa cada aporte." },
-  { id: "test", state: "Experimental", title: "Entrenar con grupos pequeños.", text: "Primeras pruebas internas con pocas señas. Todavía no reconocen a distintas personas." },
-  { id: "goal", state: "Objetivo", title: "Interpretar LSCh en tiempo real.", text: "Entre LSCh, voz y texto.", note: "Todavía no está disponible." },
+  { id: "test", state: "Disponible", title: "Entrenar con la biblioteca.", text: "Las grabaciones aprobadas ayudan a ampliar las palabras y oraciones que el sistema puede reconocer." },
+  { id: "goal", state: "En vivo", title: "Interpretar LSCh en tiempo real.", text: "Haz una seña habilitada frente a la cámara y recibe el resultado en texto y voz." },
 ];
 
 export const VALUES = [

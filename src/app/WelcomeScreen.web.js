@@ -58,15 +58,15 @@ function Tile({ tone, className = "", children }) {
 }
 
 // Enlace real a /app: abre en la misma pestaña sin recargar y en otra con Ctrl, Cmd o clic central.
-function GoLink({ onBegin, className, children }) {
-  return <a className={className} href="/app" onClick={event => {
+function GoLink({ onBegin, className, children, href = "/app" }) {
+  return <a className={className} href={href} onClick={event => {
     if (event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     onBegin();
   }}>{children}</a>;
 }
 
-export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
+export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal }) {
   useEffect(() => {
     const previousColor = document.body.style.backgroundColor;
     document.body.style.backgroundColor = "#080c0a";
@@ -97,6 +97,7 @@ export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
               <p className="dw-lead">La comunicación empieza contigo. Ayúdanos a construir el futuro de la <strong>Lengua de Señas Chilena.</strong></p>
               <div className="dw-actions">
                 <GoLink className="dw-btn dw-btn-big" onBegin={onBegin}>Comenzar a grabar<span aria-hidden="true"><Icon name="diagonal" size={22} /></span></GoLink>
+                <GoLink className="dw-btn dw-btn-live dw-btn-big" href="/interpretar" onBegin={onInterpret}>Interpretar en vivo<span aria-hidden="true"><Icon name="camera" size={22} /></span></GoLink>
                 <a className="dw-ghost" href="#como-participar"><span aria-hidden="true"><Icon name="down" size={18} /></span>Descubre cómo</a>
               </div>
               <dl className="dw-proof">
@@ -168,7 +169,7 @@ export default function WelcomeScreen({ onBegin, onLogo, onLegal }) {
         </section>
 
         <section id="el-proyecto" className="dw-section dw-shell" aria-labelledby="dw-project-title">
-          <Reveal className="dw-heading"><h2 id="dw-project-title">Estamos construyendo <span>algo que nos conecta.</span></h2><p>Hoy recopilamos y revisamos señas. Nuestro objetivo es que, en el futuro, puedan convertirse en texto y voz para apoyar la comunicación cotidiana.</p></Reveal>
+          <Reveal className="dw-heading"><h2 id="dw-project-title">Estamos construyendo <span>algo que nos conecta.</span></h2><p>Recopilamos, revisamos y entrenamos con señas de la comunidad. Ya puedes probar la interpretación en vivo del vocabulario habilitado, con texto y voz.</p></Reveal>
           <Reveal className="dw-roadmap">
             <ol>{ROADMAP.map(item => <li key={item.id} className={ROADMAP_CLASS[item.id]}><span className="dw-state">{item.state}</span><h3>{item.title}</h3><p>{item.text}{item.note && <> <strong>{item.note}</strong></>}</p></li>)}</ol>
           </Reveal>
