@@ -1,6 +1,8 @@
 import {loadApprovedVocabulary} from '../training/approvedVocabulary';
 import {buildVocabularyCandidate} from '../training/vocabularyCandidate';
 import {startApprovedLibrarySync} from '../training/recordingLibrarySync';
+import * as Speech from 'expo-speech';
+import {createLiveSignSpeech} from '../training/liveSignSpeech';
 import {canonicalPhraseLabel,ESTOY_BIEN_CLASS} from '../training/phraseLabels';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
@@ -27,14 +29,18 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   const [quality,setQuality]=useState([]),[comparison,setComparison]=useState(null),[participant,setParticipant]=useState('P1');
   const [pendingTest,setPendingTest]=useState(null),[expected,setExpected]=useState(''),[signResult,setSignResult]=useState(null),[personalSigns,setPersonalSigns]=useState(null);
   const [liveOn,setLiveOn]=useState(true),[liveResult,setLiveResult]=useState({phase:'off'});
+  const [voiceOn,setVoiceOn]=useState(true),[voiceError,setVoiceError]=useState('');
+  const voice=useRef(null),voicePreference=useRef(true);
+  const voiceSupported=typeof window!=='undefined'&&!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
   const livePreference=useRef(true),accessEpoch=useRef(0),cameraEpoch=useRef(0);
   const libraryRequest=useRef(null),librarySync=useRef(null),candidateRequest=useRef(0);
   const committeeCache=useRef(new Map()),captureSection=useRef(null),localSignCandidate=useRef(null);
   const video=useRef(null),canvas=useRef(null),live=useRef(null),alive=useRef(true),capture=useRef(null),model=useRef(null),candidate=useRef(null),working=useRef(false);
-  function stop(){cameraEpoch.current++;const state=live.current;live.current=null;capture.current=null;if(state){clearTimeout(state.timer);clearInterval(state.expiry);state.recognizer?.close();state.inference?.close();state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current){setActive(false);setLiveResult({phase:'off'});setSignResult(value=>value?.live?null:value);}}
+  function stop(){voice.current?.reset();cameraEpoch.current++;const state=live.current;live.current=null;capture.current=null;if(state){clearTimeout(state.timer);clearInterval(state.expiry);state.recognizer?.close();state.inference?.close();state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current){setActive(false);setLiveResult({phase:'off'});setSignResult(value=>value?.live?null:value);}}
   function configureRecognition(value,name){
     const state=live.current;if(!state)return;
     if(value&&state.recognitionId===value.id&&state.recognizer&&state.recognitionPhase!=='error')return;
+    voice.current?.reset();
     state.recognizer?.close();state.inference?.close();state.recognizer=null;state.inference=null;
     state.recognitionId=value?.id;
     if(!value){setLiveResult({phase:'model'});return;}
@@ -43,6 +49,7 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
       state.recognizer=createLiveSignRecognizer({wholePhrases:(value.enabledClasses||value.classes).some(id=>id.startsWith('oraciones/')),predict:windows=>inference.predict(windows),onUpdate:result=>{
         if(live.current!==state||!alive.current)return;
         state.recognitionPhase=result.phase;
+        voice.current?.update(result);
         setLiveResult(result);
         if(result.phase==='matched')setSignResult({...result.prediction,modelName:name,live:true});
         else setSignResult(previous=>previous?.live?null:previous);
@@ -52,8 +59,20 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   }
   function toggleRecognition(){
     livePreference.current=!livePreference.current;setLiveOn(livePreference.current);
+    voice.current?.reset();
     live.current?.recognizer?.reset(livePreference.current?'position':'paused');
   }
+  function toggleVoice(){
+    voicePreference.current=!voicePreference.current;setVoiceOn(voicePreference.current);setVoiceError('');
+    voice.current?.setEnabled(voicePreference.current);
+    if(voicePreference.current&&live.current&&livePreference.current)voice.current?.update(liveResult);
+  }
+  function testVoice(){voicePreference.current=true;setVoiceOn(true);setVoiceError('');voice.current?.setEnabled(true);voice.current?.preview();}
+  useEffect(()=>{
+    if(!voiceSupported)return;
+    voice.current=createLiveSignSpeech({speech:Speech,enabled:voicePreference.current,onError:text=>{if(alive.current)setVoiceError(text);},onSpeak:()=>{if(alive.current)setVoiceError('');}});
+    return()=>{voice.current?.close();voice.current=null;};
+  },[voiceSupported]);
   async function refreshLibrary(){
     libraryRequest.current?.abort();const controller=new AbortController();libraryRequest.current=controller;
     setLibrary({rows:[],pending:[],excluded:[],loading:true});
@@ -213,7 +232,7 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
       <p className="vt-small">Las tomas de evaluación, copias y etiquetas contradictorias no cuentan para entrenar. La disponibilidad indica datos preparados; la precisión aún requiere pruebas con movimientos nuevos.</p>
     </div>
     <div className="vt-card" ref={captureSection}><h2>Entrenamiento con cámara en vivo</h2><p>Haz cualquier palabra u oración del vocabulario activo para verla sobre la cámara. Para añadir más ejemplos aquí, guarda una toma completa. Estas capturas conservan solamente puntos del movimiento en este navegador.</p>
-      <div className="vt-grid"><div><div className="vt-camera"><video ref={video} muted playsInline aria-label="Vista previa de la cámara"/><canvas ref={canvas} aria-label="Puntos de manos y cara"/><div className="vt-live-result" data-state={active&&liveOn?liveResult.phase:'off'} role="status" aria-live="polite" aria-atomic="true"><small>{active&&liveOn?'Reconocimiento en vivo':'Tu cámara'}</small><strong>{liveText}</strong></div></div><div className="vt-actions"><button onClick={start} disabled={busy||active}>Activar cámara</button><button onClick={stop} disabled={!active}>Apagar cámara</button><button className="vt-secondary" onClick={toggleRecognition} disabled={!active||busy||!vocabulary.length} aria-pressed={liveOn}>{liveOn?'Pausar reconocimiento':'Reanudar reconocimiento'}</button></div>{vocabulary.length>0&&<p className="vt-small vt-live-vocabulary">Vocabulario activo: {vocabulary.map(label).join(' · ')}.</p>}</div>
+      <div className="vt-grid"><div><div className="vt-camera"><video ref={video} muted playsInline aria-label="Vista previa de la cámara"/><canvas ref={canvas} aria-label="Puntos de manos y cara"/><div className="vt-live-result" data-state={active&&liveOn?liveResult.phase:'off'} role="status" aria-live="polite" aria-atomic="true"><small>{active&&liveOn?'Reconocimiento en vivo':'Tu cámara'}</small><strong>{liveText}</strong></div></div><div className="vt-actions"><button onClick={start} disabled={busy||active}>Activar cámara</button><button onClick={stop} disabled={!active}>Apagar cámara</button><button className="vt-secondary" onClick={toggleRecognition} disabled={!active||busy||!vocabulary.length} aria-pressed={liveOn}>{liveOn?'Pausar reconocimiento':'Reanudar reconocimiento'}</button></div><div className="vt-actions" aria-label="Voz del reconocimiento en vivo"><button className="vt-secondary" onClick={toggleVoice} disabled={!voiceSupported} aria-pressed={voiceOn&&voiceSupported}>{voiceOn?'Silenciar voz':'Activar voz'}</button><button className="vt-secondary" onClick={testVoice} disabled={!voiceSupported}>Probar voz</button></div><p className="vt-small">{!voiceSupported?'Este navegador no dispone de síntesis de voz.':voiceOn?'Voz activada: cada palabra u oración confirmada se pronuncia en español, sin repetirla continuamente.':'Voz desactivada.'}</p>{voiceError&&<p className="vt-note" role="status">{voiceError}</p>}{vocabulary.length>0&&<p className="vt-small vt-live-vocabulary">Vocabulario activo: {vocabulary.map(label).join(' · ')}.</p>}</div>
       <div><label htmlFor="vt-phrase">Etiqueta para guardar la toma de entrenamiento</label><select id="vt-phrase" value={selected} onChange={e=>setSelected(e.target.value)} disabled={busy}><optgroup label="Oraciones completas">{PHRASES.map(id=><option key={id} value={id}>{label(id)}</option>)}</optgroup><optgroup label="Señas visibles">{VISIBLE_TARGETS.filter(row=>row.category!=='oraciones').map(row=><option key={row.classId} value={row.classId}>{row.label}</option>)}</optgroup></select>
       {selected===ESTOY_BIEN_CLASS&&<p className="vt-small">Referencia del entrenamiento: «yo bien» corresponde a «estoy bien». Graba la oración completa en una sola toma.</p>}
       <label htmlFor="vt-participant">Perfil declarado para esta toma</label><input id="vt-participant" value={participant} maxLength={20} disabled={busy} onChange={event=>setParticipant(event.target.value)} placeholder="P1"/><p className="vt-small">Usa códigos como P1 o P2 para personas distintas, sin nombres. El código no verifica su identidad.</p>
