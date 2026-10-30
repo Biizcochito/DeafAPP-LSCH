@@ -48,14 +48,14 @@ export function createMockAdminBackend() {
       const previous=batches.find(b=>b.requestId===p_request_id);if(previous)return previous.quantity===p_quantity&&JSON.stringify(previous.parentIds)===JSON.stringify(p_items.map(r=>r.id))?reply({ok:true,batch:batchValue(previous),alreadyCreated:true}):fail('40001');
       const parents=p_items.map(item=>rows.find(r=>r.id===item.id&&r.version===item.version&&r.status!=='rejected'));
       if(parents.some(r=>!r))return fail('40001');if(parents.some(r=>r.label!==parents[0].label||r.category!==parents[0].category))return fail('22023');
-      const batch={id:crypto.randomUUID(),requestId:p_request_id,classId:`${parents[0].category}/${parents[0].label}`,displayLabel:parents[0].label,categoryTitle:parents[0].category,quantity:p_quantity,parentIds:parents.map(r=>r.id),status:'pending',version:0,createdAt:new Date().toISOString()};batches.unshift(batch);return reply({ok:true,batch:batchValue(batch)});
+      const batch={id:crypto.randomUUID(),requestId:p_request_id,classId:`${parents[0].category}/${parents[0].label}`,displayLabel:parents[0].label,categoryTitle:parents[0].category,quantity:p_quantity,parentIds:parents.map(r=>r.id),sourcePaths:Object.fromEntries(parents.map(r=>[r.id,r.path])),inheritApproval:true,status:parents.every(r=>r.status==='approved')?'approved':'pending',version:0,createdAt:new Date().toISOString()};batches.unshift(batch);return reply({ok:true,batch:batchValue(batch)});
     },
-    deafapp_admin_variant_list({p_token,p_status,p_offset}){if(!auth(p_token))return fail('28000');const match=batches.filter(b=>p_status==='all'||b.status===p_status);return reply({ok:true,total:match.length,pending:batches.filter(b=>b.status==='pending').length,rows:match.slice(p_offset,p_offset+25).map(batchValue)});},
+    deafapp_admin_variant_list({p_token,p_status,p_offset,p_query='',p_limit=25}){if(!auth(p_token))return fail('28000');const match=batches.filter(b=>(p_status==='all'||b.status===p_status)&&`${b.displayLabel} ${b.categoryTitle} ${b.classId}`.toLowerCase().includes(p_query.toLowerCase()));return reply({ok:true,total:match.length,totalVariants:match.reduce((n,b)=>n+b.quantity,0),pending:batches.filter(b=>b.status==='pending').length,rows:match.slice(p_offset,p_offset+p_limit).map(batchValue)});},
     deafapp_admin_variant_detail({p_token,p_id}){if(!auth(p_token))return fail('28000');const b=batches.find(b=>b.id===p_id);if(!b)return fail('22023');return reply({ok:true,batch:batchValue(b),variants:Array.from({length:b.quantity},(_,i)=>{const v=variantSpecification(i,b.quantity,b.parentIds.length);return {...v,parentId:b.parentIds[v.parentIndex]};})});},
     deafapp_admin_variant_review({p_token,p_id,p_version,p_status,p_parents}){
       if(!auth(p_token))return fail('28000');const b=batches.find(b=>b.id===p_id);if(!b||b.version!==p_version)return fail('40001');if(!['approved','pending','rejected'].includes(p_status))return fail('22023');
       if(p_status==='approved'&&b.parentIds.some(id=>!p_parents.some(item=>{const row=rows.find(r=>r.id===id);return item.id===id&&row?.status==='approved'&&row.version===item.version;})))return fail('40001');
-      b.status=p_status;b.version++;return reply({ok:true,batch:batchValue(b)});
+      b.inheritApproval=false;b.status=p_status;b.version++;return reply({ok:true,batch:batchValue(b)});
     },
     deafapp_recognition_revision(){return reply({ok:true,ready:true,preparing:false,revision:'1:1:1'});},
     async deafapp_admin_vocabulary_list({p_token}) {
@@ -104,13 +104,15 @@ export function createMockAdminBackend() {
       const q = (p_query || "").toLowerCase();
       const match = rows.filter(r => (p_status === "all" || r.status === p_status) && (!q || `${r.label} ${r.category}`.toLowerCase().includes(q)));
       const count = status => rows.filter(r => r.status === status).length;
-      return reply({ ok: true, rows: match.slice(p_offset, p_offset + p_limit), counts: { pending: count("pending"), approved: count("approved"), rejected: count("rejected") }, total: match.length });
+      const variantCount=status=>batches.filter(b=>b.status===status).reduce((n,b)=>n+b.quantity,0);
+      return reply({ ok: true, rows: match.slice(p_offset, p_offset + p_limit), counts: { pending: count("pending"), approved: count("approved"), rejected: count("rejected") },variantCounts:{pending:variantCount('pending'),approved:variantCount('approved'),rejected:variantCount('rejected')}, total: match.length });
     },
     deafapp_admin_review({ p_token, p_items, p_status }) {
       if (!auth(p_token)) return fail("28000");
       const targets = p_items.map(item => rows.find(r => r.id === item.id && r.version === item.version));
       if (targets.some(r => !r)) return fail("40001");
       targets.forEach(r => { r.status = p_status; r.version++; r.moderatedAt=Date.now();for(const b of batches)if(b.status==='approved'&&b.parentIds.includes(r.id)){b.status='pending';b.version++;} });
+      for(const b of batches)if(b.status==='pending'&&b.inheritApproval&&b.parentIds.every(id=>rows.some(row=>row.id===id&&row.status==='approved'&&row.path===b.sourcePaths[id]&&`${row.category}/${row.label}`===b.classId))){b.status='approved';b.version++;}
       return reply({ ok: true, changed: targets.length, status: p_status });
     },
     deafapp_admin_overview({ p_token }) {

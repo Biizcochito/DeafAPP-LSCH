@@ -49,7 +49,7 @@ test('una toma multiplicada cien veces no habilita por sí sola una seña ni rec
   variants.push({parentId:'1',parentHash:'wrong-hash',classId:catalogue[1].classId,angleDegrees:1});
   const result=await prepareControlledModel(catalogue,samples,{variants});assert.equal(result.model,null);assert.ok(result.coverage.every(row=>row.originals===1&&!row.active));assert.equal(result.coverage[1].syntheticReferences,0);
 });
-test('el flujo admin admite un original pendiente o aprobado, exige revisión y retira variantes al cambiarlo',async()=>{
+test('el flujo admin admite un original pendiente o aprobado y retira variantes al cambiarlo',async()=>{
   const client=createMockAdminBackend(),api=createAdminClient(client),session=await api.login(MOCK_ADMIN_PASSWORD);
   for(const status of ['pending','approved']){
     const source=(await api.list(session,{status})).rows[0],requestId=crypto.randomUUID();
@@ -62,4 +62,18 @@ test('el flujo admin admite un original pendiente o aprobado, exige revisión y 
     await api.review(session,[detail.batch.parents[0]],'rejected');assert.equal((await api.variantDetail(session,result.batch.id)).batch.status,'pending');
   }
   await assert.rejects(createAdminClient({rpc:async()=>({error:{code:'28000'}})}).variants(session),e=>e.code==='session_expired');
+});
+test('las variantes heredan la aprobación, aparecen en Aprobadas y respetan decisiones explícitas del lote',async()=>{
+  const api=createAdminClient(createMockAdminBackend()),session=await api.login(MOCK_ADMIN_PASSWORD);
+  const before=await api.list(session,{status:'approved'}),source=before.rows[0];
+  let result=await api.createVariants(session,{requestId:crypto.randomUUID(),rows:[source],quantity:100});
+  assert.equal(result.batch.status,'approved');assert.equal(result.batch.inheritApproval,true);
+  const after=await api.list(session,{status:'approved'});assert.equal(after.counts.approved,before.counts.approved);assert.equal(after.variantCounts.approved,100);
+  let list=await api.variants(session,{status:'approved',query:source.label,pageSize:5});assert.equal(list.total,1);assert.equal(list.totalVariants,100);
+  assert.equal((await api.variants(session,{status:'approved',query:'no-existe'})).total,0);
+  const pending=(await api.list(session,{status:'pending'})).rows[0];result=await api.createVariants(session,{requestId:crypto.randomUUID(),rows:[pending],quantity:50});
+  assert.equal(result.batch.status,'pending');await api.review(session,[pending],'approved');
+  let detail=await api.variantDetail(session,result.batch.id);assert.equal(detail.batch.status,'approved');assert.equal((await api.list(session,{status:'approved'})).variantCounts.approved,150);
+  await api.reviewVariants(session,detail.batch,'rejected');detail=await api.variantDetail(session,result.batch.id);assert.equal(detail.batch.inheritApproval,false);
+  await api.review(session,[detail.batch.parents[0]],'approved');assert.equal((await api.variantDetail(session,result.batch.id)).batch.status,'rejected');
 });

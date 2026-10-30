@@ -14,7 +14,12 @@
 .deaf-app i { font-style: normal; }
 
 /* Cabecera (móvil) */
-.app-topbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; max-width: 1080px; margin: 0 auto; padding: 16px 20px 10px; }
+.app-topbar { position: relative; z-index: 2; display: flex; flex-wrap:wrap; gap:12px; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100%; max-width: 1080px; margin: 0 auto; padding: 16px 20px 10px; }
+.app-interpret-link { display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:10px 20px;border-radius:999px;background:var(--iris);color:var(--ink)!important;text-decoration:none;font:650 14px/1.4 var(--body);text-align:center;transition:background 180ms,transform 180ms; }
+.app-interpret-link:hover:not([aria-disabled=true]) { background:#c4baff;transform:translateY(-1px); }
+.app-interpret-link[aria-disabled=true] { opacity:.45;cursor:default; }
+.app-topbar > .app-live-shortcut { width:100%; }
+@media(max-width:359px){.app-topbar .app-brand>img{width:30px;height:30px}.app-topbar .app-brand>span:not(.app-beta){font-size:20px}}
 .app-brand { display: flex; align-items: center; gap: 9px; padding: 0; text-align: left; }
 .app-brand > span:not(.app-beta) { font: 800 24px/1 var(--display); letter-spacing: -.04em; }
 .app-brand > span > span { font-weight: 400; }
@@ -265,10 +270,11 @@
 
 /* Escritorio: barra lateral */
 @media (min-width: 1000px) {
-  .deaf-app.has-side { display: grid; grid-template-columns: 288px minmax(0, 1fr); grid-template-rows: auto auto 1fr auto auto; grid-template-areas: "brand main" "nav main" "fill main" "help main" "help legal"; }
+  .deaf-app.has-side { display: grid; grid-template-columns: 288px minmax(0, 1fr); grid-template-rows: auto auto auto 1fr auto auto; grid-template-areas: "brand main" "live main" "nav main" "fill main" "help main" "help legal"; }
   .deaf-app.has-side::after { content: ''; position: absolute; inset: 0 auto 0 0; z-index: 0; width: 288px; border-right: 1px solid var(--line); background: linear-gradient(180deg, rgba(255, 255, 255, .035), transparent 45%); pointer-events: none; }
   .has-side .app-topbar { display: contents; }
   .has-side .app-brand { grid-area: brand; position: relative; z-index: 2; padding: 34px 32px 8px; }
+  .has-side .app-topbar > .app-live-shortcut { grid-area:live;position:relative;z-index:2;width:auto;margin:14px 28px 0; }
   .has-side .app-header-actions { grid-area: help; position: relative; z-index: 2; flex-direction: column; margin: 0 20px 28px; }
   .has-side .app-icon-button { width: auto; height: 56px; padding: 0 20px; justify-content: flex-start; border-radius: 22px; color: var(--muted); font-size: 14.5px; font-weight: 600; }
   .has-side .app-icon-button:hover { color: var(--cream); }
