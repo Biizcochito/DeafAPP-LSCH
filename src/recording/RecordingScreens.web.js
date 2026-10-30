@@ -1,4 +1,4 @@
-import { AppIcon } from "../app/AppWorkspace";
+import { AppIcon, InterpretationLink } from "../app/AppWorkspace";
 import "../ui/theme.css";
 import "./RecordingScreens.css";
 
@@ -6,10 +6,11 @@ const STEPS = ["Prepara tus manos", "Cuenta atrás", "Haz la seña"];
 // Los colores del trazado sobre la cámara (ver landmarkTracking.js) para que la leyenda coincida.
 const LEGEND = [["#F7DC6F", "Amarillo: cara"], ["#4ECDC4", "Verde: mano derecha"], ["#79B8FF", "Azul: mano izquierda"]];
 
-function Top({ word, category, kicker, onBack, backDisabled }) {
+function Top({ word, category, kicker, onBack, backDisabled, onInterpret, interpretDisabled }) {
   return <header className="rs-top">
     <button className="rs-back" aria-label="Volver a la lista" onClick={onBack} disabled={backDisabled}><AppIcon name="back" size={19} /><span>Volver</span></button>
     <div className="rs-word"><span className="rs-cat" aria-hidden="true">{category?.emoji}</span><div><small>{kicker}</small><h1 tabIndex={-1}>{word}</h1></div></div>
+    <InterpretationLink onInterpret={onInterpret} disabled={interpretDisabled}/>
   </header>;
 }
 
@@ -22,10 +23,10 @@ function Frame({ max, children }) {
 // En móvil la guía (pasos e instrucción) va encima de la cámara y los controles debajo;
 // en escritorio ambos forman una columna a la derecha de la cámara.
 // Pantalla de cámara. `camera` es el contenedor de React Native con la cámara y sus avisos, sin cambios.
-export function RecordingStage({ word, category, tone, onBack, camera, camMax, step, instruction, repeating, help, error, tracing, onRestartCamera, locked, primary, canCancel, onCancel, busy }) {
+export function RecordingStage({ word, category, tone, onBack, onInterpret, camera, camMax, step, instruction, repeating, help, error, tracing, onRestartCamera, locked, primary, canCancel, onCancel, busy }) {
   const steps = category?.id === "oraciones" ? ["Prepara tus manos", "Cuenta atrás", "Haz la oración"] : STEPS;
   return <div className="deaf-app rs-stage" style={{ "--tone": tone }}>
-    <Top word={word} category={category} kicker="Te toca grabar" onBack={onBack} />
+    <Top word={word} category={category} kicker="Te toca grabar" onBack={onBack} onInterpret={onInterpret} interpretDisabled={locked}/>
     <main className="rs-main">
       <Frame max={camMax}>{camera}</Frame>
       <div className="rs-side">
@@ -55,11 +56,11 @@ export function RecordingStage({ word, category, tone, onBack, camera, camMax, s
 }
 
 // Revisión de la grabación antes de enviarla.
-export function RecordingReview({ word, category, tone, camMax, ratio, frameUri, index, total, playing, seconds, onTogglePlay, onBack, onSend, onRepeat, onLater, sending, failed, saved, localMessage, error }) {
+export function RecordingReview({ word, category, tone, camMax, ratio, frameUri, index, total, playing, seconds, onTogglePlay, onBack, onInterpret, onSend, onRepeat, onLater, sending, failed, saved, localMessage, error }) {
   const item = category?.id === "oraciones" ? "oración" : "seña";
   const note = saved ? "Tu grabación está guardada en este dispositivo. Podrás recuperarla al volver a abrir esta misma web." : localMessage;
   return <div className="deaf-app rs-stage" style={{ "--tone": tone }}>
-    <Top word={word} category={category} kicker={`Revisa tu ${item}`} onBack={onBack} backDisabled={sending} />
+    <Top word={word} category={category} kicker={`Revisa tu ${item}`} onBack={onBack} backDisabled={sending} onInterpret={onInterpret} interpretDisabled={sending}/>
     <main className="rs-main">
       <Frame max={camMax}>
         <div className="rs-preview" style={{ aspectRatio: ratio }}>
@@ -91,7 +92,7 @@ export function RecordingReview({ word, category, tone, camMax, ratio, frameUri,
 }
 
 // Confirmación después de enviar. Solo habla del envío: no hay estado de revisión que mostrar.
-export function RecordingDone({ word, category, tone, times, onAgain, onMine, onBack }) {
+export function RecordingDone({ word, category, tone, times, onAgain, onMine, onBack, onInterpret }) {
   const item = category?.id === "oraciones" ? "oración" : "seña";
   return <div className="deaf-app rs-stage" style={{ "--tone": tone }}>
     <main className="rs-done">
@@ -101,6 +102,7 @@ export function RecordingDone({ word, category, tone, times, onAgain, onMine, on
       {times > 1 && <p className="rs-done-times">Ya van {times} grabaciones tuyas de esta {item}.</p>}
       <div className="rs-actions">
         <button className="rs-primary" aria-label="Grabar otra vez" onClick={onAgain}><AppIcon name="camera" size={22} />Grabar otra vez</button>
+        <InterpretationLink onInterpret={onInterpret}/>
         <button className="rs-secondary" aria-label="Ver mis aportes" onClick={onMine}><AppIcon name="user" size={18} />Ver mis aportes</button>
         <button className="rs-link" aria-label="Volver a la lista" onClick={onBack}>Volver a la lista</button>
       </div>

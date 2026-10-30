@@ -78,7 +78,7 @@ export default function MultiplyRecordings({api,session,client,initialSource,ini
   });}
   if(consentScreen)return <PrivacyConsent onBack={()=>setConsentScreen(false)} onAccept={choices=>{consent.current=createConsentReceipt(choices);setConsentScreen(false);}}/>;
   const entry=catalogue.find(row=>row.classId===classId),canSend=!!initialSource||takes.length>0;
-  return <div className="mv-workbench"><header><p className="mv-eyebrow">ADMINISTRACIÓN · APORTES</p><h1>{initialSource?'Multiplicar esta seña':'Grabar y multiplicar'}</h1><p>Una toma real es suficiente. Crea 50 o 100 variantes y envíalas a revisión.</p><button disabled={busy} onClick={onBack}>Volver a grabaciones</button></header>
+  return <div className="mv-workbench"><header><p className="mv-eyebrow">ADMINISTRACIÓN · APORTES</p><h1>{initialSource?'Multiplicar esta seña':'Grabar y multiplicar'}</h1><p>Una toma real es suficiente. Crea 50 o 100 variantes con el estado de su original.</p><button disabled={busy} onClick={onBack}>Volver a grabaciones</button></header>
     {error&&<p className="mv-error" role="alert">{error}</p>}{message&&<p className="mv-notice" role="status">{message}</p>}
     <section className="mv-card"><h2>1. Tu original</h2>{initialSource?<p><strong>{initialSource.label}</strong> · #{initialSource.id} · {initialSource.status==='approved'?'Aprobada':'Pendiente de revisión'}</p>:<>
       <label>Seña<select value={classId} disabled={busy||takes.length>0||camera} onChange={e=>setClassId(e.target.value)}>{catalogue.map(row=><option key={row.classId} value={row.classId}>{row.categoryTitle} · {row.displayLabel}</option>)}</select></label>
@@ -93,7 +93,7 @@ export default function MultiplyRecordings({api,session,client,initialSource,ini
     <section className="mv-card"><h2>2. Elige la cantidad</h2><div className="mv-quantities">{[50,100].map(value=><button key={value} disabled={busy} aria-pressed={quantity===value} onClick={()=>{requestId.current=crypto.randomUUID();setQuantity(value);}}><strong>{value}</strong><span>variantes</span></button>)}</div>
       <p>{initialSource?1:takes.length} {(!initialSource&&takes.length!==1)?'originales':'original'} + {quantity} variantes. Se conservan la secuencia y los tiempos de cada original.</p>
       <small>Las variantes ayudan a ampliar el aprendizaje; siguen siendo aportes de la misma persona y no sustituyen las tomas de otras personas.</small>
-      <button className="mv-primary" disabled={busy||!canSend} onClick={send}>{busy?'Procesando…':`Crear ${quantity} variantes y enviar a revisión`}</button>
-      <small>Los originales y sus variantes se revisan antes de usarse. Una aprobación anterior del original se conserva.</small>
+      <button className="mv-primary" disabled={busy||!canSend} onClick={send}>{busy?'Procesando…':`Crear ${quantity} variantes${initialSource?.status==='approved'?' y añadir a Aprobadas':''}`}</button>
+      <small>{initialSource?.status==='approved'?'Se añadirán automáticamente al catálogo de Aprobadas.':'Las variantes esperarán hasta que apruebes sus originales; después aparecerán automáticamente en Aprobadas.'}</small>
     </section></div>;
 }
