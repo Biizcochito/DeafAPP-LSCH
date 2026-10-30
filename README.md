@@ -190,6 +190,15 @@ permanecen en el navegador; el informe del servidor se muestra por separado.
 
 ### Privacidad y consentimiento
 
+En **Interpretar en vivo**, los detectores de cara y manos se preparan mientras
+carga la biblioteca. Tras activar la cámara, volver al inicio y regresar conserva
+el mismo stream y los detectores preparados. En otras pantallas se pausa el
+reconocimiento y la voz; un aviso permite volver o apagar la cámara. Abrir Grabar
+o Administración libera el dispositivo para su propia cámara. Al regresar al
+intérprete se recupera la sesión, sin volver a cargar los detectores. Detener la
+cámara, cerrar la página o recargar libera la captura; una página nueva necesita
+iniciar una sesión nueva. El intérprete no graba ni envía imágenes.
+
 El catálogo y los documentos se pueden consultar sin autorizar una grabación. Antes de captar un aporte nuevo, la app presenta **Tu autorización** con decisiones separadas y sin casillas premarcadas.
 
 | Control | Comportamiento actual |

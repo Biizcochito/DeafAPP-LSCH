@@ -146,7 +146,14 @@ export function mergeHandDetections(primary, recovered) {
 // between signs; reopening the camera must not repeat WASM/shader startup.
 export function warmSignTracking() {
   if (!preparedTracker) {
-    preparedTracker = (async () => {
+    preparedTracker = prepareSignTracker().catch(error => { preparedTracker = null; throw error; });
+  }
+  return preparedTracker;
+}
+
+// Each camera owns its graphs. Warming never opens a camera or shares callbacks
+// with the recorder, and can run while the approved vocabulary is loading.
+export async function prepareSignTracker() {
       const tracker = await createSignTracker();
       const image = document.createElement("canvas");
       image.width = 640;
@@ -169,21 +176,24 @@ export function warmSignTracking() {
         tracker.close().catch(() => {});
         throw error;
       }
-    })().catch(error => { preparedTracker = null; throw error; });
-  }
-  return preparedTracker;
 }
 
 // Face and palms are located independently; a cropped/undetected body never
 // prevents tracing. Holistic is used only for the optional LSTM pose features.
 export async function createSignTracker({ legacyHands = typeof Worker === "undefined" } = {}) {
-  await Promise.all([
+  const startup = await Promise.allSettled([
     legacyHands ? loadModelScript(`${HANDS_CDN}/hands.js`, ["Hands", "HAND_CONNECTIONS"]) : Promise.resolve(),
     loadModelScript(`${FACE_CDN}/face_mesh.js`, ["FaceMesh", "FACEMESH_CONTOURS"]),
+    legacyHands ? Promise.resolve() : createHandWorker(),
   ]);
+  const failed = startup.find(result => result.status === 'rejected');
+  if (failed) {
+    if (startup[2].status === 'fulfilled') await startup[2].value?.close();
+    throw failed.reason;
+  }
   const face = new window.FaceMesh({ locateFile: file => `${FACE_CDN}/${file}` });
   let hands;
-  try {hands = legacyHands ? new window.Hands({ locateFile: file => `${HANDS_CDN}/${file}` }) : await createHandWorker();}
+  try {hands = legacyHands ? new window.Hands({ locateFile: file => `${HANDS_CDN}/${file}` }) : startup[2].value;}
   catch(error) {await face.close();throw error;}
   const handPadding = legacyHands ? 1.4 : 1;
   face.setOptions({ maxNumFaces: 1, refineLandmarks: false, minDetectionConfidence: 0.4, minTrackingConfidence: 0.4 });
