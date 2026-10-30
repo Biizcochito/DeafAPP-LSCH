@@ -56,6 +56,6 @@ export function createLiveInterpretationCamera({getMedia,createTracker,createInf
       onState('on');void tick();
     }catch(error){if(current(state)){stop();onError(error);}}
   }
-  return {start,stop,setModel(value){if(closed||model?.id===value?.id)return;model=value;if(session?.tracker){try{configure(session);}catch(error){stop();onError(error);}}},
+  return {start,stop,reset(){if(!closed)session?.recognizer?.reset('position');},setModel(value){if(closed||model?.id===value?.id)return;model=value;if(session?.tracker){try{configure(session);}catch(error){stop();onError(error);}}},
     close(){if(closed)return;stop();closed=true;}};
 }

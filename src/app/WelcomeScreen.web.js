@@ -15,8 +15,6 @@ import "../privacy/PrivacyScreens.css";
 
 const ROADMAP_CLASS = { now: "dw-now", test: "dw-test", goal: "dw-goal-step" };
 
-const TOTAL_SEÑAS = CATEGORIAS_VISIBLES.filter(category => category.id !== "oraciones").reduce((total, category) => total + category.señas.length, 0);
-const TOTAL_ORACIONES = CATEGORIAS_VISIBLES.find(category => category.id === "oraciones").señas.length;
 // Palabras reales del catálogo: es lo que la app le pide grabar a cada persona.
 const PALABRAS = ["hola", "gracias", "agua", "ayuda", "quiero comer", "necesito ayuda"];
 const AURORA = ["#d6f36a", "#2dd4bf", "#8b5cf6"];
@@ -66,7 +64,9 @@ function GoLink({ onBegin, className, children, href = "/app" }) {
   }}>{children}</a>;
 }
 
-export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal }) {
+export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal, categories=CATEGORIAS_VISIBLES }) {
+  const TOTAL_SEÑAS=categories.filter(category=>category.id!=='oraciones').reduce((total,category)=>total+category.señas.length,0);
+  const TOTAL_ORACIONES=categories.find(category=>category.id==='oraciones')?.señas.length||0;
   useEffect(() => {
     const previousColor = document.body.style.backgroundColor;
     document.body.style.backgroundColor = "#080c0a";
@@ -106,7 +106,7 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal })
               <dl className="dw-proof">
                 <div><dt>señas</dt><dd>{TOTAL_SEÑAS}</dd></div>
                 <div><dt>oraciones</dt><dd>{TOTAL_ORACIONES}</dd></div>
-                <div><dt>categorías</dt><dd>{CATEGORIAS_VISIBLES.length}</dd></div>
+                <div><dt>categorías</dt><dd>{categories.length}</dd></div>
               </dl>
             </div>
 
@@ -128,8 +128,8 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal })
         </section>
 
         <section className="dw-band" aria-label="Categorías del catálogo">
-          <Marquee items={CATEGORIAS_VISIBLES} />
-          <Marquee items={[...CATEGORIAS_VISIBLES].reverse()} reverse />
+          <Marquee items={categories} />
+          <Marquee items={[...categories].reverse()} reverse />
         </section>
 
         <section id="como-participar" className="dw-section dw-shell" aria-labelledby="dw-process-title">
@@ -164,9 +164,9 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal })
               <div><p>Una lengua.<br /><strong>Muchas formas de conectar.</strong></p><span>Imagen ilustrativa</span></div>
             </Tile>
             <Tile tone="dark" className="dw-stat">
-              <p className="dw-stat-number dw-stat-sky"><CountUp to={CATEGORIAS_VISIBLES.length} duration={1.8} /></p>
+              <p className="dw-stat-number dw-stat-sky"><CountUp to={categories.length} duration={1.8} /></p>
               <h3>categorías</h3>
-              <p>De {CATEGORIAS_VISIBLES[0].nombre} a {CATEGORIAS_VISIBLES[CATEGORIAS_VISIBLES.length - 1].nombre}.</p>
+              <p>{categories.length?`De ${categories[0].nombre} a ${categories.at(-1).nombre}.`:'Próximamente se habilitarán nuevas categorías para aportar.'}</p>
             </Tile>
           </Reveal>
         </section>

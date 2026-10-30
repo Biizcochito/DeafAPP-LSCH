@@ -8,84 +8,81 @@ import {createSignInferenceClient} from '../training/signInferenceWorker';
 import {createLiveSignRecognizer} from '../training/liveSignRecognition';
 import {createLiveInterpretationCamera} from '../training/liveInterpretationCamera';
 import {createLiveSignSpeech,spokenSignLabel} from '../training/liveSignSpeech';
-import {loadApprovedVocabulary} from '../training/approvedVocabulary';
-import {buildVocabularyCandidate} from '../training/vocabularyCandidate';
-import {startApprovedLibrarySync} from '../training/recordingLibrarySync';
-import {publicApprovedLibrary} from '../training/publicApprovedLibrary';
-import {VISIBLE_TARGETS} from '../training/trainingAssistant';
+import {startPreparedRecognition} from '../training/preparedRecognition';
+import {useLiveConversation} from '../training/useLiveConversation';
+import ConversationControls from '../training/ConversationControls.web';
 import '../ui/theme.css';
 import './LiveInterpretation.css';
 
 const PHASES={off:'Tu espacio para conversar',loading:'Preparando la cámara…',position:'Coloca tu cara y tus manos en el encuadre',
+  ready:'Continúa cuando quieras. Una pausa termina la frase.',
   tracking:'Haz la seña completa, a tu ritmo',recognizing:'Estoy reconociendo tu seña…',uncertain:'Prueba de nuevo, no encontré una coincidencia clara',
   matched:'Seña reconocida',model:'Estamos preparando las señas',error:'El reconocimiento necesita reiniciarse'};
 const cameraError=error=>error.name==='NotAllowedError'?'Permite el acceso a la cámara desde el navegador y vuelve a intentarlo.':
   error.name==='NotFoundError'?'No se encontró una cámara. Conecta una y vuelve a intentarlo.':error.message||'No se pudo iniciar la cámara. Inténtalo de nuevo.';
 
-export default function LiveInterpretation({client,onBack}) {
+export default function LiveInterpretation({client,onBack,preview=null}) {
   const video=useRef(null),canvas=useRef(null),camera=useRef(null),voice=useRef(null),sync=useRef(null);
-  const candidate=useRef(null),request=useRef(null),last=useRef(null),absent=useRef(null),live=useRef({phase:'off'});
+  const candidate=useRef(null),live=useRef({phase:'off'});
+  const labels=useRef(new Map());
   const [cameraState,setCameraState]=useState('off'),[result,setResult]=useState({phase:'off'});
-  const [library,setLibrary]=useState({loading:true,words:[],message:'Preparando las señas de la biblioteca…'});
-  const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true),[history,setHistory]=useState([]);
+  const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
+  const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
   const voicePreference=useRef(true);
+  const conversation=useLiveConversation({voice,catalogue:library.catalogue,onReset:()=>camera.current?.reset()});
+  const history=conversation.history;
   const voiceSupported=typeof window!=='undefined'&&!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
   useEffect(()=>{
     let alive=true;
     const update=result=>{
       if(!alive)return;
-      live.current=result;setResult(result);voice.current?.update(result);
-      const confirmed=result.phase==='matched'&&result.prediction?.accepted===true&&result.prediction.classId;
-      if(confirmed){
-        if(last.current!==confirmed||absent.current!==null&&performance.now()-absent.current>=1000){
-          setHistory(rows=>[...rows,{label:spokenSignLabel(confirmed),id:Date.now()+Math.random()}].slice(-6));
-        }
-        last.current=confirmed;absent.current=null;
-      }else if(absent.current===null)absent.current=performance.now();
+      live.current=result;setResult(result);conversation.update(result);
     };
     if(voiceSupported)voice.current=createLiveSignSpeech({speech:Speech,enabled:voicePreference.current,
+      labelForClass:id=>labels.current.get(id)||spokenSignLabel(id),
       onError:message=>{if(alive)setVoiceError(message);},onSpeak:()=>{if(alive)setVoiceError('');}});
     camera.current=createLiveInterpretationCamera({video:video.current,canvas:canvas.current,
       getMedia:constraints=>{if(!navigator.mediaDevices?.getUserMedia)throw Error('La cámara requiere HTTPS o localhost y un navegador compatible.');return navigator.mediaDevices.getUserMedia(constraints);},
       createTracker:createSignTracker,createInference:createSignInferenceClient,createRecognizer:createLiveSignRecognizer,
       freshLandmarks,trackingVector,draw:drawSignLandmarks,withTimeout:withTrackingTimeout,
       onResult:update,onState:state=>{if(alive)setCameraState(state);},onError:error=>{if(alive)setError(cameraError(error));}});
-    async function refresh(){
-      request.current?.abort();const controller=new AbortController();request.current=controller;
-      setLibrary(value=>({...value,loading:true,message:'Actualizando las señas de la biblioteca…'}));
-      // A withdrawn approval must stop contributing while its replacement loads.
-      candidate.current=null;camera.current?.setModel(null);voice.current?.reset();
-      try{
-        const data=await loadApprovedVocabulary({api:publicApprovedLibrary(client,controller.signal),client,targets:VISIBLE_TARGETS,signal:controller.signal,
-          onProgress:message=>{if(alive&&!controller.signal.aborted)setLibrary(value=>({...value,message}));}});
-        const built=await buildVocabularyCandidate(data.rows,VISIBLE_TARGETS,{cancelled:()=>!alive||controller.signal.aborted});
-        if(!alive||controller.signal.aborted||!built)return;
-        candidate.current=built.candidate;camera.current?.setModel(built.candidate);
-        setLibrary({loading:false,words:built.candidate?.enabledClasses||built.candidate?.classes||[],message:''});
-      }catch(error){if(alive&&!controller.signal.aborted){setLibrary({loading:false,words:[],message:'',error:error.message});throw error;}}
+    function prepared(data){if(!alive)return;
+      labels.current=new Map((data.catalogue||[]).map(row=>[row.classId,row.displayLabel]));
+      if(candidate.current?.id!==data.model?.id)conversation.reset();candidate.current=data.model;camera.current?.setModel(data.model);
+      setLibrary({loading:!!data.loading,words:data.model?.enabledClasses||data.model?.classes||[],catalogue:data.catalogue||[],message:data.preparing?'Preparando la actualización aprobada de la biblioteca…':'',error:data.error,bytes:data.bytes});
     }
-    sync.current=startApprovedLibrarySync({client,refresh,onError:error=>{if(alive){camera.current?.setModel(null);voice.current?.reset();setLibrary(value=>({...value,loading:false,error:error.message}));}},
-      onConnected:()=>{if(alive){camera.current?.setModel(candidate.current);setLibrary(value=>value.error?{...value,error:undefined}:value);}}});
+    let previewTimer;
+    if(preview){
+      prepared({model:preview.model,catalogue:preview.catalogue,loading:false});
+      const check=async()=>{if(!alive||document.hidden)return;try{
+        const response=await client.rpc('deafapp_recognition_revision',{});
+        if(response.error||response.data?.revision!==preview.revision||!response.data.ready)throw Error('La biblioteca cambió. Vuelve al vocabulario y abre una prueba actualizada.');
+      }catch(e){if(alive){camera.current?.stop();prepared({model:null,catalogue:preview.catalogue,loading:false,error:e.message});}}};
+      void check();previewTimer=setInterval(()=>void check(),2000);
+    }
+    else sync.current=startPreparedRecognition({client,onUpdate:prepared});
     const hidden=()=>{if(document.hidden)camera.current?.stop();};
     const leave=()=>camera.current?.stop();
     document.addEventListener('visibilitychange',hidden);window.addEventListener('pagehide',leave);
-    return()=>{alive=false;sync.current?.close();request.current?.abort();camera.current?.close();voice.current?.close();camera.current=null;voice.current=null;
+    return()=>{alive=false;clearInterval(previewTimer);sync.current?.close();camera.current?.close();voice.current?.close();camera.current=null;voice.current=null;
       document.removeEventListener('visibilitychange',hidden);window.removeEventListener('pagehide',leave);};
-  },[client,voiceSupported]);
+  },[client,voiceSupported,preview]);
   function toggleVoice(){
     const next=!voicePreference.current;voicePreference.current=next;setVoiceOn(next);setVoiceError('');voice.current?.setEnabled(next);
-    if(next)voice.current?.update(live.current);
+    if(next&&conversation.mode==='signs')voice.current?.update(live.current);
   }
   function testVoice(){voicePreference.current=true;setVoiceOn(true);setVoiceError('');voice.current?.setEnabled(true);voice.current?.preview();}
   const matched=result.phase==='matched'&&result.prediction?.accepted===true;
-  const word=matched?spokenSignLabel(result.prediction.classId):'';
+  const word=matched?(labels.current.get(result.prediction.classId)||spokenSignLabel(result.prediction.classId)):'';
   const running=cameraState!=='off';
+  const lastPhrase=[...history].reverse().find(row=>row.kind==='phrase');
+  const currentText=conversation.mode==='phrases'?(conversation.draft.text||lastPhrase?.label||''):(matched?word:'');
   return <div className="deaf-app live-interpretation">
     <header className="li-nav"><a href="/" onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onBack();}} aria-label="DeafApp, volver al inicio">
       <img src="/brand/deafapp-mark.svg" alt="" width="34" height="34"/><span>Deaf<span>App</span></span></a>
-      <button className="li-back" onClick={onBack}>← Volver al inicio</button></header>
+      <button className="li-back" onClick={onBack}>{preview?'← Volver al vocabulario':'← Volver al inicio'}</button></header>
     <main className="li-main">
-      <div className="li-heading"><span className="li-eyebrow">LSCh · TEXTO + VOZ</span><h1>Tus manos tienen <em>voz.</em></h1>
+      <div className="li-heading"><span className="li-eyebrow">{preview?'EVALUACIÓN PRIVADA · CÁMARA + FRASES':'LSCh · TEXTO + VOZ'}</span><h1>Tus manos tienen <em>voz.</em></h1>
         <p>Haz una seña frente a la cámara. Nosotros ponemos las palabras.</p></div>
       <div className="li-workspace">
         <section className="li-camera-section" aria-label="Cámara de interpretación">
@@ -102,21 +99,22 @@ export default function LiveInterpretation({client,onBack}) {
         </section>
         <section className="li-conversation" aria-labelledby="li-result-title">
           <div className="li-result-heading"><span className="li-eyebrow">DE TUS MANOS A LAS PALABRAS</span><span className="li-text-badge">Texto en vivo</span></div>
-          <div className="li-current" role="status" aria-live="polite" aria-atomic="true"><h2 id="li-result-title">{matched?'Esto es lo que reconocí':'Aquí aparece tu seña'}</h2>
-            <p className={matched?'li-word':'li-placeholder'}>{matched?word:'Te escuchamos con la mirada.'}</p>
-            <p className="li-result-hint">{matched?'Comprueba que coincide con lo que quieres decir.':running?PHASES[result.phase]||'Preparando…':'Activa la cámara y exprésate a tu ritmo.'}</p></div>
-          <div className="li-voice"><div><strong>Voz en español</strong><span>{voiceSupported?(voiceOn?'Leer cada seña reconocida':'Voz silenciada'):'Tu navegador no admite voz; puedes usar el texto.'}</span></div>
+          <div className="li-current" role="status" aria-live="polite" aria-atomic="true"><h2 id="li-result-title">{conversation.mode==='phrases'?(conversation.draft.text?'Frase en construcción':currentText?'Última frase':'Aquí se forma tu frase'):(matched?'Esto es lo que reconocí':'Aquí aparece tu seña')}</h2>
+            <p className={currentText?'li-word':'li-placeholder'}>{currentText||'Te escuchamos con la mirada.'}</p>
+            <p className="li-result-hint">{currentText?'Comprueba que coincide con lo que quieres decir.':running?PHASES[result.phase]||'Preparando…':'Activa la cámara y exprésate a tu ritmo.'}</p></div>
+          <div className="li-voice"><div><strong>Voz en español</strong><span>{voiceSupported?(voiceOn?(conversation.mode==='phrases'?'Leer al terminar la frase':'Leer cada seña reconocida'):'Voz silenciada'):'Tu navegador no admite voz; puedes usar el texto.'}</span></div>
             <button aria-pressed={voiceOn} disabled={!voiceSupported} onClick={toggleVoice}>{voiceOn?'Silenciar voz':'Activar voz'}</button></div>
           <button className="li-test-voice" disabled={!voiceSupported} onClick={testVoice}>♫ Probar voz</button>
           {voiceError&&<p className="li-error" role="status">{voiceError}</p>}
-          <div className="li-history"><div><h3>En esta conversación</h3><button disabled={!history.length} onClick={()=>setHistory([])}>Limpiar</button></div>
-            {history.length?<ol aria-label="Últimas señas reconocidas">{history.map(row=><li key={row.id}>{row.label}</li>)}</ol>:<p>Las últimas señas reconocidas aparecerán aquí.</p>}</div>
-          <p className="li-library-note">Reconoce las señas guardadas en la biblioteca que están habilitadas para interpretación. La biblioteca se actualiza al aprobar nuevos aportes con datos suficientes.</p>
+          <ConversationControls conversation={conversation} prefix="public-conversation"/>
+          <div className="li-history"><div><h3>En esta conversación</h3><button disabled={!history.length&&!conversation.draft.canFinish} onClick={conversation.clearHistory}>Limpiar</button></div>
+            {history.length?<ol aria-label="Últimas frases y señas reconocidas">{history.map(row=><li key={row.id} data-review={row.requiresReview||undefined}>{row.label}{row.requiresReview&&<small> · Revisar</small>}</li>)}</ol>:<p>Las últimas frases y señas reconocidas aparecerán aquí.</p>}</div>
+          <p className="li-library-note">Reconoce las señas habilitadas de la biblioteca. La cobertura aumenta con aportes revisados y pruebas.</p>
         </section>
       </div>
       <section className="li-bottom" aria-label="Ayuda y señas disponibles"><div className="li-tips"><span>01 <b>Busca buena luz</b></span><span>02 <b>Muestra cara y manos</b></span><span>03 <b>Haz la seña completa</b></span></div>
         <details className="li-vocabulary"><summary>{library.loading?'Preparando biblioteca…':`${library.words.length} palabras y oraciones habilitadas`}<span>Ver señas</span></summary>
-          {library.loading?<p role="status">{library.message}</p>:<div className="li-chips">{library.words.map(id=><span key={id}>{spokenSignLabel(id)}</span>)}</div>}
+          {library.loading?<p role="status">{library.message}</p>:<div className="li-chips">{library.words.map(id=><span key={id}>{labels.current.get(id)||spokenSignLabel(id)}</span>)}</div>}
           {!library.loading&&!library.words.length&&!library.error&&<p>Se necesitan al menos tres tomas aprobadas distintas por seña y datos de seguimiento aptos para preparar la interpretación.</p>}
         </details>
         {library.loading&&<p className="li-sync-status" role="status">{library.message}</p>}

@@ -1,23 +1,18 @@
 import {predictForest, predictForestVotes} from './visibleTraining.js';
-import {handSequence, sequenceDistance, rankSequenceDistances, SEQUENCE_CANDIDATE_FORMAT} from './sequenceCandidate.js';
+import {handSequence, sequenceDistance, rankSequenceDistances, prepareSequenceSearch, searchSequenceDistances, SEQUENCE_CANDIDATE_FORMAT} from './sequenceCandidate.js';
 
 // Only self-contained functions cross this boundary, including in minified builds.
-function workerRuntime(distance, rank, forest, sequenceFormat) {
-  let model;
+function workerRuntime(distance, rank, forest, sequenceFormat,prepare,search) {
+  let model,index;
   self.onmessage = ({data}) => {
-    if (data.type === 'model') { model = data.model; return; }
+    if (data.type === 'model') { model = data.model;index=model.format===sequenceFormat?prepare(model):null; return; }
     if (data.type !== 'predict') return;
     const started = performance.now();
     try {
       const predictions = data.windows.map(window => {
         if (model.format !== sequenceFormat) return forest(model, window.features);
         if (window.query.length < 3) return {accepted:false,classId:null,reason:'no-active-hands',candidates:[]};
-        const distances = new Map(model.classes.map(id => [id, Infinity]));
-        for (const row of model.references) {
-          const best=distances.get(row.classId),direct=distance(window.query,row.sequence,best);
-          const value = Math.min(direct,distance(window.reflection,row.sequence,Math.min(best,direct)));
-          distances.set(row.classId, Math.min(best,value));
-        }
+        const distances=search(model,window.query,window.reflection,index,distance);
         return rank(model,distances);
       });
       self.postMessage({id:data.id,predictions,computeMs:performance.now()-started});
@@ -26,7 +21,7 @@ function workerRuntime(distance, rank, forest, sequenceFormat) {
 }
 
 export function signInferenceWorkerSource() {
-  return `(${workerRuntime.toString()})(${sequenceDistance.toString()},${rankSequenceDistances.toString()},${predictForestVotes.toString()},${JSON.stringify(SEQUENCE_CANDIDATE_FORMAT)});`;
+  return `(${workerRuntime.toString()})(${sequenceDistance.toString()},${rankSequenceDistances.toString()},${predictForestVotes.toString()},${JSON.stringify(SEQUENCE_CANDIDATE_FORMAT)},${prepareSequenceSearch.toString()},${searchSequenceDistances.toString()});`;
 }
 
 export function createSignInferenceClient(model, {WorkerClass=globalThis.Worker, timeoutMs=5000}={}) {

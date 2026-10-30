@@ -60,6 +60,10 @@ test('retirar el modelo impide seguir prediciendo con aprobaciones antiguas',asy
   h.runtime.setModel(null);assert.equal(h.results.at(-1).phase,'model');assert.equal(h.counts().recognizerClosed,1);
   h.runtime.setModel({...model,id:'refreshed'});assert.equal(h.results.at(-1).phase,'position');h.runtime.close();
 });
+test('limpiar una conversación reinicia la evidencia sin cerrar la cámara',async()=>{
+  const h=harness();h.runtime.setModel(model);await h.runtime.start();const counts=h.counts();h.runtime.reset();
+  assert.equal(h.results.at(-1).phase,'position');assert.deepEqual(h.counts(),counts);assert.equal(h.video.srcObject,h.stream);h.runtime.close();
+});
 test('el permiso denegado permite volver a intentar sin retener una sesión fallida',async()=>{
   let attempts=0;const h=harness({getMedia:async()=>{if(!attempts++)throw Object.assign(Error('Permiso denegado'),{name:'NotAllowedError'});return h.stream;}});
   h.runtime.setModel(model);await h.runtime.start();assert.equal(h.states.at(-1),'off');assert.equal(h.errors.length,1);

@@ -1,6 +1,7 @@
 import {validSequence,sequenceKey} from './sequenceData.js';
 
 export const SEQUENCE_CANDIDATE_FORMAT='deafapp-lsch-sequence-prototypes';
+export const MAX_SEQUENCE_CLASSES=1024,MAX_SEQUENCE_REFERENCES=8192;
 // Palm-relative hand shape and face-relative wrist position, independent of facial identity.
 // Sorting active hands and considering a reflected query tolerates the legacy camera's slot convention.
 export function handSequence(features,reflected=false){
@@ -38,18 +39,41 @@ export function sequenceDistance(a,b,maximum=Infinity){
  return previous[b.length]/(a.length+b.length);
 }
 export function validateSequenceCandidate(model){
- if(model?.format!==SEQUENCE_CANDIDATE_FORMAT||model.version!==1||model.inputShape?.join()!=='32,171'||!Array.isArray(model.classes)||model.classes.length<2||model.classes.length>33||new Set(model.classes).size!==model.classes.length||model.classes.some(id=>typeof id!=='string')||!Array.isArray(model.references)||!model.references.length||model.references.length>200)throw Error('Candidato temporal incompatible.');
+ if(model?.format!==SEQUENCE_CANDIDATE_FORMAT||model.version!==1||model.inputShape?.join()!=='32,171'||!Array.isArray(model.classes)||model.classes.length<2||model.classes.length>MAX_SEQUENCE_CLASSES||new Set(model.classes).size!==model.classes.length||model.classes.some(id=>typeof id!=='string'||id.length>122)||!Array.isArray(model.references)||!model.references.length||model.references.length>MAX_SEQUENCE_REFERENCES)throw Error('Candidato temporal incompatible.');
  if(!Number.isFinite(model.decision?.maximumDistance)||model.decision.maximumDistance<=0||model.decision.maximumDistance>2||!Number.isFinite(model.decision.minimumRelativeMargin)||model.decision.minimumRelativeMargin<0||model.decision.minimumRelativeMargin>=1)throw Error('Falta la regla de decisión temporal.');
- for(const row of model.references){if(!model.classes.includes(row.classId)||typeof row.parentHash!=='string'||!Array.isArray(row.sequence)||row.sequence.length<3||row.sequence.length>32||row.sequence.some(frame=>!Array.isArray(frame)||frame.length!==88||frame.some(v=>!Number.isFinite(v)||Math.abs(v)>100)))throw Error('Referencia temporal incompatible.');}
+ for(const row of model.references){if(!model.classes.includes(row.classId)||typeof row.parentHash!=='string'||!Array.isArray(row.sequence)||row.sequence.length<3||row.sequence.length>32||row.sequence.some(frame=>(!Array.isArray(frame)&&!(frame instanceof Float32Array))||frame.length!==88||frame.some(v=>!Number.isFinite(v)||Math.abs(v)>100)))throw Error('Referencia temporal incompatible.');}
  if(model.enabledClasses&&(!Array.isArray(model.enabledClasses)||model.enabledClasses.length<2||model.enabledClasses.some(id=>!model.classes.includes(id))))throw Error('Clases habilitadas incompatibles.');
  if(model.classes.some(id=>!model.references.some(row=>row.classId===id)))throw Error('Faltan referencias de una clase.');
  return model;
 }
+// The coordinate envelope is a lower bound on DTW: each query frame must be
+// paired at least once. Pruning against the exact third-best class preserves
+// the winner, its margin, abstentions and the three displayed alternatives.
+export function prepareSequenceSearch(model){
+ return model.references.map(row=>{
+  const low=Array(88).fill(Infinity),high=Array(88).fill(-Infinity);
+  for(const frame of row.sequence)for(let i=0;i<88;i++){low[i]=Math.min(low[i],frame[i]);high[i]=Math.max(high[i],frame[i]);}
+  return {row,low,high};
+ });
+}
+export function searchSequenceDistances(model,query,reflection,index,distance=sequenceDistance){
+ const distances=new Map(model.classes.map(id=>[id,Infinity]));let top=[];
+ function bound(frames,reference){let cost=0;for(const frame of frames)for(let i=0;i<88;i++){const gap=frame[i]<reference.low[i]?reference.low[i]-frame[i]:frame[i]>reference.high[i]?frame[i]-reference.high[i]:0;cost+=gap*gap;}return cost/(frames.length+reference.row.sequence.length);}
+ const ordered=index.map(reference=>({reference,bound:Math.min(bound(query,reference),bound(reflection,reference))})).sort((a,b)=>a.bound-b.bound);
+ for(const item of ordered){
+  const row=item.reference.row,best=distances.get(row.classId),third=top.length===3?top[2].distance:Infinity,limit=Math.min(best,third);
+  if(item.bound>limit+1e-12)continue;
+  const direct=distance(query,row.sequence,limit),value=Math.min(direct,distance(reflection,row.sequence,Math.min(limit,direct)));
+  if(value<best){distances.set(row.classId,value);top=top.filter(v=>v.classId!==row.classId);top.push({classId:row.classId,distance:value});top.sort((a,b)=>a.distance-b.distance);top=top.slice(0,3);}
+ }
+ return distances;
+}
+const searchCache=new WeakMap();
 export function predictSequenceCandidate(model,features){
  const query=handSequence(features),reflection=handSequence(features,true);
  if(query.length<3)return {accepted:false,classId:null,suggestedClassId:null,reason:'no-active-hands',candidates:[]};
- const distances=new Map(model.classes.map(id=>[id,Infinity]));
- for(const row of model.references){const best=distances.get(row.classId),direct=sequenceDistance(query,row.sequence,best),distance=Math.min(direct,sequenceDistance(reflection,row.sequence,Math.min(best,direct)));distances.set(row.classId,Math.min(best,distance));}
+ if(!searchCache.has(model))searchCache.set(model,prepareSequenceSearch(model));
+ const distances=searchSequenceDistances(model,query,reflection,searchCache.get(model));
  return rankSequenceDistances(model,distances);
 }
 // Shared by manual inference and the live worker; keep the same abstention rules.

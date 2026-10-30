@@ -12,6 +12,7 @@ Ejecuta los comandos desde la raíz del repositorio. La aplicación se inicia co
 | [Backend Python](../backend/README.md) | API, dependencias y entrenamiento local |
 | [Entrenamiento LSCh](../training/README.md) | Preparación de datos y evaluación |
 | [Administrador](../admin/README.md) | Configuración y operaciones del panel privado |
+| [Vocabulario controlado](VOCABULARIO-CONTROLADO.md) | Recopilación, habilitación, evaluación y frases con voz |
 | [Archivo](../archive/README.md) | Exportaciones y prototipos de referencia |
 
 ## Ubicación de los archivos
