@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { warmSignTracking, drawSignLandmarks } from "./landmarkTracking";
 import { freshLandmarks, landmarkViewport, withTrackingTimeout } from "./trackingOverlay";
 import { cameraFrameReady } from "../recording/recordingHandGuard";
+import {createLandmarkContinuity} from './landmarkContinuity';
 
 export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus, onTracking }) {
   const canvasRef = useRef(null);
@@ -13,6 +14,7 @@ export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus,
     let raf;
     let tracker;
     let results = {};
+    const continuity=createLandmarkContinuity();
     let lastStatus = "";
     let startupError = "";
     const sessionStart = performance.now();
@@ -58,6 +60,7 @@ export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus,
         });
         if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
         const fresh = freshLandmarks(results, now);
+        const visual = continuity.frame(now);
         onTracking?.(enabled ? {
           ...fresh, enabled: true, sourceWidth: video.videoWidth, sourceHeight: video.videoHeight,
           handStatus: startupError || channels.hands.error ? "error" : !tracker || !channels.hands.ready ? "loading" : "ready",
@@ -71,7 +74,7 @@ export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus,
         // Paint the real camera frame and its marks in the same 2D surface.
         // This avoids black accelerated <video> layers beneath the overlay.
         ctx.drawImage(video, 0, 0, width, height);
-        if (enabled) drawSignLandmarks(ctx, fresh);
+        if (enabled) drawSignLandmarks(ctx, visual);
         ctx.restore();
         canvas.dataset.facePoints = String(fresh.faceLandmarks?.length || 0);
         canvas.dataset.leftHandPoints = String(fresh.leftHandLandmarks?.length || 0);
@@ -81,6 +84,8 @@ export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus,
         canvas.dataset.faceLatency = String(Math.round(results.faceLatency || 0));
         canvas.dataset.handLatency = String(Math.round(results.handLatency || 0));
         canvas.dataset.handBackend = results.handBackend || 'loading';
+        canvas.dataset.visualLeftHandPoints=String(visual.leftHandLandmarks?.length||0);
+        canvas.dataset.visualRightHandPoints=String(visual.rightHandLandmarks?.length||0);
         const faceStatus = channels.face.error ? `Cara: ${channels.face.error}` : !channels.face.ready ? "Iniciando cara…" : fresh.faceLandmarks?.length ? "Cara detectada" : "Buscando cara";
         const handStatus = channels.hands.error ? `Manos: ${channels.hands.error}` : !channels.hands.ready ? "Iniciando manos…" : `Izquierda: ${fresh.leftHandLandmarks?.length ? "detectada" : "buscando"} · Derecha: ${fresh.rightHandLandmarks?.length ? "detectada" : "buscando"}`;
         if (enabled) {
@@ -110,11 +115,14 @@ export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus,
         tracker = await warmSignTracking();
         if (cancelled) return;
         tracker.onResults(value => {
-          if (!cancelled) results = {
-            ...value,
-            leftHandLandmarks: value.handTime >= sessionStart ? value.leftHandLandmarks : undefined,
-            rightHandLandmarks: value.handTime >= sessionStart ? value.rightHandLandmarks : undefined,
-          };
+          if (!cancelled) {
+            results = {
+              ...value,
+              leftHandLandmarks: value.handTime >= sessionStart ? value.leftHandLandmarks : undefined,
+              rightHandLandmarks: value.handTime >= sessionStart ? value.rightHandLandmarks : undefined,
+            };
+            continuity.update(results,performance.now());
+          }
         });
       } catch (error) {
         clear();
@@ -129,6 +137,7 @@ export default function CameraLandmarks({ cameraContainerRef, enabled, onStatus,
       cancelled = true;
       cancelAnimationFrame(raf);
       clear();
+      continuity.clear();
       onTracking?.({ enabled: false, handStatus: "disabled" });
       tracker?.onResults(() => {});
     };

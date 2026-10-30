@@ -316,8 +316,9 @@ export async function createSignTracker({ legacyHands = typeof Worker === "undef
 export function drawSignLandmarks(ctx, results) {
   const { width, height } = ctx.canvas;
   const point = lm => lm && Number.isFinite(lm.x) && Number.isFinite(lm.y);
-  const draw = (landmarks, connections, color, radius, indices) => {
+  const draw = (landmarks, connections, color, radius, indices, alpha=1) => {
     if (!landmarks?.length) return;
+    ctx.globalAlpha=alpha;
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
     ctx.lineWidth = Math.max(1, width / 400);
@@ -336,8 +337,8 @@ export function drawSignLandmarks(ctx, results) {
     }
   };
   ctx.save();
-  draw(results.faceLandmarks, window.FACEMESH_CONTOURS, "#F7DC6F", 2, FACE_KEY_IDX);
-  draw(results.rightHandLandmarks, window.HAND_CONNECTIONS || HAND_CONNECTIONS, "#4ECDC4", 3);
-  draw(results.leftHandLandmarks, window.HAND_CONNECTIONS || HAND_CONNECTIONS, "#79B8FF", 3);
+  draw(results.faceLandmarks, window.FACEMESH_CONTOURS, "#F7DC6F", 2, FACE_KEY_IDX,results.overlayAlpha?.faceLandmarks??1);
+  draw(results.rightHandLandmarks, window.HAND_CONNECTIONS || HAND_CONNECTIONS, "#4ECDC4", 3,undefined,results.overlayAlpha?.rightHandLandmarks??1);
+  draw(results.leftHandLandmarks, window.HAND_CONNECTIONS || HAND_CONNECTIONS, "#79B8FF", 3,undefined,results.overlayAlpha?.leftHandLandmarks??1);
   ctx.restore();
 }

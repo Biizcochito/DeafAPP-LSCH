@@ -2,7 +2,7 @@
 export async function createHandWorker(options = {}) {
   // This is an exported public asset, not a Metro worker module.
   const workerUrl = new URL("hand-tracking-worker.js", document.baseURI);
-  workerUrl.searchParams.set("v", "learned-hands-20261020");
+  workerUrl.searchParams.set("v", "stable-traces-20261030");
   const worker = new Worker(workerUrl);
   const pending = new Map();
   let sequence = 0;

@@ -1,0 +1,13 @@
+# Continuidad del trazado
+
+La recuperación se comparte entre Grabar, Entrenamiento e Interpretar. Los puntos siguen procediendo de inferencias nuevas del modelo de manos; no se generan dedos ni se consideran detecciones las posiciones retenidas para dibujar.
+
+- La búsqueda conserva la región de una mano durante hasta 650 ms, en lugar de abandonarla tras dos resultados fallidos. La región puede anticipar desplazamientos limitados a partir de dos posiciones reales y conserva su proporción física en horizontal y vertical.
+- Si falla una región conocida, se intenta de nuevo en ese mismo fotograma alrededor de la última posición, con un margen limitado. Después se usa la adquisición por palma. Las manos nuevas se buscan cada dos fotogramas; perder una mano conocida adelanta esa búsqueda.
+- Se mantiene el umbral de confianza de 0,8, la comprobación de 21 puntos finitos, la eliminación de duplicados y la lateralidad aprendida. Una deformación brusca de la proporción entre altura y ancho de la palma exige recuperar mediante otra búsqueda. No se baja la confianza para ocultar pérdidas.
+- Los canales de cara y manos funcionan de forma independiente en Interpretar y Entrenamiento, con un solo trabajo por canal y siempre sobre el fotograma más reciente. El límite nominal de manos es unos 30 envíos por segundo; el ritmo efectivo depende del dispositivo y la inferencia. Una cara lenta no bloquea las manos.
+- Solo para dibujar, se suaviza la vibración y se desvanece una pérdida breve durante 140 ms. Las publicaciones de la cara no prolongan esa tolerancia. Los desplazamientos grandes se muestran inmediatamente y cualquier dibujo caduca como máximo a los 600 ms de su captura real.
+- Los controles de manos de la grabación, las muestras guardadas y el reconocimiento reciben siempre los puntos originales y sus tiempos. La caché visual no los alimenta. Se mantienen los requisitos existentes: una mano en móvil y la preparación de dos manos en computador.
+- Apagar la cámara, salir o cerrar el componente elimina temporizadores y trazados. Los resultados tardíos no reactivan la cámara ni modifican una sesión cerrada.
+
+Pruebas: `npm run test:assistant` incluye geometría, recuperación, detecciones duplicadas, separación de ritmos, caducidad visual, permisos de grabación y aislamiento entre dibujo e inferencia. La comparación en navegador usa el modelo real y una imagen de manos de prueba oficial, con desplazamientos y dos fotogramas de oclusión. Ese ensayo mide seguimiento en condiciones controladas; no valida la exactitud lingüística de LSCh ni garantiza seguimiento cuando las manos quedan ocultas o fuera de la cámara.

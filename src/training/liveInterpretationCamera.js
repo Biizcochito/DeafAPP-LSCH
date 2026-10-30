@@ -1,3 +1,6 @@
+import {createLandmarkContinuity} from '../camera/landmarkContinuity.js';
+import {createLiveTrackingPump} from '../camera/liveTrackingPump.js';
+
 export function createLiveInterpretationCamera({getMedia,createTracker,createInference,createRecognizer,
   freshLandmarks,trackingVector,draw,withTimeout,video,canvas,onResult,onState,onError,
   now=()=>performance.now(),setTimer=setTimeout,clearTimer=clearTimeout,setRepeater=setInterval,clearRepeater=clearInterval}) {
@@ -13,7 +16,7 @@ export function createLiveInterpretationCamera({getMedia,createTracker,createInf
   }
   function stop() {
     const state=session;session=null;
-    if(state){clearTimer(state.timer);clearRepeater(state.expiry);state.recognizer?.close();state.inference?.close();
+    if(state){state.pump?.close();state.overlay?.clear();clearRepeater(state.expiry);state.recognizer?.close();state.inference?.close();
       state.stream?.getTracks().forEach(track=>track.stop());void state.tracker?.close();}
     video.srcObject=null;
     canvas.getContext('2d')?.clearRect(0,0,canvas.width,canvas.height);
@@ -29,31 +32,24 @@ export function createLiveInterpretationCamera({getMedia,createTracker,createInf
       if(!current(state))return;
       const tracker=await createTracker();
       if(!current(state)){await tracker.close();return;}
-      state.tracker=tracker;configure(state);
+      state.tracker=tracker;state.overlay=createLandmarkContinuity();configure(state);
+      function paint(time){
+        if(canvas.width!==video.videoWidth)canvas.width=video.videoWidth;
+        if(canvas.height!==video.videoHeight)canvas.height=video.videoHeight;
+        const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);draw(ctx,state.overlay.frame(time));
+      }
       tracker.onResults(result=>{
         if(!current(state))return;
         const time=now(),fresh=freshLandmarks(result,time);
-        canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-        const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);draw(ctx,fresh);
+        state.overlay.update(result,time);paint(time);
         state.recognizer?.expire(time);
         if(result.handTime===state.lastHandTime)return;
         state.lastHandTime=result.handTime;
         state.recognizer?.push({timeMs:time,vector:time-result.handTime<=350?trackingVector(fresh,video.videoWidth,video.videoHeight):null});
       });
-      async function tick(){
-        if(!current(state))return;
-        const started=now();
-        try{
-          if(video.readyState>=2&&video.currentTime!==state.videoTime){
-            state.videoTime=video.currentTime;
-            await withTimeout(Promise.all([tracker.sendHands({image:video}),tracker.sendFace({image:video})]),state.warm?10000:45000);
-            state.warm=true;
-          }
-          if(current(state))state.timer=setTimer(tick,Math.max(0,50-(now()-started)));
-        }catch(error){if(current(state)){stop();onError(error);}}
-      }
-      state.expiry=setRepeater(()=>state.recognizer?.expire(now()),100);
-      onState('on');void tick();
+      state.pump=createLiveTrackingPump({tracker,video,now,withTimeout,setTimer,clearTimer,onError:error=>{if(current(state)){stop();onError(error);}}});
+      state.expiry=setRepeater(()=>{if(current(state)){const time=now();state.recognizer?.expire(time);paint(time);}},33);
+      onState('on');
     }catch(error){if(current(state)){stop();onError(error);}}
   }
   return {start,stop,reset(){if(!closed)session?.recognizer?.reset('position');},setModel(value){if(closed||model?.id===value?.id)return;model=value;if(session?.tracker){try{configure(session);}catch(error){stop();onError(error);}}},

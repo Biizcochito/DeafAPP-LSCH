@@ -10,6 +10,8 @@ import {canonicalPhraseLabel,ESTOY_BIEN_CLASS} from '../training/phraseLabels';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
 import {freshLandmarks,withTrackingTimeout} from '../camera/trackingOverlay';
+import {createLandmarkContinuity} from '../camera/landmarkContinuity';
+import {createLiveTrackingPump} from '../camera/liveTrackingPump';
 import {createLiveSignRecognizer} from '../training/liveSignRecognition';
 import {createSignInferenceClient} from '../training/signInferenceWorker';
 import {PHRASES,trackingVector,captureFeatures,decodeCandidate} from '../training/visibleTraining';
@@ -41,7 +43,7 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   const libraryRequest=useRef(null),librarySync=useRef(null),candidateRequest=useRef(0);
   const committeeCache=useRef(new Map()),captureSection=useRef(null),localSignCandidate=useRef(null);
   const video=useRef(null),canvas=useRef(null),live=useRef(null),alive=useRef(true),capture=useRef(null),model=useRef(null),candidate=useRef(null),working=useRef(false);
-  function stop(){conversation.reset();cameraEpoch.current++;const state=live.current;live.current=null;capture.current=null;if(state){clearTimeout(state.timer);clearInterval(state.expiry);state.recognizer?.close();state.inference?.close();state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current){setActive(false);setLiveResult({phase:'off'});setSignResult(value=>value?.live?null:value);}}
+  function stop(){conversation.reset();cameraEpoch.current++;const state=live.current;live.current=null;capture.current=null;if(state){state.pump?.close();state.overlay?.clear();clearInterval(state.expiry);state.recognizer?.close();state.inference?.close();state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current){setActive(false);setLiveResult({phase:'off'});setSignResult(value=>value?.live?null:value);}}
   function configureRecognition(value,name){
     const state=live.current;if(!state)return;
     if(value&&state.recognitionId===value.id&&state.recognizer&&state.recognitionPhase!=='error')return;
@@ -118,18 +120,19 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
     if(!alive.current||cameraEpoch.current!==epoch)return;
     const stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640},height:{ideal:480},facingMode:'user'},audio:false});
     if(!alive.current||cameraEpoch.current!==epoch){stream.getTracks().forEach(track=>track.stop());return;}
-    const state={stream,tracker:null,timer:null};live.current=state;
+    const state={stream,tracker:null,overlay:createLandmarkContinuity()};live.current=state;
     try{
       video.current.srcObject=stream;setActive(true);setLiveResult({phase:'loading'});await video.current.play();
       if(live.current!==state)return;
       state.tracker=await createSignTracker();
       if(live.current!==state){await state.tracker.close();return;}
       configureRecognition(localSignCandidate.current||candidate.current,personalSigns?'Grabaciones aprobadas y tomas personales':progress?.models.find(row=>row.modelId===candidateId)?.name);
+      const paint=time=>{const v=video.current,c=canvas.current;if(c.width!==v.videoWidth)c.width=v.videoWidth;if(c.height!==v.videoHeight)c.height=v.videoHeight;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);drawSignLandmarks(ctx,state.overlay.frame(time));};
       state.tracker.onResults(result=>{
         if(live.current!==state)return;
-        const v=video.current,c=canvas.current;c.width=v.videoWidth;c.height=v.videoHeight;
+        const v=video.current;
         const time=performance.now(),fresh=freshLandmarks(result,time);
-        const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);drawSignLandmarks(ctx,fresh);
+        state.overlay.update(result,time);paint(time);
         state.recognizer?.expire(time);
         if(result.handTime===state.lastHandTime)return;
         state.lastHandTime=result.handTime;
@@ -137,10 +140,10 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
         if(capture.current)capture.current.push({timeMs:time-state.started,vector});
         if(livePreference.current)state.recognizer?.push({timeMs:time,vector});
       });
-      const tick=async()=>{if(live.current!==state)return;const started=performance.now();try{if(video.current.readyState>=2&&video.current.currentTime!==state.videoTime){state.videoTime=video.current.currentTime;await withTrackingTimeout(Promise.all([state.tracker.sendHands({image:video.current}),state.tracker.sendFace({image:video.current})]),state.warm?10000:45000);state.warm=true;}if(live.current===state)state.timer=setTimeout(tick,Math.max(0,50-(performance.now()-started)));}catch(e){if(live.current===state){stop();if(alive.current)setError(e.message);}}};
-      state.expiry=setInterval(()=>state.recognizer?.expire(performance.now()),100);
+      state.pump=createLiveTrackingPump({tracker:state.tracker,video:video.current,withTimeout:withTrackingTimeout,onError:e=>{if(live.current===state){stop();if(alive.current)setError(e.message);}}});
+      state.expiry=setInterval(()=>{if(live.current===state){const time=performance.now();state.recognizer?.expire(time);paint(time);}},33);
       if(candidateError)setError(candidateError);
-      setMessage('Cámara preparada. Haz una seña del vocabulario activo para verla sobre la imagen.');void tick();
+      setMessage('Cámara preparada. Haz una seña del vocabulario activo para verla sobre la imagen.');
     }catch(e){if(live.current===state)stop();throw e;}
   });}
   async function collect(mode){await task(async()=>{
