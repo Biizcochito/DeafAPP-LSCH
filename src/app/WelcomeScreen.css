@@ -20,6 +20,8 @@
 .dw-nav-links { display: flex; gap: 4px; }
 .dw-nav-links a { padding: 10px 16px; border-radius: 999px; color: var(--muted); font-size: 15px; font-weight: 500; transition: background 160ms, color 160ms; }
 .dw-nav-links a:hover { background: rgba(255, 255, 255, .07); color: var(--cream); }
+.dw-nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.dw-nav-actions .dw-btn { white-space: nowrap; }
 
 /* Botones */
 .dw-btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 46px; padding: 0 20px; border-radius: 999px; background: var(--lime); color: var(--ink); font-weight: 650; transition: transform 220ms var(--ease), background 160ms, box-shadow 300ms; }
@@ -204,7 +206,11 @@
 }
 @media (max-width: 640px) {
   .dw-shell { width: calc(100% - 36px); }
-  .dw-nav { width: calc(100% - 24px); margin-top: 12px; top: 12px; padding-left: 14px; }
+  .dw-nav { width: calc(100% - 24px); margin-top: 12px; top: 12px; padding: 12px; flex-wrap: wrap; gap: 12px; border-radius: 24px; }
+  .dw-nav > .dw-brand { width: 100%; justify-content: center; }
+  .dw-nav-actions { width: 100%; }
+  .dw-nav-actions .dw-btn { flex: 1; min-width: 0; padding: 0 10px; gap: 8px; font-size: 13px; }
+  .dw-nav-actions .dw-btn-live { flex: 1.6; }
   .dw-wordmark { font-size: 23px; }
   .dw-hero { margin-top: -80px; padding: 120px 0 64px; }
   .dw-title { font-size: clamp(50px, 14.2vw, 78px); }

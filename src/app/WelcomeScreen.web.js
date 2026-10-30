@@ -84,7 +84,10 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal })
           <a href="#el-proyecto">El proyecto</a>
           <a href="#comunidad">Comunidad</a>
         </nav>
-        <GoLink className="dw-btn dw-btn-small" onBegin={onBegin}>Grabar<Icon name="diagonal" size={18} /></GoLink>
+        <div className="dw-nav-actions">
+          <GoLink className="dw-btn dw-btn-small" onBegin={onBegin}>Grabar<Icon name="diagonal" size={18} /></GoLink>
+          <GoLink className="dw-btn dw-btn-live dw-btn-small" href="/interpretar" onBegin={onInterpret}>Interpretar en vivo<Icon name="camera" size={18} /></GoLink>
+        </div>
       </header>
 
       <main id="bienvenida-contenido" tabIndex={-1}>
