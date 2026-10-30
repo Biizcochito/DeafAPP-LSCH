@@ -27,7 +27,7 @@ import { createTrainingCapture, captureTrackingSample, makeParticipantId } from 
 import { useRecordingSource } from "./src/recording/RecordingProfiles";
 import AdminPanel from "./src/admin/AdminPanel";
 import WelcomeScreen from "./src/app/WelcomeScreen";
-import LiveInterpretation from "./src/app/LiveInterpretation";
+import LiveInterpretation, {LiveInterpretationSession} from "./src/app/LiveInterpretation";
 import AppWorkspace, { CameraPermission } from "./src/app/AppWorkspace";
 import { themeWebStyles } from "./src/app/appTheme";
 import { createHiddenAdminEntry } from "./src/admin/adminAccess";
@@ -646,6 +646,7 @@ export default function App() {
     if(enviandoRef.current || grabacionEnCursoRef.current) return;
     cancelarCaptura();setReproduciendo(false);setRepitiendo(false);setError(null);setPantalla('interpretar');
   };
+  function renderScreen() {
   if (["privacidad", "terminos"].includes(pantalla)) {
     return <PrivacyDocument kind={pantalla} preview={privacyPreview} consent={consentimientoActivo ? consentimiento : null} message={mensajePrivacidad}
       onBack={volverAlCatalogo} onInterpret={abrirInterpretacion} onConsent={() => setPantalla("consentimiento")}
@@ -1138,6 +1139,12 @@ export default function App() {
   );
 }
 
+
+  return <LiveInterpretationSession active={pantalla==='interpretar'} blocked={pantalla==='grabar'||pantalla==='admin'} client={supabase}
+    onBack={()=>setPantalla('bienvenida')} onOpen={()=>setPantalla('interpretar')}>
+    {Platform.OS==='web'&&pantalla==='interpretar'?null:renderScreen()}
+  </LiveInterpretationSession>;
+}
 
 const styles = StyleSheet.create(themeWebStyles({
   root:    { flex: 1, backgroundColor: "#0F0F1E" },

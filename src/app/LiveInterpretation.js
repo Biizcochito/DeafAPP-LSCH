@@ -1,5 +1,7 @@
 import {Text, View, Pressable} from 'react-native';
 
+export function LiveInterpretationSession({children}) {return children;}
+
 export default function LiveInterpretation({onBack}) {
   return <View style={{flex:1,backgroundColor:'#080c0a',padding:28,justifyContent:'center',gap:20}}>
     <Text style={{fontSize:28,color:'#f5f2eb'}}>Interpretar en vivo</Text>
