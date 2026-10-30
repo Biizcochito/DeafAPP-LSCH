@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import * as Speech from 'expo-speech';
 import HandConstellation from '../ui/HandConstellation';
-import {createSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
+import {prepareSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
 import {freshLandmarks,withTrackingTimeout} from '../camera/trackingOverlay';
 import {trackingVector} from '../training/visibleTraining';
 import {createSignInferenceClient} from '../training/signInferenceWorker';
@@ -21,7 +21,21 @@ const PHASES={off:'Tu espacio para conversar',loading:'Preparando la cámara…'
 const cameraError=error=>error.name==='NotAllowedError'?'Permite el acceso a la cámara desde el navegador y vuelve a intentarlo.':
   error.name==='NotFoundError'?'No se encontró una cámara. Conecta una y vuelve a intentarlo.':error.message||'No se pudo iniciar la cámara. Inténtalo de nuevo.';
 
-export default function LiveInterpretation({client,onBack,preview=null}) {
+export function LiveInterpretationSession({active,blocked,client,onBack,onOpen,children}) {
+  const [visited,setVisited]=useState(active),[state,setState]=useState('off');
+  const controls=useRef(null);
+  useEffect(()=>{if(active)setVisited(true);},[active]);
+  return <>{children}<div key="interpretation-session" style={{display:active?'contents':'none'}} hidden={!active}>
+    {(visited||active)&&<LiveInterpretation client={client} onBack={onBack} active={active} blocked={blocked} controls={controls} onCameraState={setState}/>}
+  </div>
+    {!active&&state!=='off'&&<aside className="deaf-app li-session-status" aria-label="Cámara del intérprete activa">
+      <span><i aria-hidden="true"/>Cámara del intérprete activa<small>El reconocimiento se reanuda al volver.</small></span>
+      <div><button onClick={onOpen}>Volver al intérprete</button><button onClick={()=>controls.current?.stop()}>Apagar cámara</button></div>
+    </aside>}
+  </>;
+}
+
+export default function LiveInterpretation({client,onBack,preview=null,active=true,blocked=false,controls,onCameraState}) {
   const video=useRef(null),canvas=useRef(null),camera=useRef(null),voice=useRef(null),sync=useRef(null);
   const candidate=useRef(null),live=useRef({phase:'off'});
   const labels=useRef(new Map());
@@ -29,6 +43,7 @@ export default function LiveInterpretation({client,onBack,preview=null}) {
   const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
   const voicePreference=useRef(true);
+  const activity=useRef({active,blocked,onCameraState});activity.current={active,blocked,onCameraState};
   const conversation=useLiveConversation({voice,catalogue:library.catalogue,onReset:()=>camera.current?.reset(),initialMode:preview?'phrases':'signs'});
   const history=conversation.history;
   const voiceSupported=typeof window!=='undefined'&&!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
@@ -43,9 +58,12 @@ export default function LiveInterpretation({client,onBack,preview=null}) {
       onError:message=>{if(alive)setVoiceError(message);},onSpeak:()=>{if(alive)setVoiceError('');}});
     camera.current=createLiveInterpretationCamera({video:video.current,canvas:canvas.current,
       getMedia:constraints=>{if(!navigator.mediaDevices?.getUserMedia)throw Error('La cámara requiere HTTPS o localhost y un navegador compatible.');return navigator.mediaDevices.getUserMedia(constraints);},
-      createTracker:createSignTracker,createInference:createSignInferenceClient,createRecognizer:createLiveSignRecognizer,
+      createTracker:prepareSignTracker,createInference:createSignInferenceClient,createRecognizer:createLiveSignRecognizer,
       freshLandmarks,trackingVector,draw:drawSignLandmarks,withTimeout:withTrackingTimeout,
-      onResult:update,onState:state=>{if(alive)setCameraState(state);},onError:error=>{if(alive)setError(cameraError(error));}});
+      onResult:update,onState:state=>{if(alive){setCameraState(state);activity.current.onCameraState?.(state);}},onError:error=>{if(alive)setError(cameraError(error));}});
+    if(controls)controls.current=camera.current;
+    // Warm both graphs while the vocabulary loads, without requesting a camera.
+    void camera.current.prepare().catch(error=>{if(alive)setError(cameraError(error));});
     function prepared(data){if(!alive)return;
       labels.current=new Map((data.catalogue||[]).map(row=>[row.classId,row.displayLabel]));
       if(candidate.current?.id!==data.model?.id)conversation.reset();candidate.current=data.model;camera.current?.setModel(data.model);
@@ -61,12 +79,21 @@ export default function LiveInterpretation({client,onBack,preview=null}) {
       void check();previewTimer=setInterval(()=>void check(),2000);
     }
     else sync.current=startPreparedRecognition({client,onUpdate:prepared});
-    const hidden=()=>{if(document.hidden)camera.current?.stop();};
+    const hidden=()=>{
+      camera.current?.setSuspended(!activity.current.active||document.hidden);
+      voice.current?.setEnabled(voicePreference.current&&activity.current.active&&!document.hidden);
+    };
+    camera.current.setBlocked(activity.current.blocked);hidden();
     const leave=()=>camera.current?.stop();
     document.addEventListener('visibilitychange',hidden);window.addEventListener('pagehide',leave);
-    return()=>{alive=false;clearInterval(previewTimer);sync.current?.close();camera.current?.close();voice.current?.close();camera.current=null;voice.current=null;
+    return()=>{alive=false;clearInterval(previewTimer);sync.current?.close();camera.current?.close();voice.current?.close();if(controls)controls.current=null;camera.current=null;voice.current=null;
       document.removeEventListener('visibilitychange',hidden);window.removeEventListener('pagehide',leave);};
   },[client,voiceSupported,preview]);
+  useEffect(()=>{
+    camera.current?.setBlocked(blocked);
+    camera.current?.setSuspended(!active||document.hidden);
+    voice.current?.setEnabled(voicePreference.current&&active&&!document.hidden);
+  },[active,blocked]);
   function toggleVoice(){
     const next=!voicePreference.current;voicePreference.current=next;setVoiceOn(next);setVoiceError('');voice.current?.setEnabled(next);
     if(next&&conversation.mode==='signs')voice.current?.update(live.current);
@@ -93,8 +120,8 @@ export default function LiveInterpretation({client,onBack,preview=null}) {
             <span className={`li-camera-badge${cameraState==='on'?' li-is-on':''}`}><i aria-hidden="true"/>{cameraState==='on'?'En vivo':cameraState==='starting'?'Conectando':'Cámara apagada'}</span>
             {running&&<div className="li-overlay" role="status" aria-live="polite"><span>{PHASES[result.phase]||'Preparando la interpretación…'}</span>{matched&&<strong>{word}</strong>}</div>}
           </div>
-          <div className="li-camera-actions"><button className="li-primary" disabled={!running&&(library.loading||library.error||!candidate.current)} onClick={()=>{setError('');if(running)camera.current?.stop();else void camera.current?.start();}}>{running?'Detener cámara':'Activar cámara'}</button>
-            <span>La cámara se usa en este dispositivo.<br/>Esta sesión no se graba ni se envía.</span></div>
+          <div className="li-camera-actions"><button className="li-primary" onClick={()=>{setError('');if(running)camera.current?.stop();else void camera.current?.start();}}>{running?'Detener cámara':'Activar cámara'}</button>
+            <span>La cámara se usa en este dispositivo.<br/>Esta sesión no se graba ni se envía.<br/>Permanece activa al navegar por esta web; puedes apagarla cuando quieras.</span></div>
           {error&&<p className="li-error" role="alert">{error}</p>}
         </section>
         <section className="li-conversation" aria-labelledby="li-result-title">
