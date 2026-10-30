@@ -38,7 +38,7 @@ function harness(overrides={}){
 const model={id:'approved-library',classes:['saludos/hola','necesidades/agua']};
 test('detener cierra la cámara, los detectores y el reconocedor y elimina sus temporizadores',async()=>{
   const h=harness();h.runtime.setModel(model);await h.runtime.start();
-  assert.equal(h.states.at(-1),'on');assert.equal(h.video.srcObject,h.stream);assert.equal(h.timers.size,2);
+  assert.equal(h.states.at(-1),'on');assert.equal(h.video.srcObject,h.stream);assert.equal(h.timers.size,3);
   h.runtime.stop();assert.equal(h.video.srcObject,null);assert.equal(h.timers.size,0);
   assert.deepEqual(h.counts(),{stopped:1,trackerClosed:1,recognizerClosed:1,inferenceClosed:1});
   const resultCount=h.results.length;h.callbacks()({handTime:0});assert.equal(h.results.length,resultCount);
@@ -68,4 +68,12 @@ test('el permiso denegado permite volver a intentar sin retener una sesión fall
   let attempts=0;const h=harness({getMedia:async()=>{if(!attempts++)throw Object.assign(Error('Permiso denegado'),{name:'NotAllowedError'});return h.stream;}});
   h.runtime.setModel(model);await h.runtime.start();assert.equal(h.states.at(-1),'off');assert.equal(h.errors.length,1);
   await h.runtime.start();assert.equal(h.states.at(-1),'on');h.runtime.close();
+});
+test('los puntos retenidos para dibujar nunca llegan al reconocimiento como detección nueva',async()=>{
+  let time=100;const drawn=[],vectors=[];const hand=Array.from({length:21},()=>({x:.3,y:.4,z:0}));
+  const h=harness({now:()=>time,draw:(_,result)=>drawn.push(result),freshLandmarks:result=>result,trackingVector:result=>result.leftHandLandmarks?['actual']:null,
+    createRecognizer:()=>({reset(){},push:frame=>vectors.push(frame.vector),expire(){},close(){}})});
+  h.runtime.setModel(model);await h.runtime.start();h.callbacks()({handTime:100,leftHandLandmarks:hand});
+  time=150;h.callbacks()({handTime:150});assert.equal(drawn.at(-1).leftHandLandmarks.length,21);assert.equal(vectors.at(-1),null);
+  h.runtime.stop();const count=drawn.length;h.callbacks()({handTime:200,leftHandLandmarks:hand});assert.equal(drawn.length,count);
 });

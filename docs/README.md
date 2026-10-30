@@ -13,6 +13,7 @@ Ejecuta los comandos desde la raíz del repositorio. La aplicación se inicia co
 | [Entrenamiento LSCh](../training/README.md) | Preparación de datos y evaluación |
 | [Administrador](../admin/README.md) | Configuración y operaciones del panel privado |
 | [Vocabulario controlado](VOCABULARIO-CONTROLADO.md) | Recopilación, habilitación, evaluación y frases con voz |
+| [Trazados](TRAZADOS.md) | Recuperación de manos y separación entre dibujo y detección real |
 | [Archivo](../archive/README.md) | Exportaciones y prototipos de referencia |
 
 ## Ubicación de los archivos

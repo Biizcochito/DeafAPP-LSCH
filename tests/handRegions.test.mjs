@@ -40,7 +40,7 @@ test('worker transfers the frame and face region, and releases pending frames on
   globalThis.document={baseURI:'https://example.test/'};
   globalThis.createImageBitmap=async()=>({close(){closed++;}});
   globalThis.Worker=class{
-    constructor(url){assert.equal(url.href,'https://example.test/hand-tracking-worker.js?v=learned-hands-20261020');worker=this;}
+    constructor(url){assert.equal(url.href,'https://example.test/hand-tracking-worker.js?v=stable-traces-20261030');worker=this;}
     postMessage(data,transfer){if(data.type==='init')queueMicrotask(()=>this.onmessage({data:{id:data.id,type:'ready'}}));else{this.frame=data;assert.equal(transfer[0],data.image);}}
     terminate(){this.terminated=true;}
   };
