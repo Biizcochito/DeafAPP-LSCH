@@ -2,8 +2,8 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {createContinuousUtterance} from './continuousUtterance.js';
 import {spokenSignLabel} from './liveSignSpeech.js';
 
-export function useLiveConversation({voice,catalogue,onReset}){
-  const [mode,setMode]=useState('phrases'),[person,setPerson]=useState('signed'),[draft,setDraft]=useState({tokens:[],text:'',issue:null,canFinish:false}),[history,setHistory]=useState([]);
+export function useLiveConversation({voice,catalogue,onReset,initialMode='phrases'}){
+  const [mode,setMode]=useState(initialMode==='signs'?'signs':'phrases'),[person,setPerson]=useState('signed'),[draft,setDraft]=useState({tokens:[],text:'',issue:null,canFinish:false}),[history,setHistory]=useState([]);
   const composer=useRef(null),alive=useRef(false),options=useRef({mode,person,catalogue}),previous=useRef(null),absent=useRef(null);
   options.current={mode,person,catalogue,onReset};
   useEffect(()=>{
