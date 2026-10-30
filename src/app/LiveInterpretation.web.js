@@ -15,7 +15,7 @@ import '../ui/theme.css';
 import './LiveInterpretation.css';
 
 const PHASES={off:'Tu espacio para conversar',loading:'Preparando la cámara…',position:'Coloca tu cara y tus manos en el encuadre',
-  ready:'Continúa cuando quieras. Una pausa termina la frase.',
+  ready:'Haz otra seña u oración completa, a tu ritmo.',
   tracking:'Haz la seña completa, a tu ritmo',recognizing:'Estoy reconociendo tu seña…',uncertain:'Prueba de nuevo, no encontré una coincidencia clara',
   matched:'Seña reconocida',model:'Estamos preparando las señas',error:'El reconocimiento necesita reiniciarse'};
 const cameraError=error=>error.name==='NotAllowedError'?'Permite el acceso a la cámara desde el navegador y vuelve a intentarlo.':
@@ -29,7 +29,7 @@ export default function LiveInterpretation({client,onBack,preview=null}) {
   const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
   const voicePreference=useRef(true);
-  const conversation=useLiveConversation({voice,catalogue:library.catalogue,onReset:()=>camera.current?.reset()});
+  const conversation=useLiveConversation({voice,catalogue:library.catalogue,onReset:()=>camera.current?.reset(),initialMode:preview?'phrases':'signs'});
   const history=conversation.history;
   const voiceSupported=typeof window!=='undefined'&&!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
   useEffect(()=>{
@@ -106,9 +106,9 @@ export default function LiveInterpretation({client,onBack,preview=null}) {
             <button aria-pressed={voiceOn} disabled={!voiceSupported} onClick={toggleVoice}>{voiceOn?'Silenciar voz':'Activar voz'}</button></div>
           <button className="li-test-voice" disabled={!voiceSupported} onClick={testVoice}>♫ Probar voz</button>
           {voiceError&&<p className="li-error" role="status">{voiceError}</p>}
-          <ConversationControls conversation={conversation} prefix="public-conversation"/>
+          {preview&&<ConversationControls conversation={conversation} prefix="private-conversation"/>}
           <div className="li-history"><div><h3>En esta conversación</h3><button disabled={!history.length&&!conversation.draft.canFinish} onClick={conversation.clearHistory}>Limpiar</button></div>
-            {history.length?<ol aria-label="Últimas frases y señas reconocidas">{history.map(row=><li key={row.id} data-review={row.requiresReview||undefined}>{row.label}{row.requiresReview&&<small> · Revisar</small>}</li>)}</ol>:<p>Las últimas frases y señas reconocidas aparecerán aquí.</p>}</div>
+            {history.length?<ol aria-label={preview?'Últimas frases y señas reconocidas':'Últimas señas y oraciones reconocidas'}>{history.map(row=><li key={row.id} data-review={row.requiresReview||undefined}>{row.label}{row.requiresReview&&<small> · Revisar</small>}</li>)}</ol>:<p>{preview?'Las últimas frases y señas reconocidas aparecerán aquí.':'Las últimas señas y oraciones reconocidas aparecerán aquí.'}</p>}</div>
           <p className="li-library-note">Reconoce las señas habilitadas de la biblioteca. La cobertura aumenta con aportes revisados y pruebas.</p>
         </section>
       </div>
