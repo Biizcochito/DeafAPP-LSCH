@@ -10,7 +10,7 @@ test('regional worker keeps tracking identity and publishes the learned anatomic
   const detector={async handLandmarks(region){return active?learnedHand(region.slot):null;},
     handLandmarksToRoi(points){return {slot:points[0].x<.5?0:1};},async detectPalm(){return []},palmDetectionToRoi(){}};
   const self={location:{href:'http://127.0.0.1:8081/hand-tracking-worker.js'},postMessage:value=>messages.push(value)};
-  const context=vm.createContext({self,URL,importScripts(){},HandRegions:{seeds(){return [{slot:0},{slot:1}]},valid(h){return !!h},duplicate(){return false}},
+  const context=vm.createContext({self,URL,importScripts(){},HandRegions:{seeds(){return [{slot:0},{slot:1}]},valid(h){return !!h},duplicate(){return false},consistent(){return true;},trackedRegion(slot){return slot.roi;},remember(slot,roi,time){slot.roi=roi;slot.seenAt=time;slot.misses=0;},forget(slot){slot.roi=null;slot.misses=0;}},
     OffscreenCanvas:class{constructor(w,h){this.width=w;this.height=h}getContext(){return {fillRect(){},drawImage(){},getImageData(){return {}}}}},
     tf:{async setBackend(){},async ready(){},tidy(fn){return fn()},browser:{fromPixels(){return {toFloat(){return {dispose(){}}}}}},zeros(){return {dispose(){}}}},
     handPoseDetection:{SupportedModels:{MediaPipeHands:'test'},async createDetector(){return detector}}});
