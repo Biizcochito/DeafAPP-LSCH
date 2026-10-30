@@ -40,6 +40,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const candidate=useRef(null),live=useRef({phase:'off'});
   const labels=useRef(new Map());
   const [cameraState,setCameraState]=useState('off'),[result,setResult]=useState({phase:'off'});
+  const [trackingLoading,setTrackingLoading]=useState(true);
   const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
   const voicePreference=useRef(true);
@@ -63,7 +64,10 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
       onResult:update,onState:state=>{if(alive){setCameraState(state);activity.current.onCameraState?.(state);}},onError:error=>{if(alive)setError(cameraError(error));}});
     if(controls)controls.current=camera.current;
     // Warm both graphs while the vocabulary loads, without requesting a camera.
-    void camera.current.prepare().catch(error=>{if(alive)setError(cameraError(error));});
+    setTrackingLoading(true);
+    void camera.current.prepare().then(()=>{if(alive)setTrackingLoading(false);}).catch(error=>{
+      if(alive){setTrackingLoading(false);setError(cameraError(error));}
+    });
     function prepared(data){if(!alive)return;
       labels.current=new Map((data.catalogue||[]).map(row=>[row.classId,row.displayLabel]));
       if(candidate.current?.id!==data.model?.id)conversation.reset();candidate.current=data.model;camera.current?.setModel(data.model);
@@ -102,6 +106,8 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const matched=result.phase==='matched'&&result.prediction?.accepted===true;
   const word=matched?(labels.current.get(result.prediction.classId)||spokenSignLabel(result.prediction.classId)):'';
   const running=cameraState!=='off';
+  const preparing=!error&&(trackingLoading||library.loading&&!library.error||cameraState==='starting');
+  const loadingText=trackingLoading?'Cargando trazado de cara y manos…':cameraState==='starting'?'Conectando tu cámara…':'Preparando las señas…';
   const lastPhrase=[...history].reverse().find(row=>row.kind==='phrase');
   const currentText=conversation.mode==='phrases'?(conversation.draft.text||lastPhrase?.label||''):(matched?word:'');
   return <div className="deaf-app live-interpretation">
@@ -113,12 +119,15 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
         <p>Haz una seña frente a la cámara. Nosotros ponemos las palabras.</p></div>
       <div className="li-workspace">
         <section className="li-camera-section" aria-label="Cámara de interpretación">
-          <div className={`li-camera${matched?' li-matched':''}`}>
+          <div className={`li-camera${matched?' li-matched':''}${preparing?' li-preparing':''}`}>
             <video ref={video} muted playsInline autoPlay aria-label="Tu cámara en vivo"/>
             <canvas ref={canvas} aria-hidden="true"/>
-            {!running&&<div className="li-welcome-camera"><div className="li-hand" aria-hidden="true"><HandConstellation poses={['open','relaxed','soft']}/></div><h2>Cuando quieras, empezamos.</h2><p>Busca buena luz y deja espacio para tus manos.</p></div>}
+            {!running&&<div className="li-welcome-camera"><div className="li-hand" aria-hidden="true"><HandConstellation poses={['open','relaxed','soft']}/></div>{!preparing&&<><h2>Cuando quieras, empezamos.</h2><p>Busca buena luz y deja espacio para tus manos.</p></>}</div>}
             <span className={`li-camera-badge${cameraState==='on'?' li-is-on':''}`}><i aria-hidden="true"/>{cameraState==='on'?'En vivo':cameraState==='starting'?'Conectando':'Cámara apagada'}</span>
-            {running&&<div className="li-overlay" role="status" aria-live="polite"><span>{PHASES[result.phase]||'Preparando la interpretación…'}</span>{matched&&<strong>{word}</strong>}</div>}
+            {(running||preparing)&&<div className={`li-overlay${preparing?' li-overlay-loading':''}`} role="status" aria-live="polite">
+              <span>{preparing?loadingText:PHASES[result.phase]||'Preparando la interpretación…'}</span>
+              {preparing?<div className="li-loading-track" role="progressbar" aria-label="Cargando interpretación en vivo" aria-valuetext={loadingText}/>:matched&&<strong>{word}</strong>}
+            </div>}
           </div>
           <div className="li-camera-actions"><button className="li-primary" onClick={()=>{setError('');if(running)camera.current?.stop();else void camera.current?.start();}}>{running?'Detener cámara':'Activar cámara'}</button>
             <span>La cámara se usa en este dispositivo.<br/>Esta sesión no se graba ni se envía.<br/>Permanece activa al navegar por esta web; puedes apagarla cuando quieras.</span></div>
