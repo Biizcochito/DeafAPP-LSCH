@@ -63,7 +63,9 @@ async function build(job:any){
     await rpc('deafapp_runtime_cache',{p_job:job.job,p_rows:results});
     await rpc('deafapp_runtime_complete',{p_job:job.job,p_catalog_revision:job.catalogRevision,p_source_revision:job.sourceRevision});return;
   }
-  const result=await prepareControlledModel(catalogue,samples,{sourceRevision:`${job.catalogRevision}:${job.sourceRevision}`,evaluate:false,allowMetadataOnly:true,
+  const variants=[];
+  for(let offset=0;offset<200000;offset+=500){const data=await rpc('deafapp_runtime_variants',{p_job:job.job,p_offset:offset});variants.push(...data.rows);if(data.rows.length<500)break;if(offset===199500)throw Error('Demasiadas variantes para esta preparación.');}
+  const result=await prepareControlledModel(catalogue,samples,{sourceRevision:`${job.catalogRevision}:${job.sourceRevision}`,evaluate:false,allowMetadataOnly:true,variants,
     loadSequences:(ids:string[])=>loadSequences(job.job,ids)});
   const usableCounts=new Map();for(const sample of samples){const id=resolve(sample.classId);usableCounts.set(id,(usableCounts.get(id)||0)+1);}
   const coverage=result.coverage.map(row=>({...row,approved:approved.get(row.classId)||0,excluded:(approved.get(row.classId)||0)-(usableCounts.get(row.classId)||0),
