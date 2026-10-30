@@ -7,7 +7,7 @@ export const spokenSignLabel=classId=>{
 
 // Consume confirmed predictions, never the label selected for a training take.
 // A sustained match is spoken once; brief tracking fluctuations do not rearm it.
-export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},now=()=>performance.now(),enabled=true,rearmMs=1000,repeatMs=2500}){
+export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},labelForClass=spokenSignLabel,now=()=>performance.now(),enabled=true,rearmMs=1000,repeatMs=2500}){
   let closed=false,epoch=0,lastClass=null,lastSpoken=-Infinity,absentSince=null,owned=false;
   function cancel(){
     epoch++;
@@ -37,10 +37,11 @@ export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},now=(
       const classId=prediction.classId,rearmed=absentSince!==null&&time-absentSince>=rearmMs;
       absentSince=null;
       if(classId===lastClass&&(!rearmed||time-lastSpoken<repeatMs))return;
-      lastClass=classId;lastSpoken=time;say(spokenSignLabel(classId));
+      lastClass=classId;lastSpoken=time;say(labelForClass(classId));
     },
     setEnabled(value){enabled=!!value;reset();},
     preview(){if(!closed&&enabled){reset();say('Voz activada');}},
+    sayText(text){if(!closed&&enabled&&typeof text==='string'&&text.trim()&&text.length<=600){reset();say(text.trim());}},
     reset,
     close(){if(closed)return;reset();closed=true;},
   };

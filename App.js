@@ -21,6 +21,8 @@ import { getWebCameraLayout, isMobileCameraDevice } from "./src/camera/cameraLay
 import { recordingDraftStore } from "./src/recording/recordingDraftStore";
 import { createRecordingDraft, isRecordingDraft, submitRecordingDraft, createTimedFetch, withRecordingSendLock } from "./src/recording/recordingSubmission";
 import { CATEGORIAS, CATEGORIAS_VISIBLES } from "./src/catalog/signCatalog";
+import {startPreparedRecognition} from './src/training/preparedRecognition';
+import {collectionCategories} from './src/training/recognitionCatalog';
 import { createTrainingCapture, captureTrackingSample, makeParticipantId } from "./src/recording/trainingCapture";
 import { useRecordingSource } from "./src/recording/RecordingProfiles";
 import AdminPanel from "./src/admin/AdminPanel";
@@ -134,6 +136,14 @@ function SignaRow({ seña, conteo, onGrabar }) {
 }
 
 export default function App() {
+  const [categoriasAportes,setCategoriasAportes]=useState(CATEGORIAS_VISIBLES);
+  useEffect(()=>{
+    if(Platform.OS!=='web'||privacyPreview)return;
+    const sync=startPreparedRecognition({client:supabase,metadataOnly:true,onUpdate:data=>{
+      if(Array.isArray(data.catalogue))setCategoriasAportes(collectionCategories(data.catalogue));
+    }});
+    return()=>sync.close();
+  },[]);
   const origenGrabacion = useRecordingSource();
   const sesionDatosRef = useRef(null);
   if (!sesionDatosRef.current) sesionDatosRef.current = makeParticipantId();
@@ -628,7 +638,7 @@ export default function App() {
   };
 
   const volverAlCatalogo = () => {
-    const visible = CATEGORIAS_VISIBLES.find(category => category.id === catActual?.id);
+    const visible = categoriasAportes.find(category => category.id === catActual?.id);
     setCatActual(visible || null);
     setPantalla(visible ? "categoria" : "home");
   };
@@ -747,7 +757,7 @@ export default function App() {
   }} onModerated={cargarConteos} />;
 
   if (Platform.OS === "web" && ["home", "categoria", "aportes", "mas", "ayuda", "feedback"].includes(pantalla)) {
-    return <AppWorkspace screen={pantalla} navigate={setPantalla} onLogo={pulsarLogo} categories={CATEGORIAS_VISIBLES} category={catActual}
+    return <AppWorkspace screen={pantalla} navigate={setPantalla} onLogo={pulsarLogo} categories={categoriasAportes} category={categoriasAportes.find(cat=>cat.id===catActual?.id)||null}
       contributions={aportes.items}
       pending={borrador} onResume={() => mostrarVistaPrevia()}
       onCategory={cat => { setCatActual(cat); setPantalla("categoria"); }}
@@ -782,7 +792,7 @@ export default function App() {
 
   // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
-    return <WelcomeScreen onBegin={() => setPantalla("home")} onInterpret={() => setPantalla("interpretar")} onLogo={pulsarLogo} onLegal={setPantalla} />;
+    return <WelcomeScreen onBegin={() => setPantalla("home")} onInterpret={() => setPantalla("interpretar")} onLogo={pulsarLogo} onLegal={setPantalla} categories={categoriasAportes} />;
   }
 
   // ── FEEDBACK ─────────────────────────────────────────────────────
