@@ -20,6 +20,13 @@ test('speaks only confirmed accepted predictions, including complete phrases, in
   assert.deepEqual(h.spoken.map(row=>row.text),['hola','quiero agua']);
   assert.ok(h.spoken.every(row=>row.options.language==='es-CL'));h.voice.close();
 });
+test('las frases compuestas respetan silencio, reemplazo de audio y cierre sin callbacks tardíos',async()=>{
+  const h=harness();h.voice.sayText('Yo quiero trabajar.');await flush();assert.equal(h.spoken[0].text,'Yo quiero trabajar.');
+  h.voice.setEnabled(false);h.voice.sayText('Otra frase.');await flush();assert.equal(h.spoken.length,1);
+  h.voice.setEnabled(true);h.voice.sayText('   ');h.voice.sayText('a'.repeat(601));await flush();assert.equal(h.spoken.length,1);
+  h.voice.close();h.voice.sayText('Después de salir.');await flush();assert.equal(h.spoken.length,1);
+  let release;const pending=harness({speech:{stop:()=>new Promise(resolve=>{release=resolve;}),speak:()=>assert.fail('Lectura cancelada')}});pending.voice.sayText('Pendiente.');const old=release;pending.voice.reset();old();await flush();pending.voice.close();
+});
 
 test('a sustained match and short tracking fluctuations do not repeat the same word',async()=>{
   const h=harness();await h.update(match('saludos/hola'));

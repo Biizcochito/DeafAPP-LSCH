@@ -1,5 +1,6 @@
 import {REVIEW_PAGE_SIZE,validCandidateKey} from '../training/signReview.js';
 import {notifyRecordingReview} from '../training/recordingLibrarySync.js';
+import {validateCatalogueEntry} from '../training/recognitionCatalog.js';
 export const ADMIN_PAGE_SIZE = 25;
 export const MODERATION_LABELS = { pending: "Pendiente", approved: "Aprobada", rejected: "Rechazada" };
 
@@ -22,6 +23,8 @@ export function createAdminClient(client) {
       if (code === "PGRST202" || code === "42883") throw new AdminError("El panel todavía no está activado en Supabase.", "not_configured");
       if (code === "28000") throw new AdminError("La sesión terminó. Vuelve a ingresar.", "session_expired");
       if (code === "40001") throw new AdminError("Otra persona cambió esta revisión. Actualiza la lista y revísala nuevamente.", "conflict");
+      if (code === "23505") throw new AdminError("Esta seña ya existe en esa categoría. Busca la entrada antes de agregarla.", "duplicate");
+      if (code === "22023") throw new AdminError("Revisa los datos y los requisitos: prepara las muestras antes de habilitar; la evaluación independiente necesita personas y pruebas reservadas suficientes.", "invalid_input");
       throw new AdminError("No se pudo completar la operación. Actualiza e inténtalo nuevamente.", "server");
     }
     if (result.data?.ok !== true) {
@@ -58,6 +61,28 @@ export function createAdminClient(client) {
     overview(session) { return call("deafapp_admin_overview", { p_token: token(session) }); },
     material(session) { return call("deafapp_admin_material", { p_token: token(session) }); },
     trainingProgress(session) { return call("deafapp_admin_training_progress", { p_token: token(session) }); },
+    vocabulary(session) { return call('deafapp_admin_vocabulary_list',{p_token:token(session)}); },
+    saveVocabulary(session,entry,{acknowledgePrototype=false,isNew=false}={}) {
+      try{validateCatalogueEntry(entry);}catch(e){throw new AdminError(e.message,'invalid_input');}
+      return call('deafapp_admin_vocabulary_save',{p_token:token(session),p_entry:entry,p_version:isNew?-1:entry.version,p_ack_prototype:acknowledgePrototype===true})
+        .then(data=>{notifyRecordingReview();return data;});
+    },
+    vocabularySamples(session,classId,page=0) {
+      if(typeof classId!=='string'||classId.length>122||!classId.includes('/')||!Number.isInteger(page)||page<0||page*25>100000)throw new AdminError('Consulta de muestras no válida.','invalid_input');
+      return call('deafapp_admin_vocabulary_samples',{p_token:token(session),p_class_id:classId,p_offset:page*25});
+    },
+    assignVocabularySample(session,row) {
+      const person=row.person?.trim()||null;
+      if(!/^\d+$/.test(String(row.id))||!Number.isInteger(row.sourceVersion)||row.sourceVersion<0||!Number.isInteger(row.assignmentVersion)||row.assignmentVersion< -1||!['train','evaluation'].includes(row.role)||person!==null&&!/^[A-Za-z0-9_-]{1,32}$/.test(person)||typeof row.personConfirmed!=='boolean'||row.personConfirmed&&!person)throw new AdminError('Revisa el código de persona y el destino de la muestra.','invalid_input');
+      return call('deafapp_admin_vocabulary_assign',{p_token:token(session),p_id:String(row.id),p_source_version:row.sourceVersion,p_version:row.assignmentVersion,p_role:row.role,p_person:person,p_confirmed:row.personConfirmed})
+        .then(data=>{notifyRecordingReview();return data;});
+    },
+    vocabularyPreview(session) { return call('deafapp_admin_vocabulary_preview',{p_token:token(session)}); },
+    async prepareVocabulary(session) {
+      await call('deafapp_admin_vocabulary_list',{p_token:token(session)});
+      try{const result=await client.functions.invoke('recognition-runtime',{body:{action:'refresh'}});if(result.error)throw result.error;return result.data;}
+      catch{throw new AdminError('No se pudo solicitar la preparación. Vuelve a intentarlo.','connection');}
+    },
     trainingCandidate(session, modelId) {
       if(typeof modelId!=="string"||!/^[a-f0-9]{32}$/.test(modelId)) throw new AdminError("Candidato no válido.","invalid_input");
       return call("deafapp_admin_training_candidate", {p_token:token(session),p_model_id:modelId});

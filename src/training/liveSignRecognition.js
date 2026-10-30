@@ -18,14 +18,14 @@ function movement(frames) {
 // The model still sees movement only; no selected recording label is an input.
 export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.now(),intervalMs=150,wholePhrases=false}) {
   let frames=[], lastInput, lastMotion, lastAttempt=-Infinity, busy=false, closed=false, generation=0;
-  let proposed=null, presentation='', failure=null;
+  let proposed=null, presentation='', failure=null,resting=false;
   function emit(phase,prediction=null,details={}) {
-    const key=`${phase}:${prediction?.classId || ''}:${prediction?.reason || ''}`;
+    const key=`${phase}:${prediction?.classId || ''}:${prediction?.reason || details.reason || ''}`;
     if (key===presentation) return;
     presentation=key; onUpdate({phase,prediction,...details});
   }
   function reset(phase='ready') {
-    generation++; frames=[]; lastInput=undefined; lastMotion=undefined; lastAttempt=-Infinity; proposed=null;
+    generation++; frames=[]; lastInput=undefined; lastMotion=undefined; lastAttempt=-Infinity; proposed=null;resting=false;
     if (!closed) emit(failure?'error':phase,null,failure?{message:failure.message}:{});
   }
   function expire(time=now()) {
@@ -41,8 +41,10 @@ export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.n
       lastInput=frame.timeMs; lastMotion ??= frame.timeMs;
       frames.push(frame);
       frames=frames.filter(row=>frame.timeMs-row.timeMs<=(wholePhrases?4900:2500)).slice(wholePhrases?-160:-120);
-      if (movement(frames.filter(row=>frame.timeMs-row.timeMs<=450))>=.025) lastMotion=frame.timeMs;
-      if (frame.timeMs-lastMotion>650) { reset(); return; }
+      const moving=movement(frames.filter(row=>frame.timeMs-row.timeMs<=450))>=.025;
+      if(moving){lastMotion=frame.timeMs;resting=false;}
+      if(resting){emit('ready');return;}
+      if (frame.timeMs-lastMotion>650) { reset();resting=true;lastInput=frame.timeMs;frames=[frame];return; }
       if (busy || frame.timeMs-lastAttempt<intervalMs) return;
       const windows=[];
       for (const duration of wholePhrases?[900,1500,2400,3600,4800]:[900,1500,2400]) {
@@ -69,14 +71,16 @@ export function createLiveSignRecognizer({predict,onUpdate,now=()=>performance.n
         const phrases=accepted.filter(result=>result.classId.startsWith('oraciones/'));
         const evidence=phrases.length?phrases:accepted;
         const classes=new Set(evidence.map(result=>result.classId));
-        if (classes.size!==1) { proposed=null; emit('uncertain'); return; }
+        if (classes.size!==1) { proposed=null; emit('uncertain',null,{reason:classes.size?'ambiguous':'no-match'}); return; }
         const result=evidence[0], time=now();
         if (proposed?.classId!==result.classId) {
           proposed={classId:result.classId,since:time,count:1}; emit('recognizing'); return;
         }
         proposed.count++;
         if (proposed.count<2 || time-proposed.since<120) return;
-        emit('matched',result,{computeMs,responseMs:time-started,evidenceMs:windows[predictions.indexOf(result)]?.durationMs});
+        const window=windows[predictions.indexOf(result)];
+        emit('matched',result,{computeMs,responseMs:time-started,evidenceMs:window?.durationMs,
+          startTimeMs:window?.start,endTimeMs:window?window.start+window.durationMs:frame.timeMs,segmentId:`${epoch}:${proposed.since}`});
       }).catch(error=>{
         if (!closed && epoch===generation) { proposed=null; failure=error; emit('error',null,{message:error.message}); }
       }).finally(()=>{busy=false;});

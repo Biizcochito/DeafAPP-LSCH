@@ -5,6 +5,7 @@ const items = [
   ['recordings','camera','Grabaciones','Revisión'],
   ['video-review','check','Revisión de señas','Vídeos'],
   ['training','play','Entrenamiento LSCh','Entrenar'],
+  ['vocabulary','search','Vocabulario controlado','Señas'],
   ['material','search','Material de LSCh','Material'],
   ['tools','more','Datos y diagnóstico','Datos'],
 ];

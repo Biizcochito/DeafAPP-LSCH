@@ -3,6 +3,9 @@ import {buildVocabularyCandidate} from '../training/vocabularyCandidate';
 import {startApprovedLibrarySync} from '../training/recordingLibrarySync';
 import * as Speech from 'expo-speech';
 import {createLiveSignSpeech} from '../training/liveSignSpeech';
+import {useLiveConversation} from '../training/useLiveConversation';
+import ConversationControls from '../training/ConversationControls.web';
+import {catalogueSeed} from '../training/recognitionCatalog';
 import {canonicalPhraseLabel,ESTOY_BIEN_CLASS} from '../training/phraseLabels';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
@@ -18,6 +21,7 @@ import TrainingAssistant from './TrainingAssistant.web';
 import './VisibleTrainingPanel.css';
 
 const label=id=>canonicalPhraseLabel(id.split('/').at(-1));
+const TRAINING_LEXICON=catalogueSeed();
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const recordingReason=reason=>({'approval-changed':'aprobación modificada durante la actualización; actualiza otra vez','requires-source-review':'fuente externa pendiente de revisar','not-lsch':'el archivo declara otra lengua','missing-tracking':'sin puntos de manos y cara; vuelve a grabar con el seguimiento activo','expired-recording':'plazo de conservación vencido','download-failed':'no se pudo descargar','label-mismatch':'la etiqueta no coincide con la revisión','oversized-recording':'archivo demasiado grande'}[reason]||'seguimiento o movimiento insuficiente; revisa la toma');
 export default function VisibleTrainingPanel({api,session,client,onAccessError,onReviewRecordings}) {
@@ -31,16 +35,17 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   const [liveOn,setLiveOn]=useState(true),[liveResult,setLiveResult]=useState({phase:'off'});
   const [voiceOn,setVoiceOn]=useState(true),[voiceError,setVoiceError]=useState('');
   const voice=useRef(null),voicePreference=useRef(true);
+  const conversation=useLiveConversation({voice,catalogue:TRAINING_LEXICON,onReset:()=>live.current?.recognizer?.reset(livePreference.current?'position':'paused')});
   const voiceSupported=typeof window!=='undefined'&&!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
   const livePreference=useRef(true),accessEpoch=useRef(0),cameraEpoch=useRef(0);
   const libraryRequest=useRef(null),librarySync=useRef(null),candidateRequest=useRef(0);
   const committeeCache=useRef(new Map()),captureSection=useRef(null),localSignCandidate=useRef(null);
   const video=useRef(null),canvas=useRef(null),live=useRef(null),alive=useRef(true),capture=useRef(null),model=useRef(null),candidate=useRef(null),working=useRef(false);
-  function stop(){voice.current?.reset();cameraEpoch.current++;const state=live.current;live.current=null;capture.current=null;if(state){clearTimeout(state.timer);clearInterval(state.expiry);state.recognizer?.close();state.inference?.close();state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current){setActive(false);setLiveResult({phase:'off'});setSignResult(value=>value?.live?null:value);}}
+  function stop(){conversation.reset();cameraEpoch.current++;const state=live.current;live.current=null;capture.current=null;if(state){clearTimeout(state.timer);clearInterval(state.expiry);state.recognizer?.close();state.inference?.close();state.stream.getTracks().forEach(track=>track.stop());void state.tracker?.close();}if(video.current)video.current.srcObject=null;if(alive.current){setActive(false);setLiveResult({phase:'off'});setSignResult(value=>value?.live?null:value);}}
   function configureRecognition(value,name){
     const state=live.current;if(!state)return;
     if(value&&state.recognitionId===value.id&&state.recognizer&&state.recognitionPhase!=='error')return;
-    voice.current?.reset();
+    conversation.reset();
     state.recognizer?.close();state.inference?.close();state.recognizer=null;state.inference=null;
     state.recognitionId=value?.id;
     if(!value){setLiveResult({phase:'model'});return;}
@@ -49,7 +54,7 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
       state.recognizer=createLiveSignRecognizer({wholePhrases:(value.enabledClasses||value.classes).some(id=>id.startsWith('oraciones/')),predict:windows=>inference.predict(windows),onUpdate:result=>{
         if(live.current!==state||!alive.current)return;
         state.recognitionPhase=result.phase;
-        voice.current?.update(result);
+        conversation.update(result);
         setLiveResult(result);
         if(result.phase==='matched')setSignResult({...result.prediction,modelName:name,live:true});
         else setSignResult(previous=>previous?.live?null:previous);
@@ -59,13 +64,13 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   }
   function toggleRecognition(){
     livePreference.current=!livePreference.current;setLiveOn(livePreference.current);
-    voice.current?.reset();
+    conversation.reset();
     live.current?.recognizer?.reset(livePreference.current?'position':'paused');
   }
   function toggleVoice(){
     voicePreference.current=!voicePreference.current;setVoiceOn(voicePreference.current);setVoiceError('');
     voice.current?.setEnabled(voicePreference.current);
-    if(voicePreference.current&&live.current&&livePreference.current)voice.current?.update(liveResult);
+    if(voicePreference.current&&conversation.mode==='signs'&&live.current&&livePreference.current)voice.current?.update(liveResult);
   }
   function testVoice(){voicePreference.current=true;setVoiceOn(true);setVoiceError('');voice.current?.setEnabled(true);voice.current?.preview();}
   useEffect(()=>{
@@ -213,14 +218,14 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   const liveText=!active?'Cámara apagada':!liveOn?'Reconocimiento pausado':liveResult.phase==='matched'?label(liveResult.prediction.classId):liveResult.phase==='model'?'Carga un candidato':liveResult.phase==='loading'?'Preparando detectores…':liveResult.phase==='position'?'Muestra la cara y una mano':liveResult.phase==='error'?'Vuelve a cargar el candidato':liveResult.phase==='uncertain'?'Sin coincidencia suficiente':liveResult.phase==='recognizing'?'Confirmando la seña…':busy?'Captura en curso…':'Haz una seña';
   return <section className="visible-training" aria-label="Avance de entrenamiento del catálogo visible">
     <TrainingAssistant progress={progress} rows={rows} quality={quality} personal={personal} comparison={comparison} busy={busy} onAction={assistantAction} onCompare={compare} onReview={reviewComparison} lastSign={lastSign}/>
-    <div className="vt-card"><p className="vt-kicker">CATÁLOGO VISIBLE · AVANCE REAL</p><h2>De tus movimientos a una oración.</h2><p>Los candidatos siguen en evaluación. Las oraciones se aprenden como tomas completas; no se construyen pegando señas sueltas.</p>
+    <div className="vt-card"><p className="vt-kicker">CATÁLOGO VISIBLE · AVANCE REAL</p><h2>De tus movimientos a una oración.</h2><p>Prueba oraciones aprendidas completas o compón un borrador con las señas reconocidas. El modo Frases espera una pausa para leer el resultado. La gestión de todo el catálogo y su prueba privada están en «Vocabulario controlado».</p>
       {progress?<><div className="vt-stats"><div><b>{progress.models.length}</b><span>Candidatos entrenados</span></div><div><b>{progress.trainedCount} / {progress.targetCount}</b><span>Clases con datos de aprendizaje</span></div><div><b>{progress.availableOriginals??progress.originals}</b><span>Secuencias originales disponibles</span></div></div><p>Actualizado: {new Date(progress.updatedAt).toLocaleString('es-CL')}. {progress.originals} originales de aprendizaje{progress.reservedOriginals?` y ${progress.reservedOriginals} secuencias reservadas de la última tanda`:''}. Los aumentos artificiales no cuentan como personas ni grabaciones nuevas.</p>
       {progress.context&&<div><h3>Última tanda · vídeos en contexto</h3><p>{progress.context.newReviewedSequences} recortes nuevos de agua y comer: {progress.context.newTrainingOriginals} añadido al aprendizaje y {progress.context.newReservedOriginals} reservados para evaluar. La revisión de los límites fue visual y asistida; falta validación lingüística experta. En esa tanda no se incluyeron grabaciones de oraciones completas.</p></div>}
       <div className="vt-table"><table><caption>Resultados de los candidatos privados</caption><thead><tr><th>Modelo</th><th>Clases</th><th>Originales</th><th>Prueba reservada</th></tr></thead><tbody>{progress.models.map(row=><tr key={row.modelId}><td>{row.name}</td><td>{row.classes.length}</td><td>{row.originals}</td><td>{row.evaluationSamples?`${row.correct} / ${row.evaluationSamples} aceptadas correctas`:'Sin evaluación independiente'}</td></tr>)}</tbody></table></div>
       <p className="vt-note">{progress.mock?'Vista simulada para comprobar la interfaz local.':'Las pruebas reservadas usan pocos vídeos y vocabularios distintos; sus porcentajes no se comparan directamente. No tienen precisión validada para interpretar a personas nuevas. Los vídeos separados no garantizan personas distintas.'}</p>
       <details><summary>Cobertura de las {progress.targetCount} clases y fuentes</summary><div className="vt-coverage">{progress.targets.map(row=><span key={row.classId}>{row.label} · {row.originals||0} originales de aprendizaje{row.reservedOriginals?` · ${row.reservedOriginals} reservados`:''}</span>)}</div><p>Vídeos revisados, capturas aprobadas recuperadas y el diccionario de JuegoEduca, enlazado en recursos del Mineduc. Los vídeos de este diccionario no fueron producidos por Mineduc.</p>{progress.sources.map(source=><p key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></p>)}</details></>:<p role="status">Cargando el avance privado…</p>}
     </div>
-    <div className="vt-card" aria-label="Grabaciones conectadas al reconocimiento"><h2>Tus palabras y oraciones</h2><p>Las tomas aprobadas de «Grabar señas» se incorporan automáticamente junto con las capturas de este navegador. Cada palabra u oración nueva necesita tres tomas distintas con cara, manos y movimiento suficiente.</p>
+    <div className="vt-card" aria-label="Grabaciones conectadas al reconocimiento"><h2>Tus palabras y oraciones</h2><p>Este banco privado conserva las clases iniciales y las capturas personales de este navegador. Las tomas aprobadas se actualizan automáticamente. Para incorporar otras entradas y controlar su publicación, usa «Vocabulario controlado».</p>
       <p className="vt-small">Sincronización automática: al aprobar una grabación se comprueba y se añade a esta biblioteca sin pulsar Actualizar.</p>
       <div className="vt-actions"><button onClick={()=>librarySync.current?.request()} disabled={busy||library.loading}>Actualizar palabras y oraciones</button>{onReviewRecordings&&<button className="vt-secondary" onClick={onReviewRecordings} disabled={busy}>Revisar grabaciones</button>}</div>
       <p role="status">{library.loading?'Comprobando las grabaciones de la biblioteca…':`${library.rows.length} tomas aprobadas aptas · ${vocabulary.length} de ${VISIBLE_TARGETS.length} palabras y oraciones activas.`}</p>
@@ -232,8 +237,8 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
       <p className="vt-small">Las tomas de evaluación, copias y etiquetas contradictorias no cuentan para entrenar. La disponibilidad indica datos preparados; la precisión aún requiere pruebas con movimientos nuevos.</p>
     </div>
     <div className="vt-card" ref={captureSection}><h2>Entrenamiento con cámara en vivo</h2><p>Haz cualquier palabra u oración del vocabulario activo para verla sobre la cámara. Para añadir más ejemplos aquí, guarda una toma completa. Estas capturas conservan solamente puntos del movimiento en este navegador.</p>
-      <div className="vt-grid"><div><div className="vt-camera"><video ref={video} muted playsInline aria-label="Vista previa de la cámara"/><canvas ref={canvas} aria-label="Puntos de manos y cara"/><div className="vt-live-result" data-state={active&&liveOn?liveResult.phase:'off'} role="status" aria-live="polite" aria-atomic="true"><small>{active&&liveOn?'Reconocimiento en vivo':'Tu cámara'}</small><strong>{liveText}</strong></div></div><div className="vt-actions"><button onClick={start} disabled={busy||active}>Activar cámara</button><button onClick={stop} disabled={!active}>Apagar cámara</button><button className="vt-secondary" onClick={toggleRecognition} disabled={!active||busy||!vocabulary.length} aria-pressed={liveOn}>{liveOn?'Pausar reconocimiento':'Reanudar reconocimiento'}</button></div><div className="vt-actions" aria-label="Voz del reconocimiento en vivo"><button className="vt-secondary" onClick={toggleVoice} disabled={!voiceSupported} aria-pressed={voiceOn&&voiceSupported}>{voiceOn?'Silenciar voz':'Activar voz'}</button><button className="vt-secondary" onClick={testVoice} disabled={!voiceSupported}>Probar voz</button></div><p className="vt-small">{!voiceSupported?'Este navegador no dispone de síntesis de voz.':voiceOn?'Voz activada: cada palabra u oración confirmada se pronuncia en español, sin repetirla continuamente.':'Voz desactivada.'}</p>{voiceError&&<p className="vt-note" role="status">{voiceError}</p>}{vocabulary.length>0&&<p className="vt-small vt-live-vocabulary">Vocabulario activo: {vocabulary.map(label).join(' · ')}.</p>}</div>
-      <div><label htmlFor="vt-phrase">Etiqueta para guardar la toma de entrenamiento</label><select id="vt-phrase" value={selected} onChange={e=>setSelected(e.target.value)} disabled={busy}><optgroup label="Oraciones completas">{PHRASES.map(id=><option key={id} value={id}>{label(id)}</option>)}</optgroup><optgroup label="Señas visibles">{VISIBLE_TARGETS.filter(row=>row.category!=='oraciones').map(row=><option key={row.classId} value={row.classId}>{row.label}</option>)}</optgroup></select>
+      <div className="vt-grid"><div><div className="vt-camera"><video ref={video} muted playsInline aria-label="Vista previa de la cámara"/><canvas ref={canvas} aria-label="Puntos de manos y cara"/><div className="vt-live-result" data-state={active&&liveOn?liveResult.phase:'off'} role="status" aria-live="polite" aria-atomic="true"><small>{active&&liveOn?'Reconocimiento en vivo':'Tu cámara'}</small><strong>{liveText}</strong></div></div><div className="vt-actions"><button onClick={start} disabled={busy||active}>Activar cámara</button><button onClick={stop} disabled={!active}>Apagar cámara</button><button className="vt-secondary" onClick={toggleRecognition} disabled={!active||busy||!vocabulary.length} aria-pressed={liveOn}>{liveOn?'Pausar reconocimiento':'Reanudar reconocimiento'}</button></div><div className="vt-actions" aria-label="Voz del reconocimiento en vivo"><button className="vt-secondary" onClick={toggleVoice} disabled={!voiceSupported} aria-pressed={voiceOn&&voiceSupported}>{voiceOn?'Silenciar voz':'Activar voz'}</button><button className="vt-secondary" onClick={testVoice} disabled={!voiceSupported}>Probar voz</button></div><p className="vt-small">{!voiceSupported?'Este navegador no dispone de síntesis de voz.':voiceOn?(conversation.mode==='phrases'?'Voz activada: la frase se lee al terminar una pausa.':'Voz activada: cada seña confirmada se pronuncia sin repetirla continuamente.'):'Voz desactivada.'}</p>{voiceError&&<p className="vt-note" role="status">{voiceError}</p>}{vocabulary.length>0&&<p className="vt-small vt-live-vocabulary">Vocabulario activo: {vocabulary.map(label).join(' · ')}.</p>}</div>
+      <div><div className="vt-conversation"><h3>Frases en vivo</h3><p className="vt-draft" role="status" aria-live="polite">{conversation.draft.text||conversation.history.at(-1)?.label||'Aquí se forma tu frase.'}</p><ConversationControls conversation={conversation} prefix="training-conversation"/>{conversation.history.length>0&&<details><summary>Últimos resultados</summary><ol>{conversation.history.map(row=><li key={row.id}>{row.label}{row.requiresReview?' · Revisar':''}</li>)}</ol><button className="vt-secondary" onClick={conversation.clearHistory}>Limpiar conversación</button></details>}</div><label htmlFor="vt-phrase">Etiqueta para guardar la toma de entrenamiento</label><select id="vt-phrase" value={selected} onChange={e=>setSelected(e.target.value)} disabled={busy}><optgroup label="Oraciones completas">{PHRASES.map(id=><option key={id} value={id}>{label(id)}</option>)}</optgroup><optgroup label="Señas visibles">{VISIBLE_TARGETS.filter(row=>row.category!=='oraciones').map(row=><option key={row.classId} value={row.classId}>{row.label}</option>)}</optgroup></select>
       {selected===ESTOY_BIEN_CLASS&&<p className="vt-small">Referencia del entrenamiento: «yo bien» corresponde a «estoy bien». Graba la oración completa en una sola toma.</p>}
       <label htmlFor="vt-participant">Perfil declarado para esta toma</label><input id="vt-participant" value={participant} maxLength={20} disabled={busy} onChange={event=>setParticipant(event.target.value)} placeholder="P1"/><p className="vt-small">Usa códigos como P1 o P2 para personas distintas, sin nombres. El código no verifica su identidad.</p>
       {counts.map(row=><p key={row.classId} className="vt-count"><span>{label(row.classId)}</span><b>{row.count} / 3 tomas</b></p>)}

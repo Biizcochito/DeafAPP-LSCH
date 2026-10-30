@@ -1,0 +1,14 @@
+.conversation-controls { margin-top:18px; padding-top:18px; border-top:1px solid rgba(245,242,235,.12); font:inherit; }
+.conversation-controls .conversation-mode { display:flex; gap:6px; margin-bottom:15px; }
+.conversation-controls button { border:1px solid rgba(245,242,235,.18); background:transparent; border-radius:999px; color:#d6dcd7; padding:8px 12px; font:inherit; font-size:12px; cursor:pointer; }
+.conversation-controls button[aria-pressed=true] { color:#080c0a; background:#a99bff; border-color:#a99bff; }
+.conversation-controls button:disabled { opacity:.4; cursor:default; }
+.conversation-controls label { display:block; font-size:12px; margin-bottom:6px; color:#d6dcd7; }
+.conversation-controls select { display:block; width:100%; color:#f5f2eb; background:#111a15; border:1px solid #425249; border-radius:10px; padding:10px; font:inherit; font-size:12px; }
+.conversation-controls p { margin-top:9px; font-size:11px; line-height:1.65; color:#a9b5ad; }
+.conversation-controls .conversation-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
+.conversation-controls .conversation-issue { color:#ffad83; }
+.conversation-controls .conversation-scope { font-size:10px; }
+.conversation-controls summary { cursor:pointer; color:#c5bbff; font-size:12px; margin-bottom:9px; }
+.conversation-controls :focus-visible { outline:3px solid #78e0ff; outline-offset:3px; }
+@media(max-width:700px){.conversation-controls button{min-height:44px}.conversation-controls select{min-height:44px}}
