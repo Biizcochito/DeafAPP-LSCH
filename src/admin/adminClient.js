@@ -24,7 +24,7 @@ export function createAdminClient(client) {
       if (code === "28000") throw new AdminError("La sesión terminó. Vuelve a ingresar.", "session_expired");
       if (code === "40001") throw new AdminError("Otra persona cambió esta revisión. Actualiza la lista y revísala nuevamente.", "conflict");
       if (code === "23505") throw new AdminError("Esta seña ya existe en esa categoría. Busca la entrada antes de agregarla.", "duplicate");
-      if (code === "22023") throw new AdminError("Revisa los datos y los requisitos: prepara las muestras antes de habilitar; la evaluación independiente necesita personas y pruebas reservadas suficientes.", "invalid_input");
+      if (code === "22023") throw new AdminError(name.includes('_variant_')?'Revisa el lote: elige de una a tres tomas de la misma seña y 50 o 100 variantes. Para aprobarlo, revisa sus originales.':"Revisa los datos y los requisitos: prepara las muestras antes de habilitar; la evaluación independiente necesita personas y pruebas reservadas suficientes.", "invalid_input");
       throw new AdminError("No se pudo completar la operación. Actualiza e inténtalo nuevamente.", "server");
     }
     if (result.data?.ok !== true) {
@@ -62,6 +62,24 @@ export function createAdminClient(client) {
     material(session) { return call("deafapp_admin_material", { p_token: token(session) }); },
     trainingProgress(session) { return call("deafapp_admin_training_progress", { p_token: token(session) }); },
     vocabulary(session) { return call('deafapp_admin_vocabulary_list',{p_token:token(session)}); },
+    createVariants(session,{requestId,rows,quantity}) {
+      if(typeof requestId!=='string'||!/^[a-f0-9-]{36}$/i.test(requestId)||![50,100].includes(quantity)||!Array.isArray(rows)||rows.length<1||rows.length>3||
+        rows.some(row=>!/^\d+$/.test(String(row.id))||!Number.isInteger(row.version)||row.version<0)||new Set(rows.map(row=>String(row.id))).size!==rows.length)throw new AdminError('Elige una grabación real y 50 o 100 variantes.','invalid_input');
+      return call('deafapp_admin_variant_create',{p_token:token(session),p_request_id:requestId,p_items:rows.map(row=>({id:String(row.id),version:row.version})),p_quantity:quantity});
+    },
+    variants(session,{status='pending',page=0}={}) {
+      if(!['all','pending','approved','rejected'].includes(status)||!Number.isInteger(page)||page<0||page>4000)throw new AdminError('Filtro de variantes no válido.','invalid_input');
+      return call('deafapp_admin_variant_list',{p_token:token(session),p_status:status,p_offset:page*25});
+    },
+    variantDetail(session,id) {
+      if(typeof id!=='string'||!/^[a-f0-9-]{36}$/i.test(id))throw new AdminError('Lote de variantes no válido.','invalid_input');
+      return call('deafapp_admin_variant_detail',{p_token:token(session),p_id:id});
+    },
+    reviewVariants(session,batch,status) {
+      if(!batch||typeof batch.id!=='string'||!/^[a-f0-9-]{36}$/i.test(batch.id)||!Number.isInteger(batch.version)||batch.version<0||!['approved','rejected','pending'].includes(status))throw new AdminError('Revisión de variantes no válida.','invalid_input');
+      return call('deafapp_admin_variant_review',{p_token:token(session),p_id:batch.id,p_version:batch.version,p_status:status,p_parents:(batch.parents||[]).map(row=>({id:String(row.id),version:row.version}))})
+        .then(data=>{notifyRecordingReview();return data;});
+    },
     saveVocabulary(session,entry,{acknowledgePrototype=false,isNew=false}={}) {
       try{validateCatalogueEntry(entry);}catch(e){throw new AdminError(e.message,'invalid_input');}
       return call('deafapp_admin_vocabulary_save',{p_token:token(session),p_entry:entry,p_version:isNew?-1:entry.version,p_ack_prototype:acknowledgePrototype===true})

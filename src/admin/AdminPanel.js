@@ -8,6 +8,8 @@ import { ADMIN_PAGE_SIZE, MODERATION_LABELS, createAdminClient, recordingPreview
 import LschSources from "./LschSources";
 import TrainingWorkbench from "./TrainingWorkbench";
 import VocabularyWorkbench from './VocabularyWorkbench';
+import MultiplyRecordings from './MultiplyRecordings';
+import VariantReviewPanel from './VariantReviewPanel';
 
 function Action({ label, onPress, disabled, danger, secondary }) {
   return <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={onPress}
@@ -23,6 +25,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   const loadMaterial = useMemo(() => () => api.material(session).then(data => data.catalog), [api, session]);
   const sessionRef = useRef(null);
   const [section, setSection] = useState("recordings");
+  const [variantFlow,setVariantFlow]=useState(null),[reviewMode,setReviewMode]=useState('originals');
   const [status, setStatus] = useState("pending");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
@@ -147,12 +150,15 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   </SafeAreaView>;
 
   function navigateAdmin(next) {
-    setSection(next); setPreview(null); clipRequestRef.current++; setNotice(""); setError("");
+    setVariantFlow(null);setSection(next); setPreview(null); clipRequestRef.current++; setNotice(""); setError("");
   }
   const workspace = content => <AdminWorkspace section={section} onNavigate={navigateAdmin} onExit={exit} busy={busy}>{content}</AdminWorkspace>;
+  function multiply(options={}){setPreview(null);clipRequestRef.current++;setVariantFlow(options);}
+  if(variantFlow)return workspace(<MultiplyRecordings api={api} session={session} client={client} {...variantFlow} onAccessError={fail} onBusyChange={setBusy} onBack={()=>{setVariantFlow(null);setSection('recordings');}} onSent={batch=>{setBusy(false);setVariantFlow(null);setSection('recordings');setReviewMode('variants');setNotice(`${batch.quantity} variantes enviadas a revisión.`);}}/>);
+  if(section==='recordings'&&reviewMode==='variants')return workspace(<VariantReviewPanel api={api} session={session} client={client} onAccessError={fail} onBusyChange={setBusy} onBack={()=>{setReviewMode('originals');setRefresh(value=>value+1);}}/>);
 
   if (section === "video-review") return workspace(<SignReviewWorkbench api={api} session={session} onAccessError={fail} onBusyChange={setBusy} />);
-  if (section === "vocabulary") return workspace(<VocabularyWorkbench api={api} session={session} client={client} onAccessError={fail} onBusyChange={setBusy}/>);
+  if (section === "vocabulary") return workspace(<VocabularyWorkbench api={api} session={session} client={client} onAccessError={fail} onBusyChange={setBusy} onMultiply={classId=>multiply({initialClassId:classId})}/>);
   if (section === "material") return workspace(<LschSources loadCatalog={loadMaterial} onAccessError={fail} onBack={() => setSection("recordings")} backLabel="Volver al administrador" />);
   if (section === "training") return workspace(<TrainingWorkbench api={api} session={session} client={client} onAccessError={fail} onBack={() => setSection("recordings")} onOpenMaterial={() => navigateAdmin("material")} onOpenVocabulary={()=>navigateAdmin('vocabulary')} />);
 
@@ -167,6 +173,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
     {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
     {notice ? <Text accessibilityRole="status" style={styles.notice}>{notice}</Text> : null}
     {section === "recordings" && <>
+      {Platform.OS==='web'&&<View style={styles.actions}><Action label="Grabar y multiplicar" onPress={()=>multiply()} disabled={busy}/><Action label="Revisar variantes" secondary onPress={()=>setReviewMode('variants')} disabled={busy}/></View>}
       <View style={styles.stats}>{["pending", "approved", "rejected"].map(key => <View key={key} style={[styles.stat, Platform.OS === "web" && styles[`${key}Stat`]]}><Text style={[styles.statNumber, Platform.OS === "web" && styles.statInk]}>{listing?.counts?.[key] ?? "—"}</Text><Text style={Platform.OS === "web" ? styles.statLabel : styles.muted}>{MODERATION_LABELS[key]}s</Text></View>)}</View>
       <Text style={styles.muted}>Revisa cada seña antes de decidir. Rechazar conserva el archivo y lo excluye de las aprobadas.</Text>
       <View style={styles.actions}>{["pending", "approved", "rejected", "all"].map(key => <Action key={key} label={key === "all" ? "Todas" : `${MODERATION_LABELS[key]}s`} secondary={status !== key} onPress={() => { setStatus(key); setPage(0); setNotice(""); }} disabled={busy} />)}</View>
@@ -194,6 +201,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
           onPress={() => setSelected(value => value.includes(row.id) ? value.filter(id => id !== row.id) : [...value, row.id])}><Text style={styles.checkText}>{selected.includes(row.id) ? "☑" : "☐"}</Text></TouchableOpacity>
         <View style={{ flex: 1 }}><Text style={styles.rowTitle}>{row.label}</Text><Text style={styles.muted}>{row.category || "Sin categoría"} · #{row.id}</Text><Text style={styles.tag}>{MODERATION_LABELS[row.status]}</Text></View>
         <Action label={`Ver grabación ${row.id}`} secondary onPress={() => openRecording(row)} disabled={busy || loading} />
+        {Platform.OS==='web'&&row.status!=='rejected'&&<Action label={`Multiplicar grabación ${row.id}`} secondary onPress={()=>multiply({initialSource:row})} disabled={busy||loading}/>}
       </View>)}
       <View style={styles.actions}><Action label="Página anterior" secondary disabled={busy || loading || page === 0} onPress={() => setPage(value => value - 1)} />
         <Text style={styles.muted}>Página {page + 1} · {listing?.total ?? "—"} resultados</Text>
