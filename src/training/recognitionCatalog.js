@@ -1,11 +1,11 @@
 import {CATEGORIAS,CATEGORIAS_VISIBLES} from '../catalog/signCatalog.js';
-import {canonicalPhraseClassId} from './phraseLabels.js';
+import {canonicalPhraseClassId,isNecesitarAlias} from './phraseLabels.js';
 import {displayWord} from '../ui/signNames.js';
 
 export const VOCABULARY_STATES=['collecting','testing','enabled','paused'];
 export const VOCABULARY_LABELS={collecting:'Recopilando',testing:'En evaluación',enabled:'Habilitada',paused:'Pausada'};
 export const COLLECTION_GOALS={recordings:50,people:10,minimum:3};
-export function normalizedLabel(value){return String(value??'').normalize('NFC').trim().toLocaleLowerCase('es').replaceAll('_',' ').replace(/\s+/g,' ');}
+export function normalizedLabel(value){const label=String(value??'').normalize('NFC').trim().toLocaleLowerCase('es').replaceAll('_',' ').replace(/\s+/g,' ');return isNecesitarAlias(label)?'necesito':label;}
 const comparison=value=>normalizedLabel(value).replaceAll('ñ','\u0001').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replaceAll('\u0001','ñ');
 export function catalogueKey(category,label){return `${category}/${comparison(label)}`;}
 export function catalogueSeed(){

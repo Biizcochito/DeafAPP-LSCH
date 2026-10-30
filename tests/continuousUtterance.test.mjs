@@ -17,6 +17,8 @@ test('compone vocabulario general y conjuga solo con sujeto explícito o context
   assert.equal(formatRecognizedUtterance(['tiempo/manana','pronombres/nosotros','verbos/estudiar']),'Mañana nosotros estudiamos');
   assert.equal(conjugateRecognizedVerb('pedir','yo'),'pedir');
   assert.equal(conjugateRecognizedVerb('pedir','yo',{yo:'pido'}),'pido');
+  assert.equal(formatRecognizedUtterance(['verbos/necesito','necesidades/ayuda']),'Necesito ayuda');
+  assert.equal(formatRecognizedUtterance(['pronombres/nosotros','verbos/necesito','necesidades/ayuda']),'Nosotros necesitamos ayuda');
 });
 test('la misma seña sostenida no se duplica y se lee una frase al terminar una pausa',()=>{
   const h=harness();h.word('pronombres/yo');h.word('verbos/querer');h.word('verbos/querer');h.word('verbos/trabajar');

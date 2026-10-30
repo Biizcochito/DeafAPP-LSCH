@@ -1,3 +1,4 @@
+import {displayWord} from '../ui/signNames';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import CameraLandmarks from '../camera/CameraLandmarks';
 import {PrivacyConsent} from '../privacy/PrivacyScreens';
@@ -80,7 +81,7 @@ export default function MultiplyRecordings({api,session,client,initialSource,ini
   const entry=catalogue.find(row=>row.classId===classId),canSend=!!initialSource||takes.length>0;
   return <div className="mv-workbench"><header><p className="mv-eyebrow">ADMINISTRACIÓN · APORTES</p><h1>{initialSource?'Multiplicar esta seña':'Grabar y multiplicar'}</h1><p>Una toma real es suficiente. Crea 50 o 100 variantes con el estado de su original.</p><button disabled={busy} onClick={onBack}>Volver a grabaciones</button></header>
     {error&&<p className="mv-error" role="alert">{error}</p>}{message&&<p className="mv-notice" role="status">{message}</p>}
-    <section className="mv-card"><h2>1. Tu original</h2>{initialSource?<p><strong>{initialSource.label}</strong> · #{initialSource.id} · {initialSource.status==='approved'?'Aprobada':'Pendiente de revisión'}</p>:<>
+    <section className="mv-card"><h2>1. Tu original</h2>{initialSource?<p><strong>{displayWord(initialSource.label)}</strong> · #{initialSource.id} · {initialSource.status==='approved'?'Aprobada':'Pendiente de revisión'}</p>:<>
       <label>Seña<select value={classId} disabled={busy||takes.length>0||camera} onChange={e=>setClassId(e.target.value)}>{catalogue.map(row=><option key={row.classId} value={row.classId}>{row.categoryTitle} · {row.displayLabel}</option>)}</select></label>
       <p>{takes.length} {takes.length===1?'toma real lista':'tomas reales listas'}. Puedes añadir hasta tres; las adicionales son opcionales.</p>
       {camera&&<div ref={container} className="mv-camera"><video ref={video} muted playsInline autoPlay/><CameraLandmarks cameraContainerRef={container} enabled={camera} onTracking={updateTracking} onStatus={setTrackingStatus}/></div>}

@@ -1,4 +1,5 @@
 import { createSignTracker } from '../camera/landmarkTracking.js';
+import {displayWord} from '../ui/signNames.js';
 import { withTrackingTimeout } from '../camera/trackingOverlay.js';
 import { listApprovedRows } from './browserDataset.js';
 import { inspectLegacyRecording, recoverFrameObservation, summarizeRecovery, validateRecoveredItem, LEGACY_RECOVERY_VERSION } from './legacyRecovery.js';
@@ -18,7 +19,7 @@ function imageFromFrame(frame) {
   });
 }
 export function currentRecovery(item, row) {
-  if (item.version !== LEGACY_RECOVERY_VERSION || item.sourceVersion !== row.version || item.sourcePath !== row.path || item.sourceClassId !== `${row.category}/${row.label}`) return false;
+  if (item.version !== LEGACY_RECOVERY_VERSION || item.sourceVersion !== row.version || item.sourcePath !== row.path || item.sourceClassId !== `${row.category}/${displayWord(row.label)}`) return false;
   try { validateRecoveredItem(item); return true; } catch { return false; }
 }
 export async function recoverApprovedLegacy({ api, session, client, store, signal, onProgress = () => {}, onItem = () => {}, detectorFactory = createSignTracker, decodeImage = imageFromFrame }) {
@@ -30,7 +31,7 @@ export async function recoverApprovedLegacy({ api, session, client, store, signa
       check();const saved = cached.get(String(row.id));
       if (saved && currentRecovery(saved, row)) { reused++;onItem(saved);onProgress({ index: index + 1, total: rows.length, text: `Recuperación guardada: ${index + 1}/${rows.length}.` });continue; }
       try {
-        onProgress({ index: index + 1, total: rows.length, text: `Abriendo ${row.label}, #${row.id} (${index + 1}/${rows.length})…` });
+        onProgress({ index: index + 1, total: rows.length, text: `Abriendo ${displayWord(row.label)}, #${row.id} (${index + 1}/${rows.length})…` });
         const recording = await downloadApprovedRecording(client, row);check();
         const source = inspectLegacyRecording(recording, row), observations = [];
         const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(recording.frames)));
@@ -44,7 +45,7 @@ export async function recoverApprovedLegacy({ api, session, client, store, signa
         try { await withTrackingTimeout(tracker.resetSequence(), 10000); }
         catch (cause) { const error = new Error(`El detector necesita reiniciarse: ${cause.message}`);error.name = 'RecoveryDetectorError';throw error; }
         for (const [frameIndex, frame] of source.frames.entries()) {
-          check();onProgress({ index: index + 1, total: rows.length, text: `${row.label}, #${row.id}: imagen ${frameIndex + 1}/${source.frames.length} · grabación ${index + 1}/${rows.length}.` });
+          check();onProgress({ index: index + 1, total: rows.length, text: `${displayWord(row.label)}, #${row.id}: imagen ${frameIndex + 1}/${source.frames.length} · grabación ${index + 1}/${rows.length}.` });
           const image = await decodeImage(frame);check();result = null;
           try { await withTrackingTimeout(tracker.send({ image }), 45000); }
           catch (cause) { const error = new Error(`La recuperación se detuvo para reiniciar el detector: ${cause.message}`);error.name = 'RecoveryDetectorError';throw error; }
@@ -58,7 +59,7 @@ export async function recoverApprovedLegacy({ api, session, client, store, signa
         await store.put(item);processed++;onItem(item);
       } catch (error) {
         check();if (error?.code === 'session_expired' || error?.name === 'RecoveryDetectorError') throw error;
-        failed++;const item = { id: String(row.id), sourceVersion: row.version, sourcePath: row.path, sourceClassId: `${row.category}/${row.label}`,
+        failed++;const item = { id: String(row.id), sourceVersion: row.version, sourcePath: row.path, sourceClassId: `${row.category}/${displayWord(row.label)}`,
           originalLabel: row.label, originalCategory: row.category, error: error.message, recoveredAt: new Date().toISOString() };
         await store.put(item);onItem(item);
       }

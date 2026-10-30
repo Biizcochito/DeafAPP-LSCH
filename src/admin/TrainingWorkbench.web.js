@@ -1,3 +1,5 @@
+import {displayWord} from '../ui/signNames';
+import {canonicalPhraseClassId} from '../training/phraseLabels';
 import {adminTheme} from './adminTheme';
 import {useEffect,useRef,useState} from 'react';
 import {SafeAreaView,ScrollView,View,Text,TextInput,TouchableOpacity,ActivityIndicator,StyleSheet} from 'react-native';
@@ -72,7 +74,7 @@ export default function TrainingWorkbench({api,session,client,onBack,onAccessErr
     }catch(e){if(alive.current){setError(e.message);onAccessError?.(e);}}finally{lock.current=false;if(alive.current)setBusy(false);}
   }
   const term=query.trim().toLocaleLowerCase('es');
-  const rows=plan.rows.filter(row=>(filter==='all'||filter===row.state)&&(!term||`${row.label} ${row.category}`.toLocaleLowerCase('es').includes(term)));
+  const rows=plan.rows.filter(row=>(filter==='all'||filter===row.state)&&(!term||`${displayWord(row.label)} ${row.category}`.toLocaleLowerCase('es').includes(term)));
   const personal=plan.mode==='personal-prototype',maxClasses=plan.minimums.maxClassesPerGroup;
   const sections=<View style={styles.actions}>{[['visible','Avance y oraciones'],['python','Modelo de interpretación'],['captures','Capturas revisadas']].map(([id,label])=><TouchableOpacity key={id} accessibilityRole="tab" aria-selected={section===id} accessibilityLabel={label} accessibilityState={{selected:section===id,disabled:busy}} disabled={busy} onPress={()=>setSection(id)} style={[styles.tab,section===id&&styles.activeTab]}><Text style={[styles.tabText,section===id&&styles.activeTabText]}>{label}</Text></TouchableOpacity>)}{onOpenVocabulary&&<Button label="Gestionar vocabulario y probar frases" secondary onPress={onOpenVocabulary} disabled={busy}/>}</View>;
   if(testing)return <InterpretationScreen onBack={()=>setTesting(false)}/>;
@@ -99,11 +101,11 @@ export default function TrainingWorkbench({api,session,client,onBack,onAccessErr
     {plan.trainingAvailable&&<Text style={styles.body}>{selected.join(' · ')||'Selecciona al menos dos señas listas.'}</Text>}
     {report&&<View style={styles.card}><Text style={styles.subtitle}>Resultado del grupo candidato</Text><Text style={styles.body}>{report.classes.length} señas · {report.trainOriginals} originales de aprendizaje · {report.evaluationSamples} originales de prueba · {(report.accuracy*100).toFixed(1)}% de aciertos en esas muestras reservadas.</Text>
       <Text style={styles.warning}>{report.mode==='personal-prototype'?'Esta es una prueba interna con grabaciones distintas de la misma colección; pueden ser de la misma persona y su identidad puede no estar confirmada.':'La identidad de los perfiles debe revisarse.'} Falta probar gestos desconocidos y la cámara real; este resultado no activa la interpretación pública.</Text>
-      {report.perClass.map(row=><Text key={row.classId} style={styles.body}>{row.classId}: {row.correct}/{row.samples} pruebas acertadas.</Text>)}</View>}
+      {report.perClass.map(row=><Text key={row.classId} style={styles.body}>{canonicalPhraseClassId(row.classId)}: {row.correct}/{row.samples} pruebas acertadas.</Text>)}</View>}
     <View style={styles.actions}>{[['all','Todas'],['ready','Listas'],['needs-preparation','Requieren preparación'],['needs-samples','Faltan muestras'],['needs-material','Falta material']].map(([value,label])=><Button key={value} label={label} onPress={()=>{setFilter(value);setLimit(25);}}/>)}</View>
     <TextInput accessibilityLabel="Buscar seña para entrenar" placeholder="Buscar seña o categoría…" placeholderTextColor="#9191A8" value={query} onChangeText={value=>{setQuery(value);setLimit(25);}} style={styles.input}/>
     <Text style={styles.muted}>{rows.length} entradas con este filtro · Las primeras tienen más datos revisados.</Text>
-    {rows.slice(0,limit).map(row=><View key={row.classId} style={styles.card}><Text style={styles.subtitle}>{row.label}</Text><Text style={styles.muted}>{row.category} · {states[row.state]}</Text>
+    {rows.slice(0,limit).map(row=><View key={row.classId} style={styles.card}><Text style={styles.subtitle}>{displayWord(row.label)}</Text><Text style={styles.muted}>{row.category} · {states[row.state]}</Text>
       {row.state==='ready'&&<TouchableOpacity accessibilityRole="checkbox" accessibilityLabel={`Incluir ${row.classId} en el entrenamiento`} accessibilityState={{checked:selected.includes(row.classId),disabled:busy||!selected.includes(row.classId)&&selected.length>=maxClasses}} disabled={busy||!selected.includes(row.classId)&&selected.length>=maxClasses} onPress={()=>setSelected(value=>value.includes(row.classId)?value.filter(id=>id!==row.classId):[...value,row.classId])} style={styles.button}><Text style={styles.buttonText}>{selected.includes(row.classId)?'✓ Incluida en el grupo':'Incluir en el grupo'}</Text></TouchableOpacity>}
       <Text style={styles.body}>{row.approvedRecordings} aprobadas · {row.usableRecordings} aptas · {row.trainOriginals}/{plan.minimums.trainOriginals} originales de aprendizaje · {row.evaluationOriginals}/{plan.minimums.evaluationOriginals} de prueba.</Text>
       {row.reasons.map(reason=><Text key={reason} style={styles.warning}>{reason==='unverified-participant-identity'?automaticSourceReason:reasons[reason]||reason}</Text>)}

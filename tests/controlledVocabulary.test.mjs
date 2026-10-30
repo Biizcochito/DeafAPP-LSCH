@@ -16,6 +16,14 @@ test('el catálogo antiguo se restaura sin repetir las entradas actuales ni conf
   assert.notEqual(catalogueKey('tiempo','año'),catalogueKey('tiempo','ano'));
   assert.equal(collectionCategories(seed).flatMap(row=>row.señas).length,33);
 });
+
+test('el catálogo publica necesito y resuelve las referencias anteriores a la misma seña',()=>{
+  const seed=catalogueSeed();assert.equal(seed.filter(row=>row.classId==='verbos/necesito').length,1);
+  assert.ok(!seed.some(row=>row.classId==='verbos/necesitar'));
+  assert.equal(resolveCatalogueClass('verbos/necesitar',seed),'verbos/necesito');
+  assert.equal(catalogueKey('verbos','necesitar'),catalogueKey('verbos','necesito'));
+  assert.ok(collectionCategories(seed).find(row=>row.id==='verbos').señas.includes('necesito'));
+});
 test('los alias requieren destinos existentes y los ciclos no producen clases',()=>{
   const catalogue=catalogueSeed().slice(0,2);catalogue[0].aliasOf=catalogue[1].classId;
   assert.equal(resolveCatalogueClass(catalogue[0].classId,catalogue),catalogue[1].classId);

@@ -1,4 +1,5 @@
 import { prepareDataset, auditRecording, TARGET_SIGNS } from './datasetPreparation.js';
+import {canonicalPhraseClassId} from './phraseLabels.js';
 const targets=new Set(TARGET_SIGNS.map(s=>s.classId));
 export async function listApprovedRows(api,session,signal) {
   const rows=[];
@@ -14,7 +15,7 @@ export async function buildReviewedBrowserDataset({api,session,client,signal,onP
   for(const [index,row] of rows.entries()){
     if(signal?.aborted)throw new Error('Preparación cancelada.');
     onProgress(`Revisando ${index+1} de ${rows.length} grabaciones aprobadas…`);
-    const classId=`${row.category}/${row.label}`;approvedCounts[classId]=(approvedCounts[classId]||0)+1;
+    const classId=canonicalPhraseClassId(`${row.category}/${row.label}`);approvedCounts[classId]=(approvedCounts[classId]||0)+1;
     try {
       if(!targets.has(classId)){excluded.push({file:row.id,classId,reasons:['unknown-label-or-category']});continue;}
       if(typeof row.path!=='string'||row.path.includes('..')||!row.path.endsWith('.json'))throw new Error('invalid-storage-path');

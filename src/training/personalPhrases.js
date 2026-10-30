@@ -1,5 +1,6 @@
 import {PHRASES} from './visibleTraining.js';
 import {trainingPhraseRows,validSequence} from './assistantData.js';
+import {canonicalPhraseRow} from './phraseLabels.js';
 
 const DATABASE='deafapp-private-phrases-v1';
 export function phraseStore(action, value) {
@@ -11,7 +12,7 @@ export function phraseStore(action, value) {
       const db=opening.result,tx=db.transaction('captures',action==='list'?'readonly':'readwrite'),store=tx.objectStore('captures');
       const request=action==='list'?store.getAll():action==='clear'?store.clear():store.put(value);
       let result;request.onsuccess=()=>{result=request.result;};
-      tx.oncomplete=()=>{db.close();resolve(result);};
+      tx.oncomplete=()=>{db.close();resolve(action==='list'?result.map(canonicalPhraseRow):result);};
       tx.onerror=()=>{db.close();reject(Error('No se pudo guardar la captura.'));};
       tx.onabort=()=>{db.close();reject(Error('Se interrumpió el almacenamiento.'));};
     };

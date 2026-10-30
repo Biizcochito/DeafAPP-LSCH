@@ -1,3 +1,4 @@
+import {displayWord} from '../ui/signNames';
 import SignReviewWorkbench from './SignReviewWorkbench';
 import AdminWorkspace from './AdminWorkspace';
 import {adminTheme} from './adminTheme';
@@ -131,7 +132,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   const rows = listing?.rows || [];
   const picked = rows.filter(row => selected.includes(row.id));
   const preparation = overview?.preparation;
-  const coverage = (preparation?.classes || []).filter(item => !coverageQuery.trim() || `${item.category} ${item.label}`.toLocaleLowerCase("es").includes(coverageQuery.toLocaleLowerCase("es").trim()));
+  const coverage = (preparation?.classes || []).filter(item => !coverageQuery.trim() || `${item.category} ${displayWord(item.label)}`.toLocaleLowerCase("es").includes(coverageQuery.toLocaleLowerCase("es").trim()));
 
   if (!session && Platform.OS === "web") return <AdminLogin password={password} setPassword={setPassword} login={login} exit={exit} busy={busy} error={error} />;
 
@@ -188,8 +189,8 @@ export default function AdminPanel({ client, onExit, onModerated }) {
       </View></View>}
       {loading && <ActivityIndicator accessibilityLabel="Cargando grabaciones" size="large" color="#4ECDC4" style={{ margin: 14 }} />}
       {preview && <View style={styles.card}>
-        <Text style={styles.cardTitle}>Revisando «{preview.row.label}»</Text><Text style={styles.muted}>{preview.row.category} · {MODERATION_LABELS[preview.row.status]}</Text>
-        <Image accessibilityLabel={`Vista previa de ${preview.row.label}`} source={{ uri: preview.frames[frame] }} resizeMode="contain" style={{ width: "100%", aspectRatio: preview.aspectRatio, maxHeight: 440, backgroundColor: "#050509", borderRadius: 12, marginVertical: 14 }} />
+        <Text style={styles.cardTitle}>Revisando «{displayWord(preview.row.label)}»</Text><Text style={styles.muted}>{preview.row.category} · {MODERATION_LABELS[preview.row.status]}</Text>
+        <Image accessibilityLabel={`Vista previa de ${displayWord(preview.row.label)}`} source={{ uri: preview.frames[frame] }} resizeMode="contain" style={{ width: "100%", aspectRatio: preview.aspectRatio, maxHeight: 440, backgroundColor: "#050509", borderRadius: 12, marginVertical: 14 }} />
         <Text style={styles.muted}>Fotograma {frame + 1} de {preview.frames.length}</Text>
         <View style={styles.actions}><Action label={playing ? "Pausar vista previa" : "Reproducir vista previa"} secondary onPress={() => setPlaying(value => !value)} disabled={busy} />
           <Action label="Aprobar grabación" onPress={() => moderate([preview.row], "approved")} disabled={busy} />
@@ -201,7 +202,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
       {rows.map(row => <View key={row.id} dataSet={{adminRow:true}} style={styles.row}>
         <TouchableOpacity accessibilityRole="checkbox" aria-checked={selected.includes(row.id)} accessibilityLabel={`Seleccionar grabación ${row.id}`} accessibilityState={{ checked: selected.includes(row.id), disabled: busy || loading }} disabled={busy || loading} style={styles.checkbox}
           onPress={() => setSelected(value => value.includes(row.id) ? value.filter(id => id !== row.id) : [...value, row.id])}><Text style={styles.checkText}>{selected.includes(row.id) ? "☑" : "☐"}</Text></TouchableOpacity>
-        <View style={{ flex: 1 }}><Text style={styles.rowTitle}>{row.label}</Text><Text style={styles.muted}>{row.category || "Sin categoría"} · #{row.id}</Text><Text style={styles.tag}>{MODERATION_LABELS[row.status]}</Text></View>
+        <View style={{ flex: 1 }}><Text style={styles.rowTitle}>{displayWord(row.label)}</Text><Text style={styles.muted}>{row.category || "Sin categoría"} · #{row.id}</Text><Text style={styles.tag}>{MODERATION_LABELS[row.status]}</Text></View>
         <Action label={`Ver grabación ${row.id}`} secondary onPress={() => openRecording(row)} disabled={busy || loading} />
         {Platform.OS==='web'&&row.status!=='rejected'&&<Action label={`Multiplicar grabación ${row.id}`} secondary onPress={()=>multiply({initialSource:row})} disabled={busy||loading}/>}
       </View>)}
@@ -219,7 +220,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
         <Text style={styles.body}>{preparation.targetClasses} entradas de vocabulario · {preparation.quarantinedRecordings} grabaciones pendientes de preparación.</Text>
         <Text style={styles.warning}>Todavía no hay un modelo de interpretación validado para uso público. Las variaciones de una misma persona no equivalen a participantes nuevos.</Text>
         <TextInput accessibilityLabel="Buscar cobertura del vocabulario" placeholder="Buscar palabra o categoría…" placeholderTextColor="#9191A8" value={coverageQuery} onChangeText={value => { setCoverageQuery(value); setCoverageLimit(25); }} style={styles.input} />
-        {coverage.slice(0, coverageLimit).map(item => <View key={item.classId} style={styles.coverageRow}><Text style={styles.rowTitle}>{item.label}</Text><Text style={styles.muted}>{item.category} · {item.recordings} muestras aptas · {item.declaredParticipants} personas</Text></View>)}
+        {coverage.slice(0, coverageLimit).map(item => <View key={item.classId} style={styles.coverageRow}><Text style={styles.rowTitle}>{displayWord(item.label)}</Text><Text style={styles.muted}>{item.category} · {item.recordings} muestras aptas · {item.declaredParticipants} personas</Text></View>)}
         {coverage.length > coverageLimit && <Action label="Mostrar más entradas" secondary onPress={() => setCoverageLimit(value => value + 25)} />}
       </View>}
       {!loading && overview && !preparation && <Text style={styles.muted}>No hay un informe de preparación guardado todavía.</Text>}

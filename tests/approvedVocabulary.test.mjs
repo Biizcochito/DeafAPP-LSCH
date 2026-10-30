@@ -37,6 +37,13 @@ test('approved app recordings become private features with the same freshness li
   assert.throws(()=>approvedRecordingFeatures({...row,label:'gracias'},recording,VISIBLE_TARGETS));
 });
 
+test('una grabación aprobada con la etiqueta anterior sigue disponible como necesito',()=>{
+  const {row,recording}=fixture('old-need','verbos/necesitar');
+  const result=approvedRecordingFeatures(row,recording,VISIBLE_TARGETS);
+  assert.equal(result.classId,'verbos/necesito');assert.equal(row.label,'necesitar');assert.equal(recording.label,'necesitar');
+  assert.equal(result.durationMs,3000);assert.equal(result.sourcePath,row.path);
+});
+
 test('whole phrases need a full take, preserve duration and canonicalize estoy bien',()=>{
   const full=fixture('phrase','oraciones/yo bien',0,{duration:9000});
   const result=approvedRecordingFeatures(full.row,full.recording,VISIBLE_TARGETS);

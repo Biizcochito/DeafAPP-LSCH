@@ -7,7 +7,7 @@ test('la selección pública contiene exactamente 29 señas y las cuatro oracion
   const expected = {
     saludos: ['hola', 'bien', 'gracias'],
     conversacion: ['si', 'no', 'no entiendo', 'repite'],
-    verbos: ['querer', 'tener', 'comer', 'beber', 'ir', 'trabajar', 'estudiar', 'necesitar'],
+    verbos: ['querer', 'tener', 'comer', 'beber', 'ir', 'trabajar', 'estudiar', 'necesito'],
     pronombres: ['yo', 'tu', 'nosotros'],
     necesidades: ['agua', 'comida', 'hambre', 'sed', 'ayuda', 'cansado', 'casa'],
     tiempo: ['hoy', 'manana', 'ahora', 'despues'],
@@ -26,7 +26,7 @@ test('las cuatro oraciones se apoyan en las señas del catálogo visible', () =>
   const support = {
     'quiero agua': ['verbos/querer', 'necesidades/agua'],
     'quiero comer': ['verbos/querer', 'verbos/comer'],
-    'necesito ayuda': ['verbos/necesitar', 'necesidades/ayuda'],
+    'necesito ayuda': ['verbos/necesito', 'necesidades/ayuda'],
     'estoy bien': ['pronombres/yo','saludos/bien'],
   };
   const visibleSigns = new Set(CATEGORIAS_VISIBLES.filter(category => category.id !== 'oraciones')

@@ -2,6 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { addContribution, contributionKey, emptyContributions, sanitizeContributions } from "../src/contributions/myContributions.js";
 
+test('los aportes anteriores y nuevos de necesito se reúnen sin perder el historial',()=>{
+  const raw={version:1,items:{'verbos/necesitar':{n:2,last:20},'verbos/necesito':{n:1,last:30}},seen:['old','new']};
+  const state=sanitizeContributions(raw);assert.deepEqual(state.items,{'verbos/necesito':{n:3,last:30}});
+  assert.deepEqual(sanitizeContributions(state),state);assert.equal(contributionKey('verbos','necesitar'),'verbos/necesito');
+  assert.equal(addContribution(state,{id:'old',category:'verbos',label:'necesitar'}),state);
+});
+
 test("cada envío suma una vez a la seña y categoría correctas", () => {
   let state = emptyContributions();
   state = addContribution(state, { id: "a1", category: "saludos", label: "hola" }, 1000);

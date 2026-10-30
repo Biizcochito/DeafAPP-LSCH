@@ -1,10 +1,11 @@
 import {CATEGORIAS_VISIBLES} from '../catalog/signCatalog.js';
 import {PHRASES,predictForest,decodeCandidate} from './visibleTraining.js';
 import {sequenceKey,trainingPhraseRows,evaluationSummary,validSequence} from './assistantData.js';
+import {canonicalPhraseClassId,canonicalPhraseRow} from './phraseLabels.js';
 
 export const VISIBLE_TARGETS=CATEGORIAS_VISIBLES.flatMap(category=>category.señas.map(label=>({classId:`${category.id}/${label}`,category:category.id,label})));
 const allowed=new Set(VISIBLE_TARGETS.map(row=>row.classId));
-const support=['verbos/querer','verbos/necesitar','necesidades/ayuda','necesidades/agua','verbos/comer'];
+const support=['verbos/querer','verbos/necesito','necesidades/ayuda','necesidades/agua','verbos/comer'];
 const count=value=>Number.isInteger(value)&&value>=0?value:0;
 const name=id=>id.split('/').at(-1);
 
@@ -17,9 +18,10 @@ export function captureQuality(frames) {
 }
 
 export function buildTrainingPlan({progress,rows=[],goal='phrases',personal=null,quality=[]}) {
+  rows=rows.map(canonicalPhraseRow);
   const learning=trainingPhraseRows(rows),counts=PHRASES.map(classId=>({classId,count:learning.filter(row=>row.classId===classId).length}));
   const pending=counts.filter(row=>row.count<3).sort((a,b)=>a.count-b.count||PHRASES.indexOf(a.classId)-PHRASES.indexOf(b.classId));
-  const snapshot=new Map((progress?.targets||[]).filter(row=>allowed.has(row.classId)).map(row=>[row.classId,count(row.originals)]));
+  const snapshot=new Map((progress?.targets||[]).map(row=>({...row,classId:canonicalPhraseClassId(row.classId)})).filter(row=>allowed.has(row.classId)).map(row=>[row.classId,count(row.originals)]));
   const local=new Map(),seen=new Set();
   for(const row of rows){const key=sequenceKey(row.features);if(!key||seen.has(key)||!allowed.has(row.classId)||row.wholePhrase||row.split!=='train')continue;seen.add(key);local.set(row.classId,(local.get(row.classId)||0)+1);}
   const catalog=VISIBLE_TARGETS.filter(row=>row.category!=='oraciones').map(row=>({...row,snapshot:snapshot.get(row.classId)||0,local:local.get(row.classId)||0})).sort((a,b)=>{

@@ -17,7 +17,7 @@ function fixture(){
 test('priorities cover the whole vocabulary and require original samples',()=>{
   const dataset=fixture(),plan=createTrainingPlan(dataset);
   assert.equal(plan.totalClasses,TARGET_SIGNS.length);assert.equal(plan.readyClasses.length,2);assert.equal(plan.trainingAvailable,true);
-  for(const id of ['alimentos/arroz','verbos/necesitar','oraciones/necesito ayuda'])assert.ok(plan.rows.some(row=>row.classId===id));
+  for(const id of ['alimentos/arroz','verbos/necesito','oraciones/necesito ayuda'])assert.ok(plan.rows.some(row=>row.classId===id));
   const original=dataset.train[0];
   dataset.train=dataset.train.filter(s=>s.parentHash!==original.parentHash);
   const source=dataset.train[0];dataset.train.push({...source,variant:'time-warp-0.85'});

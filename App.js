@@ -40,6 +40,7 @@ import { assertRecordingConsent, createConsentReceipt, createPrivacyPreviewFetch
 import { CONSENT_STORAGE_KEY, privacyConsentStore } from "./src/privacy/privacyConsentStore";
 import { PrivacyConsent, PrivacyDocument, PrivacyPreviewComplete } from "./src/privacy/PrivacyScreens";
 import { displayWord as nombreDeSeña } from "./src/ui/signNames";
+import {canonicalPhraseLabel} from './src/training/phraseLabels';
 
 const { width, height } = Dimensions.get("window");
 
@@ -318,7 +319,7 @@ export default function App() {
     recordingDraftStore.load().then(async draft => {
       if (!vigente || !draft) return;
       const category = CATEGORIAS.find(c => c.id === draft.category);
-      if (!isRecordingDraft(draft) || !category?.señas.includes(draft.label)) {
+      if (!isRecordingDraft(draft) || !category?.señas.includes(canonicalPhraseLabel(draft.label))) {
         throw new Error("No se pudo recuperar la grabación pendiente.");
       }
       if (draft.submitted) { await recordingDraftStore.remove(draft.id); return; }
@@ -437,7 +438,7 @@ export default function App() {
       if (falloConteos || !data) throw falloConteos || new Error("No se pudo cargar el progreso.");
       if (data) {
         const c = {};
-        data.forEach(r => { c[r.label] = (c[r.label] || 0) + 1; });
+        data.forEach(r => { const label=canonicalPhraseLabel(r.label);c[label] = (c[label] || 0) + 1; });
         setConteos(c);
         setEstadoConteos("ready");
       }
@@ -689,12 +690,12 @@ export default function App() {
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" disabled={subiendo} onPress={volverAlCatalogo} style={styles.btnBack}>
               <Text style={styles.btnBackTexto}>‹</Text>
             </TouchableOpacity>
-            <Text style={styles.grabarTitulo}>{borrador.label.toUpperCase()}</Text>
+            <Text style={styles.grabarTitulo}>{nombreDeSeña(borrador.label).toUpperCase()}</Text>
             <View style={{ width: 44 }} />
           </View>
           <Text style={styles.previewTitulo}>Revisa tu seña</Text>
           <View style={[styles.camaraBox, estiloCamaraWeb, { aspectRatio: borrador.frameAspectRatio || 4 / 3 }]}>
-            <Image accessibilityLabel={`Vista previa de la seña ${borrador.label}`} source={{ uri: armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0]) }} resizeMode="contain" style={[styles.camara, Platform.OS === "web" && { transform: [{ scaleX: -1 }] }]} />
+            <Image accessibilityLabel={`Vista previa de la seña ${nombreDeSeña(borrador.label)}`} source={{ uri: armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0]) }} resizeMode="contain" style={[styles.camara, Platform.OS === "web" && { transform: [{ scaleX: -1 }] }]} />
             <View style={styles.progresoBarra}>
               <View style={[styles.progresoRelleno, { width: `${((fotogramaVista + 1) / borrador.frames.length) * 100}%` }]} />
             </View>
@@ -741,7 +742,7 @@ export default function App() {
         <StatusBar barStyle="light-content" />
         <Text style={{ fontSize: 70 }}>✅</Text>
         <Text style={styles.exitoTexto}>¡Gracias!</Text>
-        <Text style={styles.instruccion}>Tu seña «{señaActual}» fue enviada para revisión.</Text>
+        <Text style={styles.instruccion}>Tu seña «{nombreDeSeña(señaActual)}» fue enviada para revisión.</Text>
         <View style={styles.grabarBotones}>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel="Grabar otra vez" style={[styles.btnOtraVez, styles.previewAccion]} onPress={() => abrirGrabacion(señaActual)}>
             <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>Grabar otra vez</Text>
@@ -1093,7 +1094,7 @@ export default function App() {
       <ScrollView showsVerticalScrollIndicator={true}>
         {borrador && (
           <View style={styles.pendienteBox}>
-            <Text style={styles.pendienteTitulo}>Tienes una grabación pendiente: «{borrador.label}»</Text>
+            <Text style={styles.pendienteTitulo}>Tienes una grabación pendiente: «{nombreDeSeña(borrador.label)}»</Text>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Revisar grabación pendiente" onPress={() => mostrarVistaPrevia()} style={styles.trazadoBoton}>
               <Text style={styles.trazadoBotonTexto}>Revisar y enviar</Text>
             </TouchableOpacity>

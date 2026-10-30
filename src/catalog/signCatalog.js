@@ -31,7 +31,7 @@ export const CATEGORIAS = [
   },
   {
     id: "verbos", nombre: "Verbos", emoji: "⚡", color: "#96CEB4",
-    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir","necesitar"],
+    señas: ["comer","beber","dormir","trabajar","estudiar","caminar","correr","hablar","escuchar","ver","ir","venir","leer","escribir","jugar","nadar","bailar","cantar","reir","llorar","ayudar","querer","amar","pensar","saber","poder","tener","hacer","dar","salir","entrar","comprar","vender","vivir","necesito"],
   },
   {
     id: "adjetivos", nombre: "Adjetivos", emoji: "🎨", color: "#E74C3C",
@@ -129,7 +129,7 @@ export const CATEGORIAS = [
 const SEÑAS_PRIORITARIAS = {
   saludos: ["hola", "bien", "gracias"],
   conversacion: ["si", "no", "no entiendo", "repite"],
-  verbos: ["querer", "tener", "comer", "beber", "ir", "trabajar", "estudiar", "necesitar"],
+  verbos: ["querer", "tener", "comer", "beber", "ir", "trabajar", "estudiar", "necesito"],
   pronombres: ["yo", "tu", "nosotros"],
   necesidades: ["agua", "comida", "hambre", "sed", "ayuda", "cansado", "casa"],
   tiempo: ["hoy", "manana", "ahora", "despues"],

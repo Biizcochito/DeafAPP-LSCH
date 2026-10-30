@@ -6,7 +6,7 @@ import {createLiveSignSpeech} from '../training/liveSignSpeech';
 import {useLiveConversation} from '../training/useLiveConversation';
 import ConversationControls from '../training/ConversationControls.web';
 import {catalogueSeed} from '../training/recognitionCatalog';
-import {canonicalPhraseLabel,ESTOY_BIEN_CLASS} from '../training/phraseLabels';
+import {canonicalPhraseLabel,canonicalPhraseRow,ESTOY_BIEN_CLASS} from '../training/phraseLabels';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
 import {freshLandmarks,withTrackingTimeout} from '../camera/trackingOverlay';
@@ -30,7 +30,7 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
   const [progress,setProgress]=useState(null),[error,setError]=useState(''),[message,setMessage]=useState('Activa la cámara para grabar una oración completa.');
   const [localRows,setRows]=useState([]),[selected,setSelected]=useState(PHRASES[0]),[candidateId,setCandidateId]=useState('');
   const [library,setLibrary]=useState({rows:[],pending:[],excluded:[],loading:true}),[coverage,setCoverage]=useState([]),[baseModel,setBaseModel]=useState(null);
-  const rows=useMemo(()=>[...localRows,...library.rows],[localRows,library.rows]);
+  const rows=useMemo(()=>[...localRows,...library.rows].map(canonicalPhraseRow),[localRows,library.rows]);
   const [active,setActive]=useState(false),[busy,setBusy]=useState(false),[personal,setPersonal]=useState(null),[loaded,setLoaded]=useState('');
   const [quality,setQuality]=useState([]),[comparison,setComparison]=useState(null),[participant,setParticipant]=useState('P1');
   const [pendingTest,setPendingTest]=useState(null),[expected,setExpected]=useState(''),[signResult,setSignResult]=useState(null),[personalSigns,setPersonalSigns]=useState(null);
@@ -226,7 +226,7 @@ export default function VisibleTrainingPanel({api,session,client,onAccessError,o
       {progress.context&&<div><h3>Última tanda · vídeos en contexto</h3><p>{progress.context.newReviewedSequences} recortes nuevos de agua y comer: {progress.context.newTrainingOriginals} añadido al aprendizaje y {progress.context.newReservedOriginals} reservados para evaluar. La revisión de los límites fue visual y asistida; falta validación lingüística experta. En esa tanda no se incluyeron grabaciones de oraciones completas.</p></div>}
       <div className="vt-table"><table><caption>Resultados de los candidatos privados</caption><thead><tr><th>Modelo</th><th>Clases</th><th>Originales</th><th>Prueba reservada</th></tr></thead><tbody>{progress.models.map(row=><tr key={row.modelId}><td>{row.name}</td><td>{row.classes.length}</td><td>{row.originals}</td><td>{row.evaluationSamples?`${row.correct} / ${row.evaluationSamples} aceptadas correctas`:'Sin evaluación independiente'}</td></tr>)}</tbody></table></div>
       <p className="vt-note">{progress.mock?'Vista simulada para comprobar la interfaz local.':'Las pruebas reservadas usan pocos vídeos y vocabularios distintos; sus porcentajes no se comparan directamente. No tienen precisión validada para interpretar a personas nuevas. Los vídeos separados no garantizan personas distintas.'}</p>
-      <details><summary>Cobertura de las {progress.targetCount} clases y fuentes</summary><div className="vt-coverage">{progress.targets.map(row=><span key={row.classId}>{row.label} · {row.originals||0} originales de aprendizaje{row.reservedOriginals?` · ${row.reservedOriginals} reservados`:''}</span>)}</div><p>Vídeos revisados, capturas aprobadas recuperadas y el diccionario de JuegoEduca, enlazado en recursos del Mineduc. Los vídeos de este diccionario no fueron producidos por Mineduc.</p>{progress.sources.map(source=><p key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></p>)}</details></>:<p role="status">Cargando el avance privado…</p>}
+      <details><summary>Cobertura de las {progress.targetCount} clases y fuentes</summary><div className="vt-coverage">{progress.targets.map(row=><span key={row.classId}>{canonicalPhraseLabel(row.label)} · {row.originals||0} originales de aprendizaje{row.reservedOriginals?` · ${row.reservedOriginals} reservados`:''}</span>)}</div><p>Vídeos revisados, capturas aprobadas recuperadas y el diccionario de JuegoEduca, enlazado en recursos del Mineduc. Los vídeos de este diccionario no fueron producidos por Mineduc.</p>{progress.sources.map(source=><p key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></p>)}</details></>:<p role="status">Cargando el avance privado…</p>}
     </div>
     <div className="vt-card" aria-label="Grabaciones conectadas al reconocimiento"><h2>Tus palabras y oraciones</h2><p>Este banco privado conserva las clases iniciales y las capturas personales de este navegador. Las tomas aprobadas se actualizan automáticamente. Para incorporar otras entradas y controlar su publicación, usa «Vocabulario controlado».</p>
       <p className="vt-small">Sincronización automática: al aprobar una grabación se comprueba y se añade a esta biblioteca sin pulsar Actualizar.</p>

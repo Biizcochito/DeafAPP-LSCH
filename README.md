@@ -108,7 +108,7 @@ para revisar aportes anteriores y preparar datos desde administración.
 | Categoría | Señas prioritarias |
 | --- | --- |
 | **Pronombres** | Yo, tú, nosotros. |
-| **Verbos** | Querer, tener, comer, beber, ir, trabajar, estudiar, necesitar. |
+| **Verbos** | Querer, tener, comer, beber, ir, trabajar, estudiar, necesito. |
 | **Necesidades básicas** | Agua, comida, hambre, sed, ayuda, cansado, casa. |
 | **Tiempo y fechas** | Hoy, mañana, ahora, después. |
 | **Saludos** | Hola, bien, gracias. |
@@ -120,7 +120,7 @@ Las cuatro oraciones se eligieron por su relación con las señas individuales v
 | --- | --- |
 | **Quiero agua** | Querer, agua. |
 | **Quiero comer** | Querer, comer. |
-| **Necesito ayuda** | Necesitar, ayuda. |
+| **Necesito ayuda** | Necesito, ayuda. |
 | **Estoy bien** | Yo, bien; referencia de entrenamiento: «yo bien». |
 
 La etiqueta de entrenamiento **«yo bien»** corresponde a la oración **«estoy bien»**.

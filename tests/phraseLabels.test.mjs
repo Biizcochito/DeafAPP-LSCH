@@ -2,7 +2,7 @@ import test from 'node:test';
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 import {PHRASES} from '../src/training/visibleTraining.js';
-import {canonicalPhraseClassId,canonicalPhraseLabel} from '../src/training/phraseLabels.js';
+import {canonicalPhraseClassId,canonicalPhraseLabel,canonicalPhraseRow} from '../src/training/phraseLabels.js';
 import {trainingPhraseRows,evaluationSummary} from '../src/training/assistantData.js';
 import {trainPersonalPhrases,predictPersonalPhrase,phraseCounts} from '../src/training/personalPhrases.js';
 import {inspectLegacyRecording} from '../src/training/legacyRecovery.js';
@@ -10,6 +10,16 @@ import {displayWord} from '../src/ui/signNames.js';
 import {resumirResultado,titularDeResultado} from '../src/translator/translator.js';
 // Puntos sintéticos para comprobar flujo y reservas; nunca son muestras de entrenamiento reales.
 const features=seed=>Array.from({length:32},()=>[...Array(168).fill(seed),1,1,1]);
+
+test('necesitar se muestra y aprende como necesito sin cambiar la captura original',()=>{
+  assert.equal(canonicalPhraseClassId('verbos/necesitar'),'verbos/necesito');
+  assert.equal(displayWord('necesitar'),'necesito');assert.equal(displayWord('NECESITAR'),'necesito');
+  for(const text of ['necesito ayuda','querer','necesitar ayuda'])assert.equal(canonicalPhraseLabel(text),text);
+  assert.equal(canonicalPhraseClassId('oraciones/necesito ayuda'),'oraciones/necesito ayuda');
+  const original={classId:'verbos/necesitar',wholePhrase:false,split:'train',features:features(.3)};
+  const row=canonicalPhraseRow(original);assert.equal(row.classId,'verbos/necesito');assert.equal(row.sourceClassId,'verbos/necesitar');
+  assert.equal(original.classId,'verbos/necesitar');assert.equal(row.features,original.features);
+});
 test('«yo bien» identifica la cuarta oración y conserva las señas individuales',()=>{
  assert.equal(PHRASES.at(-1),'oraciones/estoy bien');
  for(const value of ['yo bien','YO_BIEN','oraciones/yo bien','conversacion/yo_bien'])assert.equal(canonicalPhraseClassId(value),'oraciones/estoy bien');

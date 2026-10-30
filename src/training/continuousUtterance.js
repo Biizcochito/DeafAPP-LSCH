@@ -12,6 +12,7 @@ const irregular={
 };
 const regularVerbs=new Set(['comer','beber','trabajar','estudiar','caminar','correr','hablar','escuchar','leer','escribir','nadar','bailar','cantar','llorar','ayudar','amar','entrar','comprar','vender','vivir','necesitar']);
 export function conjugateRecognizedVerb(verb,person,forms){
+  if(verb==='necesito')verb='necesitar';
   if(!Object.hasOwn(people,person))return verb;
   if(typeof forms?.[person]==='string'&&forms[person].trim())return forms[person].trim();
   const equivalent=people[person]===2?'el':people[person]===4?'ellos':null;

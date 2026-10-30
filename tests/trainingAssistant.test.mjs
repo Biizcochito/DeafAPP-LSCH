@@ -21,7 +21,7 @@ test('prioriza las cuatro oraciones visibles y adapta el siguiente paso a las to
 test('el catálogo sugiere apoyos de las oraciones y mantiene informe/local separados',()=>{
   const plan=buildTrainingPlan({progress,goal:'catalog'});assert.equal(plan.next.classId,'verbos/querer');
   const updated=buildTrainingPlan({progress,goal:'catalog',rows:[{...row('verbos/querer',4),wholePhrase:false}]});
-  assert.equal(updated.next.classId,'verbos/necesitar');assert.equal(updated.snapshotCovered,0);assert.equal(updated.localSigns,1);
+  assert.equal(updated.next.classId,'verbos/necesito');assert.equal(updated.snapshotCovered,0);assert.equal(updated.localSigns,1);
   assert.ok(updated.catalog.every(item=>VISIBLE_TARGETS.some(target=>target.classId===item.classId)));
 });
 test('una reserva y sus copias quedan fuera del entrenamiento aunque cambien ID o etiqueta',()=>{
