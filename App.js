@@ -642,9 +642,13 @@ export default function App() {
     setCatActual(visible || null);
     setPantalla(visible ? "categoria" : "home");
   };
+  const abrirInterpretacion = () => {
+    if(enviandoRef.current || grabacionEnCursoRef.current) return;
+    cancelarCaptura();setReproduciendo(false);setRepitiendo(false);setError(null);setPantalla('interpretar');
+  };
   if (["privacidad", "terminos"].includes(pantalla)) {
     return <PrivacyDocument kind={pantalla} preview={privacyPreview} consent={consentimientoActivo ? consentimiento : null} message={mensajePrivacidad}
-      onBack={volverAlCatalogo} onConsent={() => setPantalla("consentimiento")}
+      onBack={volverAlCatalogo} onInterpret={abrirInterpretacion} onConsent={() => setPantalla("consentimiento")}
       onWithdraw={async () => {
         try {
           await privacyConsentStore.remove();
@@ -654,7 +658,7 @@ export default function App() {
       }} />;
   }
   if (pantalla === "consentimiento" || ["grabar", "pruebaConsentimiento"].includes(pantalla) && (!consentimientoActivo || !privacyPreview && !privacyReady())) {
-    return <PrivacyConsent preview={privacyPreview} onBack={volverAlCatalogo} onAccept={async choices => {
+    return <PrivacyConsent preview={privacyPreview} onBack={volverAlCatalogo} onInterpret={abrirInterpretacion} onAccept={async choices => {
       const receipt = createConsentReceipt(choices, { preview: privacyPreview });
       await privacyConsentStore.save(receipt);
       actualizarConsentimiento(receipt);
@@ -663,7 +667,7 @@ export default function App() {
     }} />;
   }
   if (privacyPreview && (pantalla === "grabar" || pantalla === "pruebaConsentimiento")) {
-    return <PrivacyPreviewComplete consent={consentimiento} onBack={volverAlCatalogo} onPrivacy={() => setPantalla("privacidad")} />;
+    return <PrivacyPreviewComplete consent={consentimiento} onBack={volverAlCatalogo} onInterpret={abrirInterpretacion} onPrivacy={() => setPantalla("privacidad")} />;
   }
 
   if (pantalla === "vistaPrevia" && borrador) {
@@ -672,7 +676,7 @@ export default function App() {
       return <RecordingReview word={nombreDeSeña(borrador.label)} category={categoriaBorrador} tone={toneFor(CATEGORIAS_VISIBLES, categoriaBorrador)} camMax={anchoCamara}
         ratio={borrador.frameAspectRatio || 4 / 3} frameUri={armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0])}
         index={fotogramaVista} total={borrador.frames.length} playing={reproduciendo} seconds={(borrador.frames.length * borrador.intervalMs / 1000).toFixed(1)}
-        onTogglePlay={() => setReproduciendo(value => !value)} onBack={volverAlCatalogo} onLater={volverAlCatalogo}
+        onTogglePlay={() => setReproduciendo(value => !value)} onBack={volverAlCatalogo} onLater={volverAlCatalogo} onInterpret={abrirInterpretacion}
         onSend={enviarBorrador} onRepeat={() => { setReproduciendo(false); setRepitiendo(true); setError(null); setProgreso(0); setPantalla("grabar"); }}
         sending={subiendo} failed={envioFallido} saved={guardadoLocal} localMessage={mensajeLocal} error={error} />;
     }
@@ -729,7 +733,7 @@ export default function App() {
   if (pantalla === "envioListo") {
     if (Platform.OS === "web") {
       return <RecordingDone word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
-        onAgain={() => abrirGrabacion(señaActual)} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { volverAlCatalogo(); setExito(false); }} />;
+        onAgain={() => abrirGrabacion(señaActual)} onInterpret={abrirInterpretacion} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { volverAlCatalogo(); setExito(false); }} />;
     }
     return (
       <SafeAreaView style={[styles.root, styles.centrado]}>
@@ -768,7 +772,7 @@ export default function App() {
 
   if (Platform.OS === "web" && pantalla === "grabar" && !permission?.granted) {
     return <CameraPermission onAllow={requestPermission} loading={!permission} pending={borrador}
-      onResume={() => mostrarVistaPrevia()} onBack={volverAlCatalogo} />;
+      onResume={() => mostrarVistaPrevia()} onBack={volverAlCatalogo} onInterpret={abrirInterpretacion}/>;
   }
 
   if (pantalla === "grabar" && !permission) return <View style={styles.root} />;
@@ -914,7 +918,7 @@ export default function App() {
       const sinPreparar = !borradorRecuperado || !origenGrabacion;
       const enProceso = preparando || countdown !== null || capturando;
       const reposo = !enProceso && !subiendo && !exito;
-      return <RecordingStage word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} onBack={volverDeGrabar}
+      return <RecordingStage word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} onBack={volverDeGrabar} onInterpret={abrirInterpretacion}
         camera={camaraNodo} camMax={anchoCamara}
         step={capturando ? 3 : countdown !== null ? 2 : preparando ? 1 : 0}
         instruction={textoInstruccion} repeating={repitiendo}

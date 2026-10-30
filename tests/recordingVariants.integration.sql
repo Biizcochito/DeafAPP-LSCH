@@ -16,8 +16,9 @@ begin
  begin perform deafapp_private.review_recording_variants(bid,0,'approved',null);raise exception 'null parents accepted';exception when invalid_parameter_value then null;end;
  begin perform deafapp_private.create_recording_variants(extensions.gen_random_uuid(),'[{"id":"900000000001"}]',50);raise exception 'missing version accepted';exception when serialization_failure then null;end;
  update public.grabaciones set aprobada=true,moderation_status='approved',moderation_version=1 where id=900000000001;
- b:=deafapp_private.review_recording_variants(bid,0,'approved','[{"id":"900000000001","version":1}]');
- assert b->'batch'->>'status'='approved';
+ select deafapp_private.variant_batch(row) into b from deafapp_private.recording_variant_batches row where id=bid;
+ assert (b->>'version')::integer=1 and (b->>'inheritApproval')::boolean,'approval inherited after original review';
+ assert b->>'status'='approved';
  assert (select min(source_version)=1 from deafapp_private.recording_variants where batch_id=bid);
  select catalog_revision into before_revision from deafapp_private.recognition_runtime;
  update public.grabaciones set aprobada=false,moderation_status='pending',moderation_version=2 where id=900000000001;
@@ -43,10 +44,27 @@ begin
  update public.grabaciones set aprobada=false,moderation_status='pending',moderation_version=1 where id=900000000002;
  result:=public.deafapp_runtime_variants(job);
  assert not exists(select 1 from jsonb_array_elements(result->'rows') r where r->>'parentId'='900000000002'),'withdrawn parent excluded';
+
+ b:=deafapp_private.create_recording_variants(extensions.gen_random_uuid(),'[{"id":"900000000003","version":0}]',100);bid:=(b->'batch'->>'id')::uuid;
+ assert b->'batch'->>'status'='approved','approved original creates approved variants immediately';
+ perform deafapp_private.review_recording_variants(bid,0,'rejected','[]');
+ update public.grabaciones set moderation_version=1 where id=900000000003;
+ assert (select status='rejected' and not inherit_approval from deafapp_private.recording_variant_batches where id=bid),'manual rejection respected';
+ b:=deafapp_private.create_recording_variants(extensions.gen_random_uuid(),'[{"id":"900000000003","version":1}]',50);bid:=(b->'batch'->>'id')::uuid;
+ update public.grabaciones set archivo_path='qa/replaced-original.json',moderation_version=2 where id=900000000003;
+ assert (select status='pending' from deafapp_private.recording_variant_batches where id=bid),'replaced video does not inherit approval';
+
+ b:=deafapp_private.create_recording_variants(extensions.gen_random_uuid(),'[{"id":"900000000001","version":2},{"id":"900000000002","version":1},{"id":"900000000003","version":2}]',100);bid:=(b->'batch'->>'id')::uuid;
+ assert b->'batch'->>'status'='pending';
+ update public.grabaciones set aprobada=true,moderation_status='approved',moderation_version=3 where id=900000000001;
+ assert (select status='pending' from deafapp_private.recording_variant_batches where id=bid),'all originals required';
+ update public.grabaciones set aprobada=true,moderation_status='approved',moderation_version=2 where id=900000000002;
+ assert (select status='approved' from deafapp_private.recording_variant_batches where id=bid),'all originals approved';
+ assert not has_function_privilege('anon','deafapp_private.inherit_variant_approval(uuid)','execute');
  assert not has_function_privilege('anon','deafapp_private.create_recording_variants(uuid,jsonb,integer)','execute');
  assert not has_table_privilege('anon','deafapp_private.recording_variants','select');
  assert not has_function_privilege('authenticated','public.deafapp_runtime_variants(uuid,integer)','execute');
  begin perform public.deafapp_admin_variant_list('invalid');raise exception 'auth bypass';exception when invalid_authorization_specification then null;end;
 end $test$;
-select 'passed: single pending/approved originals, 50/100, optional 3, version checks, invalidation, idempotency, permissions' as result;
+select 'passed: inherited approval, pending originals, explicit decisions, replacement, expiry, versions, idempotency and permissions' as result;
 rollback;

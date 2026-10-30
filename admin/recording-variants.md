@@ -6,10 +6,12 @@ autorizar la captura y grabar una toma. Se pueden añadir otras dos, opcionalmen
 aprobado: no requiere volver a grabar ni reunir tres tomas. Seleccionar 50 o 100
 crea esa cantidad total de variantes para el lote, además de sus originales.
 
-**Revisar variantes** permite seleccionar y reproducir cualquier variante,
-compararla sin variación y aprobar o rechazar el lote. Los originales pendientes
-se revisan y aprueban por separado antes de aprobar sus variantes. Un original
-aprobado conserva su aprobación al crear otro lote.
+Las variantes de un original aprobado aparecen automáticamente en **Aprobadas**,
+junto a las grabaciones originales, agrupadas en lotes de 50 o 100. Si el original
+está pendiente, sus variantes esperan y se aprueban cuando se aprueba el original.
+Con varias tomas, todas deben estar aprobadas. **Revisar variantes** permite
+comparar cualquier variante y rechazar o devolver a pendientes un lote; esa
+decisión explícita desactiva la herencia y no se sobrescribe al revisar el original.
 
 ## Qué se conserva
 
@@ -32,13 +34,16 @@ aprobado conserva su aprobación al crear otro lote.
   Los descendientes de muestras o personas reservadas para pruebas nunca pasan
   al aprendizaje. La evaluación utiliza exclusivamente grabaciones reales.
 - Cambiar o retirar un original devuelve sus lotes aprobados a pendientes y
-  dispara la actualización automática del modelo. La conservación de sus
+  dispara la actualización automática del modelo. Reaprobar el mismo original
+  restablece la herencia si el lote no recibió una decisión explícita. Reemplazar
+  el archivo o cambiar su seña exige revisión del lote. La conservación de sus
   variantes termina con la del original.
 
 ## Instalación y comprobación
 
-Aplicar `supabase/migrations/20261030020000_recording_variants.sql`, registrar la
-migración y desplegar la función existente:
+Aplicar `supabase/migrations/20261030020000_recording_variants.sql` y después
+`supabase/migrations/20261030030000_inherit_variant_approval.sql`, registrar ambas
+migraciones y desplegar la función existente si aún no se hizo:
 
 ```powershell
 npx supabase functions deploy recognition-runtime --project-ref didlffnluqqurelgnqdp --no-verify-jwt --use-api

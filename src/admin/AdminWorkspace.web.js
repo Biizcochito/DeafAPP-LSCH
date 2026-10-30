@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {AppIcon} from '../app/AppWorkspace';
+import {AppIcon,InterpretationLink} from '../app/AppWorkspace';
 import './AdminWorkspace.css';
 const items = [
   ['recordings','camera','Grabaciones','Revisión'],
@@ -21,6 +21,7 @@ export default function AdminWorkspace({children,section,onNavigate,onExit,busy}
       <a className="app-brand" href="/app" aria-label="Ir a DeafApp"><img src="/brand/deafapp-mark.svg" alt="" width="36" height="36"/><span>Deaf<span>App</span></span><span className="app-beta">Beta</span></a>
       <span className="admin-area-label">Administración</span>
       <button className="admin-mobile-exit app-icon-button" type="button" aria-label="Cerrar sesión" onClick={onExit} disabled={busy}><AppIcon name="lock" size={19}/></button>
+      <InterpretationLink className="admin-live-shortcut" newTab disabled={busy}/>
     </header>
     <nav className="admin-navigation" aria-label="Administración">
       <span className="admin-nav-caption">ESPACIO DE TRABAJO</span>

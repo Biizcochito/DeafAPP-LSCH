@@ -42,6 +42,12 @@ function Brand({ onLogo }) {
     : <div className="app-brand">{content}</div>;
 }
 function AppButton({ children, icon = "arrow", secondary = false, ...props }) { return <button className={`app-button${secondary ? " app-button-secondary" : ""}`} {...props}>{children}{icon && <AppIcon name={icon} size={19} />}</button>; }
+export function InterpretationLink({onInterpret,disabled=false,newTab=false,className=''}) {
+  return <a className={`app-interpret-link ${className}`} href="/interpretar" target={newTab?'_blank':undefined} rel={newTab?'noopener noreferrer':undefined}
+    aria-disabled={disabled||undefined} tabIndex={disabled?-1:undefined} aria-label={newTab?'Interpretar en vivo (abre otra pestaña)':undefined}
+    onClick={event=>{if(disabled){event.preventDefault();return;}if(onInterpret&&event.button===0&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey){event.preventDefault();onInterpret();}}}>
+    <AppIcon name="eye" size={20}/>Interpretar en vivo</a>;
+}
 // Una celda por seña de la categoría: se enciende con el color de la categoría cuando la persona la grabó.
 function Cells({ category, timesOf }) {
   return <span className="app-cells" aria-hidden="true" style={{ "--n": category.señas.length }}>{category.señas.map((word, i) => <i key={word} data-on={timesOf(category, word) > 0 || undefined} style={{ "--i": i }} title={displayWord(word)} />)}</span>;
@@ -103,7 +109,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
     <header className="app-topbar"><Brand onLogo={onLogo} /><div className="app-header-actions">
       <button className="app-icon-button" aria-label="Sugerencias" aria-current={screen === "feedback" ? "page" : undefined} onClick={() => navigate("feedback")}><AppIcon name="message" /><span className="app-icon-label">Sugerencias</span></button>
       <button className="app-icon-button" aria-label="Ayuda para grabar" aria-current={screen === "ayuda" ? "page" : undefined} onClick={() => navigate("ayuda")}><AppIcon name="question" /><span className="app-icon-label">Ayuda para grabar</span></button>
-    </div></header>
+    </div><InterpretationLink className="app-live-shortcut" onInterpret={()=>navigate('interpretar')}/></header>
     <main className="app-scroll" ref={scrollRef} id="app-content"><div className="app-content" key={screen}>
       {["categoria", "ayuda", "feedback"].includes(screen) && <button className="app-back" onClick={() => navigate("home")}><AppIcon name="back" size={19} />{screen === "categoria" ? "Categorías" : "Inicio"}</button>}
       {screen === "home"
@@ -194,10 +200,10 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
   </div>;
 }
 
-export function CameraPermission({ onAllow, onBack, pending, onResume, loading }) {
-  return <div className="deaf-app"><header className="app-topbar"><Brand /></header><main className="app-permission"><div className="app-permission-icon"><span className="dw-corner dw-corner-tl" /><span className="dw-corner dw-corner-tr" /><span className="dw-corner dw-corner-bl" /><span className="dw-corner dw-corner-br" /><AppIcon name="camera" size={42} /></div><h1>Tu cámara, tu aporte.</h1><p>DeafApp necesita acceso a la cámara para grabar tu seña. Podrás revisar la grabación antes de enviarla.</p><AppButton disabled={loading} onClick={onAllow}>{loading ? "Comprobando cámara…" : "Permitir cámara"}</AppButton>{pending && <AppButton secondary onClick={onResume}>Revisar grabación pendiente</AppButton>}<button className="app-text-button" onClick={onBack}>Volver a las señas</button></main></div>;
+export function CameraPermission({ onAllow, onBack, onInterpret, pending, onResume, loading }) {
+  return <div className="deaf-app"><header className="app-topbar"><Brand /><InterpretationLink className="app-live-shortcut" onInterpret={onInterpret}/></header><main className="app-permission"><div className="app-permission-icon"><span className="dw-corner dw-corner-tl" /><span className="dw-corner dw-corner-tr" /><span className="dw-corner dw-corner-bl" /><span className="dw-corner dw-corner-br" /><AppIcon name="camera" size={42} /></div><h1>Tu cámara, tu aporte.</h1><p>DeafApp necesita acceso a la cámara para grabar tu seña. Podrás revisar la grabación antes de enviarla.</p><AppButton disabled={loading} onClick={onAllow}>{loading ? "Comprobando cámara…" : "Permitir cámara"}</AppButton>{pending && <AppButton secondary onClick={onResume}>Revisar grabación pendiente</AppButton>}<button className="app-text-button" onClick={onBack}>Volver a las señas</button></main></div>;
 }
 
 export function AdminLogin({ password, setPassword, login, exit, busy, error }) {
-  return <div className="deaf-app app-admin-entry"><header className="app-topbar"><Brand /><button className="app-text-button" onClick={exit} disabled={busy}>Volver a la app</button></header><main className="app-admin-login"><span className="app-menu-icon"><AppIcon name="lock" size={28} /></span><h1>Administración</h1><p>Acceso reservado al equipo de DeafApp.</p><form onSubmit={event => { event.preventDefault(); login(); }}><label htmlFor="admin-password">Contraseña</label><input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} maxLength={72} disabled={busy} required />{error && <p role="alert" className="app-login-error">{error}</p>}<AppButton type="submit" icon="lock" disabled={busy || !password}>{busy ? "Ingresando…" : "Entrar al panel"}</AppButton></form></main></div>;
+  return <div className="deaf-app app-admin-entry"><header className="app-topbar"><Brand /><button className="app-text-button" onClick={exit} disabled={busy}>Volver a la app</button><InterpretationLink className="app-live-shortcut" disabled={busy}/></header><main className="app-admin-login"><span className="app-menu-icon"><AppIcon name="lock" size={28} /></span><h1>Administración</h1><p>Acceso reservado al equipo de DeafApp.</p><form onSubmit={event => { event.preventDefault(); login(); }}><label htmlFor="admin-password">Contraseña</label><input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} maxLength={72} disabled={busy} required />{error && <p role="alert" className="app-login-error">{error}</p>}<AppButton type="submit" icon="lock" disabled={busy || !password}>{busy ? "Ingresando…" : "Entrar al panel"}</AppButton></form></main></div>;
 }

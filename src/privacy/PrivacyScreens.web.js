@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { AppIcon } from "../app/AppWorkspace";
+import { AppIcon, InterpretationLink } from "../app/AppWorkspace";
 import HandConstellation from "../ui/HandConstellation";
 import { CONSENT_CHOICES, GUARDIAN_RELATIONSHIPS, PRIVACY_NOTICE, isConsentAuthorizer, privacyReady } from "./privacyConsent";
 import { LEGAL_SOURCE, TERMS_SECTIONS, privacySections } from "./privacyDocuments";
 import "../ui/theme.css";
 import "./PrivacyScreens.css";
 
-function Header({ onBack }) {
-  return <header className="privacy-header"><a className="privacy-brand" href="/app" onClick={event => { event.preventDefault(); onBack(); }}><img src="/brand/deafapp-mark.svg" alt="" width="35" height="35" /><span>Deaf<span>App</span></span><small>Beta</small></a><button className="privacy-back" onClick={onBack}><AppIcon name="back" size={18} />Volver al catálogo</button></header>;
+function Header({ onBack, onInterpret, busy }) {
+  return <header className="privacy-header"><a className="privacy-brand" href="/app" onClick={event => { event.preventDefault(); onBack(); }}><img src="/brand/deafapp-mark.svg" alt="" width="35" height="35" /><span>Deaf<span>App</span></span><small>Beta</small></a><div className="privacy-header-actions"><button className="privacy-back" onClick={onBack}><AppIcon name="back" size={18} />Volver al catálogo</button><InterpretationLink onInterpret={onInterpret} disabled={busy}/></div></header>;
 }
 function PrivacyBanner({ preview }) {
   return <div className="privacy-draft" role="status"><span aria-hidden="true" />{preview ? "Vista de prueba local" : "Participación voluntaria"}<span className="privacy-draft-note">{preview ? "Sin cámara ni envío de grabaciones" : "Tú decides antes de grabar"}</span></div>;
@@ -21,7 +21,7 @@ function Links() {
   return <div className="privacy-links"><a href="/privacidad" target="_blank" rel="noreferrer">Aviso de privacidad<AppIcon name="arrow" size={15} /></a><a href="/terminos" target="_blank" rel="noreferrer">Términos y condiciones<AppIcon name="arrow" size={15} /></a></div>;
 }
 
-export function PrivacyConsent({ onAccept, onBack, preview, notice = PRIVACY_NOTICE }) {
+export function PrivacyConsent({ onAccept, onBack, onInterpret, preview, notice = PRIVACY_NOTICE }) {
   const [choices, setChoices] = useState({});
   const [authorizer, setAuthorizer] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -36,7 +36,7 @@ export function PrivacyConsent({ onAccept, onBack, preview, notice = PRIVACY_NOT
     try { await onAccept({ ...choices, authorizer }); } catch (cause) { setError(cause.message || "No se pudo guardar tu decisión. Inténtalo de nuevo."); }
     finally { setBusy(false); }
   }
-  return <div className="deaf-app privacy-page"><Header onBack={onBack} /><main className="privacy-shell"><PrivacyBanner preview={preview} />
+  return <div className="deaf-app privacy-page"><Header onBack={onBack} onInterpret={onInterpret} busy={busy}/><main className="privacy-shell"><PrivacyBanner preview={preview} />
     <div className="privacy-grid">
       <section className="privacy-intro" aria-labelledby="privacy-consent-title">
         <p className="privacy-eyebrow"><AppIcon name="lock" size={17} />ANTES DE GRABAR</p>
@@ -79,11 +79,11 @@ export function PrivacyConsent({ onAccept, onBack, preview, notice = PRIVACY_NOT
   </main></div>;
 }
 
-export function PrivacyDocument({ kind, onBack, onConsent, onWithdraw, consent, message, preview, notice = PRIVACY_NOTICE }) {
+export function PrivacyDocument({ kind, onBack, onInterpret, onConsent, onWithdraw, consent, message, preview, notice = PRIVACY_NOTICE }) {
   const terms = kind === "terminos";
   const sections = terms ? TERMS_SECTIONS : privacySections(notice);
   const heading = useHeading();
-  return <div className="deaf-app privacy-page"><Header onBack={onBack} /><main className="privacy-shell privacy-document"><PrivacyBanner preview={preview} />
+  return <div className="deaf-app privacy-page"><Header onBack={onBack} onInterpret={onInterpret}/><main className="privacy-shell privacy-document"><PrivacyBanner preview={preview} />
     <p className="privacy-eyebrow">DEAFAPP · TUS DATOS Y TUS DERECHOS</p>
     <h1 tabIndex={-1} ref={heading}>{terms ? "Términos y condiciones." : "Tu privacidad importa."}</h1>
     <p className="privacy-lead">{terms ? "Una participación voluntaria, con límites claros para tu aporte." : "Antes de compartir una seña, conoce qué contiene y qué puedes decidir."}</p>
@@ -101,9 +101,9 @@ export function PrivacyDocument({ kind, onBack, onConsent, onWithdraw, consent, 
   </main></div>;
 }
 
-export function PrivacyPreviewComplete({ consent, onBack, onPrivacy }) {
+export function PrivacyPreviewComplete({ consent, onBack, onInterpret, onPrivacy }) {
   const heading = useHeading();
-  return <div className="deaf-app privacy-page"><Header onBack={onBack} /><main className="privacy-shell"><PrivacyBanner preview /><section className="privacy-complete">
+  return <div className="deaf-app privacy-page"><Header onBack={onBack} onInterpret={onInterpret}/><main className="privacy-shell"><PrivacyBanner preview /><section className="privacy-complete">
     <div className="privacy-complete-art" aria-hidden="true"><HandConstellation poses={["open", "soft"]} hold={2800} /></div>
     <p className="privacy-eyebrow"><AppIcon name="check" size={18} />DECISIÓN GUARDADA EN ESTE NAVEGADOR</p>
     <h1 tabIndex={-1} ref={heading}>Así empieza<br /><span>un aporte consciente.</span></h1>

@@ -65,11 +65,12 @@ export function createAdminClient(client) {
     createVariants(session,{requestId,rows,quantity}) {
       if(typeof requestId!=='string'||!/^[a-f0-9-]{36}$/i.test(requestId)||![50,100].includes(quantity)||!Array.isArray(rows)||rows.length<1||rows.length>3||
         rows.some(row=>!/^\d+$/.test(String(row.id))||!Number.isInteger(row.version)||row.version<0)||new Set(rows.map(row=>String(row.id))).size!==rows.length)throw new AdminError('Elige una grabación real y 50 o 100 variantes.','invalid_input');
-      return call('deafapp_admin_variant_create',{p_token:token(session),p_request_id:requestId,p_items:rows.map(row=>({id:String(row.id),version:row.version})),p_quantity:quantity});
+      return call('deafapp_admin_variant_create',{p_token:token(session),p_request_id:requestId,p_items:rows.map(row=>({id:String(row.id),version:row.version})),p_quantity:quantity})
+        .then(data=>{if(data.batch?.status==='approved')notifyRecordingReview();return data;});
     },
-    variants(session,{status='pending',page=0}={}) {
-      if(!['all','pending','approved','rejected'].includes(status)||!Number.isInteger(page)||page<0||page>4000)throw new AdminError('Filtro de variantes no válido.','invalid_input');
-      return call('deafapp_admin_variant_list',{p_token:token(session),p_status:status,p_offset:page*25});
+    variants(session,{status='pending',page=0,query='',pageSize=25}={}) {
+      if(!['all','pending','approved','rejected'].includes(status)||![5,25].includes(pageSize)||!Number.isInteger(page)||page<0||page*pageSize>100000)throw new AdminError('Filtro de variantes no válido.','invalid_input');
+      return call('deafapp_admin_variant_list',{p_token:token(session),p_status:status,p_offset:page*pageSize,p_query:String(query).slice(0,120),p_limit:pageSize});
     },
     variantDetail(session,id) {
       if(typeof id!=='string'||!/^[a-f0-9-]{36}$/i.test(id))throw new AdminError('Lote de variantes no válido.','invalid_input');

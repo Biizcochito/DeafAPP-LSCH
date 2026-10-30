@@ -11,3 +11,4 @@
 .mv-workbench .mv-danger{background:#421f29;color:#ffd3dd}
 @media(max-width:600px){.mv-workbench{padding-bottom:140px}}
 
+.mv-workbench.mv-embedded{width:100%;flex:none;overflow:visible;padding:24px 0;max-width:none;margin:0}.mv-embedded header h2{font-size:24px}.mv-batch h3{margin:0;font-size:22px}.mv-embedded .mv-card{margin:12px 0}
