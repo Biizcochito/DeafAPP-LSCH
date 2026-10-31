@@ -569,6 +569,8 @@ El apartado **Material de LSCh** es un catálogo de consulta. Para utilizar una 
 
 Preparación, recuperación y comandos del conjunto de datos: [training/README.md](training/README.md).
 
+La preparación de la copia piloto de originales a R2, sus límites y las etapas pendientes se documentan en [Migración gradual del almacenamiento](docs/MIGRACION-ALMACENAMIENTO-R2.md). Esta primera fase conserva los originales en Supabase y no cambia las lecturas ni los envíos de producción.
+
 ---
 
 ## Pruebas
@@ -579,6 +581,7 @@ Preparación, recuperación y comandos del conjunto de datos: [training/README.m
 | `npm run test:training` | Selección del catálogo, oraciones, preparación de datos, captura, envío, aportes locales, rutas web y prueba de interpretación. |
 | `npm run test:model-training` | Entrenador, conjuntos del navegador y recuperación de grabaciones. |
 | `npm run test:privacy` | Decisiones de autorización, conservación, retirada, rutas y envío de aportes. |
+| `npm run test:storage-migration` | Selección, respaldo, lectura privada, integridad y retiro de copias redundantes. |
 | `npm run test:python-backend` | Cliente de administración Python y lógica de interpretación. |
 | `node --test tests/recordingHandGuard.test.mjs tests/gestureModeration.test.mjs tests/trainingCapture.test.mjs` | Confirmación inicial, continuidad con una mano, interrupciones del detector y datos de captura. |
 

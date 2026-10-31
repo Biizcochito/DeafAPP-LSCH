@@ -11,6 +11,7 @@ import SignAvailability from './SignAvailability';
 import MultiplyRecordings from './MultiplyRecordings';
 import VariantReviewPanel from './VariantReviewPanel';
 import {tituloAdmin} from '../app/appRoutes';
+import {downloadRecording} from '../storage/recordingStorage.js';
 
 function Action({ label, onPress, disabled, danger, secondary }) {
   return <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={onPress}
@@ -112,7 +113,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
     setPreview(null); setLoading(true); setError(""); setFrame(0); setPlaying(true);
     try {
       if (typeof row.path !== "string" || row.path.includes("..") || !row.path.endsWith(".json")) throw new Error("La ruta del archivo requiere revisión.");
-      const result = await client.storage.from("contribuciones").download(row.path);
+      const result = await downloadRecording(client,row,session);
       if (result.error || !result.data) throw new Error("No se pudo descargar la grabación. Puedes reintentar.");
       if (result.data.size > 25_000_000) throw new Error("El archivo supera el tamaño permitido para esta vista previa.");
       const payload = JSON.parse(await result.data.text());

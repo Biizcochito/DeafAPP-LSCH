@@ -3,6 +3,7 @@ import {featureVector} from './datasetPreparation.js';
 import {captureFeatures} from './visibleTraining.js';
 import {canonicalPhraseClassId} from './phraseLabels.js';
 import {validSequence} from './sequenceData.js';
+import {downloadRecording} from '../storage/recordingStorage.js';
 
 const DATABASE='deafapp-approved-vocabulary-v1';
 export function approvedVocabularyStore(action,value) {
@@ -72,7 +73,7 @@ export async function loadApprovedVocabulary({api,session,client,targets,cache=a
       const saved=old.get(String(row.id));
       if(saved?.sourceVersion===row.version&&saved.sourcePath===row.path&&saved.classId===classId&&saved.sourceReview==='approved'&&
         (!saved.expiresAt||Date.parse(saved.expiresAt)>Date.now())&&validSequence(saved.features)) {rows.push(saved);continue;}
-      const response=await client.storage.from('contribuciones').download(row.path);check();
+      const response=await downloadRecording(client,row,session,{signal});check();
       if(response.error||!response.data)throw Error('download-failed');
       if(response.data.size>25_000_000)throw Error('oversized-recording');
       const recording=JSON.parse(await response.data.text());check();

@@ -24,7 +24,7 @@ export default function MultiplyRecordings({api,session,client,initialSource,ini
   function stop(){cameraRequest.current++;cancelled.current=true;stream.current?.getTracks().forEach(track=>track.stop());stream.current=null;tracking.current=null;if(alive.current)setCamera(false);}
   useEffect(()=>{
     alive.current=true;
-    if(initialSource)loadVariantRecording(client,initialSource).then(value=>{if(alive.current)setClip(value);}).catch(fail);
+    if(initialSource)loadVariantRecording(client,initialSource,session).then(value=>{if(alive.current)setClip(value);}).catch(fail);
     else api.vocabulary(session).then(value=>{if(alive.current){const entries=value.catalogue.filter(row=>!row.aliasOf);setCatalogue(entries);if(!initialClassId)setClassId(entries[0]?.classId||'');}}).catch(fail);
     const hide=()=>{if(document.hidden)stop();};document.addEventListener('visibilitychange',hide);window.addEventListener('pagehide',stop);
     return()=>{alive.current=false;stop();onBusyChange?.(false);document.removeEventListener('visibilitychange',hide);window.removeEventListener('pagehide',stop);};

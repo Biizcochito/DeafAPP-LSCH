@@ -18,7 +18,7 @@ export default function VariantReviewPanel({api,session,client,onBack,onAccessEr
     const id=++request.current;setClip(null);if(!parent)return;
     const key=`${parent.id}:${parent.version}:${parent.path}`;
     if(clips.current.has(key)){setClip(clips.current.get(key));return;}
-    loadVariantRecording(client,parent).then(value=>{if(alive.current&&id===request.current){clips.current.set(key,value);setClip(value);}}).catch(e=>{if(id===request.current)fail(e);});
+    loadVariantRecording(client,parent,session).then(value=>{if(alive.current&&id===request.current){clips.current.set(key,value);setClip(value);}}).catch(e=>{if(id===request.current)fail(e);});
   },[parent?.id,parent?.version,parent?.path]);
   async function task(action){if(lock.current)return;lock.current=true;setBusy(true);setError('');setNotice('');try{await action();}catch(e){fail(e);}finally{lock.current=false;if(alive.current)setBusy(false);}}
   async function open(id){await task(async()=>{const value=await api.variantDetail(session,id);if(alive.current){setDetail(value);setIndex(0);}});}

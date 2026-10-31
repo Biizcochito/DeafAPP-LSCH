@@ -2,10 +2,11 @@ import { createSignTracker } from '../camera/landmarkTracking.js';
 import { withTrackingTimeout } from '../camera/trackingOverlay.js';
 import { listApprovedRows } from './browserDataset.js';
 import { inspectLegacyRecording, recoverFrameObservation, summarizeRecovery, validateRecoveredItem, LEGACY_RECOVERY_VERSION } from './legacyRecovery.js';
+import {downloadRecording} from '../storage/recordingStorage.js';
 
-export async function downloadApprovedRecording(client, row) {
+export async function downloadApprovedRecording(client, row, session) {
   if (typeof row.path !== 'string' || row.path.includes('..') || !row.path.endsWith('.json')) throw new Error('Ruta de grabación no válida.');
-  const { data, error } = await client.storage.from('contribuciones').download(row.path);
+  const { data, error } = await downloadRecording(client,row,session);
   if (error || !data || data.size > 25_000_000) throw new Error('No se pudo abrir la grabación aprobada.');
   return JSON.parse(await data.text());
 }
@@ -31,7 +32,7 @@ export async function recoverApprovedLegacy({ api, session, client, store, signa
       if (saved && currentRecovery(saved, row)) { reused++;onItem(saved);onProgress({ index: index + 1, total: rows.length, text: `Recuperación guardada: ${index + 1}/${rows.length}.` });continue; }
       try {
         onProgress({ index: index + 1, total: rows.length, text: `Abriendo ${row.label}, #${row.id} (${index + 1}/${rows.length})…` });
-        const recording = await downloadApprovedRecording(client, row);check();
+        const recording = await downloadApprovedRecording(client, row,session);check();
         const source = inspectLegacyRecording(recording, row), observations = [];
         const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(recording.frames)));
         const parentHash = Array.from(new Uint8Array(digest), n => n.toString(16).padStart(2, '0')).join('');

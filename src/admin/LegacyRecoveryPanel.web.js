@@ -37,7 +37,7 @@ export default function LegacyRecoveryPanel({api,session,client,onBack,onUseProt
   }
   async function showPreview(row) {
     const request=++previewRequest.current;setError('');
-    try{await api.overview(session);const recording=await downloadApprovedRecording(client,row);
+    try{await api.overview(session);const recording=await downloadApprovedRecording(client,row,session);
       const frames=recording.frames?.map(frameDataUri);if(!frames?.length||frames.some(value=>!value))throw new Error('Esta secuencia no se puede reproducir.');
       if(alive.current&&request===previewRequest.current){setPreview({row,frames,intervalMs:Number.isFinite(recording.intervalMs)?Math.max(30,Math.min(1000,recording.intervalMs)):150});setFrame(0);setPlaying(true);}}
     catch(e){if(alive.current){setError(e.message);onAccessError?.(e);}}
