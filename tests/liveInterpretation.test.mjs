@@ -105,6 +105,28 @@ test('cerrar durante la precarga libera el detector que termine más tarde',asyn
   const ready=h.runtime.prepare();await Promise.resolve();h.runtime.close();resolve(h.tracker);await ready;
   assert.equal(h.counts().trackerClosed,1);assert.equal(h.video.srcObject,null);
 });
+
+test('la carga inicial de detectores informa su inicio y final sin pedir cámara ni repetir la carga',async()=>{
+  let resolve,mediaCalls=0;const preparation=[];
+  const h=harness({createTracker:()=>new Promise(done=>resolve=done),getMedia:async()=>{mediaCalls++;return h.stream;},onPreparation:state=>preparation.push(state)});
+  const ready=h.runtime.prepare();assert.deepEqual(preparation,['loading']);await Promise.resolve();
+  assert.equal(mediaCalls,0);assert.equal(h.runtime.prepare(),ready);
+  resolve(h.tracker);await ready;assert.deepEqual(preparation,['loading','ready']);
+  await h.runtime.start();assert.deepEqual(preparation,['loading','ready']);h.runtime.close();
+});
+
+test('un fallo de precarga termina el indicador y reintentar vuelve a informar la carga',async()=>{
+  let attempts=0;const preparation=[];
+  const h=harness({createTracker:async()=>{if(!attempts++)throw Error('Sin conexión');return h.tracker;},onPreparation:state=>preparation.push(state)});
+  await assert.rejects(h.runtime.prepare(),/Sin conexión/);assert.deepEqual(preparation,['loading','error']);
+  await h.runtime.start();assert.deepEqual(preparation,['loading','error','loading','ready']);assert.equal(h.states.at(-1),'on');h.runtime.close();
+});
+
+test('cerrar la pantalla durante la carga no publica un estado listo tardío',async()=>{
+  let resolve;const preparation=[];const h=harness({createTracker:()=>new Promise(done=>resolve=done),onPreparation:state=>preparation.push(state)});
+  const ready=h.runtime.prepare();await Promise.resolve();h.runtime.close();resolve(h.tracker);await ready;
+  assert.deepEqual(preparation,['loading']);assert.equal(h.counts().trackerClosed,1);
+});
 test('retirar el modelo impide seguir prediciendo con aprobaciones antiguas',async()=>{
   const h=harness();h.runtime.setModel(model);await h.runtime.start();
   h.runtime.setModel(null);assert.equal(h.results.at(-1).phase,'model');assert.equal(h.counts().recognizerClosed,1);
