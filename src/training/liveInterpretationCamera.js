@@ -2,16 +2,19 @@ import {createLandmarkContinuity} from '../camera/landmarkContinuity.js';
 import {createLiveTrackingPump} from '../camera/liveTrackingPump.js';
 
 export function createLiveInterpretationCamera({getMedia,createTracker,createInference,createRecognizer,
-  freshLandmarks,trackingVector,draw,withTimeout,video,canvas,onResult,onState,onError,
+  freshLandmarks,trackingVector,draw,withTimeout,video,canvas,onResult,onState,onError,onPreparation=()=>{},
   now=()=>performance.now(),setTimer=setTimeout,clearTimer=clearTimeout,setRepeater=setInterval,clearRepeater=clearInterval}) {
   let session=null,model=null,closed=false,prepared=null,detector=null,suspended=false,blocked=false,wanted=false;
   const current=state=>!closed&&session===state;
   function prepare() {
     if(closed)return Promise.resolve(null);
-    if(!prepared)prepared=Promise.resolve().then(createTracker).then(tracker=>{
-      if(closed){void tracker.close();return null;}
-      detector=tracker;return tracker;
-    }).catch(error=>{prepared=null;throw error;});
+    if(!prepared){
+      onPreparation('loading');
+      prepared=Promise.resolve().then(createTracker).then(tracker=>{
+        if(closed){void tracker.close();return null;}
+        detector=tracker;onPreparation('ready');return tracker;
+      }).catch(error=>{prepared=null;if(!closed)onPreparation('error');throw error;});
+    }
     return prepared;
   }
   function configure(state) {
