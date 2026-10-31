@@ -109,7 +109,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
       <img src="/brand/deafapp-mark.svg" alt="" width="34" height="34"/><span>Deaf<span>App</span></span></a>
       <button className="li-back" onClick={onBack}>{preview?'← Volver al vocabulario':'← Volver al inicio'}</button></header>
     <main className="li-main">
-      <div className="li-heading"><span className="li-eyebrow">{preview?'EVALUACIÓN PRIVADA · CÁMARA + FRASES':'LSCh · TEXTO + VOZ'}</span><h1>Tus manos tienen <em>voz.</em></h1>
+      <div className="li-heading"><span className="li-eyebrow">{preview?'EVALUACIÓN PRIVADA · CÁMARA + FRASES':'LSCh · TEXTO + VOZ'}</span><h1>{preview?"Prueba privada de interpretación":"Interpretar en vivo"}</h1>
         <p>Haz una seña frente a la cámara. Nosotros ponemos las palabras.</p></div>
       <div className="li-workspace">
         <section className="li-camera-section" aria-label="Cámara de interpretación">

@@ -40,7 +40,7 @@ export function PrivacyConsent({ onAccept, onBack, onInterpret, preview, notice 
     <div className="privacy-grid">
       <section className="privacy-intro" aria-labelledby="privacy-consent-title">
         <p className="privacy-eyebrow"><AppIcon name="lock" size={17} />ANTES DE GRABAR</p>
-        <h1 id="privacy-consent-title" tabIndex={-1} ref={heading}>Tu seña.<br /><span>Tu decisión.</span></h1>
+        <h1 id="privacy-consent-title" tabIndex={-1} ref={heading}>Autorización<br /><span>para grabar.</span></h1>
         <p className="privacy-lead">Tu aporte puede ayudar a reconocer la Lengua de Señas Chilena. Tú decides si compartirlo y para qué.</p>
         <div className="privacy-facts">
           <div><span className="privacy-fact-icon"><AppIcon name="camera" /></span><div><h2>Qué contiene</h2><p>Imágenes de tu seña y puntos de manos y rostro. Tu cara puede permitir reconocerte.</p></div></div>
@@ -85,7 +85,7 @@ export function PrivacyDocument({ kind, onBack, onInterpret, onConsent, onWithdr
   const heading = useHeading();
   return <div className="deaf-app privacy-page"><Header onBack={onBack} onInterpret={onInterpret}/><main className="privacy-shell privacy-document"><PrivacyBanner preview={preview} />
     <p className="privacy-eyebrow">DEAFAPP · TUS DATOS Y TUS DERECHOS</p>
-    <h1 tabIndex={-1} ref={heading}>{terms ? "Términos y condiciones." : "Tu privacidad importa."}</h1>
+    <h1 tabIndex={-1} ref={heading}>{terms ? "Términos y condiciones." : "Privacidad y datos personales."}</h1>
     <p className="privacy-lead">{terms ? "Una participación voluntaria, con límites claros para tu aporte." : "Antes de compartir una seña, conoce qué contiene y qué puedes decidir."}</p>
     <div className="privacy-document-meta"><span>{notice.date}</span><span>{notice.version}</span><span>{preview ? "Prueba local" : "Versión vigente"}</span></div>
     <div className="privacy-document-layout">
