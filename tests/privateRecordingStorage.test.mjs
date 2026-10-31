@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { downloadRecording } from '../src/storage/recordingStorage.js';
-import { createPrivateRecordingHandler, readStoredRecording, digestBytes } from '../src/storage/privateRecordingServer.js';
+import { createPrivateRecordingHandler, readStoredRecording, digestBytes, readLimitedBytes } from '../src/storage/privateRecordingServer.js';
 const path = 'familia/mama/original.json';
 const session = { token: 'a'.repeat(64), expiresAt: Date.now() + 100000 };
 const bytes = new TextEncoder().encode(JSON.stringify({ label: 'mama', frames: ['test-only'], training: { preserved: true } }));
@@ -122,4 +122,15 @@ test('R2 reads validate the fixed account, bucket, key and full checksum', async
   await assert.rejects(readStoredRecording({ location: { ...location, bucket: 'another-bucket' }, config, signedFetch }), /Invalid R2/);
   await assert.rejects(readStoredRecording({ location, config, signedFetch: async () => new Response(new Uint8Array(bytes.length)) }), /integrity/);
   await assert.rejects(readStoredRecording({ location, config, signedFetch: async () => new Response(new Uint8Array(bytes.length + 1)) }), /Oversized/);
+});
+test('a fragmented 22 MB response retains every byte with a bounded buffer',async()=>{
+  const total=22_000_000;let sent=0;
+  const stream=new ReadableStream({pull(controller){
+    if(sent===total){controller.close();return;}
+    const chunk=new Uint8Array(Math.min(65536,total-sent));chunk.fill(sent%251);sent+=chunk.length;controller.enqueue(chunk);
+  }});
+  const result=await readLimitedBytes(new Response(stream),total);
+  assert.equal(result.length,total);
+  for(let offset=0;offset<total;offset+=65536)assert.equal(result[offset],offset%251);
+  assert.equal(result.at(-1),(Math.floor((total-1)/65536)*65536)%251);
 });
