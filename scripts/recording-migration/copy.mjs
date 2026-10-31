@@ -23,7 +23,9 @@ export async function copyVerifiedOriginal({ item, source, destination, backup, 
   const existing = await destination.head(item.path);
   let uploaded = false;
   if (existing) {
-    if (existing.bytes !== item.bytes || existing.sha256 !== hash) throw Error('Existe otro contenido en el destino. Se conserva sin sobrescribir.');
+    // Dashboard uploads have no custom checksum metadata. The full read-back
+    // below remains authoritative; matching size alone never creates a receipt.
+    if (existing.bytes !== item.bytes || existing.sha256 && existing.sha256 !== hash) throw Error('Existe otro contenido en el destino. Se conserva sin sobrescribir.');
   } else {
     await destination.putIfAbsent(item.path, bytes, { sha256: hash, sourceId: item.sourceId, sourceVersion: String(item.sourceVersion) });
     uploaded = true;

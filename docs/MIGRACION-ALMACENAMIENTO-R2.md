@@ -4,6 +4,12 @@
 
 La rama `feature/migracion-gradual-r2` prepara una copia piloto de tres originales aprobados de señas fuera del catálogo activo. Esta fase **no libera todavía espacio de Supabase**: conserva sus archivos, filas, identificadores, aprobaciones, versiones, variantes, rasgos preparados y modelo. Tampoco cambia la subida de nuevas grabaciones ni el proveedor de lectura de producción.
 
+El 31 de octubre de 2026 se ejecutó el piloto mediante el panel autenticado de Cloudflare, después de que el administrador activara R2. Se creó `deafapp-grabaciones-privadas` en clase Standard con acceso público deshabilitado y se copiaron **mamá, hermano y «todo»: 1.635.661 bytes**. Se descargaron los tres objetos completos desde R2 y se comprobaron sus tamaños y SHA-256 contra el respaldo del origen. Después se verificaron nuevamente los originales y sus revisiones en Supabase. Las rutas se conservaron bajo `contribuciones/`; no se cambió la base de datos ni se eliminó ningún original. Los comprobantes y respaldos identificables permanecen fuera de Git.
+
+La conexión de la aplicación y la ampliación de lotes siguen pendientes. La credencial de servicio necesaria para automatizarlas requiere autorización específica; crear el bucket y completar este piloto por el panel no la generó.
+
+El PR incluye la aclaración de proveedores en el apartado «Dónde quedan los datos» del aviso de privacidad. Su publicación sigue el flujo de revisión y despliegue del equipo. Esta aclaración no cambia la versión usada para validar comprobantes de autorización, el plazo de conservación ni las condiciones de envío; las grabaciones y sus evidencias se conservan intactas. No constituye una validación jurídica de permisos de aportes anteriores.
+
 La herramienta no implementa eliminación, cambio de rutas de la base de datos ni publicación de archivos. Los lotes grandes y las señas activas se planifican para etapas posteriores; `copy` solo permite el piloto.
 
 ## Selección
@@ -37,7 +43,7 @@ Antes de copiar a Cloudflare:
 5. Poner `R2_ACCOUNT_ID`, `R2_MIGRATION_BUCKET`, `R2_ACCESS_KEY_ID` y `R2_SECRET_ACCESS_KEY` en el entorno del proceso administrativo. El script no crea cuentas, activa cobros ni genera credenciales.
 6. Ejecutar `node scripts/migrate-recordings-r2.mjs copy --batch pilot`.
 
-Cada original se respalda conservando sus bytes. Antes y después se comprueban la aprobación, versión, ruta y revisión del objeto. Se copia bajo `contribuciones/<ruta original>`, mediante escritura condicional que evita sobrescribir, y se vuelve a descargar desde R2 para comparar el tamaño y SHA-256 completo. El comprobante se emite solo tras verificar. Una interrupción se puede reintentar: una copia existente se verifica nuevamente y un contenido diferente provoca una detención. El plan vence a las 24 horas y cualquier cambio de revisión del catálogo exige regenerarlo.
+Cada original se respalda conservando sus bytes. Antes y después se comprueban la aprobación, versión, ruta y revisión del objeto. Se copia bajo `contribuciones/<ruta original>`, mediante escritura condicional que evita sobrescribir, y se vuelve a descargar desde R2 para comparar el tamaño y SHA-256 completo. El comprobante se emite solo tras verificar. Una interrupción se puede reintentar: una copia existente se verifica nuevamente y un contenido diferente provoca una detención. Las copias cargadas por el panel, sin metadatos SHA-256 personalizados, también requieren la comparación completa de bytes antes de adoptarlas; el tamaño no basta. El plan vence a las 24 horas y cualquier cambio de revisión del catálogo exige regenerarlo.
 
 ## Próxima fase, antes de retirar cualquier original de Supabase
 

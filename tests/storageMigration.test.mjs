@@ -101,6 +101,19 @@ test('conflicting destination content is never overwritten', async () => {
   await assert.rejects(copyVerifiedOriginal(context), /sin sobrescribir/);
   assert.equal(context.stats().puts, 0); assert.equal(context.stats().receipts.length, 0);
 });
+test('a matching dashboard copy without checksum metadata is adopted only after full read-back', async () => {
+  const context = copyFixture(); context.setStored(context.bytes);
+  context.destination.head = async () => ({ bytes: context.bytes.length });
+  const receipt = await copyVerifiedOriginal(context);
+  assert.equal(receipt.uploaded, false); assert.equal(receipt.sha256, sha256(context.bytes));
+  assert.equal(context.stats().puts, 0); assert.equal(context.stats().receipts.length, 1);
+});
+test('matching size without metadata cannot hide different destination bytes', async () => {
+  const context = copyFixture(); context.setStored(Buffer.alloc(context.bytes.length, 0));
+  context.destination.head = async () => ({ bytes: context.bytes.length });
+  await assert.rejects(copyVerifiedOriginal(context), /verificación completa/);
+  assert.equal(context.stats().puts, 0); assert.equal(context.stats().receipts.length, 0);
+});
 test('a wrong destination payload cannot pass using its metadata checksum alone', async () => {
   const context = copyFixture();
   context.destination.download = async () => Buffer.alloc(context.bytes.length, 0);
