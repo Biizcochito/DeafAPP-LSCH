@@ -95,7 +95,7 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal, c
           <div className="dw-aurora" aria-hidden="true"><div className="dw-aurora-fallback" /><Aurora colorStops={AURORA} amplitude={0.9} blend={0.65} speed={0.8} /></div>
           <div className="dw-shell dw-hero-grid">
             <div className="dw-hero-copy">
-              <p className="dw-eyebrow"><span aria-hidden="true" />LSCh · Beta comunitaria</p>
+              <p className="dw-eyebrow"><span aria-hidden="true" />Bienvenida · LSCh · Beta comunitaria</p>
               <BlurText as="h1" id="dw-title" className="dw-title" lines={[{ text: "Tus manos." }, { text: "Un mundo" }, { text: "por conectar.", className: "dw-grad" }]} />
               <p className="dw-lead">La comunicación empieza contigo. Ayúdanos a construir el futuro de la <strong>Lengua de Señas Chilena.</strong></p>
               <div className="dw-actions">

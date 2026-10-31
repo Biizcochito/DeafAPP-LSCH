@@ -86,6 +86,25 @@ export function createAdminClient(client) {
       return call('deafapp_admin_vocabulary_save',{p_token:token(session),p_entry:entry,p_version:isNew?-1:entry.version,p_ack_prototype:acknowledgePrototype===true})
         .then(data=>{notifyRecordingReview();return data;});
     },
+    async setCollection(session,entries,enabled,{onProgress=()=>{}}={}) {
+      token(session);
+      if(typeof enabled!=='boolean'||!Array.isArray(entries)||entries.length<1||entries.length>2048||
+        entries.some(row=>!row||row.aliasOf)||new Set(entries.map(row=>row.classId)).size!==entries.length)
+        throw new AdminError('Selecciona señas o una categoría válida.','invalid_input');
+      try{entries.forEach(validateCatalogueEntry);}catch(e){throw new AdminError(e.message,'invalid_input');}
+      const targets=entries.filter(row=>row.collection!==enabled),saved=[];
+      try{
+        for(const row of targets){
+          const result=await call('deafapp_admin_vocabulary_save',{p_token:token(session),p_entry:{...row,collection:enabled},p_version:row.version,p_ack_prototype:false});
+          saved.push(result.entry);onProgress(saved.length,targets.length);
+        }
+        return {changed:saved.length,entries:saved};
+      }catch(error){
+        error.changed=saved.length;
+        error.message=`Se actualizaron ${saved.length} de ${targets.length} señas. ${error.message}`;
+        throw error;
+      }finally{if(saved.length)notifyRecordingReview();}
+    },
     vocabularySamples(session,classId,page=0) {
       if(typeof classId!=='string'||classId.length>122||!classId.includes('/')||!Number.isInteger(page)||page<0||page*25>100000)throw new AdminError('Consulta de muestras no válida.','invalid_input');
       return call('deafapp_admin_vocabulary_samples',{p_token:token(session),p_class_id:classId,p_offset:page*25});

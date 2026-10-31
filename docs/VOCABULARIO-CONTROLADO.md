@@ -1,10 +1,12 @@
 # Vocabulario controlado y composición en vivo
 
-En Administración → **Vocabulario controlado** están las 542 entradas del catálogo histórico. La migración conserva las 33 entradas actuales y agrega las otras 509 en recopilación, sin solicitar aportes ni habilitar reconocimiento por defecto. Se evita repetir una etiqueta en la misma categoría; los homónimos de categorías distintas conservan sus significados.
+En Administración → **Habilitar señas** se publica el catálogo para recibir grabaciones. Cada categoría permite habilitar todas sus señas u ocultarlas con un botón; también se pueden gestionar señas individuales y crear nuevas. No exige grabaciones previas. [Guía de uso](HABILITAR-SENAS.md).
+
+El catálogo histórico contiene 542 entradas. La migración conserva las 33 entradas iniciales y agrega las otras 509 en recopilación. Los homónimos de categorías distintas conservan sus significados. Las opciones descritas a continuación están en **Opciones de reconocimiento y entrenamiento**, aparte de la publicación en Grabar.
 
 ## Recopilar y habilitar
 
-1. Busca la entrada antes de agregarla. Activa **Solicitar aportes** para mostrarla en Grabar; el catálogo web se actualiza automáticamente.
+1. Para recibir grabaciones, usa **Habilitar señas** y habilita la categoría o la seña. El catálogo web se actualiza automáticamente, aunque su reconocimiento esté pausado o no tenga muestras. Ocultarla no elimina los aportes ni cambia el estado del reconocedor.
 2. Aprueba las grabaciones desde la sección habitual. El servidor extrae puntos normalizados de manos y comprueba seguimiento, duración, movimiento, idioma, revisión y conservación. Un archivo aprobado sin puntos aptos no habilita una seña.
 3. La ficha muestra originales distintos, personas confirmadas, exclusiones y pruebas reservadas. El objetivo inicial de **50 originales de 10 personas** orienta la recopilación; no es una cantidad que garantice precisión.
 4. Usa códigos anónimos como P01. Confirma una persona solamente cuando puedas verificar quién aportó la toma. Un dispositivo o sesión no cuenta como persona distinta. Al reservar una persona confirmada para prueba, sus tomas confirmadas quedan fuera del aprendizaje de todas las clases. También se excluyen copias, hashes contradictorios y reservas.

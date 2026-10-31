@@ -39,9 +39,20 @@ export function createCatalogueResolver(catalogue){
     const result=row?.classId||null;cache.set(classId,result);return result;
   };
 }
+export function availableForCollection(entry){return entry.collection===true&&!entry.aliasOf;}
+export function collectionGroups(catalogue){
+  const groups=new Map();
+  for(const entry of catalogue){
+    if(entry.aliasOf)continue;
+    if(!groups.has(entry.category))groups.set(entry.category,{id:entry.category,title:entry.categoryTitle||entry.category,emoji:entry.emoji||'🤟',entries:[],enabled:0});
+    const group=groups.get(entry.category);group.entries.push(entry);if(availableForCollection(entry))group.enabled++;
+  }
+  const order=new Map(CATEGORIAS.map((row,index)=>[row.id,index]));
+  return [...groups.values()].sort((a,b)=>(order.get(a.id)??Infinity)-(order.get(b.id)??Infinity)||a.title.localeCompare(b.title,'es'));
+}
 export function collectionCategories(catalogue){
   const groups=new Map();
-  for(const entry of catalogue){if(!entry.collection||entry.aliasOf||entry.state==='paused')continue;
+  for(const entry of catalogue){if(!availableForCollection(entry))continue;
     if(!groups.has(entry.category))groups.set(entry.category,{id:entry.category,nombre:entry.categoryTitle||entry.category,color:entry.color||'#a99bff',emoji:entry.emoji||'🤟',señas:[]});
     if(!groups.get(entry.category).señas.includes(entry.label))groups.get(entry.category).señas.push(entry.label);
   }

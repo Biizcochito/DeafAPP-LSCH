@@ -6,6 +6,7 @@ import { displayWord } from "../ui/signNames";
 import { ROADMAP, VALUES } from "../ui/projectInfo";
 import "../ui/theme.css";
 import "./AppWorkspace.css";
+import {nombrePantalla} from './appRoutes';
 
 const paths = {
   camera: ["M4 7h4l2-3h4l2 3h4v13H4Z", "M16 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"],
@@ -16,6 +17,7 @@ const paths = {
   more: ["M4 7h16", "M4 12h16", "M4 17h10"],
   close: ["m6 6 12 12M6 18 18 6"],
   check: ["m5 12 4 4L19 6"],
+  toggle: ["M8 6h8a6 6 0 0 1 0 12H8A6 6 0 0 1 8 6Z", "M19 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"],
   lock: ["M6 11h12v10H6Z", "M8 11V7a4 4 0 0 1 8 0v4", "M12 15v2"],
   message: ["M21 3H3v14h5l4 4 4-4h5Z", "M7 8h10M7 12h6"],
   user: ["M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z", "M4 21v-2a8 8 0 0 1 16 0v2"],
@@ -81,6 +83,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
     }
   }, [screen]);
   const phrases = categories.find(cat => cat.id === "oraciones");
+  const firstCategory=categories.find(cat=>cat.id==='saludos')||categories[0];
   const isPhraseCategory = category?.id === "oraciones";
   const toneOf = cat => toneFor(categories, cat);
   const timesOf = (cat, word) => contributions[`${cat.id}/${word}`]?.n || 0;
@@ -95,7 +98,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
   const matched = all.filter(({ word, cat }) => normalize(`${word} ${cat.nombre}`).includes(normalize(query.trim())));
   const categoryWords = (category?.señas || []).filter(word => normalize(displayWord(word)).includes(normalize(query.trim())) && (filter === "all" || (filter === "needed" ? timesOf(category, word) === 0 : timesOf(category, word) > 0)));
   const categoriesShown = categories.filter(cat => normalize(cat.nombre).includes(normalize(query.trim())));
-  const title = { home: "¿Qué grabamos hoy?", categoria: category?.nombre, aportes: "Tus aportes.", mas: "Más sobre DeafApp.", ayuda: "Antes de grabar.", feedback: "Te escuchamos." }[screen];
+  const title = nombrePantalla(screen,{category:category?.nombre});
   const subtitle = { home: "Elige una palabra o una oración. Tu aporte cuenta.", categoria: isPhraseCategory ? "Frases cortas de todos los días. Elige una y compártela en LSCh." : "Elige la palabra que quieres aportar.", aportes: "Las señas que has grabado desde este dispositivo.", mas: "Cómo vamos y qué nos importa.", ayuda: "Unos minutos de preparación hacen la diferencia.", feedback: "Ayúdanos a mejorar la experiencia." }[screen];
   function WordRow({ word, cat }) {
     const n = timesOf(cat, word);
@@ -129,10 +132,11 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
           <ul className="app-word-list">{matched.map(({ word, cat }) => <WordRow key={`${cat.id}-${word}`} word={word} cat={cat} />)}</ul>
           {matched.length === 0 && <div className="app-empty"><AppIcon name="search" size={32} /><h2>No encontramos esa seña.</h2><p>Prueba con otra palabra o sugiere una seña para el catálogo.</p><AppButton secondary onClick={() => navigate("feedback")}>Sugerir una seña</AppButton></div>}
         </> : <div className="app-tiles">
-          <section className="app-tile-featured grain" aria-label="Empieza con un hola">
-            <div><h2>Empieza con un hola.</h2><p>Encuentra tu primera palabra en Saludos.</p><button onClick={() => onCategory(categories[0])}>Elegir una seña <AppIcon name="arrow" size={18} /></button></div>
+          {firstCategory&&<section className="app-tile-featured grain" aria-label={firstCategory.id==='saludos'?'Empieza con un hola':`Aporta en ${firstCategory.nombre}`}>
+            <div><h2>{firstCategory.id==='saludos'?'Empieza con un hola.':`Aporta en ${firstCategory.nombre}.`}</h2><p>Encuentra tu primera palabra en {firstCategory.nombre}.</p><button onClick={() => onCategory(firstCategory)}>Elegir una seña <AppIcon name="arrow" size={18} /></button></div>
             <div className="app-start-art" aria-hidden="true"><HandConstellation poses={["open", "soft", "relaxed", "point"]} hold={2200} /></div>
-          </section>
+          </section>}
+          {!firstCategory&&<div className="app-empty" style={{gridColumn:'1 / -1'}}><AppIcon name="camera" size={32}/><h2>Por ahora no hay señas habilitadas.</h2><p>El equipo está preparando el catálogo. Vuelve más tarde para aportar.</p></div>}
           {categories.map(cat => {
             const done = doneOf(cat);
             return <button className="app-tile" key={cat.id} style={{ "--tone": toneOf(cat) }} aria-label={`${cat.nombre}: ${cat.señas.length} ${cat.id === "oraciones" ? "oraciones" : "señas"}${done ? `, ${done} grabadas por ti` : ""}`} onClick={() => onCategory(cat)}>
@@ -201,9 +205,9 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
 }
 
 export function CameraPermission({ onAllow, onBack, onInterpret, pending, onResume, loading }) {
-  return <div className="deaf-app"><header className="app-topbar"><Brand /><InterpretationLink className="app-live-shortcut" onInterpret={onInterpret}/></header><main className="app-permission"><div className="app-permission-icon"><span className="dw-corner dw-corner-tl" /><span className="dw-corner dw-corner-tr" /><span className="dw-corner dw-corner-bl" /><span className="dw-corner dw-corner-br" /><AppIcon name="camera" size={42} /></div><h1>Tu cámara, tu aporte.</h1><p>DeafApp necesita acceso a la cámara para grabar tu seña. Podrás revisar la grabación antes de enviarla.</p><AppButton disabled={loading} onClick={onAllow}>{loading ? "Comprobando cámara…" : "Permitir cámara"}</AppButton>{pending && <AppButton secondary onClick={onResume}>Revisar grabación pendiente</AppButton>}<button className="app-text-button" onClick={onBack}>Volver a las señas</button></main></div>;
+  return <div className="deaf-app"><header className="app-topbar"><Brand /><InterpretationLink className="app-live-shortcut" onInterpret={onInterpret}/></header><main className="app-permission"><div className="app-permission-icon"><span className="dw-corner dw-corner-tl" /><span className="dw-corner dw-corner-tr" /><span className="dw-corner dw-corner-bl" /><span className="dw-corner dw-corner-br" /><AppIcon name="camera" size={42} /></div><h1>Permiso de cámara</h1><p>DeafApp necesita acceso a la cámara para grabar tu seña. Podrás revisar la grabación antes de enviarla.</p><AppButton disabled={loading} onClick={onAllow}>{loading ? "Comprobando cámara…" : "Permitir cámara"}</AppButton>{pending && <AppButton secondary onClick={onResume}>Revisar grabación pendiente</AppButton>}<button className="app-text-button" onClick={onBack}>Volver a las señas</button></main></div>;
 }
 
 export function AdminLogin({ password, setPassword, login, exit, busy, error }) {
-  return <div className="deaf-app app-admin-entry"><header className="app-topbar"><Brand /><button className="app-text-button" onClick={exit} disabled={busy}>Volver a la app</button><InterpretationLink className="app-live-shortcut" disabled={busy}/></header><main className="app-admin-login"><span className="app-menu-icon"><AppIcon name="lock" size={28} /></span><h1>Administración</h1><p>Acceso reservado al equipo de DeafApp.</p><form onSubmit={event => { event.preventDefault(); login(); }}><label htmlFor="admin-password">Contraseña</label><input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} maxLength={72} disabled={busy} required />{error && <p role="alert" className="app-login-error">{error}</p>}<AppButton type="submit" icon="lock" disabled={busy || !password}>{busy ? "Ingresando…" : "Entrar al panel"}</AppButton></form></main></div>;
+  return <div className="deaf-app app-admin-entry"><header className="app-topbar"><Brand /><button className="app-text-button" onClick={exit} disabled={busy}>Volver a la app</button><InterpretationLink className="app-live-shortcut" disabled={busy}/></header><main className="app-admin-login"><span className="app-menu-icon"><AppIcon name="lock" size={28} /></span><h1>Acceso al administrador</h1><p>Acceso reservado al equipo de DeafApp.</p><form onSubmit={event => { event.preventDefault(); login(); }}><label htmlFor="admin-password">Contraseña</label><input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} maxLength={72} disabled={busy} required />{error && <p role="alert" className="app-login-error">{error}</p>}<AppButton type="submit" icon="lock" disabled={busy || !password}>{busy ? "Ingresando…" : "Entrar al panel"}</AppButton></form></main></div>;
 }

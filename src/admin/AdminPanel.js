@@ -7,9 +7,10 @@ import { AdminLogin } from "../app/AppWorkspace";
 import { ADMIN_PAGE_SIZE, MODERATION_LABELS, createAdminClient, recordingPreview, validAdminSession } from "./adminClient";
 import LschSources from "./LschSources";
 import TrainingWorkbench from "./TrainingWorkbench";
-import VocabularyWorkbench from './VocabularyWorkbench';
+import SignAvailability from './SignAvailability';
 import MultiplyRecordings from './MultiplyRecordings';
 import VariantReviewPanel from './VariantReviewPanel';
+import {tituloAdmin} from '../app/appRoutes';
 
 function Action({ label, onPress, disabled, danger, secondary }) {
   return <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={onPress}
@@ -45,6 +46,9 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   const requestRef = useRef(0);
   const operationRef = useRef(false);
   const clipRequestRef = useRef(0);
+  useEffect(()=>{
+    if(Platform.OS==='web'&&typeof document!=='undefined')document.title=tituloAdmin(section,{authenticated:!!session,multiplying:!!variantFlow,variants:reviewMode==='variants',recording:preview?.row?.label});
+  },[section,session,variantFlow,reviewMode,preview?.row?.label]);
 
   function invalidate() {
     sessionRef.current = null; setSession(null); setPassword(""); setPreview(null); setSelected([]); setListing(null); setOverview(null);
@@ -158,12 +162,12 @@ export default function AdminPanel({ client, onExit, onModerated }) {
   if(section==='recordings'&&reviewMode==='variants')return workspace(<VariantReviewPanel api={api} session={session} client={client} onAccessError={fail} onBusyChange={setBusy} onBack={()=>{setReviewMode('originals');setRefresh(value=>value+1);}}/>);
 
   if (section === "video-review") return workspace(<SignReviewWorkbench api={api} session={session} onAccessError={fail} onBusyChange={setBusy} />);
-  if (section === "vocabulary") return workspace(<VocabularyWorkbench api={api} session={session} client={client} onAccessError={fail} onBusyChange={setBusy} onMultiply={classId=>multiply({initialClassId:classId})}/>);
+  if (section === "vocabulary") return workspace(<SignAvailability api={api} session={session} client={client} onAccessError={fail} onBusyChange={setBusy} onMultiply={classId=>multiply({initialClassId:classId})}/>);
   if (section === "material") return workspace(<LschSources loadCatalog={loadMaterial} onAccessError={fail} onBack={() => setSection("recordings")} backLabel="Volver al administrador" />);
   if (section === "training") return workspace(<TrainingWorkbench api={api} session={session} client={client} onAccessError={fail} onBack={() => setSection("recordings")} onOpenMaterial={() => navigateAdmin("material")} onOpenVocabulary={()=>navigateAdmin('vocabulary')} />);
 
   return workspace(<SafeAreaView dataSet={{adminRoot:true}} style={styles.root}><ScrollView dataSet={{adminScroll:true}} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-    {Platform.OS === "web" ? <View style={{marginBottom:20}}><Text style={styles.eyebrow}>ADMINISTRACIÓN · LSCh</Text><Text accessibilityRole="header" aria-level={1} dataSet={{adminTitle:true}} style={styles.title}>{section === "tools" ? "Los datos del proyecto." : "Cada seña cuenta."}</Text><Text style={styles.pageLead}>{section === "tools" ? "Consulta la conexión, la cobertura y la preparación del entrenamiento." : "Revisa los aportes y prepara las próximas señas para aprender."}</Text></View> : <><View style={styles.header}><View style={{ flex: 1 }}><Text style={styles.title}>Administración</Text><Text style={styles.muted}>DeafApp · LSCh</Text></View><Action label="Cerrar sesión" secondary onPress={exit} disabled={busy} /></View>
+    {Platform.OS === "web" ? <View style={{marginBottom:20}}><Text style={styles.eyebrow}>ADMINISTRACIÓN · LSCh</Text><Text accessibilityRole="header" aria-level={1} dataSet={{adminTitle:true}} style={styles.title}>{section === "tools" ? "Datos y diagnóstico" : "Grabaciones"}</Text><Text style={styles.pageLead}>{section === "tools" ? "Consulta la conexión, la cobertura y la preparación del entrenamiento." : "Revisa los aportes y prepara las próximas señas para aprender."}</Text></View> : <><View style={styles.header}><View style={{ flex: 1 }}><Text style={styles.title}>Administración</Text><Text style={styles.muted}>DeafApp · LSCh</Text></View><Action label="Cerrar sesión" secondary onPress={exit} disabled={busy} /></View>
     <View style={styles.actions}>
       <Action label="Grabaciones" secondary={section !== "recordings"} onPress={() => { setSection("recordings"); setNotice(""); setError(""); }} disabled={busy} />
       <Action label="Material de LSCh" secondary onPress={() => { setSection("material"); setPreview(null); clipRequestRef.current++; }} disabled={busy} />
