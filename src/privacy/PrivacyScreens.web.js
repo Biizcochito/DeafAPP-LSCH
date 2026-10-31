@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AppIcon, InterpretationLink } from "../app/AppWorkspace";
 import HandConstellation from "../ui/HandConstellation";
 import { CONSENT_CHOICES, GUARDIAN_RELATIONSHIPS, PRIVACY_NOTICE, isConsentAuthorizer, privacyReady } from "./privacyConsent";
-import { LEGAL_SOURCE, TERMS_SECTIONS, privacySections } from "./privacyDocuments";
+import { LEGAL_SOURCE, LEGAL_BILL_SOURCE, LEGAL_NEWS_SOURCE, LEGAL_STATUS, TERMS_SECTIONS, privacySections } from "./privacyDocuments";
 import "../ui/theme.css";
 import "./PrivacyScreens.css";
 
@@ -67,7 +67,8 @@ export function PrivacyConsent({ onAccept, onBack, onInterpret, preview, notice 
           <fieldset disabled={busy}><legend className="privacy-sr-only">Autorizaciones para aportar una grabación</legend>
             {CONSENT_CHOICES.map(choice => <label className="privacy-check" key={choice.id}><input type="checkbox" name={choice.id} checked={choices[choice.id] === true} onChange={event => setChoices(value => ({ ...value, [choice.id]: event.target.checked }))} /><span><strong>{choice.title}</strong><small>{choice.detail}</small></span></label>)}
           </fieldset>
-          <dl className="privacy-responsible"><div><dt>Responsable</dt><dd>{notice.controller}</dd></div><div><dt>Contacto de privacidad</dt><dd>{notice.contact || "Pendiente de definir"}</dd></div><div><dt>Cuánto tiempo guardamos el aporte</dt><dd>{notice.retention || "Pendiente de definir"}</dd></div></dl>
+          <dl className="privacy-responsible"><div><dt>Responsable</dt><dd>{notice.controller}</dd></div><div><dt>Contacto de privacidad</dt><dd>{notice.contact || "Pendiente de definir"}</dd></div><div><dt>Conservación en la biblioteca privada</dt><dd>{notice.retention || "Pendiente de definir"}</dd></div></dl>
+          <p className="privacy-small">Este aviso actualiza el plazo para nuevos aportes. Los que ya enviaste mantienen el plazo autorizado entonces. Para grabar de nuevo, revisa y autoriza esta versión.</p>
           <p className="privacy-preview-note">{preview ? "Estás probando el recorrido. La autorización se guardará solo en este navegador; no se activará la cámara ni se enviarán datos." : enabled ? "Primero se registra tu autorización. Después podrás permitir la cámara y revisar tu aporte antes de enviarlo." : "La recepción de nuevos aportes está pausada mientras se completa y revisa este aviso."}</p>
           {error && <p role="alert" className="privacy-error">{error}</p>}
           <button className="privacy-primary" type="submit" disabled={!complete || busy || !enabled}>{busy ? "Guardando tu decisión…" : preview ? "Probar autorización" : "Autorizar y continuar"}<AppIcon name="arrow" size={20} /></button>
@@ -95,7 +96,7 @@ export function PrivacyDocument({ kind, onBack, onInterpret, onConsent, onWithdr
           {consent ? <><p>Tienes una autorización {consent.mode === "local-preview" ? "de prueba local" : "registrada"} del {new Date(consent.acceptedAt).toLocaleString("es-CL")}.</p><p className="privacy-receipt-id">Comprobante: {consent.id}</p><button className="privacy-secondary" onClick={onWithdraw}>Retirar autorización de este dispositivo</button><p className="privacy-small">Se borrará el comprobante local. Esto no solicita ni confirma la eliminación de aportes que se hayan enviado anteriormente.</p></> : <><p>No hay una autorización activa en este dispositivo. Puedes explorar el catálogo sin concederla.</p><button className="privacy-primary" onClick={onConsent}>Ver autorización<AppIcon name="arrow" size={18} /></button></>}
           {message && <p role="status" className="privacy-feedback">{message}</p>}
         </section>
-        <p className="privacy-source">Fuente normativa: <a href={LEGAL_SOURCE} target="_blank" rel="noreferrer">Ley 21.719 en la Biblioteca del Congreso Nacional</a>. Vigencia: 1 de diciembre de 2026. Hasta esa fecha se aplica el régimen vigente de protección de datos.</p>
+        <p className="privacy-source">{terms && `${LEGAL_STATUS} `}Fuentes consultadas al 31 de octubre de 2026: <a href={LEGAL_SOURCE} target="_blank" rel="noreferrer">Ley 21.719 en la Biblioteca del Congreso Nacional</a>; <a href={LEGAL_BILL_SOURCE} target="_blank" rel="noreferrer">tramitación del boletín 18.623-07 en el Senado</a>; <a href={LEGAL_NEWS_SOURCE} target="_blank" rel="noreferrer">noticia de la aprobación en el Senado (28 de octubre)</a>.</p>
       </article>
     </div>
   </main></div>;

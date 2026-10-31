@@ -1,11 +1,11 @@
 // Aviso y plazo autorizados por el responsable para la publicación.
 export const PRIVACY_NOTICE = Object.freeze({
-  version: "2026-10-17-v1",
-  date: "17 de octubre de 2026",
+  version: "2026-10-31-v2",
+  date: "31 de octubre de 2026",
   controller: "Diego Padilla",
   contact: "diego0padilla1717@gmail.com",
-  retention: "24 meses desde el envío del aporte",
-  retentionMonths: 24,
+  retention: "4 años desde el envío del aporte",
+  retentionMonths: 48,
   approvedForPublication: true,
   system: "DeafApp: cámara del dispositivo y MediaPipe para detectar puntos de manos y rostro",
   purpose: "Recopilar y revisar aportes voluntarios de LSCh, y entrenar y evaluar modelos de reconocimiento de señas",

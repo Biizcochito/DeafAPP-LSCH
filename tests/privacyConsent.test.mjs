@@ -23,23 +23,26 @@ test("el aviso incompleto no habilita una autorización de producción", () => {
   assert.equal(privacyReady({ ...testNotice, approvedForPublication: false }), false);
 });
 
-test("la configuración publicada permite nuevos aportes autorizados con conservación de 24 meses", async () => {
+test("la configuración publicada permite nuevos aportes autorizados con conservación de cuatro años", async () => {
   assert.equal(privacyReady(), true);
-  assert.equal(PRIVACY_NOTICE.retentionMonths, 24);
-  assert.match(PRIVACY_NOTICE.retention, /24 meses desde el envío/);
+  assert.equal(PRIVACY_NOTICE.retentionMonths, 48);
+  assert.match(PRIVACY_NOTICE.retention, /4 años desde el envío/);
   const receipt=createConsentReceipt(testChoices,{now:123456000,id:"production-consent"});
   const value=createRecordingDraft({id:"production-recording",label:"hola",category:"saludos",frames:["synthetic"],now:123456789,consent:receipt});
   let uploaded,registered=false;
   const client={from:()=>({select:()=>({eq:()=>({limit:async()=>({data:[]})})}),insert:async()=>{registered=true;return {error:null};}}),storage:{from:()=>({upload:async(_path,blob)=>{uploaded=JSON.parse(await blob.text());return {error:null};}})}};
   await submitRecordingDraft({draft:value,client});
   assert.equal(registered,true);assert.equal(uploaded.consent.mode,"contribution");
-  assert.equal(uploaded.retention.months,24);
+  assert.equal(uploaded.retention.months,48);
+  assert.equal(uploaded.consent.notice.retentionMonths,48);
+  assert.equal(uploaded.consent.noticeVersion,"2026-10-31-v2");
   assert.equal(Date.parse(uploaded.retention.expiresAt)>Date.parse(uploaded.retention.startsAt),true);
 });
 
-test("los 24 meses se cuentan por calendario y respetan los días de febrero", () => {
-  assert.deepEqual(recordingRetentionPeriod(Date.parse("2026-10-17T14:00:00Z")),{months:24,startsAt:"2026-10-17T14:00:00.000Z",expiresAt:"2028-10-17T14:00:00.000Z"});
-  assert.equal(recordingRetentionPeriod(Date.parse("2024-02-29T14:00:00Z")).expiresAt,"2026-02-28T14:00:00.000Z");
+test("los cuatro años se cuentan por calendario y respetan meses y años bisiestos", () => {
+  assert.deepEqual(recordingRetentionPeriod(Date.parse("2026-10-31T14:00:00Z")),{months:48,startsAt:"2026-10-31T14:00:00.000Z",expiresAt:"2030-10-31T14:00:00.000Z"});
+  assert.equal(recordingRetentionPeriod(Date.parse("2024-02-29T14:00:00Z")).expiresAt,"2028-02-29T14:00:00.000Z");
+  assert.equal(recordingRetentionPeriod(Date.parse("2096-02-29T14:00:00Z")).expiresAt,"2100-02-28T14:00:00.000Z");
   assert.throws(()=>recordingRetentionPeriod(NaN),/Fecha/);
 });
 
@@ -82,6 +85,21 @@ test("el comprobante registra versión, finalidades, responsable y momento; los 
 });
 
 const draft = () => createRecordingDraft({ id: "privacy-test", label: "hola", category: "saludos", frames: ["synthetic-test-frame"], now: 123456789, consent: testConsent });
+test("una autorización anterior de 24 meses no se convierte en otra de cuatro años", async () => {
+  const previousVersion="2026-10-17-v1";
+  const previous={...testConsent,noticeVersion:previousVersion,notice:{...testConsent.notice,version:previousVersion,retention:"24 meses desde el envío del aporte",retentionMonths:24}};
+  const value={...draft(),consent:previous,retention:{months:24,startsAt:"2026-10-17T14:00:00.000Z",expiresAt:"2028-10-17T14:00:00.000Z"}};
+  const saved=JSON.stringify(value);
+  let requests=0;
+  const client={from(){requests++;throw new Error("No debería acceder a la red");}};
+  assert.equal(isConsentReceipt(previous),false);
+  await assert.rejects(submitRecordingDraft({draft:value,client}),/autorización vigente/);
+  const renewed=createConsentReceipt(testChoices);
+  await assert.rejects(submitRecordingDraft({draft:value,client,getCurrentConsent:()=>renewed}),/autorización vigente/);
+  assert.equal(requests,0);
+  assert.equal(JSON.stringify(value),saved);
+});
+
 test("una autorización posterior, retirada o distinta nunca habilita la toma existente", () => {
   const value = draft();
   assert.doesNotThrow(() => assertRecordingConsent(value, testConsent));
