@@ -61,7 +61,9 @@ async function build(job:any){
   }
   if(uncached.length){
     const targets=catalogue.map(row=>({classId:row.classId,category:row.category,label:row.label})),results=[];
-    for(let i=0;i<uncached.length;i+=4)results.push(...await Promise.all(uncached.slice(i,i+4).map(row=>prepareFeature(row,targets))));
+    // Older originals exceed 20 MB. Prepare them one at a time so JSON parsing
+    // and private integrity checks stay within the function's memory budget.
+    for(const row of uncached)results.push(await prepareFeature(row,targets));
     await rpc('deafapp_runtime_cache',{p_job:job.job,p_rows:results});
     await rpc('deafapp_runtime_complete',{p_job:job.job,p_catalog_revision:job.catalogRevision,p_source_revision:job.sourceRevision});return;
   }
