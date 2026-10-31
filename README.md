@@ -205,8 +205,8 @@ El catálogo y los documentos se pueden consultar sin autorizar una grabación. 
 | --- | --- |
 | **Finalidades separadas** | Aceptación de términos, captación de imagen y puntos de manos/rostro, y uso para entrenamiento y evaluación. |
 | **Quién autoriza** | Participación personal o autorización de un representante declarado, según el grupo de edad indicado en el formulario. |
-| **Comprobante versionado** | Conserva la fecha, las decisiones y una copia del aviso; acompaña al archivo enviado. Versión actual: **2026-10-17-v1**. |
-| **Conservación** | Cada envío nuevo registra un plazo de **24 meses desde el aporte**, con fecha de inicio y vencimiento. |
+| **Comprobante versionado** | Conserva la fecha, las decisiones y una copia del aviso; acompaña al archivo enviado. Versión actual: **2026-10-31-v2**. |
+| **Conservación** | Los nuevos aportes autorizados con este aviso permanecen **4 años desde el envío en la biblioteca privada** (48 meses de calendario), con fecha de inicio y vencimiento. Los anteriores mantienen el plazo autorizado. |
 | **Retirada local** | Borra la autorización de este dispositivo y exige autorizar de nuevo antes de otra captura. Las comprobaciones de envío se repiten entre etapas. |
 | **Grabaciones anteriores** | Una toma sin autorización previa puede recuperarse para revisión, pero no recibe consentimiento retroactivo para su envío. |
 | **Demostración local** | `npm run web:privacy-preview` permite recorrer el aviso y el formulario sin activar la cámara ni enviar aportes reales. |
@@ -256,7 +256,7 @@ viajan hasta ese servidor, así que conviene avisarlo en una demo.
 | Área | Estado | Alcance actual |
 | --- | --- | --- |
 | Captura y revisión de grabaciones | **Implementadas** | Cámara, trazados, vista previa y moderación administrativa. |
-| Privacidad y autorización | **Implementadas en el cliente** | Aviso, términos, comprobante previo a la captura y plazo de 24 meses registrado por aporte. Supresión remota y validación del consentimiento en servidor requieren su gestión específica. |
+| Privacidad y autorización | **Implementadas en el cliente** | Aviso, términos, comprobante previo a la captura y plazo de 4 años registrado por nuevo aporte autorizado. Supresión remota y validación del consentimiento en servidor requieren su gestión específica. |
 | Material de LSCh | **Disponible en administración** | Referencias y catálogo para consulta y preparación posterior. |
 | Entrenamiento de señas aisladas | **Experimental** | Grupos pequeños de señas revisadas, evaluación separada y candidatos guardados en el navegador. |
 | Reconocimiento para distintas personas | **Pendiente de validar** | Requiere más originales y evaluación con personas independientes. |
