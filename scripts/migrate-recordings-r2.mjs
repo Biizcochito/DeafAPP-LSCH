@@ -20,7 +20,7 @@ async function saveJson(path, value) {
   await rename(temporary, path);
 }
 async function optionalJson(path) { try { return await readJson(path); } catch (error) { if (error.code === 'ENOENT') return null; throw error; } }
-async function makeSource() {
+export async function makeSource() {
   const app = await readFile(resolve(root, 'App.js'), 'utf8');
   const url = process.env.SUPABASE_URL || app.match(/const SUPABASE_URL = "([^"]+)"/)?.[1];
   const key = process.env.SUPABASE_PUBLISHABLE_KEY || app.match(/const SUPABASE_KEY = "([^"]+)"/)?.[1];
@@ -73,7 +73,7 @@ async function makeSource() {
   };
 }
 
-function makeBackup(project) {
+export function makeBackup(project) {
   const backupDir = resolve(privateDir, 'backups', sha256(project).slice(0, 16));
   const filename = path => resolve(backupDir, `${sha256(path)}.json`);
   return {
@@ -85,7 +85,7 @@ function makeBackup(project) {
   };
 }
 
-async function makeDestination() {
+export async function makeDestination() {
   const account = process.env.R2_ACCOUNT_ID, bucket = process.env.R2_MIGRATION_BUCKET;
   const accessKeyId = process.env.R2_ACCESS_KEY_ID, secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
   if (!/^[a-f0-9]{32}$/.test(account || '') || !/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(bucket || '') || !accessKeyId || !secretAccessKey) {
@@ -167,9 +167,8 @@ export async function main(argv = process.argv.slice(2)) {
     if ((await source.manifest()).revision !== plan.catalogueRevision) throw Error('El catálogo cambió. Se conservó el respaldo; actualiza el plan.');
     console.log(JSON.stringify({ command, batch: batch.id, files: files.length, bytes: batch.bytes, localBackupVerified: true, remoteWrites: 0 })); return;
   }
-  // Phase one intentionally accepts only the pilot. Larger batches need a
-  // separate release after private access and all production readers are tested.
-  if (batch.id !== 'pilot') throw Error('Esta fase solo copia el piloto. Completa su verificación antes de ampliar los lotes.');
+  // Only known inactive signs are accepted by selectedBatch. Active signs and
+  // ambiguous imports remain deferred. Copying still cannot retire a source.
   const destination = await makeDestination(), receiptFile = resolve(privateDir, `r2-${destination.account}-${destination.bucket}-${batch.id}.json`);
   const state = await optionalJson(receiptFile) || { project: plan.project, account: destination.account, bucket: destination.bucket, files: [] };
   if (state.project !== plan.project) throw Error('El comprobante pertenece a otro proyecto.');

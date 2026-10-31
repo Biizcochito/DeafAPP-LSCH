@@ -1,4 +1,5 @@
 import { prepareDataset, auditRecording, TARGET_SIGNS } from './datasetPreparation.js';
+import {downloadRecording} from '../storage/recordingStorage.js';
 const targets=new Set(TARGET_SIGNS.map(s=>s.classId));
 export async function listApprovedRows(api,session,signal) {
   const rows=[];
@@ -18,7 +19,7 @@ export async function buildReviewedBrowserDataset({api,session,client,signal,onP
     try {
       if(!targets.has(classId)){excluded.push({file:row.id,classId,reasons:['unknown-label-or-category']});continue;}
       if(typeof row.path!=='string'||row.path.includes('..')||!row.path.endsWith('.json'))throw new Error('invalid-storage-path');
-      const {data,error}=await client.storage.from('contribuciones').download(row.path);
+      const {data,error}=await downloadRecording(client,row,session,{signal});
       if(error||!data)throw new Error('download-failed');if(data.size>25_000_000)throw new Error('oversized-recording');
       const recording=JSON.parse(await data.text());
       if(recording.label!==row.label||recording.categoria!=null&&recording.categoria!==row.category)throw new Error('label-mismatch');

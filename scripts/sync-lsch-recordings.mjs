@@ -4,12 +4,14 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 import { createTimedFetch } from '../src/recording/recordingSubmission.js';
+import { downloadRecording } from '../src/storage/recordingStorage.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 try {
-  // Reuse only the app's existing public configuration; no privileged key is needed.
+  // Public configuration still reads unmigrated originals. Migrated private
+  // originals require the service credential in this administrative process.
   const app = await readFile(resolve(root, 'App.js'), 'utf8');
   const url = process.env.SUPABASE_URL || app.match(/const SUPABASE_URL = "([^"]+)"/)?.[1];
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY || app.match(/const SUPABASE_KEY = "([^"]+)"/)?.[1];
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || app.match(/const SUPABASE_KEY = "([^"]+)"/)?.[1];
   if (!url || !key) throw new Error('Falta la configuración pública de Supabase.');
   const client = createClient(url, key, { global: { fetch: createTimedFetch(fetch, 15000) }, auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
   const rows = [];
@@ -33,7 +35,7 @@ try {
         await writeFile(resolve(output, name), JSON.stringify(previous));
         files.push(name); cached++; continue;
       }
-      const result = await client.storage.from('contribuciones').download(row.archivo_path);
+      const result = await downloadRecording(client,row.archivo_path,null,{serviceRole:!!process.env.SUPABASE_SERVICE_ROLE_KEY});
       if (result.error) throw new Error(result.error.message);
       if (result.data.size > 25_000_000) throw new Error('Grabación demasiado grande para este proceso.');
       const recording = JSON.parse(await result.data.text());

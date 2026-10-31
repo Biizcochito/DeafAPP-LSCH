@@ -581,7 +581,7 @@ La preparación de la copia piloto de originales a R2, sus límites y las etapas
 | `npm run test:training` | Selección del catálogo, oraciones, preparación de datos, captura, envío, aportes locales, rutas web y prueba de interpretación. |
 | `npm run test:model-training` | Entrenador, conjuntos del navegador y recuperación de grabaciones. |
 | `npm run test:privacy` | Decisiones de autorización, conservación, retirada, rutas y envío de aportes. |
-| `npm run test:storage-migration` | Selección del piloto, respaldo, integridad de copias y reintentos sin sobrescritura. |
+| `npm run test:storage-migration` | Selección, respaldo, lectura privada, integridad y retiro de copias redundantes. |
 | `npm run test:python-backend` | Cliente de administración Python y lógica de interpretación. |
 | `node --test tests/recordingHandGuard.test.mjs tests/gestureModeration.test.mjs tests/trainingCapture.test.mjs` | Confirmación inicial, continuidad con una mano, interrupciones del detector y datos de captura. |
 

@@ -45,7 +45,7 @@
     "test:assistant": "node --test tests/trainingAssistant.test.mjs tests/visibleTraining.test.mjs tests/phraseLabels.test.mjs tests/sequenceCandidate.test.mjs tests/handWorkerAnatomy.test.mjs tests/liveSignRecognition.test.mjs tests/approvedVocabulary.test.mjs tests/recordingLibrarySync.test.mjs tests/liveSignSpeech.test.mjs tests/liveInterpretation.test.mjs tests/controlledVocabulary.test.mjs tests/continuousUtterance.test.mjs tests/preparedRecognition.test.mjs tests/landmarkTracking.test.mjs tests/handRegions.test.mjs tests/trackingContinuity.test.mjs tests/handRecovery.test.mjs tests/recordingHandGuard.test.mjs",
     "test:model-training": "node --test tests/modelTraining.test.mjs tests/browserDataset.test.mjs tests/legacyRecovery.test.mjs",
     "test:training": "node --test tests/trainingCapture.test.mjs tests/datasetPreparation.test.mjs tests/sourceCatalog.test.mjs tests/recordingSubmission.test.mjs tests/myContributions.test.mjs tests/appRoutes.test.mjs tests/translator.test.mjs tests/oraciones.test.mjs tests/signCatalog.test.mjs",
-    "test:storage-migration": "node --test tests/storageMigration.test.mjs"
+    "test:storage-migration": "node --test tests/storageMigration.test.mjs tests/privateRecordingStorage.test.mjs tests/storageRetirement.test.mjs"
   },
   "private": true,
   "devDependencies": {

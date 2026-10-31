@@ -4,6 +4,7 @@ import {handSequence,prepareSequenceSearch,searchSequenceDistances,rankSequenceD
 import {createCatalogueResolver} from '../../../src/training/recognitionCatalog.js';
 import {prepareControlledModel,reflectHandSequence,validHandSequence} from '../../../src/training/controlledModel.js';
 import {digestText,encodeRuntimePackage,decodeRuntimePackage} from '../../../src/training/runtimePackage.js';
+import {loadRecordingObject} from '../_shared/recordingObjects.ts';
 
 declare const EdgeRuntime:{waitUntil(promise:Promise<unknown>):void};
 const origins=new Set(['https://deafapps.com','https://www.deafapps.com','https://deafapp-lsch.deafapp-lsch.workers.dev']);
@@ -24,9 +25,10 @@ async function prepareFeature(row:any,targets:any[]){
   const classId=`${row.category}/${row.label}`;
   try{
     if(typeof row.path!=='string'||row.path.startsWith('/')||row.path.includes('..')||!row.path.endsWith('.json'))throw Error('invalid-storage-path');
-    const {data,error}=await db.storage.from('contribuciones').download(row.path);
-    if(error||!data)throw Error('download-failed');if(data.size>25_000_000)throw Error('oversized-recording');
-    const recording=JSON.parse(await data.text());
+    const location=await rpc('deafapp_storage_server_location',{p_path:row.path});
+    const bytes=await loadRecordingObject(db,location);
+    if(bytes.length>25_000_000)throw Error('oversized-recording');
+    const recording=JSON.parse(new TextDecoder().decode(bytes));
     const features=approvedRecordingFeatures({...row,status:'approved'},recording,targets);
     const sequence=handSequence(features.features).map(frame=>Array.from(Float32Array.from(frame)));
     if(!validHandSequence(sequence))throw Error('missing-tracking');
