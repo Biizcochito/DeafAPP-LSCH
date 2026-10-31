@@ -9,18 +9,17 @@ export async function readLimitedBytes(response, maximum) {
   const declared = response.headers.get('content-length');
   if (declared && (!/^\d+$/.test(declared) || Number(declared) > maximum)) throw Error('Oversized response');
   const reader = response.body?.getReader(); if (!reader) throw Error('Missing body');
-  const chunks = []; let length = 0;
+  // Use one bounded buffer: retaining every network chunk and concatenating
+  // it later doubles peak memory for the older 20+ MB originals.
+  const bytes = new Uint8Array(maximum); let length = 0;
   try {
     for (;;) {
       const part = await reader.read(); if (part.done) break;
-      length += part.value.length;
-      if (length > maximum) { await reader.cancel(); throw Error('Oversized response'); }
-      chunks.push(part.value);
+      if (length + part.value.length > maximum) { await reader.cancel(); throw Error('Oversized response'); }
+      bytes.set(part.value,length); length += part.value.length;
     }
   } finally { reader.releaseLock(); }
-  const bytes = new Uint8Array(length); let offset = 0;
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
-  return bytes;
+  return bytes.subarray(0,length);
 }
 
 export async function readStoredRecording({ db, location, config, signedFetch }) {
@@ -68,7 +67,10 @@ export function createPrivateRecordingHandler({ locate, download, markVerified, 
         if (location.provider !== 'r2') throw Error('Copy unavailable');
         await markVerified(body.path, location.sha256);
       }
-      return new Response(bytes, { headers: { ...headers, 'Content-Type': 'application/octet-stream',
+      // A stream transfers the already verified buffer without Response's
+      // additional full BufferSource copy. No bytes are sent before hashing.
+      const stream = new ReadableStream({ start(controller) { controller.enqueue(bytes); controller.close(); } });
+      return new Response(stream, { headers: { ...headers, 'Content-Type': 'application/octet-stream',
         'Content-Length': String(bytes.length), 'Content-Disposition': 'attachment' } });
     } catch (error) {
       return reply(error?.code === '28000' ? 'La sesión terminó. Vuelve a ingresar.' : 'No se pudo abrir la grabación privada.', error?.code === '28000' ? 401 : 503);
