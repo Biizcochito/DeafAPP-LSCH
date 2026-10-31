@@ -11,7 +11,7 @@ export function PrivacyConsent({ onAccept, onBack, notice = PRIVACY_NOTICE }) {
   const ready = CONSENT_CHOICES.every(({id})=>choices[id]) && isConsentAuthorizer(authorizer) && privacyReady(notice) && !busy;
   return <ScrollView style={styles.root} contentContainerStyle={styles.body}>
     <Text accessibilityRole="header" style={styles.h1}>Tu seña. Tu decisión.</Text>
-    <Text style={styles.text}>Todas las edades pueden sumar, con la autorización que corresponda. Responsable: {notice.controller}. Contacto: {notice.contact || "pendiente"}. Conservación: {notice.retention}.</Text>
+    <Text style={styles.text}>Todas las edades pueden sumar, con la autorización que corresponda. Responsable: {notice.controller}. Contacto: {notice.contact || "pendiente"}. Conservación en la biblioteca privada: {notice.retention}. Este plazo se aplica a nuevos aportes; los anteriores mantienen el plazo autorizado al enviarlos.</Text>
     <Text style={styles.h2}>¿Quién autoriza este aporte?</Text>
     <TouchableOpacity style={styles.choice} accessibilityRole="radio" accessibilityState={{checked:authorizer?.role==="participant"}} onPress={()=>{setAuthorizer({role:"participant",ageDeclaration:"16-or-older"});setChoices({});}}><Text style={styles.text}>Yo, por mi propio aporte (desde los 16 años)</Text></TouchableOpacity>
     <TouchableOpacity style={styles.choice} accessibilityRole="radio" accessibilityState={{checked:authorizer?.role==="representative"}} onPress={()=>{setAuthorizer({role:"representative",ageDeclaration:"under-16",relationship:"",authorityConfirmed:false});setChoices({});}}><Text style={styles.text}>Su madre, padre o representante (participante menor de 16 años)</Text></TouchableOpacity>
