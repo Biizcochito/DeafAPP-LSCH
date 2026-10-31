@@ -9,7 +9,7 @@ const LEGEND = [["#F7DC6F", "Amarillo: cara"], ["#4ECDC4", "Verde: mano derecha"
 function Top({ word, category, kicker, onBack, backDisabled, onInterpret, interpretDisabled }) {
   return <header className="rs-top">
     <button className="rs-back" aria-label="Volver a la lista" onClick={onBack} disabled={backDisabled}><AppIcon name="back" size={19} /><span>Volver</span></button>
-    <div className="rs-word"><span className="rs-cat" aria-hidden="true">{category?.emoji}</span><div><small>{kicker}</small><h1 tabIndex={-1}>{word}</h1></div></div>
+    <div className="rs-word"><span className="rs-cat" aria-hidden="true">{category?.emoji}</span><div><small>{kicker}</small><h1 tabIndex={-1}>{kicker.startsWith('Revisa')?'Revisar':'Grabar'}: {word}</h1></div></div>
     <InterpretationLink onInterpret={onInterpret} disabled={interpretDisabled}/>
   </header>;
 }
@@ -97,7 +97,7 @@ export function RecordingDone({ word, category, tone, times, onAgain, onMine, on
   return <div className="deaf-app rs-stage" style={{ "--tone": tone }}>
     <main className="rs-done">
       <div className="rs-done-badge" aria-hidden="true"><AppIcon name="check" size={58} /></div>
-      <h1 tabIndex={-1}>¡Gracias!</h1>
+      <h1 tabIndex={-1}>Aporte enviado</h1>
       <p>Tu {item} «{word}» fue enviada.</p>
       {times > 1 && <p className="rs-done-times">Ya van {times} grabaciones tuyas de esta {item}.</p>}
       <div className="rs-actions">

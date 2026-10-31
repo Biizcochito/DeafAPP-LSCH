@@ -493,6 +493,7 @@ El administrador comparte logo, tipografía, colores y componentes con la app p�
 | Sección | Herramientas | Alcance |
 | --- | --- | --- |
 | **Grabaciones** | Búsqueda, filtros, reproducción y decisiones individuales o por lote. | Pendientes, aprobadas y rechazadas. |
+| **Habilitar señas** | Publicar u ocultar categorías completas, cambiar señas individuales y crear nuevas. | Visibilidad en Grabar sin exigir originales ni entrenamiento previo. [Guía](docs/HABILITAR-SENAS.md). |
 | **Material de LSCh** | Referencias educativas y catálogo académico de **379 videos**. | Consulta; los enlaces no equivalen a muestras revisadas ni permisos de entrenamiento. |
 | **Revisión de señas** | Segmentos de vídeo con etiqueta propuesta, prioridad para el catálogo visible y confirmación humana. | Decisiones privadas sincronizadas, versiones para evitar sobrescrituras y exportación para preparar el dataset; no entrena automáticamente. |
 | **Entrenamiento LSCh** | Modelo de interpretación conectado a Python, prueba beta y capturas revisadas del navegador. | Importación de aprobadas, informes y candidatos; las herramientas Python verifican la sesión administrativa. |

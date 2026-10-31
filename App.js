@@ -401,11 +401,15 @@ export default function App() {
   const rutaInicialRef = useRef(true);
   useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return;
-    document.title = tituloDe(pantalla);
     const destino = rutaDe(pantalla);
     if (!mismaRuta(window.location.pathname, destino)) window.history[rutaInicialRef.current ? "replaceState" : "pushState"](null, "", destino);
     rutaInicialRef.current = false;
   }, [pantalla]);
+  useEffect(() => {
+    if(Platform.OS!=='web'||typeof document==='undefined'||pantalla==='admin')return;
+    const visible=pantalla==='grabar'&&!consentimientoActivo?'consentimiento':pantalla==='grabar'&&!permission?.granted?'permisoCamara':pantalla;
+    document.title=tituloDe(visible,{category:catActual?.nombre,word:señaActual});
+  },[pantalla,catActual?.nombre,señaActual,consentimientoActivo,permission?.granted]);
   useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return;
     const alNavegar = () => setPantalla(actual => {
