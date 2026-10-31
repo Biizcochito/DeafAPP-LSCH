@@ -1,10 +1,11 @@
 import {useEffect,useState} from 'react';
 import {recordingPreview} from './adminClient';
 import {recordingTimeline,frameAtTime} from '../training/recordingVariants';
+import {downloadRecording} from '../storage/recordingStorage.js';
 
-export async function loadVariantRecording(client,row){
+export async function loadVariantRecording(client,row,session){
   if(typeof row.path!=='string'||row.path.startsWith('/')||row.path.includes('..')||!row.path.endsWith('.json'))throw Error('La ruta del original requiere revisión.');
-  const {data,error}=await client.storage.from('contribuciones').download(row.path);
+  const {data,error}=await downloadRecording(client,row,session);
   if(error||!data||data.size>25_000_000)throw Error('No se pudo abrir el original. Vuelve a intentarlo.');
   const payload=JSON.parse(await data.text());
   if(payload.label!==row.label||payload.categoria!=null&&payload.categoria!==row.category)throw Error('El archivo no coincide con la seña.');
