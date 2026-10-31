@@ -21,7 +21,7 @@ export async function main(argv=process.argv.slice(2)){
  const command=positionals[0];if(positionals.length!==1||!['baseline','register','verify','activate','rollback','retire','audit'].includes(command))throw Error('Uso: activate-recordings-r2.mjs baseline|register|verify|activate|rollback|retire|audit --batch pilot');
  const plan=await json('plan.json'),batch=selectedBatch(plan,values.batch),source=await makeSource(),backup=makeBackup(plan.project);
  if(source.project!==plan.project||!process.env.SUPABASE_SERVICE_ROLE_KEY)throw Error('Falta la credencial privada del servidor.');
- const db=createClient(plan.project,process.env.SUPABASE_SERVICE_ROLE_KEY,{global:{fetch:createTimedFetch(fetch,30_000)},auth:{persistSession:false,autoRefreshToken:false}});
+ const db=createClient(plan.project,process.env.SUPABASE_SERVICE_ROLE_KEY,{global:{fetch:createTimedFetch(fetch,55_000)},auth:{persistSession:false,autoRefreshToken:false}});
  const rpc=async(name,args={})=>need(await db.rpc(name,args));
  const snapshot=async()=>{
    let result=await db.rpc('deafapp_storage_integrity_snapshot');
