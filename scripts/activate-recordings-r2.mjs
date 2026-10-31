@@ -9,6 +9,7 @@ import { selectedBatch, verifyRecordingBytes, sha256 } from './recording-migrati
 import { retireVerifiedSource } from './recording-migration/retire.mjs';
 import { createTimedFetch } from '../src/recording/recordingSubmission.js';
 import { readLimitedBytes } from '../src/storage/privateRecordingServer.js';
+import { createIntegrityGuard } from './recording-migration/integrity.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url)),dir=resolve(root,'.admin-private/storage-migration');
 const json=async name=>JSON.parse(await readFile(resolve(dir,name),'utf8'));
@@ -20,9 +21,18 @@ export async function main(argv=process.argv.slice(2)){
  const command=positionals[0];if(positionals.length!==1||!['baseline','register','verify','activate','rollback','retire','audit'].includes(command))throw Error('Uso: activate-recordings-r2.mjs baseline|register|verify|activate|rollback|retire|audit --batch pilot');
  const plan=await json('plan.json'),batch=selectedBatch(plan,values.batch),source=await makeSource(),backup=makeBackup(plan.project);
  if(source.project!==plan.project||!process.env.SUPABASE_SERVICE_ROLE_KEY)throw Error('Falta la credencial privada del servidor.');
- const db=createClient(plan.project,process.env.SUPABASE_SERVICE_ROLE_KEY,{global:{fetch:createTimedFetch(fetch,30_000)},auth:{persistSession:false,autoRefreshToken:false}});
+ const db=createClient(plan.project,process.env.SUPABASE_SERVICE_ROLE_KEY,{global:{fetch:createTimedFetch(fetch,55_000)},auth:{persistSession:false,autoRefreshToken:false}});
  const rpc=async(name,args={})=>need(await db.rpc(name,args));
- const snapshot=()=>rpc('deafapp_storage_integrity_snapshot');
+ const snapshot=async()=>{
+   let result=await db.rpc('deafapp_storage_integrity_snapshot');
+   // A read-only timeout may be retried once after a busy Nano interval. Never
+   // retry registration, activation or source deletion through this path.
+   if(result.error?.code==='57014'){
+     await new Promise(resolve=>setTimeout(resolve,2000));
+     result=await db.rpc('deafapp_storage_integrity_snapshot');
+   }
+   return need(result);
+ };
  if(command==='baseline'){
    if(await optional('integrity-baseline.json'))throw Error('Ya existe una referencia; no se sobrescribe.');
    const data=await snapshot();if(!data.manifest.ready||data.manifest.revision!==plan.catalogueRevision)throw Error('El modelo debe estar listo y sin cambios.');
@@ -30,7 +40,8 @@ export async function main(argv=process.argv.slice(2)){
    console.log(JSON.stringify({command,recordings:data.recordings.count,variants:data.variants.count,features:data.features.count,revision:data.manifest.revision,modelReady:true}));return;
  }
  const baseline=await json('integrity-baseline.json');
- async function integrity(){if(baseline.project!==plan.project||sha256(JSON.stringify(await snapshot()))!==sha256(JSON.stringify(baseline.data)))throw Error('Cambió la base de datos o el modelo; se detuvo el retiro.');}
+ if(baseline.project!==plan.project)throw Error('La referencia pertenece a otro proyecto.');
+ const integrity=createIntegrityGuard({baseline:baseline.data,snapshot,manifest:()=>source.manifest()});
  if(command==='audit'){await integrity();console.log(JSON.stringify({command,applicationDataUnchanged:true,revision:baseline.data.manifest.revision,recordings:baseline.data.recordings.count,variants:baseline.data.variants.count}));return;}
  await integrity();
  const destination=await makeDestination(),copied=await json(`r2-${destination.account}-${destination.bucket}-${batch.id}.json`);
@@ -76,6 +87,7 @@ export async function main(argv=process.argv.slice(2)){
    await integrity();
    console.log(JSON.stringify({command,batch:batch.id,completed:batch.items.indexOf(item)+1,total:batch.count,retiredBytes:retired.files.reduce((sum,file)=>sum+file.bytes,0)}));
  }
+ await integrity(true);
  await save(`stage-${command}-${batch.id}.json`,{project:plan.project,planDigest:plan.digest,command,batch:batch.id,count:batch.count,bytes:batch.bytes,checkedAt:new Date().toISOString(),applicationDataUnchanged:true});
 }
 main().catch(error=>{console.error(error?.constructor===Error?error.message:'La etapa se detuvo; revisa los comprobantes privados.');process.exitCode=1;});
