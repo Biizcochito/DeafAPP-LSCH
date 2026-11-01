@@ -4,7 +4,14 @@ export const LEGAL_SOURCE = "https://www.bcn.cl/leychile/navegar?i=1209272";
 export const LEGAL_BILL_SOURCE = "https://tramitacion.senado.cl/appsenado/templates/tramitacion/index.php?boletin_ini=18623-07";
 export const LEGAL_NEWS_SOURCE = "https://www.df.cl/senado-aprueba-modificaciones-al-proyecto-que-posterga-la-entrada-en";
 // La aprobación en una cámara no sustituye la promulgación y publicación de una ley.
-export const LEGAL_STATUS = "Revisión al 31 de octubre de 2026: la Ley 21.719 modifica la Ley 19.628 y su entrada en vigencia sigue prevista para el 1 de diciembre de 2026 en el texto publicado. El Senado aprobó el 28 de octubre el proyecto de postergación al 15 de octubre de 2027 (boletín 18.623-07), que debe continuar en la Cámara de Diputadas y Diputados. Esa nueva fecha está pendiente de completar la tramitación y de la promulgación y publicación de la modificación. Mientras tanto se aplica el régimen vigente de protección de datos.";
+export const LEGAL_REVIEW = Object.freeze({
+  checkedOn: "31 de octubre de 2026",
+  proposedEffectiveDate: "15 de octubre de 2027",
+  publishedEffectiveDate: "1 de diciembre de 2026",
+  proposalStatus: "Postergación aprobada por el Senado; aún en tramitación",
+  explanation: "El Senado aprobó el proyecto el 28 de octubre de 2026 (boletín 18.623-07). Debe continuar en la Cámara de Diputadas y Diputados y completar su tramitación, promulgación y publicación. Hasta que se publique esa modificación, el texto legal mantiene el 1 de diciembre de 2026. La protección de tus datos y la autorización para grabar se aplican desde ahora.",
+});
+export const LEGAL_STATUS = `Revisión al ${LEGAL_REVIEW.checkedOn}: ${LEGAL_REVIEW.proposalStatus}. La propuesta fija el ${LEGAL_REVIEW.proposedEffectiveDate} para la entrada en vigencia de la Ley 21.719, que modifica la Ley 19.628. ${LEGAL_REVIEW.explanation}`;
 export function privacySections(notice = PRIVACY_NOTICE) {
   return [
     { title: "Quién decide sobre tus datos", text: `Responsable: ${notice.controller}, persona natural. Contacto de privacidad: ${notice.contact}. Puedes escribir a este correo para consultar por tus datos, ejercer tus derechos o retirar tu autorización para usos futuros.` },
