@@ -569,7 +569,7 @@ El apartado **Material de LSCh** es un catálogo de consulta. Para utilizar una 
 
 Preparación, recuperación y comandos del conjunto de datos: [training/README.md](training/README.md).
 
-La preparación de la copia piloto de originales a R2, sus límites y las etapas pendientes se documentan en [Migración gradual del almacenamiento](docs/MIGRACION-ALMACENAMIENTO-R2.md). Esta primera fase conserva los originales en Supabase y no cambia las lecturas ni los envíos de producción.
+Los originales se guardan en **Cloudflare R2 privado**. Las nuevas grabaciones pasan por `recording-upload`, que verifica la copia antes de registrar el aporte de forma transaccional. **Supabase conserva los registros, la moderación, las variantes, los rasgos y el modelo preparado**; los archivos pesados no necesitan permanecer en Supabase Storage. El administrador mantiene su interfaz y sesión, y accede mediante el lector privado existente. Configuración, migraciones y comprobaciones: [Almacenamiento privado en R2](docs/MIGRACION-ALMACENAMIENTO-R2.md).
 
 ---
 
