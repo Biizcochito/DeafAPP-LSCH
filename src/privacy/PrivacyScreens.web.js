@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AppIcon, InterpretationLink } from "../app/AppWorkspace";
 import HandConstellation from "../ui/HandConstellation";
 import { CONSENT_CHOICES, GUARDIAN_RELATIONSHIPS, PRIVACY_NOTICE, isConsentAuthorizer, privacyReady } from "./privacyConsent";
-import { LEGAL_SOURCE, LEGAL_BILL_SOURCE, LEGAL_NEWS_SOURCE, LEGAL_STATUS, TERMS_SECTIONS, privacySections } from "./privacyDocuments";
+import { LEGAL_SOURCE, LEGAL_BILL_SOURCE, LEGAL_NEWS_SOURCE, LEGAL_REVIEW, LEGAL_STATUS, TERMS_SECTIONS, privacySections } from "./privacyDocuments";
 import "../ui/theme.css";
 import "./PrivacyScreens.css";
 
@@ -89,6 +89,10 @@ export function PrivacyDocument({ kind, onBack, onInterpret, onConsent, onWithdr
     <h1 tabIndex={-1} ref={heading}>{terms ? "Términos y condiciones." : "Privacidad y datos personales."}</h1>
     <p className="privacy-lead">{terms ? "Una participación voluntaria, con límites claros para tu aporte." : "Antes de compartir una seña, conoce qué contiene y qué puedes decidir."}</p>
     <div className="privacy-document-meta"><span>{notice.date}</span><span>{notice.version}</span><span>{preview ? "Prueba local" : "Versión vigente"}</span></div>
+    <section className="privacy-key-points" aria-label="Resumen de conservación y vigencia legal">
+      <div><h2>Conservación en la biblioteca privada</h2><strong>{notice.retention}</strong><p>Este plazo se aplica a los nuevos aportes autorizados. Los anteriores mantienen el plazo que autorizaste al enviarlos.</p></div>
+      <div><h2>Ley 21.719 · Postergación en trámite</h2><strong>{LEGAL_REVIEW.proposedEffectiveDate}</strong><p>{LEGAL_REVIEW.explanation}</p><a href={LEGAL_BILL_SOURCE} target="_blank" rel="noreferrer">Ver tramitación del proyecto</a></div>
+    </section>
     <div className="privacy-document-layout">
       <aside className="privacy-document-nav"><h2>En este documento</h2><ol>{sections.map((section, index) => <li key={section.title}><a href={`#legal-${index}`}>{section.title}</a></li>)}</ol><Links /></aside>
       <article>{sections.map((section, index) => <section id={`legal-${index}`} className="privacy-document-section" key={section.title}><span>{String(index + 1).padStart(2, "0")}</span><div><h2>{section.title}</h2><p>{section.text}</p></div></section>)}
@@ -96,7 +100,7 @@ export function PrivacyDocument({ kind, onBack, onInterpret, onConsent, onWithdr
           {consent ? <><p>Tienes una autorización {consent.mode === "local-preview" ? "de prueba local" : "registrada"} del {new Date(consent.acceptedAt).toLocaleString("es-CL")}.</p><p className="privacy-receipt-id">Comprobante: {consent.id}</p><button className="privacy-secondary" onClick={onWithdraw}>Retirar autorización de este dispositivo</button><p className="privacy-small">Se borrará el comprobante local. Esto no solicita ni confirma la eliminación de aportes que se hayan enviado anteriormente.</p></> : <><p>No hay una autorización activa en este dispositivo. Puedes explorar el catálogo sin concederla.</p><button className="privacy-primary" onClick={onConsent}>Ver autorización<AppIcon name="arrow" size={18} /></button></>}
           {message && <p role="status" className="privacy-feedback">{message}</p>}
         </section>
-        <p className="privacy-source">{terms && `${LEGAL_STATUS} `}Fuentes consultadas al 31 de octubre de 2026: <a href={LEGAL_SOURCE} target="_blank" rel="noreferrer">Ley 21.719 en la Biblioteca del Congreso Nacional</a>; <a href={LEGAL_BILL_SOURCE} target="_blank" rel="noreferrer">tramitación del boletín 18.623-07 en el Senado</a>; <a href={LEGAL_NEWS_SOURCE} target="_blank" rel="noreferrer">noticia de la aprobación en el Senado (28 de octubre)</a>.</p>
+        <p className="privacy-source">{terms && `${LEGAL_STATUS} `}Fuentes consultadas al {LEGAL_REVIEW.checkedOn}: <a href={LEGAL_SOURCE} target="_blank" rel="noreferrer">Ley 21.719 en la Biblioteca del Congreso Nacional</a>; <a href={LEGAL_BILL_SOURCE} target="_blank" rel="noreferrer">tramitación del boletín 18.623-07 en el Senado</a>; <a href={LEGAL_NEWS_SOURCE} target="_blank" rel="noreferrer">noticia de la aprobación en el Senado (28 de octubre)</a>.</p>
       </article>
     </div>
   </main></div>;
