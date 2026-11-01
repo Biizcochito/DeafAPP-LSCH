@@ -1,5 +1,5 @@
 import { isTrainingCapture } from "./trainingCapture.js";
-import { assertRecordingConsent, recordingRetentionPeriod } from "../privacy/privacyConsent.js";
+import { assertRecordingConsent } from "../privacy/privacyConsent.js";
 
 export function createRecordingDraft({ label, category, frames, intervalMs = 100, frameAspectRatio = 4 / 3, now = Date.now(), id, training, consent }) {
   const draftId = id || (typeof crypto !== "undefined" && crypto.randomUUID
@@ -27,11 +27,6 @@ export function isRecordingDraft(draft) {
     draft.storagePath === `${draft.category}/${draft.label}/${draft.label}_${draft.id}.json`;
 }
 
-function assetAlreadyExists(error) {
-  return ["ResourceAlreadyExists", "KeyAlreadyExists", "Duplicate"].includes(error?.code || error?.error) ||
-    /(?:asset|resource|object|key).*already exists/i.test(error?.message || "");
-}
-
 // One stable path per recording makes interrupted uploads safe to retry.
 // Check the registration too: an uploaded object alone is not a saved sign.
 export async function submitRecordingDraft({ draft, client, onUploaded = async () => {}, getCurrentConsent = () => draft?.consent }) {
@@ -41,32 +36,27 @@ export async function submitRecordingDraft({ draft, client, onUploaded = async (
   if (existing.error) throw new Error(existing.error.message || "No se pudo comprobar el envío anterior.");
   assertRecordingConsent(draft, getCurrentConsent());
   if (existing.data?.length) return { alreadySubmitted: true };
-  if (!draft.uploaded) {
-    assertRecordingConsent(draft, getCurrentConsent());
-    const payload = JSON.stringify({
-      schemaVersion: 2, recordingId: draft.id, language: "csg",
-      label: draft.label, categoria: draft.category, frames: draft.frames,
-      timestamp: draft.createdAt, n_frames: draft.frames.length,
-      intervalMs: draft.intervalMs, frameAspectRatio: draft.frameAspectRatio,
-      consent: draft.consent,
-      retention: recordingRetentionPeriod(),
-      ...(draft.training ? { training: draft.training } : {}),
-    });
-    const uploaded = await client.storage.from("contribuciones").upload(
-      draft.storagePath, new Blob([payload], { type: "application/json" }),
-      { contentType: "application/json", upsert: false },
-    );
-    if (uploaded.error && !assetAlreadyExists(uploaded.error)) {
-      throw new Error(uploaded.error.message || "No se pudo subir la grabación.");
+  async function invoke(body) {
+    const response=await client.functions.invoke('recording-upload',{body});
+    if(response.error||response.data?.ok!==true||response.data.provider!=='r2'||response.data.path!==draft.storagePath){
+      const details=await response.error?.context?.json?.().catch(()=>null);
+      throw new Error(details?.error||response.data?.error||response.error?.message||'No se pudo guardar la grabación. Conserva la toma y vuelve a intentarlo.');
     }
-    await onUploaded({ ...draft, uploaded: true });
+    return response.data;
+  }
+  let receipt=draft.uploadProvider==='r2'&&draft.uploadReceipt?.path===draft.storagePath&&/^[a-f0-9]{64}$/.test(draft.uploadReceipt.token||'')?draft.uploadReceipt:null;
+  if(!receipt){
+    const staged=await invoke({action:'stage',draft});
+    assertRecordingConsent(draft,getCurrentConsent());
+    if(staged.alreadySubmitted)return {alreadySubmitted:true};
+    if(!/^[a-f0-9]{64}$/.test(staged.token||''))throw new Error('No se pudo verificar el envío. Conserva la toma y vuelve a intentarlo.');
+    receipt={path:staged.path,token:staged.token};
+    await onUploaded({...draft,uploaded:true,uploadProvider:'r2',uploadReceipt:receipt});
   }
   assertRecordingConsent(draft, getCurrentConsent());
-  const registered = await client.from("grabaciones").insert({
-    label: draft.label, categoria: draft.category, archivo_path: draft.storagePath,
-  });
-  if (registered.error) throw new Error(registered.error.message || "No se pudo registrar la seña.");
-  return { alreadySubmitted: false };
+  const registered=await invoke({action:'complete',...receipt});
+  assertRecordingConsent(draft,getCurrentConsent());
+  return {alreadySubmitted:!!registered.alreadySubmitted};
 }
 
 export function createTimedFetch(fetcher, timeoutMs = 30000) {
@@ -76,7 +66,9 @@ export function createTimedFetch(fetcher, timeoutMs = 30000) {
     const abort = () => controller.abort(signal?.reason);
     if (signal?.aborted) abort();
     else signal?.addEventListener("abort", abort, { once: true });
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    const url=typeof input==='string'?input:input?.url;
+    const uploadRequest=typeof url==='string'&&/\/functions\/v1\/recording-upload(?:\?|$)/.test(url);
+    const timer = setTimeout(() => controller.abort(), uploadRequest?Math.max(timeoutMs,150000):timeoutMs);
     try {
       return await fetcher(input, { ...options, signal: controller.signal });
     } finally {

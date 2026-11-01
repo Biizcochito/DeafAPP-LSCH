@@ -62,9 +62,14 @@ class SesionFalsa:
             return RespuestaFalsa(200, self.archivos[ruta])
         return RespuestaFalsa(404)
 
-    # el importador nunca debe escribir
-    def post(self, *a, **k): raise AssertionError("el importador no debe escribir en Supabase")
-    put = patch = delete = post
+    # POST RPC únicamente de lectura; ningún envío ni modificación.
+    def post(self, url, **kwargs):
+        self.llamadas.append(url)
+        if url.endswith('/rest/v1/rpc/deafapp_storage_route'):
+            return RespuestaFalsa(datos={"ok": True, "provider": "supabase"})
+        raise AssertionError("el importador no debe escribir en Supabase")
+    def put(self, *a, **k): raise AssertionError("el importador no debe escribir")
+    patch = delete = put
 
 
 def _grabacion_json(**kwargs) -> bytes:
@@ -86,6 +91,22 @@ def _ejecutar(sesion, *argumentos):
 
 
 class DescargaTest(unittest.TestCase):
+    def test_r2_privado_no_falla_abierto_al_bucket_publico(self):
+        sesion = SesionFalsa([], {})
+        def lectura(url, **kwargs):
+            sesion.llamadas.append(url)
+            if url.endswith('/rest/v1/rpc/deafapp_storage_route'):
+                return RespuestaFalsa(datos={"ok": True, "provider": "r2"})
+            self.assertTrue(url.endswith('/functions/v1/recording-storage'))
+            self.assertEqual(kwargs['json'], {"action": "read", "path": "saludos/1.json"})
+            return RespuestaFalsa(200, b'{"frames": ["synthetic"]}')
+        sesion.post = lectura
+        self.assertEqual(imp.descargar_grabacion(sesion, 'https://x.supabase.co', 'saludos/1.json')['frames'], ['synthetic'])
+        self.assertTrue(all('/storage/v1/' not in url for url in sesion.llamadas))
+        sesion.post = lambda *a, **k: RespuestaFalsa(403)
+        with self.assertRaises(imp.requests.HTTPError):
+            imp.descargar_grabacion(sesion, 'https://x.supabase.co', 'saludos/1.json')
+
     def test_rutas_peligrosas(self):
         sesion = SesionFalsa([], {})
         for ruta in ("../x.json", "a/../../b.json", "a/b.txt", None, 5):
@@ -95,8 +116,8 @@ class DescargaTest(unittest.TestCase):
     def test_prueba_publica_y_luego_privada(self):
         sesion = SesionFalsa([], {"saludos/1.json": b'{"a": 1}'}, solo_privado=True)
         self.assertEqual(imp.descargar_grabacion(sesion, "https://x.supabase.co", "saludos/1.json"), {"a": 1})
-        self.assertIn("/object/public/", sesion.llamadas[0])
-        self.assertNotIn("/public/", sesion.llamadas[1])
+        self.assertIn("/object/public/", sesion.llamadas[1])
+        self.assertNotIn("/public/", sesion.llamadas[2])
 
     def test_no_encontrada(self):
         with self.assertRaises(ValueError):

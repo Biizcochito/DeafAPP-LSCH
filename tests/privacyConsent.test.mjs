@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { PRIVACY_NOTICE, CONSENT_CHOICES, privacyReady, recordingRetentionPeriod, isConsentAuthorizer, isLocalPrivacyPreview, createConsentReceipt, isConsentReceipt, assertRecordingConsent, createPrivacyPreviewFetch } from "../src/privacy/privacyConsent.js";
 import { createRecordingDraft, isRecordingDraft, submitRecordingDraft } from "../src/recording/recordingSubmission.js";
 import { testNotice, testChoices, testConsent } from "./fixtures/consent.mjs";
+import {recordingPayload} from '../src/storage/recordingUploadServer.js';
 
 test("cada finalidad exige una acción afirmativa separada; aceptar términos no basta", () => {
   assert.throws(() => createConsentReceipt({}, { preview: true }), /cada autorización/);
@@ -30,7 +31,10 @@ test("la configuración publicada permite nuevos aportes autorizados con conserv
   const receipt=createConsentReceipt(testChoices,{now:123456000,id:"production-consent"});
   const value=createRecordingDraft({id:"production-recording",label:"hola",category:"saludos",frames:["synthetic"],now:123456789,consent:receipt});
   let uploaded,registered=false;
-  const client={from:()=>({select:()=>({eq:()=>({limit:async()=>({data:[]})})}),insert:async()=>{registered=true;return {error:null};}}),storage:{from:()=>({upload:async(_path,blob)=>{uploaded=JSON.parse(await blob.text());return {error:null};}})}};
+  const client={from:()=>({select:()=>({eq:()=>({limit:async()=>({data:[]})})})}),functions:{invoke:async(_name,{body})=>{
+    if(body.action==='stage')uploaded=recordingPayload(body.draft,'2026-11-01T12:00:00.000Z');else registered=true;
+    return {data:{ok:true,provider:'r2',path:value.storagePath,token:'a'.repeat(64)}};
+  }}};
   await submitRecordingDraft({draft:value,client});
   assert.equal(registered,true);assert.equal(uploaded.consent.mode,"contribution");
   assert.equal(uploaded.retention.months,48);
@@ -141,7 +145,7 @@ test("la retirada durante una subida impide registrar el aporte como recibido", 
   let current = testConsent; let inserts = 0;
   const client = {
     from: () => ({ select: () => ({ eq: () => ({ limit: async () => ({ data: [] }) }) }), insert: () => { inserts++; } }),
-    storage: { from: () => ({ upload: async () => ({ error: null }) }) },
+    functions:{invoke:async()=>({data:{ok:true,provider:'r2',path:draft().storagePath,token:'a'.repeat(64)}})},
   };
   await assert.rejects(submitRecordingDraft({ draft: draft(), client, getCurrentConsent: () => current, onUploaded: async () => { current = null; } }), /autorización vigente/);
   assert.equal(inserts, 0);

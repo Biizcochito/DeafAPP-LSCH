@@ -5,6 +5,7 @@ import { captureTrackingSample, createTrainingCapture } from '../src/recording/t
 import { createRecordingDraft, submitRecordingDraft } from '../src/recording/recordingSubmission.js';
 import { auditRecording, prepareDataset } from '../src/training/datasetPreparation.js';
 import { testConsent } from './fixtures/consent.mjs';
+import {recordingPayload} from '../src/storage/recordingUploadServer.js';
 
 function capture() {
   const samples = Array.from({ length: 30 }, (_, index) => {
@@ -49,15 +50,12 @@ test('las diez oraciones conservan el JSON de captura, el registro y la preparac
           insert: async row => { registration = row; return { error: null }; },
         };
       },
-      storage: { from: bucket => {
-        assert.equal(bucket, 'contribuciones');
-        return { upload: async (path, blob, options) => {
-          assert.equal(path, `oraciones/${label}/${label}_phrase-${index}.json`);
-          assert.equal(options.upsert, false);
-          payload = JSON.parse(await blob.text());
-          return { error: null };
-        } };
-      } },
+      functions:{invoke:async(name,{body})=>{
+        assert.equal(name,'recording-upload');
+        if(body.action==='stage')payload=recordingPayload(body.draft,'2026-11-01T12:00:00.000Z');
+        else registration={label,categoria:'oraciones',archivo_path:body.path};
+        return {data:{ok:true,provider:'r2',path:draft.storagePath,token:'a'.repeat(64)}};
+      }},
     };
     await submitRecordingDraft({ draft, client, onUploaded: async value => { uploaded = value; } });
     assert.equal(uploaded.uploaded, true);

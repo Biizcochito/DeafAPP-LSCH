@@ -1,94 +1,60 @@
-# Migración gradual de originales a R2
+# Grabaciones en R2 privado
 
-## Estado y alcance
+## Arquitectura actual
 
-La rama `feature/migracion-gradual-r2` incorpora lectura privada de R2 y retiro gradual de copias redundantes de Supabase. Conserva las filas, identificadores, rutas, aprobaciones, versiones, variantes, rasgos preparados y modelo. Las nuevas grabaciones siguen llegando a Supabase; esta etapa libera margen sin cambiar su formulario ni bloquear envíos.
+Los archivos originales, incluidas las capturas nuevas de la web y del panel de multiplicación, se guardan en el bucket privado `deafapp-grabaciones-privadas` de Cloudflare R2. Supabase conserva las filas de `grabaciones`, IDs, rutas lógicas, moderación, variantes, rasgos y modelo preparado. Cambiar el almacenamiento no habilita una seña ni altera su aprobación.
 
-El 31 de octubre de 2026 se ejecutó el piloto mediante el panel autenticado de Cloudflare, después de que el administrador activara R2. Se creó `deafapp-grabaciones-privadas` en clase Standard con acceso público deshabilitado y se copiaron **mamá, hermano y «todo»: 1.635.661 bytes**. Se descargaron los tres objetos completos desde R2 y se comprobaron sus tamaños y SHA-256 contra el respaldo del origen. Después se verificaron nuevamente los originales y sus revisiones en Supabase. Las rutas se conservaron bajo `contribuciones/`; no se cambió la base de datos ni se eliminó ningún original. Los comprobantes y respaldos identificables permanecen fuera de Git.
+La interfaz, cámara, revisión y diseño permanecen iguales. Las variantes son especificaciones pequeñas vinculadas a sus originales; no se convierten en copias completas de imágenes. El modelo público usa el paquete preparado y no descarga los originales.
 
-El administrador autorizó y se configuró una credencial de objetos restringida a ese bucket. Se guarda fuera de Git y en los secretos cifrados de las funciones. Las migraciones `20261031020000` y `20261031020100` instalan el registro privado de ubicación y las comprobaciones de integridad. `recording-storage` y `recognition-runtime` leen R2 mediante solicitudes S3 firmadas por el servidor. El acceso público del bucket permanece deshabilitado; no se entregan enlaces firmados a visitantes.
+## Envíos nuevos
 
-El PR incluye la aclaración de proveedores en el apartado «Dónde quedan los datos» del aviso de privacidad. Su publicación sigue el flujo de revisión y despliegue del equipo. Esta aclaración no cambia la versión usada para validar comprobantes de autorización, el plazo de conservación ni las condiciones de envío; las grabaciones y sus evidencias se conservan intactas. No constituye una validación jurídica de permisos de aportes anteriores.
+1. `submitRecordingDraft` conserva el borrador y comprueba el consentimiento antes de transferir datos.
+2. La función `recording-upload`, con verificación JWT habilitada, valida el tamaño, formato de imágenes, consentimiento vigente y seña habilitada para recopilar. Su cuenta de servicio reserva una ruta y un token privado de finalización.
+3. El servidor escribe de forma condicional en R2; no sobrescribe otra grabación. Descarga el archivo completo para comprobar tamaño y SHA-256 antes de marcarlo listo.
+4. El cliente vuelve a comprobar el consentimiento antes de finalizar. La finalización verifica otra vez R2 y registra en una sola transacción la fila pendiente y su ubicación privada. No basta un archivo subido para informar un envío recibido.
+5. El ID y el token permiten reintentar una respuesta perdida sin crear otra grabación ni modificar la fecha de conservación. Un envío anterior que quedó solo en Supabase no se considera un comprobante R2.
 
-`migrate-recordings-r2.mjs` respalda y copia sin eliminar. `activate-recordings-r2.mjs` registra, verifica, activa y, por separado, retira únicamente archivos originales redundantes. Solo admite el piloto y lotes de señas inactivas. Las señas activas, importaciones ambiguas y archivos sin vínculo se conservan para revisión posterior.
+El archivo mantiene el esquema 2, imágenes, puntos, tiempos, proporción, etiqueta y comprobante. La conservación de nuevos aportes es de 48 meses de calendario desde el primer envío; no se amplía el plazo de aportes anteriores. No hay credenciales S3 ni enlaces públicos de lectura en el cliente.
 
-## Selección
+## Despliegue
 
-- Actualizar el inventario de objetos, sus tamaños, revisiones y registros de aprobación.
-- Comparar con el manifiesto real de reconocimiento, incluyendo los alias de oraciones.
-- Pilotear con tres signos distintos, aprobados, fuera de los activos y con archivos de hasta 2 MB.
-- Priorizar después los originales grandes de categorías inactivas, en lotes de hasta 100 MB. El tamaño indica el ahorro potencial; no demuestra la calidad de una muestra ni autoriza su eliminación.
-- Conservar las señas y oraciones activas para el final.
-- Separar el lote `drive/`, solicitado para limpieza independiente; archivos sin vínculo inequívoco con una fila, pendientes/rechazados, etiquetas desconocidas y otros formatos requieren revisión.
+- Aplicar `20261101020000_direct_recording_uploads_r2.sql` y `20261101020100_recording_storage_all_statuses.sql` en una transacción. Sus funciones de escritura y archivo solo admiten `service_role`.
+- Desplegar `supabase/functions/recording-upload/index.ts` y mantener habilitado **Verify JWT with legacy secret**. La clave pública existente admite el aporte voluntario; no concede lectura de originales privados.
+- Conservar los secretos existentes `R2_ACCOUNT_ID`, `R2_MIGRATION_BUCKET`, `R2_ACCESS_KEY_ID` y `R2_SECRET_ACCESS_KEY` en el entorno de funciones. La credencial sigue limitada al bucket. Nunca usar variables `EXPO_PUBLIC_*` para secretos.
+- Verificar primero un envío sintético completo, reintento, lectura autorizada y rechazo de lectura anónima. Retirar únicamente los datos de esa prueba.
+- Publicar el cliente mediante rama de trabajo → PR a `dev` → PR aprobado a `master`. HostGator compila y publica la web.
 
-## Preparación y ejecución local
+Una pestaña que conserva JavaScript de una versión anterior debe recargarse para usar el envío nuevo. El almacenamiento de Supabase sigue disponible para compatibilidad y recuperación administrativa; el cliente actualizado no lo utiliza para subir capturas.
 
-```powershell
-node scripts/migrate-recordings-r2.mjs inventory
-node scripts/migrate-recordings-r2.mjs plan
-node scripts/migrate-recordings-r2.mjs backup --batch pilot
-node --test tests/storageMigration.test.mjs
-```
+## Lecturas y entrenamiento
 
-El inventario, el plan, los comprobantes y los originales quedan únicamente en `.admin-private/storage-migration/`, excluido de Git. Las imágenes y los puntos de movimiento pueden identificar participantes: conservarlos con los controles de acceso y plazos correspondientes. El respaldo en este equipo no sustituye una copia independiente y protegida ante una falla del disco.
+`recording-storage` resuelve la ubicación, valida la sesión administrativa o identidad de servicio y comprueba el SHA-256 completo. No expone URLs reutilizables ni recurre a una descarga pública si falla R2. El administrador conserva el lector compartido y su sesión existente. La preparación del modelo usa el mismo lector del servidor.
 
-`inventory` y `backup` solo leen Supabase. La herramienta utiliza la configuración pública existente; si el origen pasa a privado, se necesitará un lector autorizado. Las descargas consumen transferencia de salida del origen.
+`scripts/sync-lsch-recordings.mjs` requiere `SUPABASE_SERVICE_ROLE_KEY` para originales privados. El importador Python también resuelve la ubicación y usa el lector privado: configurar `SUPABASE_SERVICE_ROLE_KEY` únicamente en ese proceso administrativo o `DEAFAPP_ADMIN_TOKEN` con una sesión vigente. Su RPC POST es de lectura; no registra aportes ni escribe en el almacenamiento.
 
-Antes de copiar a Cloudflare:
+## Migración y retiro de copias
 
-1. Acceder a la cuenta correcta de Cloudflare y revisar la activación de R2 y su facturación por uso.
-2. Crear un bucket **Standard privado**, con acceso público por `r2.dev` y dominios públicos deshabilitado, y verificar esa configuración en el panel. La API S3 usada por este script no verifica la configuración de exposición pública de Cloudflare.
-3. Revisar e informar la incorporación de Cloudflare como proveedor en el aviso de privacidad, preservando finalidad, autorizaciones, plazos y atención de retiros.
-4. Configurar credenciales de objetos limitadas al bucket de migración. Mantenerlas fuera de Git, capturas, chat y variables `EXPO_PUBLIC_*`; no introducir claves administrativas en el navegador de la aplicación.
-5. Poner `R2_ACCOUNT_ID`, `R2_MIGRATION_BUCKET`, `R2_ACCESS_KEY_ID` y `R2_SECRET_ACCESS_KEY` en el entorno del proceso administrativo. El script no crea cuentas, activa cobros ni genera credenciales.
-6. Ejecutar `node scripts/migrate-recordings-r2.mjs copy --batch pilot`.
+La primera fase del 31 de octubre trasladó 107 originales y retiró por separado las fuentes Drive que el administrador pidió eliminar. Las herramientas antiguas `migrate-recordings-r2.mjs` y `activate-recordings-r2.mjs` conservan sus límites de piloto y aprobación; no deben reutilizarse con referencias anteriores de 435 filas tras la limpieza de Drive.
 
-Cada original se respalda conservando sus bytes. Antes y después se comprueban la aprobación, versión, ruta y revisión del objeto. Se copia bajo `contribuciones/<ruta original>`, mediante escritura condicional que evita sobrescribir, y se vuelve a descargar desde R2 para comparar el tamaño y SHA-256 completo. El comprobante se emite solo tras verificar. Una interrupción se puede reintentar: una copia existente se verifica nuevamente y un contenido diferente provoca una detención. Las copias cargadas por el panel, sin metadatos SHA-256 personalizados, también requieren la comparación completa de bytes antes de adoptarlas; el tamaño no basta. El plan vence a las 24 horas y cualquier cambio de revisión del catálogo exige regenerarlo.
+La ampliación autorizada del 1 de noviembre conserva también las grabaciones rechazadas sin cambiar su estado. Antes de retirar cada fuente se comprueban:
 
-## Lectura privada y retiro
+- Respaldo local, copia R2 y sus bytes completos con SHA-256.
+- ID, versión, ETag, tamaño y fecha del objeto origen; fila, etiqueta, categoría y versión de moderación.
+- Registro privado de ubicación, verificación por el lector del servidor y lectura activa antes y después del retiro.
+- Huellas de registros, variantes, lotes y rasgos; modelo listo e idéntico.
 
-El administrador conserva su sesión existente. El token opaco viaja en una cabecera; PostgreSQL valida que siga vigente antes de resolver una grabación. Los procesos administrativos usan una credencial `service_role` validada mediante una función sin permisos para visitantes. No basta declarar un rol o comparar el texto de un JWT. El servidor limita las rutas y tamaños, comprueba SHA-256 completo y responde con `no-store`; una falla privada no provoca un acceso público alternativo.
+Los archivos sin fila de grabación se conservan en `contribuciones/__archive__/2026-11-01/`, con un índice privado que registra su ruta original y huella. No se incorporan al entrenamiento ni se inventan aprobaciones. Se retira únicamente la copia redundante mediante la API Storage, nunca borrando metadatos de Storage por SQL.
 
-Preparar las variables anteriores y `SUPABASE_SERVICE_ROLE_KEY` únicamente en el proceso administrativo. No usar `EXPO_PUBLIC_*`:
+Los respaldos y comprobantes identificables quedan en `.admin-private/storage-migration-complete/` y `.admin-private/storage-migration/backups/`, fuera de Git y protegidos en este equipo. La reversión de una fuente retirada requiere restaurar su archivo respaldado antes de cambiar su ubicación. Las autorizaciones y plazos también se aplican a copias y archivos privados.
 
-```powershell
-node scripts/activate-recordings-r2.mjs baseline
-node scripts/activate-recordings-r2.mjs register --batch pilot
-node scripts/activate-recordings-r2.mjs verify --batch pilot
-node scripts/activate-recordings-r2.mjs activate --batch pilot
-node scripts/activate-recordings-r2.mjs rollback --batch pilot
-node scripts/activate-recordings-r2.mjs activate --batch pilot
-node scripts/activate-recordings-r2.mjs audit
-```
+## Validación y cuotas
 
-La referencia inicial incluye resúmenes y huellas de las 435 filas, 1.100 variantes, sus lotes, 348 rasgos preparados y el modelo. Cada etapa debe mantenerlos idénticos. La auditoría completa se ejecuta al inicio y cierre de cada lote y, como máximo, cada minuto durante el trabajo; entre auditorías se comprueba el manifiesto en cada guardia. Esto evita recalcular el modelo completo repetidamente en la base Nano. Cada archivo mantiene sus controles de aprobación, versión, objeto, respaldo, copia y bytes antes del retiro. Un cambio detectado detiene el proceso para revisión. Storage presenta fechas truncadas a milisegundos: el registro coteja esa precisión de la API junto con ID, versión, ETag y tamaño, pero conserva la fecha completa del servidor para activación y reversión.
+- `npm run test:recording-upload`: envío, consentimiento, reintentos, integridad y esquema de capturas/oraciones.
+- `npm run test:storage-migration`: rutas privadas, permisos, límites y controles de retiro.
+- `npm run test:admin` y pruebas de variantes: revisión y dependencias conservadas.
+- `python -m unittest tests.test_importar`, desde `backend`: lector Python de Supabase y R2, sin red real.
+- Exportación web de Expo y prueba sintética del servicio desplegado.
 
-Antes de `retire`, publicar los lectores web mediante los PR correspondientes y comprobar la reproducción autenticada en producción. Guardar en `.admin-private/storage-migration/production-readers-verified.json` el proyecto, commit, URL y SHA-256 del bundle oficial, y las verificaciones `runtimeR2Verified` y `adminR2Verified`. El comando vuelve a descargar ese bundle y rechaza una versión distinta. Este comprobante se prepara tras las pruebas; no es una variable que habilite por sí sola el acceso a datos.
+Liberar objetos reduce el almacenamiento real, pero la métrica mensual de uso del proveedor puede tardar en reflejarlo. Supabase conserva sus cuotas de base de datos, funciones y transferencia: enviar por una función no ocupa Supabase Storage, aunque sí utiliza sus servicios. R2 mantiene sus cuotas de almacenamiento y operaciones de la cuenta.
 
-```powershell
-node scripts/activate-recordings-r2.mjs retire --batch pilot
-```
-
-Antes de retirar **cada archivo**, se vuelven a cotejar el original actual, el respaldo local, R2 y la lectura privada de la aplicación. Se elimina por la API Storage solo esa ruta, se guarda inmediatamente un comprobante y se comprueban de nuevo la lectura y las huellas de la aplicación. No se borran filas de `grabaciones` ni metadatos mediante SQL. La reversión después del retiro requiere restaurar primero el original respaldado; antes del retiro, `rollback` cambia únicamente el proveedor.
-
-Repetir `backup`, `copy`, `register`, `verify`, `activate`, `retire` por cada lote `inactive-*`, sin mezclar las etapas ni continuar tras un error. El plan del 31 de octubre selecciona 107 archivos y 404.650.287 bytes, incluyendo el piloto. El objetivo calculado es bajar de 1.253.658.603 a 849.008.316 bytes; confirmar el inventario final para conocer el ahorro real. La métrica mensual de GB-hora puede tardar en reflejar el retiro.
-
-## Comprobaciones de despliegue
-
-- Preparar un registro privado de ubicación por objeto sin modificar `grabaciones.archivo_path`, IDs ni versiones de moderación. Mantener comprobantes del origen, bytes, SHA-256 y copia verificada.
-- Adaptar lectura autenticada del administrador y variantes, preparación y recuperación del conjunto de entrenamiento, sincronización por CLI y `supabase/functions/recognition-runtime/index.ts`. No basta cambiar las rutas de la interfaz.
-- Mantener las credenciales R2 fuera del bundle web. Los nuevos envíos siguen su ruta actual de Supabase; migrar también sus subidas es una etapa posterior.
-- Verificar reproducción, variantes, nueva grabación, preparación de rasgos, reconstrucción y uso del modelo, revisión/rechazo y retiro de un aporte, vencimiento y reversión al origen.
-- Probar el lector nuevo sin recurrir a Supabase para detectar dependencias ocultas. Hacer primero las pruebas locales y de integración.
-- Ejecutar `tests/sql/recording-storage.sql` y `npm run test:storage-migration`. Copiar por sí solo no reduce la cuota; el ahorro real se acredita con el inventario posterior al retiro.
-- Seguir `feature/*` → PR hacia `dev` → PR aprobado `dev` → `master` para los cambios de aplicación; el despliegue de archivos no sustituye las migraciones o configuración del servidor.
-
-## Límites y referencias
-
-R2 Standard incluye 10 GB-mes, un millón de operaciones clase A y diez millones clase B al mes; el exceso y otros servicios asociados pueden generar cargos. Ese margen pertenece a la cuenta, no se multiplica creando buckets. Supabase conserva sus propias cuotas de base de datos, funciones y transferencia.
-
-- [R2: precios](https://developers.cloudflare.com/r2/pricing/)
-- [R2: activación](https://developers.cloudflare.com/r2/get-started/)
-- [R2: API S3 y región auto](https://developers.cloudflare.com/r2/api/s3/api/)
-- [R2: SDK oficial para JavaScript](https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/)
-- [Supabase: transferencia](https://supabase.com/docs/guides/platform/manage-your-usage/egress)
+Fuentes: [R2 S3](https://developers.cloudflare.com/r2/api/s3/api/), [precios de R2](https://developers.cloudflare.com/r2/pricing/), [límites de funciones Supabase](https://supabase.com/docs/guides/functions/limits).
