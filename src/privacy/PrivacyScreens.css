@@ -68,7 +68,13 @@
 .privacy-error { color: var(--coral); font-size: 12px; line-height: 1.7; margin-bottom: 12px !important; }
 .privacy-document { max-width: 1150px; }
 .privacy-document h1 { max-width: 850px; }
-.privacy-document-meta { display: flex; flex-wrap: wrap; gap: 9px 18px; color: var(--muted); font-size: 10px; margin: 22px 0 40px; }
+.privacy-document-meta { display: flex; flex-wrap: wrap; gap: 9px 18px; color: var(--muted); font-size: 10px; margin: 22px 0 20px; }
+.privacy-key-points { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-bottom: 36px; }
+.privacy-key-points > div { padding: 20px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--surface); }
+.privacy-key-points h2 { color: var(--lime); font: 500 12px/1.5 var(--body); margin-bottom: 10px; }
+.privacy-key-points strong { display: block; font: 600 24px/1.2 var(--display); letter-spacing: -.025em; }
+.privacy-key-points p { color: var(--muted); font-size: 12px; line-height: 1.8; margin-top: 12px; }
+.privacy-key-points a { display: inline-block; font-size: 12px; margin-top: 12px; }
 .privacy-document-layout { display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 55px; align-items: start; }
 .privacy-document-nav { position: sticky; top: 24px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
 .privacy-document-nav h2 { font: 600 16px var(--display); }
@@ -106,6 +112,7 @@
   .privacy-check small { font-size: 12px; }
   .privacy-responsible > div { font-size: 11px; }
   .privacy-document-layout { grid-template-columns: 1fr; gap: 30px; }
+  .privacy-key-points { grid-template-columns: 1fr; }
   .privacy-document-nav { position: static; }
   .privacy-document-nav ol { display: none; }
   .privacy-document-nav .privacy-links { margin-top: 15px; }
