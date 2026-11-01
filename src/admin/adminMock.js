@@ -6,6 +6,7 @@ import {catalogueSeed,catalogueKey,validateCatalogueEntry} from '../training/rec
 import {prepareControlledModel} from '../training/controlledModel.js';
 import {encodeRuntimePackage} from '../training/runtimePackage.js';
 import {variantSpecification} from '../training/recordingVariants.js';
+import {recordingPayload} from '../storage/recordingPayload.js';
 
 const PNG = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 const SAMPLE = [
@@ -130,7 +131,19 @@ export function createMockAdminBackend() {
   };
 
   return {
-    functions:{invoke:async()=>({data:{ok:true,preparing:false},error:null})},
+    functions:{invoke:async(name,{body}={})=>{
+      if(name!=='recording-upload')return {data:{ok:true,preparing:false},error:null};
+      if(body?.action==='stage'){
+        const draft=body.draft;files.set(draft.storagePath,JSON.stringify(recordingPayload(draft,new Date().toISOString())));
+        return {data:{ok:true,provider:'r2',path:draft.storagePath,token:'a'.repeat(64)},error:null};
+      }
+      if(body?.action==='complete'&&files.has(body.path)){
+        const payload=JSON.parse(files.get(body.path));
+        if(!rows.some(row=>row.path===body.path))rows.unshift({id:String(Math.max(...rows.map(r=>Number(r.id)))+1),label:payload.label,category:payload.categoria,path:body.path,status:'pending',version:0,createdAt:new Date().toISOString()});
+        return {data:{ok:true,provider:'r2',path:body.path},error:null};
+      }
+      return {data:null,error:{message:'No se encontró el envío simulado.'}};
+    }},
     rpc(name, args) { return handlers[name] ? handlers[name](args) : fail("PGRST202"); },
     from() {
       let filePath;

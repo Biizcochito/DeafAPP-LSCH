@@ -1,13 +1,17 @@
 """
 importar_deafapp.py — Trae las grabaciones APROBADAS de DeafApp al dataset de entrenamiento
 ═══════════════════════════════════════════════════════════════════════════════════════════
-Lee de Supabase (solo lectura, con la clave pública) las filas de `grabaciones` con
-aprobada = true, descarga cada JSON del bucket `contribuciones`, lo convierte a una secuencia
+Lee de Supabase (solo lectura) las filas de `grabaciones` con
+aprobada = true, resuelve su ubicación en Supabase o R2 privado y convierte cada JSON a una secuencia
 (30, 270) y la guarda en  dataset/<etiqueta>/deafapp_<id>.npy.
 
     py importar_deafapp.py --solo-listar          # qué hay, sin descargar nada
     py importar_deafapp.py                        # importa todo lo aprobado
     py importar_deafapp.py --categorias alimentos --limite 5
+
+Las lecturas privadas requieren SUPABASE_SERVICE_ROLE_KEY en el entorno del
+proceso administrativo o DEAFAPP_ADMIN_TOKEN con una sesión vigente. No se
+incluyen esas credenciales en la web ni se permite una descarga pública alternativa.
 
 Garantías:
   • No escribe nada en Supabase ni modifica las grabaciones originales.
@@ -68,6 +72,22 @@ def listar_aprobadas(sesion: requests.Session, url: str) -> list[dict]:
 def descargar_grabacion(sesion: requests.Session, url: str, ruta: str) -> dict:
     if not isinstance(ruta, str) or ".." in ruta or not ruta.endswith(".json"):
         raise ValueError("Ruta de grabación no válida.")
+    route = sesion.post(f"{url}/rest/v1/rpc/deafapp_storage_route", json={"p_path": ruta}, timeout=30)
+    route.raise_for_status()
+    provider = route.json()
+    if provider.get("ok") is not True or provider.get("provider") not in ("r2", "supabase"):
+        raise ValueError("No se pudo comprobar la ubicación privada de la grabación.")
+    if provider["provider"] == "r2":
+        headers = {"x-deafapp-admin-token": os.environ["DEAFAPP_ADMIN_TOKEN"]} if os.getenv("DEAFAPP_ADMIN_TOKEN") else {}
+        with sesion.post(f"{url}/functions/v1/recording-storage", json={"action": "read", "path": ruta}, headers=headers, stream=True, timeout=120) as r:
+            r.raise_for_status()
+            partes, total = [], 0
+            for trozo in r.iter_content(1 << 20):
+                total += len(trozo)
+                if total > MAX_BYTES:
+                    raise ValueError("Grabación demasiado grande para este proceso.")
+                partes.append(trozo)
+            return json.loads(b"".join(partes))
     ultimo = None
     for destino in (f"{url}/storage/v1/object/public/contribuciones/{quote(ruta)}",
                     f"{url}/storage/v1/object/contribuciones/{quote(ruta)}"):
@@ -136,7 +156,7 @@ def main() -> int:
     ap.add_argument("--solo-listar", action="store_true", help="mostrar lo aprobado y salir")
     ap.add_argument("--forzar", action="store_true", help="reprocesar aunque ya esté importado")
     ap.add_argument("--url", default=config.SUPABASE_URL)
-    ap.add_argument("--clave", default=config.SUPABASE_KEY)
+    ap.add_argument("--clave", default=os.getenv("SUPABASE_SERVICE_ROLE_KEY") or config.SUPABASE_KEY)
     args = ap.parse_args()
 
     modo = "puntos-web" if args.usar_puntos_web else "frames"
