@@ -41,6 +41,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const candidate=useRef(null),live=useRef({phase:'off'});
   const labels=useRef(new Map());
   const [cameraState,setCameraState]=useState('off'),[result,setResult]=useState({phase:'off'});
+  const [showCameraIntro,setShowCameraIntro]=useState(false);
   const [trackingState,setTrackingState]=useState('loading');
   const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
@@ -55,6 +56,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     const update=result=>{
       if(!alive)return;
       live.current=result;setResult(result);conversation.update(result);
+      if(['tracking','recognizing','matched','uncertain','ready'].includes(result.phase))setShowCameraIntro(false);
     };
     if(voiceSupported)voice.current=createLiveSignSpeech({speech:Speech,enabled:voicePreference.current,voice:selectedVoice||undefined,
       labelForClass:id=>labels.current.get(id)||spokenSignLabel(id),
@@ -98,6 +100,12 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     camera.current?.setSuspended(!active||document.hidden);
     voice.current?.setEnabled(voicePreference.current&&active&&!document.hidden);
   },[active,blocked]);
+  useEffect(()=>{
+    setShowCameraIntro(cameraState==='on');
+    if(cameraState!=='on')return;
+    const timer=setTimeout(()=>setShowCameraIntro(false),3000);
+    return()=>clearTimeout(timer);
+  },[cameraState]);
   useEffect(()=>{voice.current?.setVoice(selectedVoice||undefined);},[selectedVoice]);
   useEffect(()=>{
     if(!voiceSupported)return;
@@ -143,7 +151,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
             <canvas ref={canvas} aria-hidden="true"/>
             {!running&&<div className="li-welcome-camera"><div className="li-hand" aria-hidden="true"><HandConstellation poses={['open','relaxed','soft']}/></div><h2>Cuando quieras, empezamos.</h2><p>Busca buena luz y deja espacio para tus manos.</p></div>}
             <span className={`li-camera-badge${cameraState==='on'?' li-is-on':''}`}><i aria-hidden="true"/>{cameraState==='on'?'En vivo':cameraState==='starting'?'Conectando':'Cámara apagada'}</span>
-            {running&&<div className="li-result li-camera-result" role="status" aria-live="polite" aria-atomic="true">
+            {running&&(currentText||showCameraIntro)&&<div className="li-result li-camera-result" role="status" aria-live="polite" aria-atomic="true">
               <div className="li-current"><h2 id="li-result-title">{conversation.mode==='phrases'?(conversation.draft.text?'Frase en construcción':currentText?'Última frase':'Aquí se forma tu frase'):(matched?'Esto es lo que reconocí':'Aquí aparece tu seña')}</h2>
                 <p className={currentText?'li-word':'li-placeholder'}>{currentText||'Te escuchamos con la mirada.'}</p>
               </div>
