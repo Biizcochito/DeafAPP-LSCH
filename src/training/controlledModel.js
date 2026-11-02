@@ -3,6 +3,7 @@ import {createCatalogueResolver} from './recognitionCatalog.js';
 import {digestText} from './runtimePackage.js';
 import {rotateVariantSequence,validVariantAngle} from './recordingVariants.js';
 
+export const PROTOTYPE_VARIANT_MINIMUM=50;
 export function validHandSequence(sequence){return Array.isArray(sequence)&&sequence.length>=3&&sequence.length<=32&&sequence.every(frame=>(Array.isArray(frame)||frame instanceof Float32Array)&&frame.length===88&&frame.every(n=>Number.isFinite(n)&&Math.abs(n)<=100));}
 export const reflectHandSequence=sequence=>sequence.map(frame=>frame.map((n,i)=>i%44<42&&i%2===0?-n:n));
 function balanced(rows,limit=10){return rows.length<=limit?rows:Array.from({length:limit},(_,i)=>rows[Math.round(i*(rows.length-1)/(limit-1))]);}
@@ -28,26 +29,35 @@ export async function prepareControlledModel(catalogue,samples,{now=Date.now(),s
   const learning=prepared.filter(row=>row.role==='train'&&!reserved.has(row.hash)&&labels.get(row.hash).size===1&&!(row.personConfirmed&&reservedPeople.has(row.person)));
   const grouped=new Map();for(const row of learning){if(!grouped.has(row.classId))grouped.set(row.classId,new Map());const previous=grouped.get(row.classId).get(row.hash);if(!previous||!validHandSequence(previous.sequence)&&validHandSequence(row.sequence))grouped.get(row.classId).set(row.hash,row);}
   const byClass=new Map();for(const row of prepared){if(!byClass.has(row.classId))byClass.set(row.classId,[]);byClass.get(row.classId).push(row);}
-  const coverage=catalogue.filter(row=>!row.aliasOf).map(entry=>{
-    const rows=[...(grouped.get(entry.classId)?.values()||[])],all=byClass.get(entry.classId)||[],tests=all.filter(row=>row.role==='evaluation');
-    const people=new Set(rows.filter(row=>row.personConfirmed&&row.person).map(row=>row.person));
-    return {classId:entry.classId,originals:rows.length,minimum:entry.minimum,recordingGoal:entry.recordingGoal,peopleGoal:entry.peopleGoal,confirmedPeople:people.size,
-      unknownPeople:rows.filter(row=>!row.personConfirmed||!row.person).length,heldOut:tests.length,ready:rows.length>=entry.minimum,
-      active:entry.state==='enabled'&&rows.length>=entry.minimum,state:entry.state,activationScope:entry.activationScope,
-      evaluation:{samples:0,correct:0,predicted:0,recall:null,precision:null,scope:'pending',people:new Set(tests.filter(row=>row.personConfirmed&&row.person).map(row=>row.person)).size}};
-  });
-  const enabled=coverage.filter(row=>row.active).map(row=>row.classId),classes=[...grouped.keys()];
+  const classes=[...grouped.keys()];
   const selected=classes.flatMap(classId=>diverse([...grouped.get(classId).values()]));
   // Augmentation follows the learning split: descendants of reserved people,
   // evaluation hashes, conflicting labels and expired originals stay excluded.
-  const eligible=new Map(learning.map(row=>[String(row.id),row])),chosen=[],variantClasses=new Map();
+  const eligible=new Map(learning.map(row=>[String(row.id),row])),chosen=[],variantClasses=new Map(),variantKeys=new Set();
   for(const variant of variants){
     const parent=eligible.get(String(variant.parentId)),classId=resolve(variant.classId);
-    if(!parent||parent.hash!==variant.parentHash||parent.classId!==classId||!validVariantAngle(variant.angleDegrees))continue;
+    if(!parent||parent.hash!==variant.parentHash||parent.classId!==classId||!validVariantAngle(variant.angleDegrees)||variant.status&&variant.status!=='approved')continue;
+    const key=JSON.stringify([classId,parent.hash,variant.angleDegrees]);if(variantKeys.has(key))continue;variantKeys.add(key);
     if(!variantClasses.has(classId))variantClasses.set(classId,[]);
     const group=variantClasses.get(classId);
-    if(!group.some(row=>row.parent.hash===parent.hash&&row.angleDegrees===variant.angleDegrees))group.push({...variant,parent});
+    group.push({...variant,parent});
   }
+  const coverage=catalogue.filter(row=>!row.aliasOf).map(entry=>{
+    const rows=[...(grouped.get(entry.classId)?.values()||[])],all=byClass.get(entry.classId)||[],tests=all.filter(row=>row.role==='evaluation');
+    const people=new Set(rows.filter(row=>row.personConfirmed&&row.person).map(row=>row.person));
+    const approvedVariants=variantClasses.get(entry.classId)?.length||0;
+    const augmentedReady=entry.activationScope==='prototype'&&rows.length>=1&&approvedVariants>=PROTOTYPE_VARIANT_MINIMUM;
+    const ready=rows.length>=entry.minimum||augmentedReady;
+    // A deliberately paused sign or one under private evaluation stays private.
+    const autoEnable=entry.state==='collecting'&&augmentedReady;
+    return {classId:entry.classId,originals:rows.length,approvedVariants,augmentedReady,autoEnable,minimum:entry.minimum,recordingGoal:entry.recordingGoal,peopleGoal:entry.peopleGoal,confirmedPeople:people.size,
+      unknownPeople:rows.filter(row=>!row.personConfirmed||!row.person).length,heldOut:tests.length,ready,
+      active:(entry.state==='enabled'||autoEnable)&&ready,state:entry.state,activationScope:entry.activationScope,
+      evaluation:{samples:0,correct:0,predicted:0,recall:null,precision:null,scope:'pending',people:new Set(tests.filter(row=>row.personConfirmed&&row.person).map(row=>row.person)).size}};
+  });
+  const enabled=coverage.filter(row=>row.active).map(row=>row.classId);
+  // Count every approved distinct variant, but keep the live model compact.
+  for(const group of variantClasses.values())group.sort((a,b)=>Math.abs(Math.abs(a.angleDegrees)-1.5)-Math.abs(Math.abs(b.angleDegrees)-1.5));
   for(let index=0;index<2;index++)for(const group of variantClasses.values()){
     if(selected.length+chosen.length>=5500)break;
     const variant=group.find(row=>Math.sign(row.angleDegrees)===(index===0?1:-1));if(variant)chosen.push(variant);

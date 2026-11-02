@@ -92,7 +92,7 @@ export default function MultiplyRecordings({api,session,client,initialSource,ini
       {clip&&<VariantPlayer clip={clip}/>}</section>
     <section className="mv-card"><h2>2. Elige la cantidad</h2><div className="mv-quantities">{[50,100].map(value=><button key={value} disabled={busy} aria-pressed={quantity===value} onClick={()=>{requestId.current=crypto.randomUUID();setQuantity(value);}}><strong>{value}</strong><span>variantes</span></button>)}</div>
       <p>{initialSource?1:takes.length} {(!initialSource&&takes.length!==1)?'originales':'original'} + {quantity} variantes. Se conservan la secuencia y los tiempos de cada original.</p>
-      <small>Las variantes ayudan a ampliar el aprendizaje; siguen siendo aportes de la misma persona y no sustituyen las tomas de otras personas.</small>
+      <p>Con un original apto y al menos 50 variantes aprobadas, una seña en recopilación se habilita automáticamente para interpretar al terminar la preparación.</p><small>Las variantes ayudan a ampliar el aprendizaje; siguen siendo aportes de la misma persona y no sustituyen las tomas de otras personas.</small>
       <button className="mv-primary" disabled={busy||!canSend} onClick={send}>{busy?'Procesando…':`Crear ${quantity} variantes${initialSource?.status==='approved'?' y añadir a Aprobadas':''}`}</button>
       <small>{initialSource?.status==='approved'?'Se añadirán automáticamente al catálogo de Aprobadas.':'Las variantes esperarán hasta que apruebes sus originales; después aparecerán automáticamente en Aprobadas.'}</small>
     </section></div>;
