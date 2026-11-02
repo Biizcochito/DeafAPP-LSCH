@@ -35,6 +35,12 @@ Pulsa **Ocultar categoría**. Se ocultan todas sus señas en Grabar y se conserv
 
 **Habilitar señas** decide qué pueden grabar las personas. Publicar una categoría no entrena automáticamente el intérprete ni cambia sus clases habilitadas. La revisión de muestras y las pruebas del reconocimiento siguen en **Opciones de reconocimiento y entrenamiento** y en **Entrenamiento LSCh**.
 
+Para la interpretación pública, una seña **en recopilación** se habilita automáticamente como **prototipo** cuando tiene **al menos un original aprobado y apto más 50 variantes distintas aprobadas de sus originales aptos**. La preparación del servidor y la lista de palabras del intérprete se actualizan solas; no hace falta publicar código para cada seña. Las variantes pendientes, rechazadas, duplicadas, vencidas o derivadas de muestras reservadas para evaluación no completan este mínimo.
+
+Las señas **pausadas** o **en evaluación privada** conservan su estado hasta que lo cambies. También se mantiene la habilitación manual con el mínimo configurado de originales sin variantes (tres por defecto). La evaluación independiente conserva sus requisitos de personas, muestras y resultados.
+
+En **Reconocimiento y entrenamiento** puedes consultar por separado los originales aptos y las variantes aprobadas aptas. Las variantes no representan personas ni tomas reales nuevas; este mínimo permite probar la seña y no garantiza precisión con otras personas.
+
 ## Si un cambio queda pendiente
 
 Las categorías se guardan seña por seña con la sesión y la versión vigente. El panel muestra el progreso. Si hay un corte de conexión o un cambio simultáneo de otro administrador, informa cuántas alcanzaron a guardarse y vuelve a consultar el catálogo. Revisa el estado y repite la acción: solo se guardan las señas que aún falten. Ocultar una categoría tampoco borra datos.

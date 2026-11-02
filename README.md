@@ -541,6 +541,10 @@ Las sesiones, configuración y auditoría administrativas están en el esquema p
 
 ## Sobre el modelo de reconocimiento
 
+El intérprete público usa una biblioteca preparada de movimientos de manos aprobados. Una seña en recopilación se habilita automáticamente como **prototipo** al reunir **un original apto y al menos 50 variantes distintas aprobadas** de sus originales aptos. El servidor prepara la actualización y la lista del intérprete se renueva automáticamente. Las señas pausadas o en evaluación privada conservan su estado. También se mantiene la habilitación manual con el mínimo configurado de originales sin variantes (tres por defecto).
+
+Las variantes no se cuentan como tomas reales ni como personas nuevas y no sustituyen una evaluación independiente. Consulta el procedimiento y los estados en la [guía de habilitación](docs/HABILITAR-SENAS.md).
+
 El administrador reúne dos recorridos de entrenamiento y evaluación:
 
 | Recorrido | Modelo y datos | Uso actual |

@@ -1,5 +1,17 @@
 -- Run after the migration, in a transaction that always rolls back. Uses isolated fixture IDs only.
 begin;
+
+create or replace function pg_temp.qa_variant_rows(p_job uuid) returns jsonb language plpgsql as $$
+declare page jsonb;result jsonb:='[]'::jsonb;page_offset integer:=0;
+begin
+ loop
+  page:=public.deafapp_runtime_variants(p_job,page_offset);
+  result:=result||coalesce((select jsonb_agg(v) from jsonb_array_elements(page->'rows') v where (v->>'parentId')::bigint>=900000000001),'[]'::jsonb);
+  exit when jsonb_array_length(page->'rows')<500;
+  page_offset:=page_offset+500;assert page_offset<=200000;
+ end loop;
+ return jsonb_build_object('rows',result);
+end $$;
 do $test$
 declare b jsonb; bid uuid; before_revision bigint; result jsonb; job uuid:=extensions.gen_random_uuid();
 begin
@@ -35,14 +47,14 @@ begin
  insert into deafapp_private.recognition_features(source_id,source_version,source_path,class_id,feature,expires_at)
  values(900000000002,0,'qa/variant-two.json','saludos/hola','{"hash":"qa-hash","sequenceValid":true}',now()+interval '1 day');
  update deafapp_private.recognition_runtime set lease_id=job,lease_until=now()+interval '1 minute';
- result:=public.deafapp_runtime_variants(job);
- assert (select count(*) from jsonb_array_elements(result->'rows') r where r->>'parentId'='900000000002')=2,'bounded positive and negative variants';
+ result:=pg_temp.qa_variant_rows(job);
+ assert (select count(*) from jsonb_array_elements(result->'rows') r where r->>'parentId'='900000000002')>=100,'approved distinct variants are available for the activation threshold';
  assert (select bool_and(r->>'parentHash'='qa-hash') from jsonb_array_elements(result->'rows') r where r->>'parentId'='900000000002');
  update deafapp_private.recognition_features set expires_at=now()-interval '1 second' where source_id=900000000002;
- result:=public.deafapp_runtime_variants(job);
+ result:=pg_temp.qa_variant_rows(job);
  assert not exists(select 1 from jsonb_array_elements(result->'rows') r where r->>'parentId'='900000000002'),'expired parent excluded';
  update public.grabaciones set aprobada=false,moderation_status='pending',moderation_version=1 where id=900000000002;
- result:=public.deafapp_runtime_variants(job);
+ result:=pg_temp.qa_variant_rows(job);
  assert not exists(select 1 from jsonb_array_elements(result->'rows') r where r->>'parentId'='900000000002'),'withdrawn parent excluded';
 
  b:=deafapp_private.create_recording_variants(extensions.gen_random_uuid(),'[{"id":"900000000003","version":0}]',100);bid:=(b->'batch'->>'id')::uuid;

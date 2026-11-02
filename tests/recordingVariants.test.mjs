@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {variantSpecification,rotateVariantSequence,recordingTimeline,frameAtTime} from '../src/training/recordingVariants.js';
-import {prepareControlledModel} from '../src/training/controlledModel.js';
+import {prepareControlledModel,reflectHandSequence} from '../src/training/controlledModel.js';
+import {prepareSequenceSearch,searchSequenceDistances,rankSequenceDistances} from '../src/training/sequenceCandidate.js';
 import {catalogueSeed} from '../src/training/recognitionCatalog.js';
 import {encodeRuntimePackage,decodeRuntimePackage} from '../src/training/runtimePackage.js';
 import {createMockAdminBackend,MOCK_ADMIN_PASSWORD} from '../src/admin/adminMock.js';
@@ -43,11 +44,68 @@ test('variantes aprobadas amplían referencias sin inflar originales, personas o
   const without=await prepareControlledModel(catalogue,samples);assert.notEqual(result.model.id,without.model.id);
   samples[0].person='reserved';const next=await prepareControlledModel(catalogue,samples,{variants});assert.ok(next.model.references.every(row=>row.parentHash!=='h-0-0'));
 });
-test('una toma multiplicada cien veces no habilita por sí sola una seña ni recupera hashes incorrectos',async()=>{
+test('una toma y variantes suficientes habilitan un prototipo, sin recuperar hashes incorrectos',async()=>{
   const catalogue=catalogueSeed().slice(0,2).map(row=>({...row,state:'enabled'})),samples=catalogue.map((row,c)=>({id:String(c),classId:row.classId,hash:`h${c}`,sequence:seq(c)}));
   const variants=Array.from({length:100},(_,i)=>({parentId:'0',parentHash:'h0',classId:catalogue[0].classId,angleDegrees:variantSpecification(i,100).angleDegrees}));
   variants.push({parentId:'1',parentHash:'wrong-hash',classId:catalogue[1].classId,angleDegrees:1});
-  const result=await prepareControlledModel(catalogue,samples,{variants});assert.equal(result.model,null);assert.ok(result.coverage.every(row=>row.originals===1&&!row.active));assert.equal(result.coverage[1].syntheticReferences,0);
+  const result=await prepareControlledModel(catalogue,samples,{variants});assert.equal(result.model,null);assert.equal(result.coverage[0].active,true);assert.equal(result.coverage[0].originals,1);assert.equal(result.coverage[0].approvedVariants,100);assert.equal(result.coverage[1].active,false);assert.equal(result.coverage[1].syntheticReferences,0);
+});
+
+const augmentedFixture=()=>{
+  const catalogue=catalogueSeed().slice(0,2).map(row=>({...row,state:'collecting'}));
+  const samples=catalogue.map((row,c)=>({id:String(c),classId:row.classId,hash:`h${c}`,sequence:seq(c)}));
+  const variants=samples.flatMap(row=>Array.from({length:50},(_,i)=>({parentId:row.id,parentHash:row.hash,classId:row.classId,angleDegrees:variantSpecification(i,50).angleDegrees})));
+  return {catalogue,samples,variants};
+};
+
+test('50 variantes aprobadas de un original activan automáticamente y mantienen compacto el modelo público',async()=>{
+  const {catalogue,samples,variants}=augmentedFixture(),before=structuredClone({catalogue,samples,variants});
+  const result=await prepareControlledModel(catalogue,samples,{variants});
+  assert.deepEqual(result.model.enabledClasses,catalogue.map(row=>row.classId));
+  assert.ok(result.coverage.every(row=>row.originals===1&&row.approvedVariants===50&&row.autoEnable&&row.ready&&row.active));
+  assert.ok(result.coverage.every(row=>row.syntheticReferences===2&&row.confirmedPeople===0&&row.evaluation.samples===0));
+  assert.equal(result.model.references.length,6);
+  const index=prepareSequenceSearch(result.model);
+  for(const sample of samples){
+    const prediction=rankSequenceDistances(result.model,searchSequenceDistances(result.model,sample.sequence,reflectHandSequence(sample.sequence),index));
+    assert.equal(prediction.accepted,true);assert.equal(prediction.classId,sample.classId);
+  }
+  assert.deepEqual(await decodeRuntimePackage(await encodeRuntimePackage(result.model)),result.model);
+  assert.deepEqual({catalogue,samples,variants},before);
+});
+
+test('49 variantes, duplicados y variantes sin aprobar no cumplen el mínimo de 50',async()=>{
+  const {catalogue,samples,variants}=augmentedFixture();
+  const incomplete=variants.filter((_,i)=>i!==49&&i!==99);
+  for(const extra of [[],[...incomplete],variants.filter((_,i)=>i===49||i===99).map(row=>({...row,status:'pending'})),variants.filter((_,i)=>i===49||i===99).map(row=>({...row,status:'rejected'}))]){
+    const result=await prepareControlledModel(catalogue,samples,{variants:[...incomplete,...extra]});
+    assert.equal(result.model,null);assert.ok(result.coverage.every(row=>row.approvedVariants===49&&!row.active&&!row.autoEnable));
+  }
+});
+
+test('retirar variantes o el original desactiva la seña aunque su estado siga habilitado',async()=>{
+  const {catalogue,samples,variants}=augmentedFixture();catalogue.forEach(row=>row.state='enabled');
+  assert.ok((await prepareControlledModel(catalogue,samples,{variants})).model);
+  for(const changed of [samples.slice(1),samples.map(row=>({...row,expiresAt:'2000-01-01'})),samples.map(row=>({...row,sequence:[]})),samples.map(row=>({...row,role:'evaluation'})),samples.map(row=>({...row,hash:'conflicting'}))]){
+    const result=await prepareControlledModel(catalogue,changed,{variants});assert.equal(result.model,null);assert.equal(result.coverage[0].active,false);
+    if(changed.length===samples.length)assert.ok(result.coverage.every(row=>!row.active));
+  }
+  const withdrawn=await prepareControlledModel(catalogue,samples,{variants:variants.slice(1)});
+  assert.equal(withdrawn.model,null);assert.equal(withdrawn.coverage[0].active,false);
+});
+
+test('las variantes de una persona reservada y las señas pausadas o en evaluación privada no se publican automáticamente',async()=>{
+  const {catalogue,samples,variants}=augmentedFixture();
+  for(const state of ['paused','testing']){
+    const result=await prepareControlledModel(catalogue.map(row=>({...row,state})),samples,{variants});
+    assert.equal(result.model,null);assert.ok(result.coverage.every(row=>row.ready&&!row.active&&!row.autoEnable));
+  }
+  const evaluated=await prepareControlledModel(catalogue.map(row=>({...row,state:'enabled',activationScope:'evaluated'})),samples,{variants});
+  assert.equal(evaluated.model,null);assert.ok(evaluated.coverage.every(row=>!row.ready&&!row.augmentedReady));
+  samples[0].person='P-reserved';samples[0].personConfirmed=true;
+  samples.push({...samples[0],id:'reserved',hash:'test-only',role:'evaluation'});
+  const reserved=await prepareControlledModel(catalogue,samples,{variants});
+  assert.equal(reserved.coverage[0].originals,0);assert.equal(reserved.coverage[0].approvedVariants,0);assert.equal(reserved.coverage[0].active,false);
 });
 test('el flujo admin admite un original pendiente o aprobado y retira variantes al cambiarlo',async()=>{
   const client=createMockAdminBackend(),api=createAdminClient(client),session=await api.login(MOCK_ADMIN_PASSWORD);

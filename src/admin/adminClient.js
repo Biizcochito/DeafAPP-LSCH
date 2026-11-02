@@ -24,7 +24,7 @@ export function createAdminClient(client) {
       if (code === "28000") throw new AdminError("La sesión terminó. Vuelve a ingresar.", "session_expired");
       if (code === "40001") throw new AdminError("Otra persona cambió esta revisión. Actualiza la lista y revísala nuevamente.", "conflict");
       if (code === "23505") throw new AdminError("Esta seña ya existe en esa categoría. Busca la entrada antes de agregarla.", "duplicate");
-      if (code === "22023") throw new AdminError(name.includes('_variant_')?'Revisa el lote: elige de una a tres tomas de la misma seña y 50 o 100 variantes. Para aprobarlo, revisa sus originales.':"Revisa los datos y los requisitos: prepara las muestras antes de habilitar; la evaluación independiente necesita personas y pruebas reservadas suficientes.", "invalid_input");
+      if (code === "22023") throw new AdminError(name.includes('_variant_')?'Revisa el lote: elige de una a tres tomas de la misma seña y 50 o 100 variantes. Para aprobarlo, revisa sus originales.':"Revisa los datos y los requisitos: prepara el mínimo de originales o un original apto con 50 variantes aprobadas; la evaluación independiente necesita personas y pruebas reservadas suficientes.", "invalid_input");
       throw new AdminError("No se pudo completar la operación. Actualiza e inténtalo nuevamente.", "server");
     }
     if (result.data?.ok !== true) {
