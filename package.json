@@ -1,6 +1,7 @@
 {
   "name": "deafapp",
   "version": "1.0.0",
+  "license": "UNLICENSED",
   "main": "index.js",
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

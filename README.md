@@ -621,6 +621,8 @@ Gracias también a la comunidad sorda que participa activamente grabando, valida
 
 ## Licencia
 
-Pendiente de definir.
+Los aportes originales de **Diego Armando Padilla Serrano**, autor y desarrollador principal, se reservan bajo la [licencia propietaria](LICENSE). Este aviso no concede una licencia de código abierto sobre sus aportes ni transfiere los derechos de colaboradores o terceros.
 
-Los componentes visuales adaptados, sus atribuciones y las licencias de terceros se detallan en [ui/NOTICE.md](src/ui/NOTICE.md) y [ui/LICENSE-react-bits.md](src/ui/LICENSE-react-bits.md). La licencia del proyecto completo sigue pendiente.
+El uso institucional se formaliza mediante un contrato separado de suscripción o licencia y las autorizaciones de los titulares pertinentes. Este repositorio no concede por sí solo una licencia comercial sobre el conjunto de DeafApp.
+
+Las dependencias y demás materiales de terceros mantienen sus licencias. Se conservan el aviso [MIT de Expo](licenses/Expo-MIT.txt), las atribuciones de [ui/NOTICE.md](src/ui/NOTICE.md), las condiciones de [React Bits](src/ui/LICENSE-react-bits.md) y los avisos incluidos con los modelos, tipografías y fuentes de datos. Esta reserva no revoca permisos válidamente concedidos sobre versiones anteriores.
