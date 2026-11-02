@@ -8,6 +8,7 @@ import {createSignInferenceClient} from '../training/signInferenceWorker';
 import {createLiveSignRecognizer} from '../training/liveSignRecognition';
 import {createLiveInterpretationCamera} from '../training/liveInterpretationCamera';
 import {createLiveSignSpeech,spokenSignLabel} from '../training/liveSignSpeech';
+import {spanishVoices,voiceForGender} from '../training/spanishVoices';
 import {startPreparedRecognition} from '../training/preparedRecognition';
 import {useLiveConversation} from '../training/useLiveConversation';
 import ConversationControls from '../training/ConversationControls.web';
@@ -43,6 +44,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const [trackingState,setTrackingState]=useState('loading');
   const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
+  const [voices,setVoices]=useState([]),[selectedVoice,setSelectedVoice]=useState(''),[voicesLoaded,setVoicesLoaded]=useState(false);
   const voicePreference=useRef(true);
   const activity=useRef({active,blocked,onCameraState});activity.current={active,blocked,onCameraState};
   const conversation=useLiveConversation({voice,catalogue:library.catalogue,onReset:()=>camera.current?.reset(),initialMode:preview?'phrases':'signs'});
@@ -54,7 +56,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
       if(!alive)return;
       live.current=result;setResult(result);conversation.update(result);
     };
-    if(voiceSupported)voice.current=createLiveSignSpeech({speech:Speech,enabled:voicePreference.current,
+    if(voiceSupported)voice.current=createLiveSignSpeech({speech:Speech,enabled:voicePreference.current,voice:selectedVoice||undefined,
       labelForClass:id=>labels.current.get(id)||spokenSignLabel(id),
       onError:message=>{if(alive)setVoiceError(message);},onSpeak:()=>{if(alive)setVoiceError('');}});
     camera.current=createLiveInterpretationCamera({video:video.current,canvas:canvas.current,
@@ -96,6 +98,22 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     camera.current?.setSuspended(!active||document.hidden);
     voice.current?.setEnabled(voicePreference.current&&active&&!document.hidden);
   },[active,blocked]);
+  useEffect(()=>{voice.current?.setVoice(selectedVoice||undefined);},[selectedVoice]);
+  useEffect(()=>{
+    if(!voiceSupported)return;
+    let alive=true,revision=0;
+    async function loadVoices(){
+      const request=++revision;
+      try{
+        const available=spanishVoices(await Speech.getAvailableVoicesAsync());
+        if(!alive||request!==revision)return;
+        setVoices(available);setVoicesLoaded(true);
+        setSelectedVoice(current=>available.some(row=>row.identifier===current)?current:'');
+      }catch{if(alive&&request===revision){setVoices([]);setVoicesLoaded(true);}}
+    }
+    void loadVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadVoices);
+    return()=>{alive=false;window.speechSynthesis.removeEventListener?.('voiceschanged',loadVoices);};
+  },[voiceSupported]);
   function toggleVoice(){
     const next=!voicePreference.current;voicePreference.current=next;setVoiceOn(next);setVoiceError('');voice.current?.setEnabled(next);
     if(next&&conversation.mode==='signs')voice.current?.update(live.current);
@@ -109,6 +127,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     PHASES[result.phase]||'Preparando la interpretación…';
   const lastPhrase=[...history].reverse().find(row=>row.kind==='phrase');
   const currentText=conversation.mode==='phrases'?(conversation.draft.text||lastPhrase?.label||''):(matched?word:'');
+  const femaleVoice=voiceForGender(voices,'female'),maleVoice=voiceForGender(voices,'male');
   return <div className="deaf-app live-interpretation">
     <header className="li-nav"><a href="/" onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onBack();}} aria-label="DeafApp, volver al inicio">
       <img src="/brand/deafapp-mark.svg" alt="" width="34" height="34"/><span>Deaf<span>App</span></span></a>
@@ -125,23 +144,37 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
             {!running&&<div className="li-welcome-camera"><div className="li-hand" aria-hidden="true"><HandConstellation poses={['open','relaxed','soft']}/></div><h2>Cuando quieras, empezamos.</h2><p>Busca buena luz y deja espacio para tus manos.</p></div>}
             <span className={`li-camera-badge${cameraState==='on'?' li-is-on':''}`}><i aria-hidden="true"/>{cameraState==='on'?'En vivo':cameraState==='starting'?'Conectando':'Cámara apagada'}</span>
           </div>
-          {(running||preparing)&&<div className="li-overlay" role="status" aria-live="polite" aria-atomic="true"><span>{statusText}</span>
-              {preparing&&<div className="li-loading-bar" role="progressbar" aria-label={statusText}><i/></div>}
-              {matched&&!preparing&&<strong>{word}</strong>}</div>}
           </div>
           <div className="li-camera-actions"><button className="li-primary" onClick={()=>{setError('');if(running)camera.current?.stop();else void camera.current?.start();}}>{running?'Detener cámara':'Activar cámara'}</button>
             <span>La cámara se usa en este dispositivo.<br/>Esta sesión no se graba ni se envía.<br/>Permanece activa al navegar por esta web; puedes apagarla cuando quieras.</span></div>
           {error&&<p className="li-error" role="alert">{error}</p>}
         </section>
         <section className="li-conversation" aria-labelledby="li-result-title">
+          {(running||preparing)&&<div className="li-camera-status" role="status" aria-live="polite" aria-atomic="true"><span>{statusText}</span>
+            {preparing&&<div className="li-loading-bar" role="progressbar" aria-label={statusText}><i/></div>}</div>}
+          <div className="li-result">
           <div className="li-result-heading"><span className="li-eyebrow">DE TUS MANOS A LAS PALABRAS</span><span className="li-text-badge">Texto en vivo</span></div>
           <div className="li-current" role="status" aria-live="polite" aria-atomic="true"><h2 id="li-result-title">{conversation.mode==='phrases'?(conversation.draft.text?'Frase en construcción':currentText?'Última frase':'Aquí se forma tu frase'):(matched?'Esto es lo que reconocí':'Aquí aparece tu seña')}</h2>
             <p className={currentText?'li-word':'li-placeholder'}>{currentText||'Te escuchamos con la mirada.'}</p>
-            <p className="li-result-hint">{currentText?'Comprueba que coincide con lo que quieres decir.':running?PHASES[result.phase]||'Preparando…':'Activa la cámara y exprésate a tu ritmo.'}</p></div>
+            {(currentText||!running)&&<p className="li-result-hint">{currentText?'Comprueba que coincide con lo que quieres decir.':'Activa la cámara y exprésate a tu ritmo.'}</p>}</div>
+          </div>
+          <div className="li-tools">
           <div className="li-voice"><div><strong>Voz en español</strong><span>{voiceSupported?(voiceOn?(conversation.mode==='phrases'?'Leer al terminar la frase':'Leer cada seña reconocida'):'Voz silenciada'):'Tu navegador no admite voz; puedes usar el texto.'}</span></div>
             <button aria-pressed={voiceOn} disabled={!voiceSupported} onClick={toggleVoice}>{voiceOn?'Silenciar voz':'Activar voz'}</button></div>
-          <button className="li-test-voice" disabled={!voiceSupported} onClick={testVoice}>♫ Probar voz</button>
+          <div className="li-voice-options"><label>Elegir voz<select aria-label="Elegir voz" value={selectedVoice} disabled={!voiceSupported} onChange={event=>{setSelectedVoice(event.target.value);setVoiceError('');}}>
+            <option value="">Automática del dispositivo</option>
+            <option value={femaleVoice||'unavailable-female'} disabled={!femaleVoice}>Mujer{!femaleVoice?' · no disponible':''}</option>
+            <option value={maleVoice||'unavailable-male'} disabled={!maleVoice}>Hombre{!maleVoice?' · no disponible':''}</option>
+            {!!voices.length&&<optgroup label="Voces en español">{voices.filter(row=>row.identifier!==femaleVoice&&row.identifier!==maleVoice).map(row=><option key={row.identifier} value={row.identifier}>{row.name} · {row.language}</option>)}</optgroup>}
+          </select></label><button className="li-test-voice" disabled={!voiceSupported} onClick={testVoice}>♫ Probar voz</button></div>
+          {voiceSupported&&voicesLoaded&&(!femaleVoice||!maleVoice)&&<p className="li-voice-note">Las opciones dependen de las voces en español instaladas en tu dispositivo.{!!voices.length&&' También puedes elegir una voz por su nombre.'}</p>}
           {voiceError&&<p className="li-error" role="status">{voiceError}</p>}
+          <section className="li-vocabulary" aria-labelledby="li-vocabulary-title"><h3 id="li-vocabulary-title">{library.loading?'Preparando biblioteca…':`${library.words.length} palabras y oraciones habilitadas`}</h3>
+            {library.loading?<p role="status">{library.message}</p>:!!library.words.length&&<div className="li-chips" tabIndex="0" role="region" aria-label="Todas las palabras y oraciones habilitadas">{library.words.map(id=><span key={id}>{labels.current.get(id)||spokenSignLabel(id)}</span>)}</div>}
+            {library.error&&<div className="li-error" role="alert">{library.error} <button onClick={()=>sync.current?.request()}>Reintentar</button></div>}
+            {!library.loading&&!library.words.length&&!library.error&&<p>Aún no hay suficientes tomas aptas para interpretar. Puedes seguir aportando señas desde «Grabar».</p>}
+          </section>
+          </div>
           {preview&&<ConversationControls conversation={conversation} prefix="private-conversation"/>}
           <div className="li-history"><div><h3>En esta conversación</h3><button disabled={!history.length&&!conversation.draft.canFinish} onClick={conversation.clearHistory}>Limpiar</button></div>
             {history.length?<ol aria-label={preview?'Últimas frases y señas reconocidas':'Últimas señas y oraciones reconocidas'}>{history.map(row=><li key={row.id} data-review={row.requiresReview||undefined}>{row.label}{row.requiresReview&&<small> · Revisar</small>}</li>)}</ol>:<p>{preview?'Las últimas frases y señas reconocidas aparecerán aquí.':'Las últimas señas y oraciones reconocidas aparecerán aquí.'}</p>}</div>
@@ -149,13 +182,6 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
         </section>
       </div>
       <section className="li-bottom" aria-label="Ayuda y señas disponibles"><div className="li-tips"><span>01 <b>Busca buena luz</b></span><span>02 <b>Muestra cara y manos</b></span><span>03 <b>Haz la seña completa</b></span></div>
-        <details className="li-vocabulary"><summary>{library.loading?'Preparando biblioteca…':`${library.words.length} palabras y oraciones habilitadas`}<span>Ver señas</span></summary>
-          {library.loading?<p role="status">{library.message}</p>:<div className="li-chips">{library.words.map(id=><span key={id}>{labels.current.get(id)||spokenSignLabel(id)}</span>)}</div>}
-          {!library.loading&&!library.words.length&&!library.error&&<p>Se necesitan al menos tres tomas aprobadas distintas por seña y datos de seguimiento aptos para preparar la interpretación.</p>}
-        </details>
-        {library.loading&&<p className="li-sync-status" role="status">{library.message}</p>}
-        {library.error&&<div className="li-error" role="alert">{library.error} <button onClick={()=>sync.current?.request()}>Reintentar</button></div>}
-        {!library.loading&&!library.words.length&&!library.error&&<p className="li-sync-status">Aún no hay suficientes tomas aptas para interpretar. Puedes seguir aportando señas desde «Grabar».</p>}
       </section>
     </main>
   </div>;

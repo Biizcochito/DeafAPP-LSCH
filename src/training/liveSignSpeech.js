@@ -7,7 +7,7 @@ export const spokenSignLabel=classId=>{
 
 // Consume confirmed predictions, never the label selected for a training take.
 // A sustained match is spoken once; brief tracking fluctuations do not rearm it.
-export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},labelForClass=spokenSignLabel,now=()=>performance.now(),enabled=true,rearmMs=1000,repeatMs=2500}){
+export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},labelForClass=spokenSignLabel,now=()=>performance.now(),enabled=true,voice,rearmMs=1000,repeatMs=2500}){
   let closed=false,epoch=0,lastClass=null,lastSpoken=-Infinity,absentSince=null,owned=false;
   function cancel(){
     epoch++;
@@ -23,7 +23,7 @@ export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},label
       const stopped=speech.stop();
       void Promise.resolve(stopped).then(()=>{
         if(closed||!enabled||request!==epoch)return;
-        speech.speak(text,{language:'es-CL',rate:1,onError:fail,onDone:()=>{if(request===epoch)owned=false;}});
+        speech.speak(text,{language:'es-CL',rate:1,...(voice?{voice}:{}),onError:fail,onDone:()=>{if(request===epoch)owned=false;}});
         onSpeak(text);
       }).catch(fail);
     }catch{fail();}
@@ -40,6 +40,7 @@ export function createLiveSignSpeech({speech,onError=()=>{},onSpeak=()=>{},label
       lastClass=classId;lastSpoken=time;say(labelForClass(classId));
     },
     setEnabled(value){enabled=!!value;reset();},
+    setVoice(value){if(closed||voice===value)return;reset();voice=value;},
     preview(){if(!closed&&enabled){reset();say('Voz activada');}},
     sayText(text){if(!closed&&enabled&&typeof text==='string'&&text.trim()&&text.length<=600){reset();say(text.trim());}},
     reset,
