@@ -1,21 +1,75 @@
-The MIT License (MIT)
+DeafApp — Licencia propietaria
+Versión 1.0 — 2 de noviembre de 2026
 
-Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+Copyright (c) 2026 Diego Armando Padilla Serrano.
+Todos los derechos reservados sobre sus aportes originales.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Alcance y titularidad
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Esta licencia se aplica al código, documentación y demás materiales originales
+de DeafApp cuyos derechos patrimoniales correspondan legítimamente a Diego
+Armando Padilla Serrano (el "Titular"). No transfiere al Titular los derechos
+de colaboradores ni de terceros sobre sus propias contribuciones.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. Reserva de derechos sobre el código propio
+
+Este documento no concede una licencia de código abierto sobre los aportes del
+Titular. Salvo autorización previa y escrita, no se concede permiso para
+reproducir, modificar, distribuir, sublicenciar, vender o explotar comercialmente
+esos aportes, ni para ofrecer un servicio derivado de ellos.
+
+Esta reserva se entiende sin perjuicio de las licencias de terceros, los permisos
+válidamente otorgados con anterioridad, las excepciones legales aplicables y los
+derechos que resulten de las condiciones de la plataforma donde se aloje una copia.
+
+3. Uso de la aplicación y licenciamiento institucional
+
+El acceso y uso ordinario de la instancia oficial de DeafApp se rige por sus
+términos de uso y, cuando corresponda, por el contrato de servicio aplicable.
+Las copias técnicas necesarias para acceder mediante un navegador no conceden
+derecho a reutilizar o redistribuir el código fuente.
+
+Una licencia institucional o suscripción universitaria requiere un contrato
+separado que defina alcance, duración, usuarios o sedes, precio, soporte y
+tratamiento de datos, con las autorizaciones de los titulares pertinentes.
+La suscripción no transfiere la propiedad del código ni concede exclusividad,
+sublicencia o entrega del código fuente, salvo pacto expreso y escrito con
+quienes puedan otorgar esos derechos.
+
+4. Componentes, contribuciones y versiones anteriores
+
+Las bibliotecas, fuentes tipográficas, modelos, componentes visuales, conjuntos
+de datos y otros materiales de terceros mantienen sus propias licencias y avisos.
+Las contribuciones originales de colaboradores conservan los derechos de sus
+respectivos titulares. Este archivo no sustituye las autorizaciones necesarias
+para incorporar esas contribuciones a una oferta comercial.
+
+Se conserva el aviso MIT de Expo en licenses/Expo-MIT.txt. Otros avisos se
+encuentran, entre otros, en src/ui/NOTICE.md, src/ui/LICENSE-react-bits.md,
+public/hand-model/, public/fonts/ y training/sources/tub/LICENSE, además de las
+licencias incluidas en las dependencias. Esta licencia no restringe esos permisos.
+
+La sustitución del archivo LICENSE de la raíz no revoca derechos válidamente
+adquiridos sobre versiones anteriores ni determina por sí sola el alcance de
+las licencias que acompañaron esas versiones.
+
+5. Lengua de señas, grabaciones y datos personales
+
+No se reclama propiedad sobre la Lengua de Señas Chilena, las señas ni los
+conocimientos de la comunidad sorda. Las imágenes, grabaciones y datos personales
+se rigen por sus autorizaciones y por la normativa aplicable. Esta licencia no
+autoriza su venta, publicación, cesión ni reutilización fuera de la finalidad
+consentida, ni transfiere los derechos de quienes realizaron los aportes.
+
+6. Garantías, responsabilidad y legislación
+
+Salvo obligaciones legales imperativas o compromisos escritos específicos, los
+aportes cubiertos se proporcionan en su estado actual, sin garantías adicionales.
+Esta licencia no excluye responsabilidades que no puedan limitarse por ley ni
+sustituye las garantías o condiciones de un contrato institucional.
+
+Se interpretará conforme al derecho chileno, sin afectar las normas imperativas
+que resulten aplicables a una relación particular.
+
+Contacto para solicitar permisos sobre los aportes del Titular:
+Diego Armando Padilla Serrano — diego0padilla1717@gmail.com
