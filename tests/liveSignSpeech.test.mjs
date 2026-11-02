@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createLiveSignSpeech,spokenSignLabel} from '../src/training/liveSignSpeech.js';
 import {CATEGORIAS} from '../src/catalog/signCatalog.js';
+import {spanishVoices,voiceForGender} from '../src/training/spanishVoices.js';
 
 const flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
 const match=classId=>({phase:'matched',prediction:{accepted:true,classId}});
@@ -91,4 +92,41 @@ test('voice covers the entire catalog and new approved labels without a spoken-w
   assert.equal(h.spoken.length,classes.length);assert.equal(h.spoken.at(-1).text,'seña recién aprobada');
   assert.ok(h.spoken.some(row=>row.text==='quiero agua'));assert.ok(h.spoken.some(row=>row.text==='mamá'||row.text==='mama'));
   h.voice.close();
+});
+
+test('la voz elegida se aplica a pruebas, señas y frases y se puede volver a automática',async()=>{
+  const h=harness({voice:'es-mujer'});
+  h.voice.preview();await flush();assert.equal(h.spoken.at(-1).options.voice,'es-mujer');
+  h.voice.setVoice('es-hombre');await h.update(match('saludos/hola'));
+  assert.equal(h.spoken.at(-1).options.voice,'es-hombre');
+  h.voice.sayText('Quiero agua.');await flush();assert.equal(h.spoken.at(-1).options.voice,'es-hombre');
+  h.voice.setVoice(undefined);h.voice.preview();await flush();
+  assert.equal(h.spoken.at(-1).options.voice,undefined);h.voice.close();
+});
+
+test('cambiar la voz cancela audio pendiente y no activa una voz silenciada',async()=>{
+  const releases=[],spoken=[];
+  const h=harness({voice:'anterior',speech:{stop:()=>new Promise(resolve=>releases.push(resolve)),speak:(text,options)=>spoken.push(options.voice)}});
+  h.voice.preview();const pending=releases[0];h.voice.setVoice('nueva');pending();await flush();
+  assert.deepEqual(spoken,[]);
+  h.voice.preview();releases.at(-1)();await flush();assert.deepEqual(spoken,['nueva']);
+  h.voice.setEnabled(false);h.voice.setVoice('otra');h.voice.preview();await flush();
+  assert.deepEqual(spoken,['nueva']);h.voice.close();
+});
+
+test('las opciones usan voces españolas reales y no atribuyen género a voces desconocidas',()=>{
+  const voices=spanishVoices([
+    {identifier:'en',language:'en-US',name:'Female'},
+    {identifier:'es-m',language:'es-ES',name:'Microsoft Pablo'},
+    {identifier:'es-f',language:'es-ES',name:'Microsoft Helena'},
+    {identifier:'cl-f',language:'es-CL',name:'Catalina'},
+    {identifier:'unknown',language:'es-MX',name:'Google español'},
+    {identifier:'es-f',language:'es-ES',name:'Microsoft Helena'},
+  ]);
+  assert.equal(voices.length,4);
+  assert.equal(voiceForGender(voices,'female'),'cl-f');
+  assert.equal(voiceForGender(voices,'male'),'es-m');
+  assert.equal(voices.find(row=>row.identifier==='unknown').gender,null);
+  assert.equal(voiceForGender(spanishVoices([{identifier:'unknown',language:'es',name:'Google español'}]),'male'),'');
+  assert.deepEqual(spanishVoices(),[]);
 });
