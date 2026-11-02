@@ -27,6 +27,57 @@ test('la caducidad de cara y manos es independiente',()=>{
   overlay.update({faceTime:0,faceLandmarks:points(.5,468),handTime:550,leftHandLandmarks:points()},550);
   assert.equal(overlay.frame(650).faceLandmarks,undefined);assert.equal(overlay.frame(650).leftHandLandmarks.length,21);
 });
+
+test('los colores siguen cada palma aunque el modelo invierta sus etiquetas',()=>{
+  const overlay=createLandmarkContinuity();
+  for(let i=0;i<18;i++){
+    const time=100+i*33,a=points(.2+i*.004),b=points(.8-i*.004);
+    const raw={handTime:time,leftHandLandmarks:i%2?b:a,rightHandLandmarks:i%2?a:b};
+    const snapshot=structuredClone(raw);overlay.update(raw,time);const visual=overlay.frame(time);
+    assert.ok(visual.leftHandLandmarks[0].x<.4);
+    assert.ok(visual.rightHandLandmarks[0].x>.6);
+    assert.deepEqual(raw,snapshot,'la asociación visual nunca reetiqueta la observación cruda');
+  }
+});
+
+test('las trayectorias conservan los colores al cruzarse y tras una oclusión breve',()=>{
+  const overlay=createLandmarkContinuity();
+  for(let i=0;i<31;i++){
+    const time=100+i*33,a=points(.2+i*.02),b=points(.8-i*.02).map(p=>({...p,y:p.y+.035}));
+    // Sort by image position, simulating changing labels/order at the crossing.
+    const raw={handTime:time,leftHandLandmarks:a[0].x<b[0].x?a:b,rightHandLandmarks:a[0].x<b[0].x?b:a};
+    if(i>=18&&i<=20){delete raw.leftHandLandmarks;raw.rightHandLandmarks=a;}
+    overlay.update(raw,time);
+    if(i>=24){const result=overlay.frame(time);assert.ok(result.leftHandLandmarks[0].x>.6);assert.ok(result.rightHandLandmarks[0].x<.4);}
+  }
+});
+
+test('el filtro reduce ruido en reposo y responde a dedos rápidos aunque la muñeca no cambie',()=>{
+  const overlay=createLandmarkContinuity();let sumRaw=0,sumVisual=0,n=0;
+  for(let i=0;i<100;i++){
+    const time=100+i*33,noise=Math.sin(i*2.1)*.003;
+    overlay.update({handTime:time,leftHandLandmarks:points(.3+noise)},time);
+    if(i>20){sumRaw+=noise**2;sumVisual+=(overlay.frame(time).leftHandLandmarks[0].x-.3)**2;n++;}
+  }
+  assert.ok(Math.sqrt(sumVisual/n)<Math.sqrt(sumRaw/n)*.55);
+  overlay.clear();const hand=points();overlay.update({handTime:100,leftHandLandmarks:hand},100);
+  for(let i=1;i<=5;i++){
+    const time=100+i*33,next=points();next[8].x+=i*.025;
+    overlay.update({handTime:time,leftHandLandmarks:next},time);
+    if(i>=3)assert.ok(next[8].x-overlay.frame(time).leftHandLandmarks[8].x<.012,'el dedo responde sin arrastrar toda la mano');
+    assert.equal(overlay.frame(time).leftHandLandmarks[0].x,hand[0].x);
+  }
+});
+
+test('cambios rápidos de sentido no mantienen una mano fantasma ni prolongan su vida desde la cara',()=>{
+  const overlay=createLandmarkContinuity();
+  for(let i=0;i<10;i++){const t=100+i*40;overlay.update({handTime:t,leftHandLandmarks:points(.3+Math.sin(i)*.04)},t);}
+  overlay.update({handTime:500},500);overlay.update({handTime:500,faceTime:700,faceLandmarks:points(.5,468)},700);
+  assert.equal(overlay.frame(700).leftHandLandmarks,undefined);
+  overlay.update({handTime:1200,rightHandLandmarks:points(.75)},1200);
+  assert.equal(overlay.frame(1200).leftHandLandmarks,undefined);
+  assert.equal(overlay.frame(1200).rightHandLandmarks[0].x,.75);
+});
 function pumpHarness({face,hand,staticVideo=false}={}){
   let time=0,id=0;const timers=new Map(),calls={hands:0,face:0},errors=[];
   const video={readyState:2,get currentTime(){return staticVideo?1:time/1000;}};
@@ -41,6 +92,14 @@ test('una cara lenta no frena las manos ni acumula trabajos sobre fotogramas vie
 test('una mano lenta no crea solicitudes concurrentes y los fotogramas detenidos no se reprocesan',async()=>{
   let release;const h=pumpHarness({hand:()=>new Promise(resolve=>{release=resolve;})});await h.advance(500);assert.equal(h.calls.hands,1);assert.ok(h.calls.face>5);h.pump.close();release();await flush();assert.equal(h.timers.size,0);
   const still=pumpHarness({staticVideo:true});await still.advance(1000);assert.deepEqual(still.calls,{hands:1,face:1});still.pump.close();
+});
+
+test('una inferencia lenta toma el siguiente fotograma sin sumar una pausa fija',async()=>{
+  let release,calls=0;
+  const h=pumpHarness({hand:()=>++calls===1?new Promise(done=>{release=done;}):Promise.resolve()});
+  await h.advance(70);assert.equal(h.calls.hands,1);
+  release();await flush();await h.advance(0);
+  assert.equal(h.calls.hands,2);h.pump.close();
 });
 test('un error termina ambos ritmos una sola vez y no revive después de cerrar',async()=>{
   const h=pumpHarness({hand:()=>Promise.reject(Error('GPU unavailable'))});await h.advance(100);assert.equal(h.errors.length,1);assert.equal(h.timers.size,0);await h.advance(10000);assert.equal(h.errors.length,1);
