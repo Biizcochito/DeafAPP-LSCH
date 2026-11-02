@@ -12,6 +12,20 @@ test('la región predice movimiento limitado, conserva la zona tras varios fallo
   assert.ok(predicted.xCenter>.35&&predicted.xCenter<.45);assert.ok(recovery.width>predicted.width);assert.ok(Math.abs(predicted.width*640-predicted.height*480)<1e-6);assert.equal(predicted.rotation,.1);
   slot.misses=3;assert.ok(r.trackedRegion(slot,500,640,480));assert.equal(r.trackedRegion(slot,801,640,480),null);assert.equal(r.trackedRegion(slot,120,640,480),null);r.forget(slot);assert.equal(r.trackedRegion(slot,200,640,480),null);
 });
+
+test('la recuperación de una mano rápida cubre su posición anterior y su destino, también en vertical',()=>{
+  const context=vm.createContext({self:{}});vm.runInContext(regionsSource,context);const r=context.self.HandRegions;
+  for(const [width,height] of [[640,480],[480,640]]){
+    const slot={},roi={xCenter:.3,yCenter:.4,width:.2,height:.2*width/height,rotation:0};
+    r.remember(slot,roi,100);r.remember(slot,{...roi,xCenter:.36,yCenter:.44},150);
+    const prediction=r.trackedRegion(slot,200,width,height),recovery=r.trackedRegion(slot,200,width,height,true);
+    assert.ok(recovery.xCenter>.36&&recovery.xCenter<prediction.xCenter);
+    assert.ok(recovery.width>prediction.width);
+    assert.ok(recovery.xCenter-recovery.width/2<.36-.1);
+    assert.ok(recovery.xCenter+recovery.width/2>prediction.xCenter+.1);
+    assert.ok(Math.abs(recovery.width*width-recovery.height*height)<1e-6);
+  }
+});
 async function harness(){
   let image={},closed=0,disposed=0;const messages=[],regions=[];
   const good=x=>({handScore:.99,handedness:x<.5?'Right':'Left',landmarks:points(x)});

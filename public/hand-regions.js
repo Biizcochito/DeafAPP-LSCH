@@ -34,8 +34,11 @@ self.HandRegions = (() => {
       dx=clamp((roi.xCenter-previous.roi.xCenter)*horizon,-roi.width*.45,roi.width*.45);
       dy=clamp((roi.yCenter-previous.roi.yCenter)*horizon,-roi.height*.45,roi.height*.45);
     }
-    if(recovery){dx=0;dy=0;}
-    const growth=recovery?1.25:1+Math.min(.18,Math.hypot(dx/roi.width,dy/roi.height)*.25);
+    // A recovery crop covers both the last observation and the predicted
+    // destination, so fast motion is not searched only at the old location.
+    const travel=Math.max(Math.abs(dx/roi.width),Math.abs(dy/roi.height));
+    const growth=recovery?1.25+travel:1+Math.min(.18,Math.hypot(dx/roi.width,dy/roi.height)*.25);
+    if(recovery){dx*=.5;dy*=.5;}
     const span=clamp(roi.width*growth,.08,1.35),ratio=width/height;
     return {...roi,xCenter:clamp(roi.xCenter+dx,-.05,1.05),yCenter:clamp(roi.yCenter+dy,-.05,1.05),width:span,height:span*ratio};
   }

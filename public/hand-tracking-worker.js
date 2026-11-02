@@ -1,7 +1,7 @@
 /* Pinned TFJS 4.22.0 + hand-pose-detection 2.0.1. Their JS implementation
    exposes handLandmarks/handLandmarksToRoi. Direct regional inference avoids
    the palm detector's missed acquisitions; every point still comes from ML. */
-importScripts('hand-regions.js?v=stable-traces-20261030', 'hand-model/tf.min.js', 'hand-model/hand-pose-detection.min.js');
+importScripts('hand-regions.js?v=adaptive-traces-20261102', 'hand-model/tf.min.js', 'hand-model/hand-pose-detection.min.js');
 let detector, canvas, timestamp = -1;
 const slots = [{}, {}];
 let searchPhase = 0;

@@ -11,7 +11,9 @@ export function createLiveTrackingPump({tracker,video,onError,withTimeout,now=()
         await withTimeout(channel.name==='hands'?tracker.sendHands({image:video}):tracker.sendFace({image:video}),channel.warm?10000:45000);
         channel.warm=true;
       }
-      if(!closed)channel.timer=setTimer(()=>void tick(channel),Math.max(8,(channel.name==='hands'?33:80)-(now()-started)));
+      // If inference already consumed the frame budget, request the next fresh
+      // frame immediately instead of adding another fixed 8 ms of latency.
+      if(!closed)channel.timer=setTimer(()=>void tick(channel),Math.max(0,(channel.name==='hands'?33:80)-(now()-started)));
     }catch(error){if(!closed){close();onError(error);}}
   }
   function close(){if(closed)return;closed=true;channels.forEach(channel=>clearTimer(channel.timer));}
