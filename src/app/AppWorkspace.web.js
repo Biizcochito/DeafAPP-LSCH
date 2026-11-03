@@ -52,7 +52,7 @@ export function InterpretationLink({onInterpret,disabled=false,newTab=false,clas
 }
 // Una celda por seña de la categoría: se enciende con el color de la categoría cuando la persona la grabó.
 function Cells({ category, timesOf }) {
-  return <span className="app-cells" aria-hidden="true" style={{ "--n": category.señas.length }}>{category.señas.map((word, i) => <i key={word} data-on={timesOf(category, word) > 0 || undefined} style={{ "--i": i }} title={displayWord(word)} />)}</span>;
+  return <span className="app-cells" aria-hidden="true" style={{ "--n": category.señas.length }}>{category.señas.map((word, i) => <i key={word} data-on={timesOf(category, word) > 0 || undefined} style={{ "--i": i }} title={displayWord(word,category.id)} />)}</span>;
 }
 function Tracker({ category, timesOf, tone }) {
   const done = category.señas.filter(word => timesOf(category, word) > 0).length;
@@ -96,15 +96,15 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
   const nav = screen === "aportes" ? "aportes" : screen === "mas" ? "mas" : ["ayuda", "feedback"].includes(screen) ? null : "home";
   const navIndex = Math.max(0, navItems.findIndex(([id]) => id === nav));
   const matched = all.filter(({ word, cat }) => normalize(`${word} ${cat.nombre}`).includes(normalize(query.trim())));
-  const categoryWords = (category?.señas || []).filter(word => normalize(displayWord(word)).includes(normalize(query.trim())) && (filter === "all" || (filter === "needed" ? timesOf(category, word) === 0 : timesOf(category, word) > 0)));
+  const categoryWords = (category?.señas || []).filter(word => normalize(displayWord(word,category.id)).includes(normalize(query.trim())) && (filter === "all" || (filter === "needed" ? timesOf(category, word) === 0 : timesOf(category, word) > 0)));
   const categoriesShown = categories.filter(cat => normalize(cat.nombre).includes(normalize(query.trim())));
   const title = nombrePantalla(screen,{category:category?.nombre});
   const subtitle = { home: "Elige una palabra o una oración. Tu aporte cuenta.", categoria: isPhraseCategory ? "Frases cortas de todos los días. Elige una y compártela en LSCh." : "Elige la palabra que quieres aportar.", aportes: "Las señas que has grabado desde este dispositivo.", mas: "Cómo vamos y qué nos importa.", ayuda: "Unos minutos de preparación hacen la diferencia.", feedback: "Ayúdanos a mejorar la experiencia." }[screen];
   function WordRow({ word, cat }) {
     const n = timesOf(cat, word);
     return <li className={`app-word-row${cat.id === "oraciones" ? " app-phrase-row" : ""}`} data-done={n > 0 || undefined} style={{ "--tone": toneOf(cat) }}>
-      <div><h3>{displayWord(word)}</h3>{cat.id === "oraciones" && word === "estoy bien" && <p>Referencia de entrenamiento: YO · BIEN</p>}<p>{screen === "home" ? `${cat.nombre} · ` : ""}{n > 0 ? `La grabaste ${times(n)}` : "Aún no la has grabado"}</p></div>
-      <button className="app-record-word" aria-label={`Grabar ${displayWord(word)}`} onClick={() => onRecord(word, cat)}><AppIcon name="camera" size={20} /><span>Grabar</span></button>
+      <div><h3>{displayWord(word,cat.id)}</h3>{cat.id === "oraciones" && word === "estoy bien" && <p>Referencia de entrenamiento: YO · BIEN</p>}<p>{screen === "home" ? `${cat.nombre} · ` : ""}{n > 0 ? `La grabaste ${times(n)}` : "Aún no la has grabado"}</p></div>
+      <button className="app-record-word" aria-label={`Grabar ${displayWord(word,cat.id)}`} onClick={() => onRecord(word, cat)}><AppIcon name="camera" size={20} /><span>Grabar</span></button>
     </li>;
   }
   const heading = <><h1 tabIndex={-1} ref={headingRef}>{title}</h1><p>{subtitle}</p></>;
@@ -121,7 +121,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
           ? <div className="app-cat-banner" data-phrases={isPhraseCategory || undefined} style={{ "--tone": toneOf(category) }}><div className="app-page-heading">{heading}<span className="app-cat-count">{category.señas.length} {isPhraseCategory ? "oraciones simples" : "señas"}</span></div><span className="app-cat-emoji" aria-hidden="true">{category.emoji}</span></div>
           : <div className="app-page-heading">{heading}</div>}
       {screen === "home" && <>
-        {pending && <section className="app-draft"><AppIcon name="camera" /><div><h2>Tu grabación está pendiente</h2><p>«{displayWord(pending.label)}» · Revisa antes de enviar.</p></div><button aria-label="Revisar grabación pendiente" onClick={onResume}><AppIcon name="arrow" /></button></section>}
+        {pending && <section className="app-draft"><AppIcon name="camera" /><div><h2>Tu grabación está pendiente</h2><p>«{displayWord(pending.label,pending.category)}» · Revisa antes de enviar.</p></div><button aria-label="Revisar grabación pendiente" onClick={onResume}><AppIcon name="arrow" /></button></section>}
         {!query.trim() && phrases && <section className="app-phrases-entry" style={{ "--tone": toneOf(phrases) }} aria-labelledby="phrases-title">
           <div className="app-phrases-copy"><span className="app-phrases-label"><AppIcon name="message" size={17} />{phrases.señas.length} oraciones simples</span><h2 id="phrases-title">Oraciones.</h2><p>Estamos reuniendo tomas completas para entrenar estas oraciones. Aporta la tuya en LSCh en una sola toma.</p><AppButton onClick={() => onCategory(phrases)}>Ver las {phrases.señas.length} oraciones</AppButton></div>
           <div className="app-phrases-art" aria-hidden="true"><span>{phrases.señas[0]}.</span><span>{phrases.señas[phrases.señas.length - 1]}.</span><i><AppIcon name="camera" size={18} />Una oración · Una toma</i></div>
@@ -169,7 +169,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
         <ul className="app-progress-list">{touched.map(cat => <li key={cat.id} style={{ "--tone": toneOf(cat) }}><button onClick={() => onCategory(cat)}>
           <span className="app-progress-name"><i aria-hidden="true">{cat.emoji}</i>{cat.nombre}<AppIcon name="chevron" size={17} /></span>
           <span className="app-row-cells"><Cells category={cat} timesOf={timesOf} /><b>{doneOf(cat)}/{cat.señas.length}</b></span>
-          <span className="app-mine-words">{cat.señas.filter(word => timesOf(cat, word) > 0).map(word => <span key={word}>{displayWord(word)}{timesOf(cat, word) > 1 && <b>×{timesOf(cat, word)}</b>}</span>)}</span>
+          <span className="app-mine-words">{cat.señas.filter(word => timesOf(cat, word) > 0).map(word => <span key={word}>{displayWord(word,cat.id)}{timesOf(cat, word) > 1 && <b>×{timesOf(cat, word)}</b>}</span>)}</span>
         </button></li>)}</ul>
         <p className="app-footnote">Tus aportes se guardan solo en este dispositivo. Si borras los datos del navegador, este resumen empieza de nuevo.</p>
       </> : <div className="app-empty"><AppIcon name="camera" size={32} /><h2>Todavía no has grabado ninguna seña.</h2><p>Cuando envíes una, aparecerá aquí. Tus aportes se guardan solo en este dispositivo.</p><AppButton onClick={() => navigate("home")}>Elegir una seña</AppButton></div>)}
