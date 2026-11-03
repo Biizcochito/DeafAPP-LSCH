@@ -135,3 +135,40 @@ test('las variantes heredan la aprobación, aparecen en Aprobadas y respetan dec
   await api.reviewVariants(session,detail.batch,'rejected');detail=await api.variantDetail(session,result.batch.id);assert.equal(detail.batch.inheritApproval,false);
   await api.review(session,[detail.batch.parents[0]],'approved');assert.equal((await api.variantDetail(session,result.batch.id)).batch.status,'rejected');
 });
+
+test('aprobar crea 50 variantes cuando la seña no tiene lotes; recibir o rechazar una toma no las crea',async()=>{
+  const api=createAdminClient(createMockAdminBackend()),session=await api.login(MOCK_ADMIN_PASSWORD);
+  const source=(await api.list(session,{status:'pending'})).rows[0];
+  assert.equal((await api.variants(session,{status:'all'})).total,0);
+  let result=await api.review(session,[source],'pending');assert.equal(result.automaticVariants,0);
+  result=await api.review(session,[source],'rejected');assert.equal(result.automaticVariants,0);
+  assert.equal((await api.variants(session,{status:'all'})).total,0);
+  result=await api.review(session,[source],'approved');assert.equal(result.automaticBatches,1);assert.equal(result.automaticVariants,50);
+  const list=await api.variants(session,{status:'approved'});assert.equal(list.total,1);assert.equal(list.totalVariants,50);
+  const detail=await api.variantDetail(session,list.rows[0].id);assert.equal(detail.variants.length,50);
+  assert.equal(detail.batch.parents[0].id,source.id);assert.equal(detail.batch.parents[0].version,source.version);assert.equal(detail.batch.inheritApproval,true);
+  result=await api.review(session,[source],'approved');assert.equal(result.automaticVariants,0);
+  assert.equal((await api.variants(session,{status:'all'})).totalVariants,50);
+});
+
+test('aprobar varias tomas de la misma seña o en paralelo conserva un solo lote automático',async()=>{
+  for(const parallel of [false,true]){
+    const api=createAdminClient(createMockAdminBackend()),session=await api.login(MOCK_ADMIN_PASSWORD);
+    const rows=(await api.list(session,{status:'pending'})).rows,same=rows.filter(row=>row.category===rows[0].category&&row.label===rows[0].label);
+    assert.ok(same.length>=2);
+    const results=parallel?await Promise.all(same.slice(0,2).map(row=>api.review(session,[row],'approved'))):[await api.review(session,same.slice(0,2),'approved')];
+    assert.equal(results.reduce((sum,row)=>sum+row.automaticVariants,0),50);
+    const list=await api.variants(session,{status:'approved'});assert.equal(list.total,1);assert.equal(list.totalVariants,50);
+  }
+});
+
+test('la aprobación conserva los lotes pendientes y rechazados y rechaza revisiones obsoletas sin generar variantes',async()=>{
+  const api=createAdminClient(createMockAdminBackend()),session=await api.login(MOCK_ADMIN_PASSWORD);
+  const rows=(await api.list(session,{status:'pending'})).rows,source=rows[0];
+  const created=await api.createVariants(session,{requestId:crypto.randomUUID(),rows:[source],quantity:100});
+  await api.reviewVariants(session,created.batch,'rejected');
+  const stale={...source};const result=await api.review(session,[source],'approved');assert.equal(result.automaticVariants,0);
+  assert.equal((await api.variantDetail(session,created.batch.id)).batch.status,'rejected');
+  await assert.rejects(api.review(session,[stale],'approved'),e=>e.code==='conflict');
+  const list=await api.variants(session,{status:'all'});assert.equal(list.total,1);assert.equal(list.totalVariants,100);
+});
