@@ -1,12 +1,13 @@
 import {CATEGORIAS_VISIBLES} from '../catalog/signCatalog.js';
 import {PHRASES,predictForest,decodeCandidate} from './visibleTraining.js';
 import {sequenceKey,trainingPhraseRows,evaluationSummary,validSequence} from './assistantData.js';
+import {displayWord} from '../ui/signNames.js';
 
 export const VISIBLE_TARGETS=CATEGORIAS_VISIBLES.flatMap(category=>category.señas.map(label=>({classId:`${category.id}/${label}`,category:category.id,label})));
 const allowed=new Set(VISIBLE_TARGETS.map(row=>row.classId));
 const support=['verbos/querer','verbos/necesitar','necesidades/ayuda','necesidades/agua','verbos/comer'];
 const count=value=>Number.isInteger(value)&&value>=0?value:0;
-const name=id=>id.split('/').at(-1);
+const name=id=>displayWord(id);
 
 export function captureQuality(frames) {
   const all=Array.isArray(frames)?frames:[],total=all.length;
@@ -30,7 +31,7 @@ export function buildTrainingPlan({progress,rows=[],goal='phrases',personal=null
   const failures=rows.filter(row=>row.split==='evaluation'&&row.modelId===personal?.modelId&&row.confirmed&&PHRASES.includes(row.classId)&&(!row.prediction?.accepted||row.prediction.classId!==row.classId));
   let next;
   if(!progress)next={type:'wait',title:'Consultar el informe privado',reason:'Falta cargar el informe autenticado del catálogo.'};
-  else if(goal==='catalog'&&catalog.length){const target=catalog[0];next={type:'capture',classId:target.classId,title:`Grabar «${target.label}»`,reason:`Informe: ${target.snapshot} originales. En este navegador: ${target.local} tomas nuevas. ${support.includes(target.classId)?'Esta seña apoya las oraciones prioritarias.':'Ayuda a completar el catálogo visible.'}`};}
+  else if(goal==='catalog'&&catalog.length){const target=catalog[0];next={type:'capture',classId:target.classId,title:`Grabar «${displayWord(target.label,target.category)}»`,reason:`Informe: ${target.snapshot} originales. En este navegador: ${target.local} tomas nuevas. ${support.includes(target.classId)?'Esta seña apoya las oraciones prioritarias.':'Ayuda a completar el catálogo visible.'}`};}
   else if(goal==='review'&&quality.at(-1)?.accepted===false){const last=quality.at(-1);next={type:'capture',classId:allowed.has(last.classId)?last.classId:PHRASES[0],title:'Repetir la toma con mejor seguimiento',reason:last.reason};}
   else if(goal==='review'&&reviews.length){const item=reviews[0];next={type:'review',recordingId:item.id,title:`Revisar comparación de «${name(item.classId)}»`,reason:item.priority?'Es una de las tomas pendientes con más discrepancias o abstenciones. Confirma la realización antes de usar sus etiquetas.':'Los modelos coinciden, pero el significado de la toma sigue pendiente de revisión.'};}
   else if(pending.length){const target=pending[0];next={type:'capture',classId:target.classId,title:`Grabar «${name(target.classId)}»`,reason:`Tiene ${target.count} de 3 tomas de aprendizaje utilizables. Faltan ${3-target.count} para el mínimo del prototipo personal.`};}

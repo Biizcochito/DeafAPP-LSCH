@@ -1,9 +1,6 @@
 import {displayWord} from '../ui/signNames.js';
 
-export const spokenSignLabel=classId=>{
-  const word=displayWord(classId.split('/').at(-1).replaceAll('_',' '));
-  return word==='si'?'sí':word;
-};
+export const spokenSignLabel=classId=>displayWord(classId);
 
 // Consume confirmed predictions, never the label selected for a training take.
 // A sustained match is spoken once; brief tracking fluctuations do not rearm it.

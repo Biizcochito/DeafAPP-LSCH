@@ -1,3 +1,4 @@
+import {displayWord} from '../ui/signNames';
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {CATEGORIAS} from '../catalog/signCatalog';
 import {catalogueKey,collectionGroups,normalizedLabel} from '../training/recognitionCatalog';
@@ -60,7 +61,7 @@ export default function SignAvailability({api,session,client,onAccessError,onBus
     if(!label||!category)return;
     if(catalogue.some(row=>catalogueKey(row.category,row.label)===catalogueKey(category.id,label))){setError('Esta seña ya existe. Búscala y pulsa Habilitar.');return;}
     await task(async()=>{
-      await api.saveVocabulary(session,{classId:`${category.id}/${label}`,category:category.id,label,displayLabel:newSign.label.trim(),categoryTitle:category.nombre,
+      await api.saveVocabulary(session,{classId:`${category.id}/${label}`,category:category.id,label,displayLabel:displayWord(newSign.label.trim(),category.id),categoryTitle:category.nombre,
         emoji:category.emoji,color:category.color,collection:newSign.collection,state:'collecting',activationScope:'prototype',minimum:3,recordingGoal:50,peopleGoal:10,aliasOf:null,forms:{},version:0},{isNew:true});
       if(alive.current){setNotice(newSign.collection?'Seña creada y habilitada para grabar. Ya puede recibir aportes.':'Seña creada. Puedes habilitarla cuando quieras.');setNewSign(null);setSelected(category.id);newButton.current?.focus();}
     });

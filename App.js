@@ -112,14 +112,14 @@ function CategoriaCard({ cat, conteos, onPress }) {
   );
 }
 
-function SignaRow({ seña, conteo, onGrabar }) {
+function SignaRow({ seña, categoria, conteo, onGrabar }) {
   const n   = conteo || 0;
   const pct = Math.min(n / META_POR_SEÑA, 1);
   const col = colorProgreso(n);
   return (
     <View style={styles.señaFila}>
       <View style={styles.señaInfo}>
-        <Text style={styles.señaNombre}>{seña}</Text>
+        <Text style={styles.señaNombre}>{nombreDeSeña(seña,categoria)}</Text>
         <View style={styles.barraFondo}>
           <View style={[styles.barraRelleno, { width: `${pct * 100}%`, backgroundColor: col }]} />
         </View>
@@ -408,7 +408,7 @@ export default function App() {
   useEffect(() => {
     if(Platform.OS!=='web'||typeof document==='undefined'||pantalla==='admin')return;
     const visible=pantalla==='grabar'&&!consentimientoActivo?'consentimiento':pantalla==='grabar'&&!permission?.granted?'permisoCamara':pantalla;
-    document.title=tituloDe(visible,{category:catActual?.nombre,word:señaActual});
+    document.title=tituloDe(visible,{category:catActual?.nombre,word:nombreDeSeña(señaActual,catActual?.id)});
   },[pantalla,catActual?.nombre,señaActual,consentimientoActivo,permission?.granted]);
   useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return;
@@ -678,7 +678,7 @@ export default function App() {
   if (pantalla === "vistaPrevia" && borrador) {
     if (Platform.OS === "web") {
       const categoriaBorrador = CATEGORIAS.find(c => c.id === borrador.category) || catActual;
-      return <RecordingReview word={nombreDeSeña(borrador.label)} category={categoriaBorrador} tone={toneFor(CATEGORIAS_VISIBLES, categoriaBorrador)} camMax={anchoCamara}
+      return <RecordingReview word={nombreDeSeña(borrador.label,borrador.category)} category={categoriaBorrador} tone={toneFor(CATEGORIAS_VISIBLES, categoriaBorrador)} camMax={anchoCamara}
         ratio={borrador.frameAspectRatio || 4 / 3} frameUri={armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0])}
         index={fotogramaVista} total={borrador.frames.length} playing={reproduciendo} seconds={(borrador.frames.length * borrador.intervalMs / 1000).toFixed(1)}
         onTogglePlay={() => setReproduciendo(value => !value)} onBack={volverAlCatalogo} onLater={volverAlCatalogo} onInterpret={abrirInterpretacion}
@@ -693,12 +693,12 @@ export default function App() {
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver a la lista" disabled={subiendo} onPress={volverAlCatalogo} style={styles.btnBack}>
               <Text style={styles.btnBackTexto}>‹</Text>
             </TouchableOpacity>
-            <Text style={styles.grabarTitulo}>{borrador.label.toUpperCase()}</Text>
+            <Text style={styles.grabarTitulo}>{nombreDeSeña(borrador.label,borrador.category).toUpperCase()}</Text>
             <View style={{ width: 44 }} />
           </View>
           <Text style={styles.previewTitulo}>Revisa tu seña</Text>
           <View style={[styles.camaraBox, estiloCamaraWeb, { aspectRatio: borrador.frameAspectRatio || 4 / 3 }]}>
-            <Image accessibilityLabel={`Vista previa de la seña ${borrador.label}`} source={{ uri: armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0]) }} resizeMode="contain" style={[styles.camara, Platform.OS === "web" && { transform: [{ scaleX: -1 }] }]} />
+            <Image accessibilityLabel={`Vista previa de la seña ${nombreDeSeña(borrador.label,borrador.category)}`} source={{ uri: armarDataUri(borrador.frames[fotogramaVista] || borrador.frames[0]) }} resizeMode="contain" style={[styles.camara, Platform.OS === "web" && { transform: [{ scaleX: -1 }] }]} />
             <View style={styles.progresoBarra}>
               <View style={[styles.progresoRelleno, { width: `${((fotogramaVista + 1) / borrador.frames.length) * 100}%` }]} />
             </View>
@@ -737,7 +737,7 @@ export default function App() {
 
   if (pantalla === "envioListo") {
     if (Platform.OS === "web") {
-      return <RecordingDone word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
+      return <RecordingDone word={nombreDeSeña(señaActual,catActual?.id)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} times={aportes.items[`${catActual?.id}/${señaActual}`]?.n || 0}
         onAgain={() => abrirGrabacion(señaActual)} onInterpret={abrirInterpretacion} onMine={() => { setExito(false); setPantalla("aportes"); }} onBack={() => { volverAlCatalogo(); setExito(false); }} />;
     }
     return (
@@ -745,7 +745,7 @@ export default function App() {
         <StatusBar barStyle="light-content" />
         <Text style={{ fontSize: 70 }}>✅</Text>
         <Text style={styles.exitoTexto}>¡Gracias!</Text>
-        <Text style={styles.instruccion}>Tu seña «{señaActual}» fue enviada para revisión.</Text>
+        <Text style={styles.instruccion}>Tu seña «{nombreDeSeña(señaActual,catActual?.id)}» fue enviada para revisión.</Text>
         <View style={styles.grabarBotones}>
           <TouchableOpacity accessibilityRole="button" accessibilityLabel="Grabar otra vez" style={[styles.btnOtraVez, styles.previewAccion]} onPress={() => abrirGrabacion(señaActual)}>
             <Text style={Platform.OS === "web" ? styles.btnTextoPrimario : styles.btnTextoBlanco}>Grabar otra vez</Text>
@@ -885,7 +885,7 @@ export default function App() {
         ? "Muestra al menos una mano frente a la cámara al inicio. Puedes hacer la seña con una o las dos manos."
         : "Confirma ambas manos frente a la cámara al inicio. Después puedes hacer la seña con una o las dos manos.")
       : countdown !== null ? "Mantén al menos una mano trazada. Graba al terminar la cuenta atrás."
-      : `Pulsa Preparar grabación y después coloca ${esMovil ? "al menos una mano" : "ambas manos"} frente a la cámara para grabar: "${señaActual}".`;
+      : `Pulsa Preparar grabación y después coloca ${esMovil ? "al menos una mano" : "ambas manos"} frente a la cámara para grabar: "${nombreDeSeña(señaActual,catActual?.id)}".`;
     // La cámara y sus avisos son los mismos en web y nativo; solo cambia el marco que los rodea.
     const camaraNodo = (
         <View ref={contenedorCamaraRef} style={[styles.camaraBox, estiloCamaraWeb, Platform.OS === "web" && { maxWidth: anchoCamara, borderRadius: 22 }]}>
@@ -923,7 +923,7 @@ export default function App() {
       const sinPreparar = !borradorRecuperado || !origenGrabacion;
       const enProceso = preparando || countdown !== null || capturando;
       const reposo = !enProceso && !subiendo && !exito;
-      return <RecordingStage word={nombreDeSeña(señaActual)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} onBack={volverDeGrabar} onInterpret={abrirInterpretacion}
+      return <RecordingStage word={nombreDeSeña(señaActual,catActual?.id)} category={catActual} tone={toneFor(CATEGORIAS_VISIBLES, catActual)} onBack={volverDeGrabar} onInterpret={abrirInterpretacion}
         camera={camaraNodo} camMax={anchoCamara}
         step={capturando ? 3 : countdown !== null ? 2 : preparando ? 1 : 0}
         instruction={textoInstruccion} repeating={repitiendo}
@@ -945,7 +945,7 @@ export default function App() {
           <TouchableOpacity onPress={volverDeGrabar} style={styles.btnBack}>
             <Text style={styles.btnBackTexto}>‹</Text>
           </TouchableOpacity>
-          <Text style={styles.grabarTitulo}>{señaActual?.toUpperCase()}</Text>
+          <Text style={styles.grabarTitulo}>{nombreDeSeña(señaActual,catActual?.id)?.toUpperCase()}</Text>
           <View style={{ width: 44 }} />
         </View>
         {camaraNodo}
@@ -1049,7 +1049,7 @@ export default function App() {
             <>
               <Text style={styles.seccionTitulo}>Necesitamos tu ayuda 🔴</Text>
               {pendientes.map(s => (
-                <SignaRow key={s} seña={s} conteo={conteos[s]}
+                <SignaRow key={s} seña={s} categoria={catActual?.id} conteo={conteos[s]}
                   onGrabar={() => abrirGrabacion(s)} />
               ))}
             </>
@@ -1058,7 +1058,7 @@ export default function App() {
             <>
               <Text style={styles.seccionTitulo}>Señas completas ✅</Text>
               {listas.map(s => (
-                <SignaRow key={s} seña={s} conteo={conteos[s]}
+                <SignaRow key={s} seña={s} categoria={catActual?.id} conteo={conteos[s]}
                   onGrabar={() => abrirGrabacion(s)} />
               ))}
             </>
@@ -1097,7 +1097,7 @@ export default function App() {
       <ScrollView showsVerticalScrollIndicator={true}>
         {borrador && (
           <View style={styles.pendienteBox}>
-            <Text style={styles.pendienteTitulo}>Tienes una grabación pendiente: «{borrador.label}»</Text>
+            <Text style={styles.pendienteTitulo}>Tienes una grabación pendiente: «{nombreDeSeña(borrador.label,borrador.category)}»</Text>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Revisar grabación pendiente" onPress={() => mostrarVistaPrevia()} style={styles.trazadoBoton}>
               <Text style={styles.trazadoBotonTexto}>Revisar y enviar</Text>
             </TouchableOpacity>
