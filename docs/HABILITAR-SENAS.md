@@ -35,6 +35,10 @@ Pulsa **Ocultar categoría**. Se ocultan todas sus señas en Grabar y se conserv
 
 **Habilitar señas** decide qué pueden grabar las personas. Publicar una categoría no entrena automáticamente el intérprete ni cambia sus clases habilitadas. La revisión de muestras y las pruebas del reconocimiento siguen en **Opciones de reconocimiento y entrenamiento** y en **Entrenamiento LSCh**.
 
+**Variantes al aprobar:** cuando apruebas una grabación y su palabra u oración todavía no tiene ningún lote de variantes, el servidor crea automáticamente un lote de **50 variantes aprobadas** de ese original. El mensaje de confirmación indica cuántas se generaron. Recibir una grabación pendiente no genera variantes. Si ya existe un lote aprobado, pendiente o rechazado, se conserva y no se crea otro; también se respetan las decisiones manuales de revisión. Una aprobación de varias grabaciones de la misma seña genera como máximo un lote automático para esa seña.
+
+La regla se ejecuta al aprobar; las grabaciones aprobadas anteriormente pueden volver a aprobarse desde **Aprobadas → Ver grabación → Aprobar grabación** para aplicarla. No hace falta rechazar el original ni subir nuevamente su archivo.
+
 Para la interpretación pública, una seña **en recopilación** se habilita automáticamente como **prototipo** cuando tiene **al menos un original aprobado y apto más 50 variantes distintas aprobadas de sus originales aptos**. La preparación del servidor y la lista de palabras del intérprete se actualizan solas; no hace falta publicar código para cada seña. Las variantes pendientes, rechazadas, duplicadas, vencidas o derivadas de muestras reservadas para evaluación no completan este mínimo.
 
 Las señas **pausadas** o **en evaluación privada** conservan su estado hasta que lo cambies. También se mantiene la habilitación manual con el mínimo configurado de originales sin variantes (tres por defecto). La evaluación independiente conserva sus requisitos de personas, muestras y resultados.
