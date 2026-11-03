@@ -51,7 +51,7 @@ export default function VariantReviewPanel({api,session,client,onBack,onAccessEr
         <button disabled={busy} onClick={()=>{setDetail(null);request.current++;}}>Cerrar lote</button></div>
     </section>}
     <div className="mv-list">{(data?.rows||[]).map(row=><section className="mv-card mv-batch" key={row.id}><div><h3>{row.displayLabel}</h3><small>{row.categoryTitle} · {labels[row.status]}{row.inheritApproval?' · Hereda la aprobación del original':''}</small><p>{row.parentCount} {row.parentCount===1?'original':'originales'} + {row.quantity} variantes</p></div><button disabled={busy} onClick={()=>open(row.id)}>Revisar lote de {row.displayLabel}</button></section>)}</div>
-    {!loading&&data?.rows.length===0&&<p>No hay lotes con este filtro. Puedes multiplicar una grabación desde «Originales».</p>}
+    {!loading&&data?.rows.length===0&&<p>No hay lotes con este filtro. Al aprobar una seña sin variantes se crean 50 automáticamente. También puedes multiplicar una grabación desde «Originales».</p>}
     <div className="mv-actions"><button disabled={busy||loading||page===0} onClick={()=>setPage(page-1)}>Anterior</button><span>Página {page+1} · {data?.total||0} lotes</span><button disabled={busy||loading||(page+1)*pageSize>=(data?.total||0)} onClick={()=>setPage(page+1)}>Siguiente</button></div>
   </div>;
 }

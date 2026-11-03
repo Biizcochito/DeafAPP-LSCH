@@ -108,13 +108,20 @@ export function createMockAdminBackend() {
       const variantCount=status=>batches.filter(b=>b.status===status).reduce((n,b)=>n+b.quantity,0);
       return reply({ ok: true, rows: match.slice(p_offset, p_offset + p_limit), counts: { pending: count("pending"), approved: count("approved"), rejected: count("rejected") },variantCounts:{pending:variantCount('pending'),approved:variantCount('approved'),rejected:variantCount('rejected')}, total: match.length });
     },
-    deafapp_admin_review({ p_token, p_items, p_status }) {
+    async deafapp_admin_review({ p_token, p_items, p_status }) {
       if (!auth(p_token)) return fail("28000");
       const targets = p_items.map(item => rows.find(r => r.id === item.id && r.version === item.version));
       if (targets.some(r => !r)) return fail("40001");
       targets.forEach(r => { r.status = p_status; r.version++; r.moderatedAt=Date.now();for(const b of batches)if(b.status==='approved'&&b.parentIds.includes(r.id)){b.status='pending';b.version++;} });
       for(const b of batches)if(b.status==='pending'&&b.inheritApproval&&b.parentIds.every(id=>rows.some(row=>row.id===id&&row.status==='approved'&&row.path===b.sourcePaths[id]&&`${row.category}/${row.label}`===b.classId))){b.status='approved';b.version++;}
-      return reply({ ok: true, changed: targets.length, status: p_status });
+      let automaticBatches=0;
+      if(p_status==='approved')for(const row of targets){
+        if(batches.some(batch=>batch.classId===`${row.category}/${row.label}`))continue;
+        const result=await handlers.deafapp_admin_variant_create({p_token,p_request_id:crypto.randomUUID(),p_items:[{id:row.id,version:row.version}],p_quantity:50});
+        if(result.error)return result;
+        if(!result.data.alreadyCreated)automaticBatches++;
+      }
+      return reply({ ok: true, changed: targets.length, status: p_status, automaticBatches, automaticVariants:automaticBatches*50 });
     },
     deafapp_admin_overview({ p_token }) {
       if (!auth(p_token)) return fail("28000");

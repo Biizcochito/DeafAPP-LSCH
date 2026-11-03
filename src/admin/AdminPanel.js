@@ -129,7 +129,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
     operationRef.current = true; setBusy(true); setError(""); setNotice(""); clipRequestRef.current++;
     try {
       const data = await api.review(session, rows, target);
-      setNotice(`Estado guardado: ${MODERATION_LABELS[target].toLocaleLowerCase("es")}. ${data.changed} grabación${data.changed === 1 ? "" : "es"} actualizada${data.changed === 1 ? "" : "s"}.`);
+      setNotice(`Estado guardado: ${MODERATION_LABELS[target].toLocaleLowerCase("es")}. ${data.changed} grabación${data.changed === 1 ? "" : "es"} actualizada${data.changed === 1 ? "" : "s"}.${data.automaticVariants>0?` Se crearon automáticamente ${data.automaticVariants} variantes aprobadas para ${data.automaticBatches} seña${data.automaticBatches===1?'':'s'} sin variantes.`:''}`);
       setPreview(null); setSelected([]); setRefresh(value => value + 1); onModerated?.();
     } catch (e) { fail(e); }
     finally { operationRef.current = false; setBusy(false); }
@@ -182,6 +182,7 @@ export default function AdminPanel({ client, onExit, onModerated }) {
       {Platform.OS==='web'&&<View style={styles.actions}><Action label="Grabar y multiplicar" onPress={()=>multiply()} disabled={busy}/><Action label="Revisar variantes" secondary onPress={()=>setReviewMode('variants')} disabled={busy}/></View>}
       <View style={styles.stats}>{["pending", "approved", "rejected"].map(key => <View key={key} style={[styles.stat, Platform.OS === "web" && styles[`${key}Stat`]]}><Text style={[styles.statNumber, Platform.OS === "web" && styles.statInk]}>{listing?(listing.counts?.[key]||0)+(listing.variantCounts?.[key]||0):'—'}</Text><Text style={Platform.OS === "web" ? styles.statLabel : styles.muted}>{MODERATION_LABELS[key]}s</Text><Text style={[styles.muted,Platform.OS==='web'&&styles.statInk]}>{listing?.counts?.[key]??'—'} originales · {listing?.variantCounts?.[key]??0} variantes</Text></View>)}</View>
       <Text style={styles.muted}>Revisa cada seña antes de decidir. Rechazar conserva el archivo y lo excluye de las aprobadas.</Text>
+      <Text style={styles.muted}>Al aprobar una seña sin variantes, se crean 50 variantes aprobadas automáticamente. Si ya tiene un lote, se conserva. El intérprete las incorpora cuando el original tiene seguimiento válido.</Text>
       <View style={styles.actions}>{["pending", "approved", "rejected", "all"].map(key => <Action key={key} label={key === "all" ? "Todas" : `${MODERATION_LABELS[key]}s`} secondary={status !== key} onPress={() => { setStatus(key); setPage(0); setNotice(""); }} disabled={busy} />)}</View>
       <TextInput accessibilityLabel="Buscar grabaciones" placeholder="Buscar palabra o categoría…" placeholderTextColor="#9191A8" value={query} onChangeText={value => { setQuery(value); setPage(0); }} editable={!busy} style={styles.input} />
       <View style={styles.actions}><Action label="Actualizar grabaciones" secondary onPress={() => setRefresh(value => value + 1)} disabled={busy || loading} />
