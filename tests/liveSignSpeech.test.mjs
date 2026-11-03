@@ -82,6 +82,9 @@ test('speaker errors are reported without interrupting visual recognition and th
 test('spoken labels retain Spanish pronunciation and the canonical complete-phrase label',()=>{
   assert.equal(spokenSignLabel('tiempo/manana'),'mañana');assert.equal(spokenSignLabel('conversacion/si'),'sí');
   assert.equal(spokenSignLabel('oraciones/yo bien'),'estoy bien');assert.equal(spokenSignLabel('oraciones/quiero comer'),'quiero comer');
+  assert.equal(spokenSignLabel('familia/mama'),'mamá');assert.equal(spokenSignLabel('familia/papa'),'papá');
+  assert.equal(spokenSignLabel('frutas_verduras/papa'),'papa');assert.equal(spokenSignLabel('pronombres/tu'),'tú');
+  assert.equal(spokenSignLabel('saludos/como estas'),'cómo estás');
 });
 
 test('voice covers the entire catalog and new approved labels without a spoken-word whitelist',async()=>{
@@ -90,7 +93,7 @@ test('voice covers the entire catalog and new approved labels without a spoken-w
   const h=harness();
   for(const classId of classes)await h.update(match(classId));
   assert.equal(h.spoken.length,classes.length);assert.equal(h.spoken.at(-1).text,'seña recién aprobada');
-  assert.ok(h.spoken.some(row=>row.text==='quiero agua'));assert.ok(h.spoken.some(row=>row.text==='mamá'||row.text==='mama'));
+  assert.ok(h.spoken.some(row=>row.text==='quiero agua'));assert.ok(h.spoken.some(row=>row.text==='mamá'));assert.ok(h.spoken.some(row=>row.text==='papá'));assert.ok(h.spoken.some(row=>row.text==='papa'));
   h.voice.close();
 });
 

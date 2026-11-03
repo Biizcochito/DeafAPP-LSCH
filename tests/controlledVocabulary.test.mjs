@@ -12,6 +12,9 @@ test('el catálogo antiguo se restaura sin repetir las entradas actuales ni conf
   assert.equal(seed.filter(row=>row.state==='enabled').length,33);assert.equal(seed.filter(row=>row.state==='collecting').length,509);
   seed.forEach(validateCatalogueEntry);
   assert.notEqual(catalogueKey('familia','papa'),catalogueKey('frutas_verduras','papa'));
+  assert.equal(seed.find(row=>row.classId==='familia/papa').displayLabel,'papá');
+  assert.equal(seed.find(row=>row.classId==='familia/mama').displayLabel,'mamá');
+  assert.equal(seed.find(row=>row.classId==='frutas_verduras/papa').displayLabel,'papa');
   assert.equal(catalogueKey('conversacion','Sí'),catalogueKey('conversacion','si'));
   assert.notEqual(catalogueKey('tiempo','año'),catalogueKey('tiempo','ano'));
   assert.equal(collectionCategories(seed).flatMap(row=>row.señas).length,33);

@@ -14,7 +14,7 @@ export function catalogueSeed(){
   return CATEGORIAS.flatMap(category=>category.señas.flatMap(label=>{
     const classId=canonicalPhraseClassId(`${category.id}/${label}`),key=catalogueKey(category.id,classId.split('/').at(-1));
     if(found.has(key))return [];found.add(key);
-    return [{classId,category:category.id,label:classId.split('/').at(-1),displayLabel:displayWord(classId.split('/').at(-1)),categoryTitle:category.nombre,
+    return [{classId,category:category.id,label:classId.split('/').at(-1),displayLabel:displayWord(classId.split('/').at(-1),category.id),categoryTitle:category.nombre,
       color:category.color,emoji:category.emoji,collection:visible.has(classId),state:visible.has(classId)?'enabled':'collecting',
       activationScope:'prototype',minimum:COLLECTION_GOALS.minimum,recordingGoal:COLLECTION_GOALS.recordings,peopleGoal:COLLECTION_GOALS.people,version:0,aliasOf:null}];
   }));

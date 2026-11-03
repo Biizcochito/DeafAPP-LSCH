@@ -1,3 +1,4 @@
+import {displayWord} from '../ui/signNames';
 import {loadApprovedVocabulary} from '../training/approvedVocabulary';
 import {buildVocabularyCandidate} from '../training/vocabularyCandidate';
 import {startApprovedLibrarySync} from '../training/recordingLibrarySync';
@@ -6,7 +7,7 @@ import {createLiveSignSpeech} from '../training/liveSignSpeech';
 import {useLiveConversation} from '../training/useLiveConversation';
 import ConversationControls from '../training/ConversationControls.web';
 import {catalogueSeed} from '../training/recognitionCatalog';
-import {canonicalPhraseLabel,ESTOY_BIEN_CLASS} from '../training/phraseLabels';
+import {ESTOY_BIEN_CLASS} from '../training/phraseLabels';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createSignTracker,drawSignLandmarks} from '../camera/landmarkTracking';
 import {freshLandmarks,withTrackingTimeout} from '../camera/trackingOverlay';
@@ -22,7 +23,7 @@ import {captureQuality,compareCandidates,VISIBLE_TARGETS} from '../training/trai
 import TrainingAssistant from './TrainingAssistant.web';
 import './VisibleTrainingPanel.css';
 
-const label=id=>canonicalPhraseLabel(id.split('/').at(-1));
+const label=id=>displayWord(id);
 const TRAINING_LEXICON=catalogueSeed();
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const recordingReason=reason=>({'approval-changed':'aprobación modificada durante la actualización; actualiza otra vez','requires-source-review':'fuente externa pendiente de revisar','not-lsch':'el archivo declara otra lengua','missing-tracking':'sin puntos de manos y cara; vuelve a grabar con el seguimiento activo','expired-recording':'plazo de conservación vencido','download-failed':'no se pudo descargar','label-mismatch':'la etiqueta no coincide con la revisión','oversized-recording':'archivo demasiado grande'}[reason]||'seguimiento o movimiento insuficiente; revisa la toma');

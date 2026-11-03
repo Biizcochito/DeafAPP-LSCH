@@ -1,7 +1,8 @@
+import {displayWord} from '../ui/signNames';
 import {useMemo,useState} from 'react';
 import {buildTrainingPlan} from '../training/trainingAssistant';
 
-const label=id=>id.split('/').at(-1);
+const label=id=>displayWord(id);
 export default function TrainingAssistant({progress,rows,quality,personal,comparison,busy,onAction,onCompare,onReview,lastSign}) {
   const [goal,setGoal]=useState('phrases'),[question,setQuestion]=useState('next');
   const plan=useMemo(()=>buildTrainingPlan({progress,rows,goal,quality,personal}),[progress,rows,goal,quality,personal]);
@@ -22,7 +23,7 @@ export default function TrainingAssistant({progress,rows,quality,personal,compar
     <div className="vt-assistant-evaluation"><h3>Prueba del candidato personal actual</h3><p>{plan.evaluation.samples?`${plan.evaluation.correct}/${plan.evaluation.samples} oraciones nuevas aceptadas correctamente.`:'Faltan tomas nuevas con respuesta confirmada para medir este candidato.'} {plan.evaluation.unknownSamples>0&&`${plan.evaluation.falseAccepts}/${plan.evaluation.unknownSamples} movimientos ajenos al catálogo fueron aceptados por error.`}</p><p className="vt-note">Los perfiles se declaran al grabar; su identidad no está verificada. Estas pruebas internas no certifican precisión con otras personas.</p></div>
     <div className="vt-actions"><button disabled={busy||!lastSign||!progress?.models?.length} onClick={onCompare}>Comparar candidatos con la última seña</button></div>
     {comparison&&<div className="vt-committee" id="vt-committee"><h3>Revisión de la última seña: {label(comparison.classId)}</h3><p>Cada grupo contiene el mismo vocabulario. Las puntuaciones no están calibradas como probabilidad de acertar.</p>{comparison.groups.map((group,index)=><div key={index} className="vt-comparison-group"><p><b>{group.classes.length} clases · {group.disagreement?'Los candidatos discrepan':group.abstentions?'Hay abstenciones; requiere revisión':'Los candidatos coinciden; confirma el significado'}</b></p>{!group.classes.includes(comparison.classId)&&<p>La seña seleccionada está fuera del vocabulario de este grupo: se observa si se abstiene.</p>}{group.predictions.map(row=><p key={row.modelId}>{row.name}: {row.accepted?`propone «${label(row.classId)}»`:'se abstiene'} · puntuación {(row.score*100).toFixed(1)}%</p>)}</div>)}<p>{comparison.reviewed?'Comparación revisada por ti. El significado en LSCh requiere revisión lingüística.':'Revisa si realizaste la seña seleccionada. Las predicciones no cambian etiquetas automáticamente.'}</p><button className="vt-secondary" disabled={busy||comparison.reviewed} onClick={()=>onReview(comparison.id)}>Marcar comparación como revisada</button></div>}
-    {goal==='catalog'&&<details><summary>Próximas señas sugeridas</summary>{plan.catalog.slice(0,8).map(row=><p key={row.classId}>{row.label} · informe: {row.snapshot} · tomas locales: {row.local}</p>)}</details>}
+    {goal==='catalog'&&<details><summary>Próximas señas sugeridas</summary>{plan.catalog.slice(0,8).map(row=><p key={row.classId}>{displayWord(row.label,row.category)} · informe: {row.snapshot} · tomas locales: {row.local}</p>)}</details>}
     <details><summary>Cómo llegó a esta recomendación</summary><ol className="vt-agent-steps">{plan.steps.map(step=><li key={step.tool}><b>{step.tool}</b><span>{step.detail}</span></li>)}</ol><p>El asistente se ejecuta en este navegador al cambiar los datos o el objetivo. Las capturas y el entrenamiento se inician con sus botones; las muestras reservadas permanecen separadas.</p></details>
   </section>;
 }
