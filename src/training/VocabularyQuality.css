@@ -9,6 +9,8 @@
 .live-interpretation .rq-chips { gap:7px; padding:4px; }
 .live-interpretation .rq-chips button { display:inline-flex; align-items:center; gap:6px; max-width:100%; min-height:34px; border:1px solid var(--rq-line); border-radius:999px; padding:5px 10px; background:var(--rq-bg); color:var(--rq-ink); font-size:12px; line-height:1.4; text-align:left; }
 .live-interpretation .rq-chips button>span { padding:0; border:0; border-radius:0; color:inherit; font-size:inherit; overflow-wrap:anywhere; }
+.rq-chips button>small { font-size:9px; opacity:.85; white-space:nowrap; }
+.rq-explanation { margin-top:8px; font-size:10px; color:var(--muted,#a9b5ad); }.rq-explanation summary { cursor:pointer; }.li-vocabulary .rq-explanation p { padding-top:6px; }
 .rq-chips button[aria-pressed=true] { box-shadow:0 0 0 1px var(--rq-ink); }
 .rq-detail { margin-top:10px; padding:12px; border:1px solid #405147; border-radius:12px; background:#101a14; color:#e4eae6; font-size:12px; }
 .rq-detail>strong { margin-right:10px; }

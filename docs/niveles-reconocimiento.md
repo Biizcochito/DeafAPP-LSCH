@@ -4,6 +4,12 @@ El intérprete muestra verde (alto), ámbar (medio), rojo (bajo) y gris (sin eva
 
 ## Automático
 
+La cámara normal actualiza la consistencia observada sin seleccionar una seña ni confirmar intentos: cinco detecciones consecutivas de movimientos separados producen nivel alto; tres o cuatro, medio; una o dos, bajo. Las señas nunca observadas conservan «Sin evaluar» porque no se conoce qué seña intentaba realizar la persona.
+
+El indicador conserva la mejor racha por seña en este navegador y se reinicia cuando cambia el modelo. Una pausa breve entre movimientos separa los intentos: mantener una postura durante muchos fotogramas no cuenta como varias señas. No se envían estos resultados ni imágenes al servidor. Esta racha mide consistencia de la respuesta, no precisión comprobada. Un nivel manual conserva la prioridad.
+
+Cuando no hay una racha local, se usan las pruebas reservadas disponibles:
+
 Se requieren al menos cinco originales reservados para prueba, con la evaluación del modelo actual terminada. Las variantes artificiales y el puntaje de similitud de una detección no son pruebas de precisión.
 
 El nivel usa el menor valor entre acierto (`correct / samples`) y precisión (`correct / predicted`): alto desde 85 %, medio desde 60 % y bajo por debajo. Si faltan pruebas completas, aparece «Sin evaluar». El detalle distingue grabaciones separadas de pruebas con personas confirmadas distintas.

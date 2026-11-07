@@ -13,6 +13,7 @@ import {startPreparedRecognition} from '../training/preparedRecognition';
 import {useLiveConversation} from '../training/useLiveConversation';
 import ConversationControls from '../training/ConversationControls.web';
 import VocabularyQuality from '../training/VocabularyQuality.web';
+import {createLiveRecognitionStability,readRecognitionStability,saveRecognitionStability} from '../training/liveRecognitionStability';
 import '../ui/theme.css';
 import './LiveInterpretation.css';
 
@@ -41,6 +42,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const video=useRef(null),canvas=useRef(null),camera=useRef(null),voice=useRef(null),sync=useRef(null);
   const candidate=useRef(null),live=useRef({phase:'off'});
   const labels=useRef(new Map());
+  const stabilityTracker=useRef(null),[stability,setStability]=useState([]);
   const [cameraState,setCameraState]=useState('off'),[result,setResult]=useState({phase:'off'});
   const [showCameraIntro,setShowCameraIntro]=useState(false);
   const [trackingState,setTrackingState]=useState('loading');
@@ -56,7 +58,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     let alive=true;
     const update=result=>{
       if(!alive)return;
-      live.current=result;setResult(result);conversation.update(result);
+      live.current=result;stabilityTracker.current?.update(result);setResult(result);conversation.update(result);
       if(['tracking','recognizing','matched','uncertain','ready'].includes(result.phase))setShowCameraIntro(false);
     };
     if(voiceSupported)voice.current=createLiveSignSpeech({speech:Speech,enabled:voicePreference.current,voice:selectedVoice||undefined,
@@ -73,6 +75,11 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     void camera.current.prepare().catch(error=>{if(alive)setError(cameraError(error));});
     function prepared(data){if(!alive)return;
       labels.current=new Map((data.catalogue||[]).map(row=>[row.classId,row.displayLabel]));
+      if(!data.model){stabilityTracker.current=null;setStability([]);}
+      else if(stabilityTracker.current?.modelId!==data.model.id){
+        stabilityTracker.current=createLiveRecognitionStability({modelId:data.model.id,classes:data.model.enabledClasses||data.model.classes||[],initial:preview?null:readRecognitionStability(),onChange:value=>{if(alive){setStability(value.rows);if(!preview)saveRecognitionStability(value);}}});
+        setStability(stabilityTracker.current.snapshot().rows);
+      }
       if(candidate.current?.id!==data.model?.id)conversation.reset();candidate.current=data.model;camera.current?.setModel(data.model);
       setLibrary({loading:!!data.loading,words:data.model?.enabledClasses||data.model?.classes||[],catalogue:data.catalogue||[],quality:data.quality||[],message:data.preparing?'Preparando la actualización aprobada de la biblioteca…':data.loading?'Cargando el modelo preparado…':'',error:data.error,bytes:data.bytes});
     }
@@ -93,7 +100,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     camera.current.setBlocked(activity.current.blocked);hidden();
     const leave=()=>camera.current?.stop();
     document.addEventListener('visibilitychange',hidden);window.addEventListener('pagehide',leave);
-    return()=>{alive=false;clearInterval(previewTimer);sync.current?.close();camera.current?.close();voice.current?.close();if(controls)controls.current=null;camera.current=null;voice.current=null;
+    return()=>{alive=false;stabilityTracker.current=null;clearInterval(previewTimer);sync.current?.close();camera.current?.close();voice.current?.close();if(controls)controls.current=null;camera.current=null;voice.current=null;
       document.removeEventListener('visibilitychange',hidden);window.removeEventListener('pagehide',leave);};
   },[client,voiceSupported,preview]);
   useEffect(()=>{
@@ -179,7 +186,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
           {voiceSupported&&voicesLoaded&&(!femaleVoice||!maleVoice)&&<p className="li-voice-note">Las opciones dependen de las voces en español instaladas en tu dispositivo.{!!voices.length&&' También puedes elegir una voz por su nombre.'}</p>}
           {voiceError&&<p className="li-error" role="status">{voiceError}</p>}
           <section className="li-vocabulary" aria-labelledby="li-vocabulary-title"><h3 id="li-vocabulary-title">{library.loading?'Preparando biblioteca…':`${library.words.length} palabras y oraciones habilitadas`}</h3>
-            {library.loading?<p role="status">{library.message}</p>:!!library.words.length&&<VocabularyQuality words={library.words} quality={library.quality} labels={id=>labels.current.get(id)||spokenSignLabel(id)}/>}
+            {library.loading?<p role="status">{library.message}</p>:!!library.words.length&&<VocabularyQuality words={library.words} quality={library.quality} stability={stability} labels={id=>labels.current.get(id)||spokenSignLabel(id)}/>}
             {library.error&&<div className="li-error" role="alert">{library.error} <button onClick={()=>sync.current?.request()}>Reintentar</button></div>}
             {!library.loading&&!library.words.length&&!library.error&&<p>Aún no hay suficientes tomas aptas para interpretar. Puedes seguir aportando señas desde «Grabar».</p>}
           </section>

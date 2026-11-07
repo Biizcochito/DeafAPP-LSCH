@@ -3,6 +3,13 @@ import assert from 'node:assert/strict';
 import {recognitionQuality,qualityByClass} from '../src/training/recognitionQuality.js';
 
 const row=(samples,correct,predicted=correct)=>({evaluation:{samples,correct,predicted,scope:'different-recordings'}});
+test('la racha en vivo usa 5, 3–4 y 1–2 sin presentar las coincidencias como aciertos verificados',()=>{
+  for(const [n,level]of [[1,'low'],[2,'low'],[3,'medium'],[4,'medium'],[5,'high']]){
+    const value=recognitionQuality({}, {bestStreak:n});assert.equal(value.level,level);assert.equal(value.source,'stability');assert.match(value.detail,/no aciertos comprobados/);
+  }
+  assert.equal(recognitionQuality({}, {bestStreak:0}).level,'unrated');
+  assert.equal(recognitionQuality({manualLevel:'low'}, {bestStreak:5}).source,'manual');
+});
 test('el nivel automático usa tanto el acierto como las falsas aceptaciones',()=>{
   assert.equal(recognitionQuality(row(20,17,20)).level,'high');
   assert.equal(recognitionQuality(row(20,16,16)).level,'medium');
