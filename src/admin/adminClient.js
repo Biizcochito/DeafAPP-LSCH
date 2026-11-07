@@ -62,6 +62,11 @@ export function createAdminClient(client) {
     material(session) { return call("deafapp_admin_material", { p_token: token(session) }); },
     trainingProgress(session) { return call("deafapp_admin_training_progress", { p_token: token(session) }); },
     vocabulary(session) { return call('deafapp_admin_vocabulary_list',{p_token:token(session)}); },
+    saveRecognitionQuality(session,classId,level,version=0) {
+      if(typeof classId!=='string'||classId.length>122||!classId.includes('/')||level!==null&&!['high','medium','low','unrated'].includes(level)||!Number.isInteger(version)||version<0)throw new AdminError('Elige un nivel de reconocimiento válido.','invalid_input');
+      return call('deafapp_admin_recognition_quality_save',{p_token:token(session),p_class_id:classId,p_level:level,p_version:version})
+        .then(data=>{notifyRecordingReview();return data;});
+    },
     createVariants(session,{requestId,rows,quantity}) {
       if(typeof requestId!=='string'||!/^[a-f0-9-]{36}$/i.test(requestId)||![50,100].includes(quantity)||!Array.isArray(rows)||rows.length<1||rows.length>3||
         rows.some(row=>!/^\d+$/.test(String(row.id))||!Number.isInteger(row.version)||row.version<0)||new Set(rows.map(row=>String(row.id))).size!==rows.length)throw new AdminError('Elige una grabación real y 50 o 100 variantes.','invalid_input');

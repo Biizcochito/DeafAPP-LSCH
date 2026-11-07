@@ -35,17 +35,18 @@ export function startPreparedRecognition({client,onUpdate,onError=()=>{},metadat
     try{
       const revision=await read(client,'deafapp_recognition_revision',{},controller.signal);if(closed)return;
       if(!validRevision(revision))throw Error('La versión del modelo no es válida.');
-      const key=metadataOnly?revision.revision.split(':')[0]:`${revision.revision}:${!!revision.ready}:${!!revision.preparing}`;
+      const key=metadataOnly?revision.revision.split(':')[0]:`${revision.revision}:${!!revision.ready}:${!!revision.preparing}:${revision.qualityRevision||''}`;
       if(key===lastKey&&lastValue){if(failures)emit({...lastValue,error:undefined});failures=0;if(!metadataOnly&&revision.preparing)kick();return;}
       let saved=null;
       if(!metadataOnly){try{saved=await cache('get');}catch{/* The live server remains authoritative. */}}
       if(closed)return;
       const reusable=!metadataOnly&&revision.ready&&saved?.revision===revision.revision&&(!saved.expiresAt||Date.parse(saved.expiresAt)>Date.now());
-      const manifest=reusable?saved:await read(client,'deafapp_recognition_manifest',{},controller.signal);if(closed)return;
+      const sameQuality=reusable&&(saved.qualityRevision||null)===(revision.qualityRevision||null);
+      const manifest=sameQuality?saved:await read(client,'deafapp_recognition_manifest',{},controller.signal);if(closed)return;
       if(!validRevision(manifest)||manifest.revision!==revision.revision||!Array.isArray(manifest.catalogue)||manifest.catalogue.length>2048)throw Error('La biblioteca cambió mientras se preparaba. Se volverá a comprobar.');
       manifest.catalogue.forEach(validateCatalogueEntry);
       if(metadataOnly){emit({catalogue:manifest.catalogue,revision:manifest.revision,loading:false});lastKey=key;failures=0;return;}
-      if(!revision.ready){emit({model:null,catalogue:manifest.catalogue,revision:manifest.revision,loading:!!revision.preparing,preparing:!!revision.preparing});
+      if(!revision.ready){emit({model:null,catalogue:manifest.catalogue,quality:[],revision:manifest.revision,loading:!!revision.preparing,preparing:!!revision.preparing});
         lastKey=key;failures=0;if(revision.preparing)kick();return;}
       let response=reusable?{packet:saved.packet}:await read(client,'deafapp_recognition_model',{p_revision:manifest.revision},controller.signal);
       if(closed)return;
@@ -55,10 +56,12 @@ export function startPreparedRecognition({client,onUpdate,onError=()=>{},metadat
       }if(closed)return;
       if(model&&(model.id!==manifest.modelId||(model.enabledClasses||model.classes).some(id=>!manifest.catalogue.some(entry=>entry.classId===id&&entry.state==='enabled'&&!entry.aliasOf))))throw Error('El modelo no coincide con el vocabulario habilitado.');
       const checked=await read(client,'deafapp_recognition_revision',{},controller.signal);if(closed)return;
-      if(checked.revision!==manifest.revision||!checked.ready){emit({model:null,catalogue:manifest.catalogue,revision:checked.revision,loading:true,preparing:true});queued=true;return;}
-      emit({model,catalogue:manifest.catalogue,revision:manifest.revision,loading:false,preparing:false,bytes:response.packet?.compressedBytes||0});
-      lastKey=key;failures=0;
-      try{await cache('put',{revision:manifest.revision,catalogue:manifest.catalogue,modelId:manifest.modelId,expiresAt:manifest.expiresAt,packet:response.packet});}catch{/* A private-window storage failure must not block the live model. */}
+      if(checked.revision!==manifest.revision||!checked.ready){emit({model:null,catalogue:manifest.catalogue,quality:[],revision:checked.revision,loading:true,preparing:true});queued=true;return;}
+      const sameAssessment=(checked.qualityRevision||null)===(manifest.qualityRevision||null);
+      const quality=sameAssessment&&Array.isArray(manifest.quality)?manifest.quality:[];
+      emit({model,catalogue:manifest.catalogue,quality,revision:manifest.revision,loading:false,preparing:false,bytes:response.packet?.compressedBytes||0});
+      lastKey=sameAssessment?key:null;queued=!sameAssessment;failures=0;
+      try{await cache('put',{revision:manifest.revision,catalogue:manifest.catalogue,quality,qualityRevision:sameAssessment?manifest.qualityRevision:null,modelId:manifest.modelId,expiresAt:manifest.expiresAt,packet:response.packet});}catch{/* A private-window storage failure must not block the live model. */}
     }catch(error){if(!closed){failures++;lastKey=null;if(!metadataOnly)emit({model:null,catalogue:lastValue?.catalogue||[],loading:false,error:error.message});onError(error);}}
     finally{running=false;schedule(queued?25:Math.min(30000,intervalMs*2**Math.min(failures,4)));}
   }
