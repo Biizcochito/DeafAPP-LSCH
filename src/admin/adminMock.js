@@ -31,7 +31,7 @@ export function createMockAdminBackend() {
   const rows = seedRecordings();
   const batches=[],files=new Map();
   const batchValue=b=>({...b,parents:b.parentIds.map(id=>rows.find(r=>r.id===id)).filter(Boolean).map(row=>({...row,usable:false})),parentCount:b.parentIds.length});
-  const catalogue=catalogueSeed(),assignments=new Map();let prepared;
+  const catalogue=catalogueSeed(),assignments=new Map(),qualityReviews=new Map();let prepared;
   const getPrepared=()=>prepared||=prepareControlledModel(catalogue,['saludos/hola','necesidades/agua'].flatMap((classId,c)=>Array.from({length:4},(_,i)=>({id:`${c*10+i+1}`,classId,hash:`mock-${c}-${i}`,role:'train',person:`P0${i+1}`,personConfirmed:true,sequence:Array.from({length:32},(_,t)=>Array.from({length:88},(_,k)=>k<42?c*.8+t*.005+i*.0001+k*.002:k===42?1:0))})))).then(async result=>({...result,packet:await encodeRuntimePackage(result.model)}));
   const sessions = new Map();
   let failures = [];
@@ -61,7 +61,14 @@ export function createMockAdminBackend() {
     deafapp_recognition_revision(){return reply({ok:true,ready:true,preparing:false,revision:'1:1:1'});},
     async deafapp_admin_vocabulary_list({p_token}) {
       if(!auth(p_token))return fail('28000');const result=await getPrepared();
-      return reply({ok:true,catalogue:catalogue.map(row=>({...row})),coverage:result.coverage,dirty:false,evaluationPending:0,evaluationDone:0,modelId:result.model.id,compressedBytes:result.packet.compressedBytes});
+      return reply({ok:true,catalogue:catalogue.map(row=>({...row})),coverage:result.coverage,quality:catalogue.filter(row=>!row.aliasOf).map(row=>({classId:row.classId,manualLevel:null,manualVersion:0,...qualityReviews.get(row.classId)})),dirty:false,evaluationPending:0,evaluationDone:0,modelId:result.model.id,compressedBytes:result.packet.compressedBytes});
+    },
+    deafapp_admin_recognition_quality_save({p_token,p_class_id,p_level,p_version}){
+      if(!auth(p_token))return fail('28000');
+      if(!catalogue.some(row=>row.classId===p_class_id&&!row.aliasOf)||p_level!==null&&!['high','medium','low','unrated'].includes(p_level)||!Number.isInteger(p_version)||p_version<0)return fail('22023');
+      const previous=qualityReviews.get(p_class_id);if((previous?.manualVersion||0)!==p_version)return fail('40001');
+      const qualityReview={classId:p_class_id,manualLevel:p_level,manualVersion:p_version+1};qualityReviews.set(p_class_id,qualityReview);
+      return reply({ok:true,qualityReview});
     },
     deafapp_admin_vocabulary_save({p_token,p_entry,p_version,p_ack_prototype}) {
       if(!auth(p_token))return fail('28000');try{validateCatalogueEntry(p_entry);}catch{return fail('22023');}

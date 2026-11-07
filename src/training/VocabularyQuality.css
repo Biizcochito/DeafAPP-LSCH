@@ -1,0 +1,21 @@
+.rq-legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:10px; font-size:10px; }
+.rq-legend>span { display:inline-flex; align-items:center; gap:5px; }
+.rq-legend i,.rq-badge i,.rq-chips button>i { font-style:normal; font-weight:700; }
+[data-quality=high] { --rq-ink:#9ee8b2; --rq-bg:#132b20; --rq-line:#397c56; }
+[data-quality=medium] { --rq-ink:#f3d087; --rq-bg:#302616; --rq-line:#9c793e; }
+[data-quality=low] { --rq-ink:#ffafb3; --rq-bg:#341c24; --rq-line:#a15d6e; }
+[data-quality=unrated] { --rq-ink:#bdc6c1; --rq-bg:#1a2320; --rq-line:#53645b; }
+.rq-legend>span { color:var(--rq-ink); }
+.live-interpretation .rq-chips { gap:7px; padding:4px; }
+.live-interpretation .rq-chips button { display:inline-flex; align-items:center; gap:6px; max-width:100%; min-height:34px; border:1px solid var(--rq-line); border-radius:999px; padding:5px 10px; background:var(--rq-bg); color:var(--rq-ink); font-size:12px; line-height:1.4; text-align:left; }
+.live-interpretation .rq-chips button>span { padding:0; border:0; border-radius:0; color:inherit; font-size:inherit; overflow-wrap:anywhere; }
+.rq-chips button[aria-pressed=true] { box-shadow:0 0 0 1px var(--rq-ink); }
+.rq-detail { margin-top:10px; padding:12px; border:1px solid #405147; border-radius:12px; background:#101a14; color:#e4eae6; font-size:12px; }
+.rq-detail>strong { margin-right:10px; }
+.rq-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 7px; border:1px solid var(--rq-line); border-radius:6px; background:var(--rq-bg); color:var(--rq-ink); font-size:11px; }
+.rq-badge small { display:inline!important; color:inherit!important; margin:0 0 0 4px!important; opacity:.8; font-size:10px!important; }
+.li-vocabulary .rq-note { padding-top:9px; font-size:10px; line-height:1.5; }
+.rq-override { margin-top:20px; padding:16px; border:1px solid #435342; border-radius:12px; background:#142018; }
+.rq-override h3 { margin:0 0 10px; }.rq-override p { margin:9px 0; font-size:12px; }
+.rq-override label { display:grid; gap:6px; font-size:12px; margin-top:14px; max-width:440px; }.rq-override select { min-height:44px; }
+@media(max-width:640px) { .live-interpretation .rq-chips button { min-height:44px; padding:8px 11px; }.live-interpretation .rq-chips { max-height:176px; }.rq-legend { gap:7px 11px; }.rq-detail { font-size:11px; } }

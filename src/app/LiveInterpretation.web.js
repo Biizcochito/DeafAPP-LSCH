@@ -12,6 +12,7 @@ import {spanishVoices,voiceForGender} from '../training/spanishVoices';
 import {startPreparedRecognition} from '../training/preparedRecognition';
 import {useLiveConversation} from '../training/useLiveConversation';
 import ConversationControls from '../training/ConversationControls.web';
+import VocabularyQuality from '../training/VocabularyQuality.web';
 import '../ui/theme.css';
 import './LiveInterpretation.css';
 
@@ -43,7 +44,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const [cameraState,setCameraState]=useState('off'),[result,setResult]=useState({phase:'off'});
   const [showCameraIntro,setShowCameraIntro]=useState(false);
   const [trackingState,setTrackingState]=useState('loading');
-  const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],message:'Cargando el modelo preparado…'});
+  const [library,setLibrary]=useState({loading:true,words:[],catalogue:[],quality:[],message:'Cargando el modelo preparado…'});
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
   const [voices,setVoices]=useState([]),[selectedVoice,setSelectedVoice]=useState(''),[voicesLoaded,setVoicesLoaded]=useState(false);
   const voicePreference=useRef(true);
@@ -73,7 +74,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     function prepared(data){if(!alive)return;
       labels.current=new Map((data.catalogue||[]).map(row=>[row.classId,row.displayLabel]));
       if(candidate.current?.id!==data.model?.id)conversation.reset();candidate.current=data.model;camera.current?.setModel(data.model);
-      setLibrary({loading:!!data.loading,words:data.model?.enabledClasses||data.model?.classes||[],catalogue:data.catalogue||[],message:data.preparing?'Preparando la actualización aprobada de la biblioteca…':data.loading?'Cargando el modelo preparado…':'',error:data.error,bytes:data.bytes});
+      setLibrary({loading:!!data.loading,words:data.model?.enabledClasses||data.model?.classes||[],catalogue:data.catalogue||[],quality:data.quality||[],message:data.preparing?'Preparando la actualización aprobada de la biblioteca…':data.loading?'Cargando el modelo preparado…':'',error:data.error,bytes:data.bytes});
     }
     let previewTimer;
     if(preview){
@@ -178,7 +179,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
           {voiceSupported&&voicesLoaded&&(!femaleVoice||!maleVoice)&&<p className="li-voice-note">Las opciones dependen de las voces en español instaladas en tu dispositivo.{!!voices.length&&' También puedes elegir una voz por su nombre.'}</p>}
           {voiceError&&<p className="li-error" role="status">{voiceError}</p>}
           <section className="li-vocabulary" aria-labelledby="li-vocabulary-title"><h3 id="li-vocabulary-title">{library.loading?'Preparando biblioteca…':`${library.words.length} palabras y oraciones habilitadas`}</h3>
-            {library.loading?<p role="status">{library.message}</p>:!!library.words.length&&<div className="li-chips" tabIndex="0" role="region" aria-label="Todas las palabras y oraciones habilitadas">{library.words.map(id=><span key={id}>{labels.current.get(id)||spokenSignLabel(id)}</span>)}</div>}
+            {library.loading?<p role="status">{library.message}</p>:!!library.words.length&&<VocabularyQuality words={library.words} quality={library.quality} labels={id=>labels.current.get(id)||spokenSignLabel(id)}/>}
             {library.error&&<div className="li-error" role="alert">{library.error} <button onClick={()=>sync.current?.request()}>Reintentar</button></div>}
             {!library.loading&&!library.words.length&&!library.error&&<p>Aún no hay suficientes tomas aptas para interpretar. Puedes seguir aportando señas desde «Grabar».</p>}
           </section>
