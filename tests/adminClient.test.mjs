@@ -3,6 +3,17 @@ import assert from 'node:assert/strict';
 import { createAdminClient, validAdminSession, recordingPreview, frameDataUri } from '../src/admin/adminClient.js';
 import {catalogueSeed} from '../src/training/recognitionCatalog.js';
 const session = () => ({ token:'a'.repeat(64), expiresAt:Date.now()+60000 });
+test('el nivel manual exige sesión, valor válido y versión de la revisión',async()=>{
+  const calls=[],api=createAdminClient({rpc:async(name,args)=>{calls.push({name,args});return {data:{ok:true}};}});
+  await api.saveRecognitionQuality(session(),'saludos/hola','high',2);
+  assert.equal(calls[0].name,'deafapp_admin_recognition_quality_save');
+  assert.deepEqual({...calls[0].args,p_token:undefined},{p_token:undefined,p_class_id:'saludos/hola',p_level:'high',p_version:2});
+  await api.saveRecognitionQuality(session(),'saludos/hola',null,3);assert.equal(calls[1].args.p_level,null);
+  assert.throws(()=>api.saveRecognitionQuality(session(),'saludos/hola','excellent',1));
+  assert.throws(()=>api.saveRecognitionQuality(session(),'saludos/hola','low',-1));
+  assert.throws(()=>api.saveRecognitionQuality({...session(),expiresAt:0},'saludos/hola','low',0));
+  assert.equal(calls.length,2);
+});
 test('el cliente autentica en el servidor y no permite operar con sesión vencida', async () => {
   const calls=[];
   const api=createAdminClient({ rpc:async(name,args)=>{ calls.push({name,args});return {data:{ok:true,token:'a'.repeat(64),expiresAt:new Date(Date.now()+60000).toISOString()}}; }});

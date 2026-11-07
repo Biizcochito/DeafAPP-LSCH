@@ -4,12 +4,14 @@ import {CATEGORIAS} from '../catalog/signCatalog';
 import {normalizedLabel,catalogueKey,VOCABULARY_LABELS} from '../training/recognitionCatalog';
 import {decodeRuntimePackage} from '../training/runtimePackage';
 import LiveInterpretation from '../app/LiveInterpretation.web';
+import {QualityOverride} from '../training/VocabularyQuality.web';
+import {qualityByClass} from '../training/recognitionQuality';
 import './VocabularyWorkbench.css';
 
 const percentage=value=>Number.isFinite(value)?`${Math.round(value*100)} %`:'Sin medir';
 const scopes={'different-confirmed-people':'Personas confirmadas distintas','different-recordings':'Otras grabaciones; personas sin verificar',pending:'Pendiente'};
 const reasons={'missing-tracking':'Faltan puntos de seguimiento','download-failed':'Descarga pendiente','requires-source-review':'Revisar el origen','expired-recording':'Conservación vencida'};
-const EMPTY={catalogue:[],coverage:[],dirty:false,evaluationPending:0};
+const EMPTY={catalogue:[],coverage:[],quality:[],dirty:false,evaluationPending:0};
 
 function Sample({row,busy,onSave}){
   const [value,setValue]=useState(row);
@@ -42,6 +44,7 @@ export default function VocabularyWorkbench({api,session,client,onAccessError,on
   function change(key,value){setEntry(row=>({...row,[key]:value}));}
   function changeCategory(id){const cat=CATEGORIAS.find(row=>row.id===id);setEntry(row=>({...row,category:id,categoryTitle:cat.nombre,color:cat.color,emoji:cat.emoji,classId:`${id}/${row.label}`}));}
   const coverage=useMemo(()=>new Map(data.coverage.map(row=>[row.classId,row])),[data.coverage]);
+  const quality=useMemo(()=>qualityByClass(data.quality),[data.quality]);
   const rows=useMemo(()=>data.catalogue.filter(row=>(category==='all'||row.category===category)&&(state==='all'||row.state===state)&&(!query.trim()||`${row.displayLabel} ${row.label} ${row.categoryTitle}`.toLocaleLowerCase('es').includes(query.trim().toLocaleLowerCase('es')))),[data.catalogue,category,state,query]);
   const selectedCoverage=entry&&coverage.get(entry.classId),active=data.coverage.filter(row=>row.active).length;
   const duplicate=isNew&&entry&&data.catalogue.some(row=>catalogueKey(row.category,row.label)===catalogueKey(entry.category,entry.label));
@@ -77,6 +80,7 @@ export default function VocabularyWorkbench({api,session,client,onAccessError,on
         {entry.category==='verbos'&&<><p>Formas revisadas para componer frases cuando se reconoce un pronombre o se elige un contexto. No se inventan palabras ausentes.</p><div className="vc-fields">{[['yo','Yo'],['tu','Tú'],['el','Él / ella / usted'],['nosotros','Nosotros'],['ellos','Ellos / ustedes']].map(([id,label])=><label key={id}>Forma con {label}<input value={entry.forms?.[id]||''} maxLength={80} disabled={busy} onChange={e=>{const forms={...entry.forms};if(e.target.value.trim())forms[id]=e.target.value;else delete forms[id];change('forms',forms);}}/></label>)}</div><label className="vc-check"><input type="checkbox" checked={entry.forms?.regular===true} disabled={busy} onChange={e=>change('forms',{...entry.forms,regular:e.target.checked})}/>Confirmé que es un verbo regular en presente</label></>}
       </details>
       {selectedCoverage&&<div className="vc-quality"><h3>Calidad y evaluación</h3><p>{selectedCoverage.originals} originales aptos · {selectedCoverage.approvedVariants||0} variantes aprobadas aptas · {selectedCoverage.confirmedPeople} personas confirmadas para aprendizaje · {selectedCoverage.approved||0} aprobadas examinadas.</p><p>Prueba: {selectedCoverage.evaluation?.samples||0} tomas · acierto sobre la seña realizada: {percentage(selectedCoverage.evaluation?.recall)} · precisión de las respuestas: {percentage(selectedCoverage.evaluation?.precision)}.</p><p>{scopes[selectedCoverage.evaluation?.scope]||'Sin prueba independiente'}. Los porcentajes describen estas muestras reservadas y no garantizan el resultado con otras personas.</p>{selectedCoverage.excluded>0&&<p>{selectedCoverage.excluded} tomas excluidas: {(selectedCoverage.exclusions||[]).map(({reason,count})=>`${reasons[reason]||reason}: ${count}`).join(' · ')}.</p>}</div>}
+      {!isNew&&!entry.aliasOf&&<QualityOverride key={`${entry.classId}:${quality.get(entry.classId)?.manualVersion||0}`} row={quality.get(entry.classId)} busy={busy} onSave={level=>void task(async()=>{await api.saveRecognitionQuality(session,entry.classId,level,quality.get(entry.classId)?.manualVersion||0);setNotice('Nivel de reconocimiento guardado. El intérprete actualizará su color automáticamente.');await refresh();})}/>}
       {duplicate&&<p className="vc-error" role="alert">Esta entrada ya existe en su categoría.</p>}<button className="vc-save" onClick={save} disabled={busy||duplicate||!entry.label||!entry.displayLabel.trim()}>{busy?'Guardando…':'Guardar seña'}</button>
       {!isNew&&<div className="vc-samples"><h3>Muestras y personas</h3><p>Usa códigos como P01, sin nombres personales. Confirma la persona únicamente cuando puedas verificarla. Si reservas una persona para prueba, sus tomas confirmadas se excluyen del aprendizaje en todas las señas.</p>
         {!samples?<p role="status">Cargando muestras…</p>:<>{samples.rows.map(row=><Sample key={`${row.id}:${row.assignmentVersion}`} row={row} busy={busy} onSave={value=>void task(async()=>{await api.assignVocabularySample(session,value);setNotice('Asignación guardada. Las pruebas reservadas no se usan para aprender.');await readSamples(entry.classId,samplePage);await refresh();})}/>)}{!samples.rows.length&&<p>No hay grabaciones aprobadas para esta entrada.</p>}<div className="vc-pagination"><button disabled={busy||samplePage===0} onClick={()=>void readSamples(entry.classId,samplePage-1)}>Tomas anteriores</button><span>{samples.total} tomas aprobadas</span><button disabled={busy||(samplePage+1)*25>=samples.total} onClick={()=>void readSamples(entry.classId,samplePage+1)}>Más tomas</button></div></>}

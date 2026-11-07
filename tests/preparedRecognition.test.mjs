@@ -7,10 +7,11 @@ const flush=async()=>{for(let i=0;i<35;i++)await Promise.resolve();};
 function harness(options={}){
   let time=0,id=0,offline=false,saved=options.saved,kicks=0,revision={ok:true,revision:'2:1:1',ready:true,preparing:false,modelId:'one'};
   const catalogue=catalogueSeed().filter(row=>row.state==='enabled'),classes=catalogue.slice(0,2).map(row=>row.classId),model={id:'one',classes,enabledClasses:classes};
+  let quality=[];
   const timers=new Map(),calls=[],updates=[],errors=[],target=new EventTarget(),document=new EventTarget();document.hidden=false;
   const read=async(_client,name,args,signal)=>{calls.push({name,args,signal});if(offline)throw Error('Sin conexión');
     if(name==='deafapp_recognition_revision')return {...revision};
-    if(name==='deafapp_recognition_manifest')return {...revision,catalogue,expiresAt:null};
+    if(name==='deafapp_recognition_manifest')return {...revision,catalogue,quality,expiresAt:null};
     if(name==='deafapp_recognition_model')return {ok:true,packet:{model:{...model,id:revision.modelId},compressedBytes:100}};
     assert.fail('El navegador no debe descargar grabaciones originales.');};
   const cache=async(action,value)=>{if(action==='get')return saved;saved=value;};
@@ -18,8 +19,24 @@ function harness(options={}){
     setTimer:(fn,ms)=>{timers.set(++id,{fn,at:time+ms});return id;},clearTimer:key=>timers.delete(key),onUpdate:value=>updates.push(value),onError:error=>errors.push(error),...options});
   return {sync,calls,updates,errors,target,document,catalogue,model,get saved(){return saved;},get kicks(){return kicks;},get timers(){return timers.size;},setOffline:value=>offline=value,
     setRevision:value=>{revision={...revision,...value};},
+    setQuality:(value,key)=>{quality=value;revision={...revision,qualityRevision:key};},
     async advance(ms){const until=time+ms;while(true){const next=[...timers].filter(([,row])=>row.at<=until).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;time=next[1].at;timers.delete(next[0]);next[1].fn();await flush();}time=until;await flush();}};
 }
+
+test('un nivel guardado actualiza los colores sin volver a descargar el paquete',async()=>{
+  const h=harness();await h.advance(0);
+  h.setQuality([{classId:h.model.classes[0],manualLevel:'high',manualVersion:1}],'1:one:pending');await h.advance(2000);
+  assert.equal(h.updates.at(-1).quality[0].manualLevel,'high');assert.equal(h.calls.filter(row=>row.name==='deafapp_recognition_model').length,1);
+  h.setQuality([{classId:h.model.classes[0],manualLevel:'low',manualVersion:2}],'2:one:pending');await h.advance(2000);
+  assert.equal(h.updates.at(-1).quality[0].manualLevel,'low');assert.equal(h.calls.filter(row=>row.name==='deafapp_recognition_model').length,1);h.sync.close();
+});
+test('si la valoración cambia durante la carga no muestra el color de una revisión anterior',async()=>{
+  let h,first=true;
+  h=harness({decode:async packet=>{if(first){first=false;h.setQuality([{classId:packet.model.classes[0],manualLevel:'low'}],'1:one:pending');}return packet.model;}});
+  await h.advance(0);assert.deepEqual(h.updates.at(-1).quality,[]);
+  await h.advance(25);assert.equal(h.updates.at(-1).quality[0].manualLevel,'low');
+  assert.equal(h.calls.filter(row=>row.name==='deafapp_recognition_model').length,1);h.sync.close();
+});
 
 test('la primera carga obtiene un paquete y las comprobaciones siguientes no descargan originales ni repiten el modelo',async()=>{
   const h=harness();await h.advance(0);assert.equal(h.updates.at(-1).model.id,'one');assert.ok(h.saved.packet);
