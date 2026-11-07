@@ -2,13 +2,14 @@
 // The package entry is restored even if Expo fails; production keeps index.js.
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),{execFileSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..'),packagePath=path.join(root,'package.json'),original=fs.readFileSync(packagePath,'utf8');
-const output=path.join(root,'dist/recognition-quality-demo');
+const stability=process.argv.includes('--stability');
+const output=path.join(root,stability?'dist/recognition-stability-demo':'dist/recognition-quality-demo');
 try{
-  fs.writeFileSync(packagePath,JSON.stringify({...JSON.parse(original),main:'tests/fixtures/recognitionQualityPreview.web.jsx'},null,2)+'\n');
+  fs.writeFileSync(packagePath,JSON.stringify({...JSON.parse(original),main:stability?'tests/fixtures/recognitionStabilityPreview.web.jsx':'tests/fixtures/recognitionQualityPreview.web.jsx'},null,2)+'\n');
   execFileSync(process.execPath,[require.resolve('expo/bin/cli'),'export','--platform','web','--output-dir',output],{cwd:root,stdio:'inherit',env:{...process.env,EXPO_NO_TELEMETRY:'1'}});
 }finally{fs.writeFileSync(packagePath,original);}
 if(process.argv.includes('--build-only'))process.exit(0);
-const port=Number(process.env.QUALITY_PREVIEW_PORT||8097),types={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.ttf':'font/ttf'};
+const port=Number(process.env.QUALITY_PREVIEW_PORT||(stability?8098:8097)),types={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.ttf':'font/ttf'};
 if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Usa un puerto local entre 1024 y 65535.');
 http.createServer((request,response)=>{
   if(!['GET','HEAD'].includes(request.method)){response.writeHead(405);response.end();return;}
