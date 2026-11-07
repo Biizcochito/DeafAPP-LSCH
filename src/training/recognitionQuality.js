@@ -5,9 +5,13 @@ export const QUALITY_MINIMUM_SAMPLES = 5;
 
 // The live match score is a similarity measure, not a measure of accuracy.
 // Only completed, held-out evaluations can assign an automatic quality level.
-export function recognitionQuality(row) {
+export function recognitionQuality(row,observed) {
   const manual=row?.manualLevel;
-  if(QUALITY_LEVELS.includes(manual))return {level:manual,source:'manual',label:QUALITY_LABELS[manual],detail:'Nivel asignado manualmente por administración.'};
+  if(QUALITY_LEVELS.includes(manual))return {level:manual,source:'manual',label:QUALITY_LABELS[manual],observedStreak:observed?.bestStreak,detail:`Nivel asignado manualmente por administración.${observed?.bestStreak?` La cámara observó una mejor racha de ${observed.bestStreak}/5, pero el nivel manual mantiene la prioridad.`:''}`};
+  if(Number.isInteger(observed?.bestStreak)&&observed.bestStreak>=1&&observed.bestStreak<=5){
+    const n=observed.bestStreak,level=n>=5?'high':n>=3?'medium':'low';
+    return {level,source:'stability',label:QUALITY_LABELS[level],detail:`Mejor racha observada en este navegador: ${n} ${n===1?'detección consecutiva':'detecciones consecutivas'} de esta seña, con movimientos separados. Mide consistencia del modelo, no aciertos comprobados.`,bestStreak:n};
+  }
   const e=row?.evaluation;
   const count=n=>Number.isSafeInteger(n)&&n>=0;
   const valid=e&&['different-recordings','different-confirmed-people'].includes(e.scope)&&count(e.samples)&&count(e.correct)&&count(e.predicted)&&e.correct<=e.samples&&e.correct<=e.predicted;
