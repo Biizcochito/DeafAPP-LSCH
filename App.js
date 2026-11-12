@@ -51,15 +51,8 @@ if (typeof document !== "undefined") {
   style.textContent = `::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #080c0a; } ::-webkit-scrollbar-thumb { background: #2c3d33; border-radius: 4px; }`;
   document.head.appendChild(style);
 
-  // Logo/ícono de la pestaña del navegador
+  // El ícono de la pestaña está en public/index.html para que Google también lo vea.
   document.title = "DeafApp — Lengua de Señas Chilena";
-  let favicon = document.querySelector("link[rel='icon']");
-  if (!favicon) {
-    favicon = document.createElement("link");
-    favicon.rel = "icon";
-    document.head.appendChild(favicon);
-  }
-  favicon.href = "/brand/deafapp-mark.svg";
 }
 
 
