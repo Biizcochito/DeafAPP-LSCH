@@ -27,6 +27,7 @@ import { createTrainingCapture, captureTrackingSample, makeParticipantId } from 
 import { useRecordingSource } from "./src/recording/RecordingProfiles";
 import AdminPanel from "./src/admin/AdminPanel";
 import WelcomeScreen from "./src/app/WelcomeScreen";
+import QuickCards from "./src/app/QuickCards";
 import LiveInterpretation, {LiveInterpretationSession} from "./src/app/LiveInterpretation";
 import AppWorkspace, { CameraPermission } from "./src/app/AppWorkspace";
 import { themeWebStyles } from "./src/app/appTheme";
@@ -751,7 +752,8 @@ export default function App() {
     );
   }
 
-  if (pantalla === "interpretar") return <LiveInterpretation client={supabase} onBack={() => setPantalla("bienvenida")} />;
+  if (pantalla === "tarjetas") return <QuickCards navigate={setPantalla} />;
+  if (pantalla === "interpretar" || pantalla === "conversar") return <LiveInterpretation client={supabase} onBack={() => setPantalla("bienvenida")} />;
 
   if (pantalla === "admin") return <AdminPanel client={adminBackend} onExit={() => {
     if (Platform.OS === "web" && typeof window !== "undefined") window.history.replaceState(null, "", "/app");
@@ -794,7 +796,7 @@ export default function App() {
 
   // ── BIENVENIDA ───────────────────────────────────────────────────
   if (pantalla === "bienvenida") {
-    return <WelcomeScreen onBegin={() => setPantalla("home")} onInterpret={() => setPantalla("interpretar")} onLogo={pulsarLogo} onLegal={setPantalla} categories={categoriasAportes} />;
+    return <WelcomeScreen onBegin={() => setPantalla("home")} onInterpret={() => setPantalla("interpretar")} navigate={setPantalla} onLogo={pulsarLogo} onLegal={setPantalla} categories={categoriasAportes} />;
   }
 
   // ── FEEDBACK ─────────────────────────────────────────────────────
@@ -1137,9 +1139,9 @@ export default function App() {
 }
 
 
-  return <LiveInterpretationSession active={pantalla==='interpretar'} blocked={pantalla==='grabar'||pantalla==='admin'} client={supabase}
+  return <LiveInterpretationSession active={pantalla==='interpretar'||pantalla==='conversar'} conversationMode={pantalla==='conversar'} navigate={setPantalla} blocked={pantalla==='grabar'||pantalla==='admin'} client={supabase}
     onBack={()=>setPantalla('bienvenida')} onOpen={()=>setPantalla('interpretar')}>
-    {Platform.OS==='web'&&pantalla==='interpretar'?null:renderScreen()}
+    {Platform.OS==='web'&&(pantalla==='interpretar'||pantalla==='conversar')?null:renderScreen()}
   </LiveInterpretationSession>;
 }
 

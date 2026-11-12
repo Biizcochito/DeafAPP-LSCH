@@ -7,6 +7,7 @@ import { ROADMAP, VALUES } from "../ui/projectInfo";
 import "../ui/theme.css";
 import "./AppWorkspace.css";
 import {nombrePantalla} from './appRoutes';
+import CommunicationNav from './CommunicationNav.web';
 
 const paths = {
   camera: ["M4 7h4l2-3h4l2 3h4v13H4Z", "M16 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"],
@@ -112,7 +113,7 @@ export default function AppWorkspace({ screen, navigate, onLogo, categories, cat
     <header className="app-topbar"><Brand onLogo={onLogo} /><div className="app-header-actions">
       <button className="app-icon-button" aria-label="Sugerencias" aria-current={screen === "feedback" ? "page" : undefined} onClick={() => navigate("feedback")}><AppIcon name="message" /><span className="app-icon-label">Sugerencias</span></button>
       <button className="app-icon-button" aria-label="Ayuda para grabar" aria-current={screen === "ayuda" ? "page" : undefined} onClick={() => navigate("ayuda")}><AppIcon name="question" /><span className="app-icon-label">Ayuda para grabar</span></button>
-    </div><InterpretationLink className="app-live-shortcut" onInterpret={()=>navigate('interpretar')}/></header>
+    </div><CommunicationNav navigate={navigate} current="home"/></header>
     <main className="app-scroll" ref={scrollRef} id="app-content"><div className="app-content" key={screen}>
       {["categoria", "ayuda", "feedback"].includes(screen) && <button className="app-back" onClick={() => navigate("home")}><AppIcon name="back" size={19} />{screen === "categoria" ? "Categorías" : "Inicio"}</button>}
       {screen === "home"
