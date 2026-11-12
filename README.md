@@ -40,12 +40,22 @@ DeafApp sigue en desarrollo. Su alcance actual es el reconocimiento de señas y 
 | --- | --- |
 | [deafapps.com](https://deafapps.com) | Conocer el proyecto y acceder a sus funciones. |
 | [deafapps.com/interpretar](https://deafapps.com/interpretar) | Usar la cámara con texto, voz y vocabulario habilitado. |
+| `/conversar` | Compartir una pantalla con señas reconocidas y respuestas escritas o dictadas. |
+| `/tarjetas` | Mostrar mensajes grandes, leerlos con voz y guardar frases propias y favoritas. |
 | [deafapps.com/app](https://deafapps.com/app) | Consultar el catálogo, grabar y revisar los aportes del dispositivo. |
 | [deafapps.com/admin](https://deafapps.com/admin) | Acceder con autenticación a revisión, catálogo y entrenamiento. |
 | [Privacidad](https://deafapps.com/privacidad) y [términos](https://deafapps.com/terminos) | Consultar las condiciones del proyecto. |
 | [Tu autorización](https://deafapps.com/consentimiento) | Registrar las decisiones previas a una grabación. |
 
 ## Interpretador en vivo
+
+### Conversación y comunicación rápida
+
+**Conversar** reutiliza el interpretador del vocabulario habilitado y reúne las señas reconocidas con respuestas escritas o dictadas. El dictado se inicia con un botón, deja un borrador editable y requiere pulsar «Mostrar respuesta» para incorporarlo al historial. Al salir de la sección o esconder la pestaña se cancela la escucha. El historial se mantiene en memoria durante la sesión y puede limpiarse.
+
+El dictado usa la API de reconocimiento de voz del navegador, cuando está disponible, en español de Chile. Puede requerir conexión y procesamiento del audio por el proveedor del navegador. DeafApp no guarda ni envía una grabación de este dictado a su backend. La escritura permanece disponible si no hay soporte o se deniega el micrófono. El dictado convierte voz en texto; no genera LSCh. La lectura de señas se pausa durante la escucha para evitar que el micrófono capte la voz de la aplicación.
+
+**Comunicación rápida** ofrece tarjetas con mensajes predeterminados, categorías, búsqueda, favoritas y hasta 50 frases propias. Una tarjeta se puede mostrar a pantalla completa, editar para esa ocasión, leer con voz o usar como punto de partida para responder por escrito. Las frases propias y favoritas se conservan en `localStorage` de ese navegador; borrarlo elimina esas preferencias. Esta sección no solicita cámara ni micrófono.
 
 Desde **Interpretar en vivo** se puede activar la cámara y realizar una seña sin seleccionar antes una respuesta esperada.
 

@@ -4,11 +4,11 @@ RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # La web es de una sola página: /app y /admin se resuelven en el navegador
-RewriteRule ^(app|admin|interpretar|privacidad|terminos|consentimiento)/?$ /index.html [L]
+RewriteRule ^(app|admin|interpretar|conversar|tarjetas|privacidad|terminos|consentimiento)/?$ /index.html [L]
 
-# Permitir la cámara en esta página
+# Permitir cámara y dictado en esta misma web
 <IfModule mod_headers.c>
-  Header always set Permissions-Policy "camera=(self)"
+  Header always set Permissions-Policy "camera=(self), microphone=(self)"
 </IfModule>
 
 # Tipos MIME para el modelo de manos

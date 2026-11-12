@@ -1,6 +1,27 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mismaRuta, pantallaDe, rutaDe, tituloDe, tituloAdmin } from "../src/app/appRoutes.js";
+import {readFileSync} from 'node:fs';
+
+test('conversar y tarjetas tienen rutas directas y títulos distintos', () => {
+  for (const [screen, path, title] of [['conversar', '/conversar', 'Conversar'], ['tarjetas', '/tarjetas', 'Comunicación rápida']]) {
+    assert.equal(rutaDe(screen), path);
+    assert.equal(pantallaDe(path), screen);
+    assert.equal(pantallaDe(path + '/'), screen);
+    assert.equal(tituloDe(screen), `DeafApp — ${title}`);
+  }
+});
+
+test('HostGator también sirve los enlaces directos de las herramientas al recargar', () => {
+  const htaccess = readFileSync(new URL('../deploy/.htaccess', import.meta.url), 'utf8');
+  const pattern = htaccess.match(/^RewriteRule (\S+) \/index\.html \[L\]$/m)?.[1];
+  assert.ok(pattern, 'Falta la regla de entrada de la aplicación');
+  const rewrite = new RegExp(pattern);
+  for (const route of ['app', 'admin', 'interpretar', 'conversar', 'tarjetas', 'privacidad', 'terminos', 'consentimiento']) {
+    assert.ok(rewrite.test(route)); assert.ok(rewrite.test(route + '/'));
+  }
+  assert.ok(!rewrite.test('public/favicon.svg'));
+});
 
 test("la raíz informa, /app abre la app y /admin la administración", () => {
   assert.equal(pantallaDe("/"), "bienvenida");

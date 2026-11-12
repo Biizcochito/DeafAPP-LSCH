@@ -16,6 +16,8 @@ import VocabularyQuality from '../training/VocabularyQuality.web';
 import {createLiveRecognitionStability,readRecognitionStability,saveRecognitionStability} from '../training/liveRecognitionStability';
 import '../ui/theme.css';
 import './LiveInterpretation.css';
+import {CommunicationHeader} from './CommunicationNav.web';
+import ConversationPanel from './ConversationPanel.web';
 
 const PHASES={off:'Tu espacio para conversar',loading:'Preparando la cámara…',position:'Coloca tu cara y tus manos en el encuadre',
   ready:'Haz otra seña u oración completa, a tu ritmo.',
@@ -24,12 +26,12 @@ const PHASES={off:'Tu espacio para conversar',loading:'Preparando la cámara…'
 const cameraError=error=>error.name==='NotAllowedError'?'Permite el acceso a la cámara desde el navegador y vuelve a intentarlo.':
   error.name==='NotFoundError'?'No se encontró una cámara. Conecta una y vuelve a intentarlo.':error.message||'No se pudo iniciar la cámara. Inténtalo de nuevo.';
 
-export function LiveInterpretationSession({active,blocked,client,onBack,onOpen,children}) {
+export function LiveInterpretationSession({active,blocked,client,onBack,onOpen,children,conversationMode=false,navigate}) {
   const [visited,setVisited]=useState(active),[state,setState]=useState('off');
   const controls=useRef(null);
   useEffect(()=>{if(active)setVisited(true);},[active]);
   return <>{children}<div key="interpretation-session" style={{display:active?'contents':'none'}} hidden={!active}>
-    {(visited||active)&&<LiveInterpretation client={client} onBack={onBack} active={active} blocked={blocked} controls={controls} onCameraState={setState}/>}
+    {(visited||active)&&<LiveInterpretation client={client} onBack={onBack} active={active} blocked={blocked} controls={controls} onCameraState={setState} conversationMode={conversationMode} navigate={navigate}/>}
   </div>
     {!active&&state!=='off'&&<aside className="deaf-app li-session-status" aria-label="Cámara del intérprete activa">
       <span><i aria-hidden="true"/>Cámara del intérprete activa<small>El reconocimiento se reanuda al volver.</small></span>
@@ -38,7 +40,7 @@ export function LiveInterpretationSession({active,blocked,client,onBack,onOpen,c
   </>;
 }
 
-export default function LiveInterpretation({client,onBack,preview=null,active=true,blocked=false,controls,onCameraState}) {
+export default function LiveInterpretation({client,onBack,preview=null,active=true,blocked=false,controls,onCameraState,conversationMode=false,navigate}) {
   const video=useRef(null),canvas=useRef(null),camera=useRef(null),voice=useRef(null),sync=useRef(null);
   const candidate=useRef(null),live=useRef({phase:'off'});
   const labels=useRef(new Map());
@@ -50,7 +52,8 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const [error,setError]=useState(''),[voiceError,setVoiceError]=useState(''),[voiceOn,setVoiceOn]=useState(true);
   const [voices,setVoices]=useState([]),[selectedVoice,setSelectedVoice]=useState(''),[voicesLoaded,setVoicesLoaded]=useState(false);
   const voicePreference=useRef(true);
-  const activity=useRef({active,blocked,onCameraState});activity.current={active,blocked,onCameraState};
+  const [dictating,setDictating]=useState(false);
+  const activity=useRef({active,blocked,onCameraState,dictating});activity.current={active,blocked,onCameraState,dictating};
   const conversation=useLiveConversation({voice,catalogue:library.catalogue,onReset:()=>camera.current?.reset(),initialMode:preview?'phrases':'signs'});
   const history=conversation.history;
   const voiceSupported=typeof window!=='undefined'&&!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
@@ -95,7 +98,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     else sync.current=startPreparedRecognition({client,onUpdate:prepared});
     const hidden=()=>{
       camera.current?.setSuspended(!activity.current.active||document.hidden);
-      voice.current?.setEnabled(voicePreference.current&&activity.current.active&&!document.hidden);
+      voice.current?.setEnabled(voicePreference.current&&activity.current.active&&!activity.current.dictating&&!document.hidden);
     };
     camera.current.setBlocked(activity.current.blocked);hidden();
     const leave=()=>camera.current?.stop();
@@ -106,8 +109,8 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   useEffect(()=>{
     camera.current?.setBlocked(blocked);
     camera.current?.setSuspended(!active||document.hidden);
-    voice.current?.setEnabled(voicePreference.current&&active&&!document.hidden);
-  },[active,blocked]);
+    voice.current?.setEnabled(voicePreference.current&&active&&!dictating&&!document.hidden);
+  },[active,blocked,dictating]);
   useEffect(()=>{
     setShowCameraIntro(cameraState==='on');
     if(cameraState!=='on')return;
@@ -131,7 +134,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
     return()=>{alive=false;window.speechSynthesis.removeEventListener?.('voiceschanged',loadVoices);};
   },[voiceSupported]);
   function toggleVoice(){
-    const next=!voicePreference.current;voicePreference.current=next;setVoiceOn(next);setVoiceError('');voice.current?.setEnabled(next);
+    const next=!voicePreference.current;voicePreference.current=next;setVoiceOn(next);setVoiceError('');voice.current?.setEnabled(next&&active&&!dictating&&!document.hidden);
     if(next&&conversation.mode==='signs')voice.current?.update(live.current);
   }
   function testVoice(){voicePreference.current=true;setVoiceOn(true);setVoiceError('');voice.current?.setEnabled(true);voice.current?.preview();}
@@ -144,15 +147,16 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const lastPhrase=[...history].reverse().find(row=>row.kind==='phrase');
   const currentText=conversation.mode==='phrases'?(conversation.draft.text||lastPhrase?.label||''):(matched?word:'');
   const femaleVoice=voiceForGender(voices,'female'),maleVoice=voiceForGender(voices,'male');
-  return <div className="deaf-app live-interpretation">
-    <header className="li-nav"><a href="/" onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onBack();}} aria-label="DeafApp, volver al inicio">
+  return <div className={`deaf-app live-interpretation${conversationMode?' li-conversation-mode':''}`}>
+    {!preview&&navigate?<CommunicationHeader navigate={navigate} current={conversationMode?'conversar':'interpretar'}/>:<header className="li-nav"><a href="/" onClick={event=>{if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();onBack();}} aria-label="DeafApp, volver al inicio">
       <img src="/brand/deafapp-mark.svg" alt="" width="34" height="34"/><span>Deaf<span>App</span></span></a>
-      <button className="li-back" onClick={onBack}>{preview?'← Volver al vocabulario':'← Volver al inicio'}</button></header>
+      <button className="li-back" onClick={onBack}>{preview?'← Volver al vocabulario':'← Volver al inicio'}</button></header>}
     <main className="li-main">
-      <div className="li-heading"><span className="li-eyebrow">{preview?'EVALUACIÓN PRIVADA · CÁMARA + FRASES':'LSCh · TEXTO + VOZ'}</span><h1>{preview?"Prueba privada de interpretación":"Interpretar en vivo"}</h1>
-        <p>Haz una seña frente a la cámara. Nosotros ponemos las palabras.</p></div>
+      <div className="li-heading"><span className="li-eyebrow">{preview?'EVALUACIÓN PRIVADA · CÁMARA + FRASES':conversationMode?'DOS PERSONAS · UNA CONVERSACIÓN':'LSCh · TEXTO + VOZ'}</span><h1>{preview?'Prueba privada de interpretación':conversationMode?<>Cada persona,<br/><em>su forma de expresarse.</em></>:'Interpretar en vivo'}</h1>
+        <p>{conversationMode?'Señas a texto y voz. Respuestas escritas o dictadas, en una misma pantalla.':'Haz una seña frente a la cámara. Nosotros ponemos las palabras.'}</p></div>
       <div className="li-workspace">
         <section className="li-camera-section" aria-label="Cámara de interpretación">
+          {conversationMode&&<div className="communication-panel-title"><span className="communication-step">01</span><div><h2>Exprésate con tus manos</h2><p>Usa las señas del vocabulario habilitado.</p></div></div>}
           <div className="li-camera-frame">
           <div className={`li-camera${matched?' li-matched':''}`}>
             <video ref={video} muted playsInline autoPlay aria-label="Tu cámara en vivo"/>
@@ -169,10 +173,16 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
           {(running||preparing)&&<div className="li-camera-status" role="status" aria-live="polite" aria-atomic="true"><span>{statusText}</span>
             {preparing&&<div className="li-loading-bar" role="progressbar" aria-label={statusText}><i/></div>}</div>}
           <div className="li-camera-actions"><button className="li-primary" onClick={()=>{setError('');if(running)camera.current?.stop();else void camera.current?.start();}}>{running?'Detener cámara':'Activar cámara'}</button>
-            <span>La cámara se usa en este dispositivo.<br/>Esta sesión no se graba ni se envía.<br/>Permanece activa al navegar por esta web; puedes apagarla cuando quieras.</span></div>
+            <span>La cámara se usa en este dispositivo.<br/>{conversationMode?'Las imágenes no se graban ni se envían.':'Esta sesión no se graba ni se envía.'}<br/>Permanece activa al navegar por esta web; puedes apagarla cuando quieras.</span></div>
           {error&&<p className="li-error" role="alert">{error}</p>}
+          {conversationMode&&<div className="conversation-camera-tools"><div className="li-voice"><div><strong>Leer señas con voz</strong><span>{dictating?'Voz en pausa mientras dictas':voiceOn?'Lectura activada':'Lectura silenciada'}</span></div><button disabled={!voiceSupported||dictating} aria-pressed={voiceOn} onClick={toggleVoice}>{voiceOn?'Silenciar voz':'Activar voz'}</button></div>
+            {voiceError&&<p className="li-error" role="status">{voiceError}</p>}
+            <details><summary>{library.loading?'Preparando vocabulario…':`Ver vocabulario habilitado (${library.words.length})`}</summary><div className="li-vocabulary">{library.loading?<p role="status">{library.message}</p>:<VocabularyQuality words={library.words} quality={library.quality} stability={stability} labels={id=>labels.current.get(id)||spokenSignLabel(id)}/>}
+              {library.error&&<p className="li-error" role="alert">{library.error} <button onClick={()=>sync.current?.request()}>Reintentar</button></p>}
+              {!library.loading&&!library.words.length&&!library.error&&<p>Aún no hay señas habilitadas. Puedes conversar por escrito.</p>}</div></details></div>}
         </section>
-        <section className="li-conversation" aria-label="Voz, vocabulario e historial de interpretación">
+        <div hidden={!conversationMode} style={{display:conversationMode?'contents':'none'}}><ConversationPanel signedHistory={history} active={active&&conversationMode} onListeningChange={value=>{voice.current?.setEnabled(voicePreference.current&&active&&!value&&!document.hidden);setDictating(value);}} onClearSigns={conversation.clearHistory}/></div>
+        <section hidden={conversationMode} style={{display:conversationMode?'none':undefined}} className="li-conversation" aria-label="Voz, vocabulario e historial de interpretación">
           <div className="li-tools">
           <div className="li-result-heading"><span className="li-eyebrow">DE TUS MANOS A LAS PALABRAS</span><span className="li-text-badge">Texto en vivo</span></div>
           <div className="li-voice"><div><strong>Voz en español</strong><span>{voiceSupported?(voiceOn?(conversation.mode==='phrases'?'Leer al terminar la frase':'Leer cada seña reconocida'):'Voz silenciada'):'Tu navegador no admite voz; puedes usar el texto.'}</span></div>

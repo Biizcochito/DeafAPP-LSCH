@@ -11,6 +11,7 @@ import { ROADMAP, VALUES } from "../ui/projectInfo";
 import { CATEGORIAS_VISIBLES } from "../catalog/signCatalog";
 import "../ui/theme.css";
 import "./WelcomeScreen.css";
+import CommunicationNav, {AppLink, CommunicationIcon} from './CommunicationNav.web';
 import "../privacy/PrivacyScreens.css";
 
 const ROADMAP_CLASS = { now: "dw-now", test: "dw-test", goal: "dw-goal-step" };
@@ -64,7 +65,7 @@ function GoLink({ onBegin, className, children, href = "/app" }) {
   }}>{children}</a>;
 }
 
-export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal, categories=CATEGORIAS_VISIBLES }) {
+export default function WelcomeScreen({ onBegin, onInterpret, navigate, onLogo, onLegal, categories=CATEGORIAS_VISIBLES }) {
   const TOTAL_SEÑAS=categories.filter(category=>category.id!=='oraciones').reduce((total,category)=>total+category.señas.length,0);
   const TOTAL_ORACIONES=categories.find(category=>category.id==='oraciones')?.señas.length||0;
   useEffect(() => {
@@ -84,10 +85,7 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal, c
           <a href="#el-proyecto">El proyecto</a>
           <a href="#comunidad">Comunidad</a>
         </nav>
-        <div className="dw-nav-actions">
-          <GoLink className="dw-btn dw-btn-small" onBegin={onBegin}>Grabar<Icon name="diagonal" size={18} /></GoLink>
-          <GoLink className="dw-btn dw-btn-live dw-btn-small" href="/interpretar" onBegin={onInterpret}>Interpretar en vivo<Icon name="camera" size={18} /></GoLink>
-        </div>
+        <CommunicationNav navigate={navigate}/>
       </header>
 
       <main id="bienvenida-contenido" tabIndex={-1}>
@@ -103,6 +101,7 @@ export default function WelcomeScreen({ onBegin, onInterpret, onLogo, onLegal, c
                 <GoLink className="dw-btn dw-btn-live dw-btn-big" href="/interpretar" onBegin={onInterpret}>Interpretar en vivo<span aria-hidden="true"><Icon name="camera" size={22} /></span></GoLink>
                 <a className="dw-ghost" href="#como-participar"><span aria-hidden="true"><Icon name="down" size={18} /></span>Descubre cómo</a>
               </div>
+              <div className="dw-extra-tools"><AppLink href="/conversar" onNavigate={navigate ? () => navigate('conversar') : undefined}><CommunicationIcon name="message"/>Conversar entre dos</AppLink><AppLink href="/tarjetas" onNavigate={navigate ? () => navigate('tarjetas') : undefined}><CommunicationIcon name="cards"/>Usar tarjetas rápidas</AppLink></div>
               <dl className="dw-proof">
                 <div><dt>señas</dt><dd>{TOTAL_SEÑAS}</dd></div>
                 <div><dt>oraciones</dt><dd>{TOTAL_ORACIONES}</dd></div>
