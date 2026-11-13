@@ -1,0 +1,15 @@
+.brand-home { display:inline-flex; align-items:center; gap:10px; min-width:44px; min-height:44px; text-align:left; text-decoration:none; color:var(--cream,#f5f2eb); flex-shrink:0; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+.brand-logo-mark { display:block; flex:none; overflow:visible; }
+.brand-home .brand-wordmark { font:800 25px/1 var(--display,'Bricolage Grotesque',system-ui,sans-serif); letter-spacing:-.04em; }
+.brand-home .brand-wordmark>span { font-weight:400; }
+.brand-home.dw-brand-footer .brand-wordmark { font-size:22px; }
+.brand-home.privacy-brand>.app-beta { font:500 10px/1.4 var(--body,system-ui); padding:4px 7px; border:1px solid var(--line-2); border-radius:6px; color:var(--muted); }
+.brand-home:focus-visible { outline:3px solid var(--sky,#78e0ff); outline-offset:6px; border-radius:8px; }
+.brand-logo-bubble-a { transform-origin:27px 20px; animation:deafapp-bubble-a 4.8s ease-in-out infinite; }
+.brand-logo-bubble-b { transform-origin:52px 34px; animation:deafapp-bubble-b 4.8s ease-in-out infinite; }
+.brand-logo-hand { transform-origin:36px 57px; animation:deafapp-hand 4.8s ease-in-out infinite; }
+@keyframes deafapp-bubble-a { 0%,100% { transform:translateY(0) scale(1); } 24%,38% { transform:translateY(-3px) scale(1.035); } 62%,76% { transform:translateY(1px) scale(.99); } }
+@keyframes deafapp-bubble-b { 0%,100% { transform:translateY(0) scale(1); } 22%,34% { transform:translateY(1px) scale(.99); } 58%,73% { transform:translateY(-3px) scale(1.04); } }
+@keyframes deafapp-hand { 0%,100% { transform:rotate(0deg); } 20% { transform:rotate(-3deg); } 38% { transform:rotate(2deg); } 58% { transform:rotate(-1deg); } 76% { transform:rotate(1.5deg); } }
+@media(prefers-reduced-motion:reduce) { .brand-logo-bubble,.brand-logo-hand { animation:none!important; transform:none!important; } }
+@media(max-width:359px) { .app-brand>.brand-logo-mark { width:30px; height:30px; } }

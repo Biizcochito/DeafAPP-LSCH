@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AppIcon, InterpretationLink } from "../app/AppWorkspace";
+import BrandHome from '../ui/BrandHome';
 import HandConstellation from "../ui/HandConstellation";
 import { CONSENT_CHOICES, GUARDIAN_RELATIONSHIPS, PRIVACY_NOTICE, isConsentAuthorizer, privacyReady } from "./privacyConsent";
 import { LEGAL_SOURCE, LEGAL_BILL_SOURCE, LEGAL_NEWS_SOURCE, LEGAL_REVIEW, LEGAL_STATUS, TERMS_SECTIONS, privacySections } from "./privacyDocuments";
@@ -7,7 +8,7 @@ import "../ui/theme.css";
 import "./PrivacyScreens.css";
 
 function Header({ onBack, onInterpret, busy }) {
-  return <header className="privacy-header"><a className="privacy-brand" href="/app" onClick={event => { event.preventDefault(); onBack(); }}><img src="/brand/deafapp-mark.svg" alt="" width="35" height="35" /><span>Deaf<span>App</span></span><small>Beta</small></a><div className="privacy-header-actions"><button className="privacy-back" onClick={onBack}><AppIcon name="back" size={18} />Volver al catálogo</button><InterpretationLink onInterpret={onInterpret} disabled={busy}/></div></header>;
+  return <header className="privacy-header"><BrandHome className="privacy-brand" size={35} beta/><div className="privacy-header-actions"><button className="privacy-back" onClick={onBack}><AppIcon name="back" size={18} />Volver al catálogo</button><InterpretationLink onInterpret={onInterpret} disabled={busy}/></div></header>;
 }
 function PrivacyBanner({ preview }) {
   return <div className="privacy-draft" role="status"><span aria-hidden="true" />{preview ? "Vista de prueba local" : "Participación voluntaria"}<span className="privacy-draft-note">{preview ? "Sin cámara ni envío de grabaciones" : "Tú decides antes de grabar"}</span></div>;
