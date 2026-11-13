@@ -14,4 +14,4 @@
 @keyframes deafapp-bubble-b { from { transform:translate3d(0,1px,0) scale(.995); } to { transform:translate3d(0,-2.5px,0) scale(1.025); } }
 @keyframes deafapp-hand { from { transform:translate3d(0,0,0) rotate(-2deg); } to { transform:translate3d(0,0,0) rotate(2deg); } }
 @media(prefers-reduced-motion:reduce) { .brand-logo-bubble,.brand-logo-hand { animation:none!important; transform:none!important; will-change:auto; } }
-@media(max-width:359px) { .app-brand>.brand-logo-mark { width:30px; height:30px; } }
+@media(max-width:359px) { .app-brand>.brand-logo-mark { width:36px; height:36px; } }

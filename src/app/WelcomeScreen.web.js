@@ -38,7 +38,7 @@ function Icon({ name, size = 22, ...props }) {
 }
 
 function Brand({ onLogo, footer = false }) {
-  return <BrandHome className={`dw-brand${footer?' dw-brand-footer':''}`} size={40} wordmarkClassName="dw-wordmark" onHome={onLogo}/>;
+  return <BrandHome className={`dw-brand${footer?' dw-brand-footer':''}`} size={48} wordmarkClassName="dw-wordmark" onHome={onLogo}/>;
 }
 
 function Reveal({ children, delay = 0, className = "" }) {

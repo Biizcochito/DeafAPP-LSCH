@@ -19,7 +19,7 @@ export default function AdminWorkspace({children,section,onNavigate,onExit,busy}
   const local=process.env.EXPO_PUBLIC_ADMIN_MOCK==='1' && typeof window!=='undefined' && ['localhost','127.0.0.1'].includes(window.location.hostname);
   return <div className="deaf-app admin-workspace">
     <header className="admin-brandbar">
-      <BrandHome className="app-brand" size={36} beta/>
+      <BrandHome className="app-brand" size={44} beta/>
       <span className="admin-area-label">Administración</span>
       <button className="admin-mobile-exit app-icon-button" type="button" aria-label="Cerrar sesión" onClick={onExit} disabled={busy}><AppIcon name="lock" size={19}/></button>
       <InterpretationLink className="admin-live-shortcut" newTab disabled={busy}/>
