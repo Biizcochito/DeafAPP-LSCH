@@ -11,6 +11,7 @@ import { ROADMAP, VALUES } from "../ui/projectInfo";
 import { CATEGORIAS_VISIBLES } from "../catalog/signCatalog";
 import "../ui/theme.css";
 import "./WelcomeScreen.css";
+import BrandHome from '../ui/BrandHome';
 import CommunicationNav, {AppLink, CommunicationIcon} from './CommunicationNav.web';
 import "../privacy/PrivacyScreens.css";
 
@@ -37,8 +38,7 @@ function Icon({ name, size = 22, ...props }) {
 }
 
 function Brand({ onLogo, footer = false }) {
-  const content = <><img src="/brand/deafapp-mark.svg" alt="" width="40" height="40" /><span className="dw-wordmark">Deaf<span>App</span></span></>;
-  return footer || !onLogo ? <div className={`dw-brand${footer ? " dw-brand-footer" : ""}`}>{content}</div> : <button className="dw-brand" type="button" aria-label="DeafApp" onClick={onLogo}>{content}</button>;
+  return <BrandHome className={`dw-brand${footer?' dw-brand-footer':''}`} size={40} wordmarkClassName="dw-wordmark" onHome={onLogo}/>;
 }
 
 function Reveal({ children, delay = 0, className = "" }) {

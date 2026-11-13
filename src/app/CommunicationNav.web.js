@@ -1,4 +1,5 @@
 import './Communication.css';
+import BrandHome from '../ui/BrandHome';
 
 const destinations = [
   ['home', '/app', 'Grabar', 'camera'],
@@ -32,7 +33,5 @@ export default function CommunicationNav({navigate, current}) {
     </AppLink>)}</nav>;
 }
 export function CommunicationHeader({navigate, current}) {
-  return <header className="communication-header"><AppLink className="communication-brand" href="/" onNavigate={() => navigate('bienvenida')} aria-label="DeafApp, volver al inicio">
-    <img src="/brand/deafapp-mark.svg" alt="" width="34" height="34"/><span>Deaf<span>App</span></span>
-  </AppLink><CommunicationNav navigate={navigate} current={current}/></header>;
+  return <header className="communication-header"><BrandHome className="communication-brand" size={34}/><CommunicationNav navigate={navigate} current={current}/></header>;
 }

@@ -31,7 +31,8 @@ import QuickCards from "./src/app/QuickCards";
 import LiveInterpretation, {LiveInterpretationSession} from "./src/app/LiveInterpretation";
 import AppWorkspace, { CameraPermission } from "./src/app/AppWorkspace";
 import { themeWebStyles } from "./src/app/appTheme";
-import { createHiddenAdminEntry } from "./src/admin/adminAccess";
+import BrandHome from './src/ui/BrandHome';
+import {HomeNavigationProvider} from './src/ui/HomeNavigation';
 import { addContribution, emptyContributions, sanitizeContributions } from "./src/contributions/myContributions";
 import { myContributionsStore } from "./src/contributions/myContributionsStore";
 import { mismaRuta, pantallaDe, rutaDe, tituloDe } from "./src/app/appRoutes";
@@ -179,10 +180,11 @@ export default function App() {
     if (Platform.OS === "web") window.addEventListener("storage", changed);
     return () => { mounted = false; if (Platform.OS === "web") window.removeEventListener("storage", changed); };
   }, []);
-  const entradaAdminRef = useRef(null);
-  if (!entradaAdminRef.current) entradaAdminRef.current = createHiddenAdminEntry();
+  const inicioNavigationEpoch=useRef(0);
   const pulsarLogo = () => {
-    if (entradaAdminRef.current.press(Date.now())) setPantalla("admin");
+    inicioNavigationEpoch.current++;
+    cancelarCaptura();setReproduciendo(false);setRepitiendo(false);setError(null);setPantalla('bienvenida');
+    if(Platform.OS==='web'){window.scrollTo(0,0);document.querySelector('.deaf-welcome')?.scrollTo({top:0,behavior:'auto'});}
   };
   const [progresoAbierto, setProgresoAbierto] = useState(false);
   const [catActual,  setCatActual]  = useState(null);
@@ -600,6 +602,7 @@ export default function App() {
   const enviarBorrador = async () => {
     const draft = borradorRef.current;
     if (!draft || enviandoRef.current) return;
+    const navigationEpoch=inicioNavigationEpoch.current;
     enviandoRef.current = true;
     setSubiendo(true);
     setReproduciendo(false);
@@ -625,7 +628,7 @@ export default function App() {
       borradorRef.current = null;
       setBorrador(null);
       setExito(true);
-      setPantalla("envioListo");
+      if(navigationEpoch===inicioNavigationEpoch.current)setPantalla("envioListo");
     } catch (e) {
       setEnvioFallido(true);
       setError(`No se pudo enviar la seña. ${e.message || "Intenta de nuevo cuando tengas conexión."}`);
@@ -658,11 +661,12 @@ export default function App() {
   }
   if (pantalla === "consentimiento" || ["grabar", "pruebaConsentimiento"].includes(pantalla) && (!consentimientoActivo || !privacyPreview && !privacyReady())) {
     return <PrivacyConsent preview={privacyPreview} onBack={volverAlCatalogo} onInterpret={abrirInterpretacion} onAccept={async choices => {
+      const navigationEpoch=inicioNavigationEpoch.current;
       const receipt = createConsentReceipt(choices, { preview: privacyPreview });
       await privacyConsentStore.save(receipt);
       actualizarConsentimiento(receipt);
       setMensajePrivacidad("");
-      setPantalla(privacyPreview ? "pruebaConsentimiento" : señaActual ? "grabar" : "home");
+      if(navigationEpoch===inicioNavigationEpoch.current)setPantalla(privacyPreview ? "pruebaConsentimiento" : señaActual ? "grabar" : "home");
     }} />;
   }
   if (privacyPreview && (pantalla === "grabar" || pantalla === "pruebaConsentimiento")) {
@@ -1139,10 +1143,11 @@ export default function App() {
 }
 
 
-  return <LiveInterpretationSession active={pantalla==='interpretar'||pantalla==='conversar'} conversationMode={pantalla==='conversar'} navigate={setPantalla} blocked={pantalla==='grabar'||pantalla==='admin'} client={supabase}
+  const content=<LiveInterpretationSession active={pantalla==='interpretar'||pantalla==='conversar'} conversationMode={pantalla==='conversar'} navigate={setPantalla} blocked={pantalla==='grabar'||pantalla==='admin'} client={supabase}
     onBack={()=>setPantalla('bienvenida')} onOpen={()=>setPantalla('interpretar')}>
     {Platform.OS==='web'&&(pantalla==='interpretar'||pantalla==='conversar')?null:renderScreen()}
   </LiveInterpretationSession>;
+  return <HomeNavigationProvider onHome={pulsarLogo}>{Platform.OS==='web'?content:<View style={{flex:1,backgroundColor:'#080c0a'}}><View style={{paddingTop:16,paddingHorizontal:20,paddingBottom:8}}><BrandHome/></View>{content}</View>}</HomeNavigationProvider>;
 }
 
 const styles = StyleSheet.create(themeWebStyles({
