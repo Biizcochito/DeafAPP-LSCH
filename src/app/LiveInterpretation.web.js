@@ -149,7 +149,7 @@ export default function LiveInterpretation({client,onBack,preview=null,active=tr
   const currentText=conversation.mode==='phrases'?(conversation.draft.text||lastPhrase?.label||''):(matched?word:'');
   const femaleVoice=voiceForGender(voices,'female'),maleVoice=voiceForGender(voices,'male');
   return <div className={`deaf-app live-interpretation${conversationMode?' li-conversation-mode':''}`}>
-    {!preview&&navigate?<CommunicationHeader navigate={navigate} current={conversationMode?'conversar':'interpretar'}/>:<header className="li-nav"><BrandHome size={34}/>
+    {!preview&&navigate?<CommunicationHeader navigate={navigate} current={conversationMode?'conversar':'interpretar'}/>:<header className="li-nav"><BrandHome size={40}/>
       <button className="li-back" onClick={onBack}>{preview?'← Volver al vocabulario':'← Volver al inicio'}</button></header>}
     <main className="li-main">
       <div className="li-heading"><span className="li-eyebrow">{preview?'EVALUACIÓN PRIVADA · CÁMARA + FRASES':conversationMode?'DOS PERSONAS · UNA CONVERSACIÓN':'LSCh · TEXTO + VOZ'}</span><h1>{preview?'Prueba privada de interpretación':conversationMode?<>Cada persona,<br/><em>su forma de expresarse.</em></>:'Interpretar en vivo'}</h1>

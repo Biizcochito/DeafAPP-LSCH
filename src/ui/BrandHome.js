@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {AccessibilityInfo,Animated,AppState,Easing,Image,Pressable,Text} from 'react-native';
 import {useHomeNavigation} from './HomeNavigation';
 
-export default function BrandHome({onHome,size=36,compact=false}) {
+export default function BrandHome({onHome,size=44,compact=false}) {
   const home=useHomeNavigation(),motion=useRef(new Animated.Value(0)).current;
   const [reduced,setReduced]=useState(true),[visible,setVisible]=useState(AppState.currentState==='active');
   useEffect(()=>{let alive=true;void AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(alive)setReduced(value);}).catch(()=>{});const preference=AccessibilityInfo.addEventListener('reduceMotionChanged',setReduced),visibility=AppState.addEventListener('change',state=>setVisible(state==='active'));return()=>{alive=false;preference.remove();visibility.remove();};},[]);
