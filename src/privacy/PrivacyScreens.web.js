@@ -8,7 +8,7 @@ import "../ui/theme.css";
 import "./PrivacyScreens.css";
 
 function Header({ onBack, onInterpret, busy }) {
-  return <header className="privacy-header"><BrandHome className="privacy-brand" size={35} beta/><div className="privacy-header-actions"><button className="privacy-back" onClick={onBack}><AppIcon name="back" size={18} />Volver al catálogo</button><InterpretationLink onInterpret={onInterpret} disabled={busy}/></div></header>;
+  return <header className="privacy-header"><BrandHome className="privacy-brand" size={42} beta/><div className="privacy-header-actions"><button className="privacy-back" onClick={onBack}><AppIcon name="back" size={18} />Volver al catálogo</button><InterpretationLink onInterpret={onInterpret} disabled={busy}/></div></header>;
 }
 function PrivacyBanner({ preview }) {
   return <div className="privacy-draft" role="status"><span aria-hidden="true" />{preview ? "Vista de prueba local" : "Participación voluntaria"}<span className="privacy-draft-note">{preview ? "Sin cámara ni envío de grabaciones" : "Tú decides antes de grabar"}</span></div>;

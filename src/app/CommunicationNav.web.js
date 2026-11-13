@@ -33,5 +33,5 @@ export default function CommunicationNav({navigate, current}) {
     </AppLink>)}</nav>;
 }
 export function CommunicationHeader({navigate, current}) {
-  return <header className="communication-header"><BrandHome className="communication-brand" size={34}/><CommunicationNav navigate={navigate} current={current}/></header>;
+  return <header className="communication-header"><BrandHome className="communication-brand" size={40}/><CommunicationNav navigate={navigate} current={current}/></header>;
 }

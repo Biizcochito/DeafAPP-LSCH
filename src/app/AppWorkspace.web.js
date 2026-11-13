@@ -40,7 +40,7 @@ export function AppIcon({ name, size = 22 }) {
 const normalize = value => value.toLocaleLowerCase("es").normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 function Brand({ onLogo }) {
-  return <BrandHome className="app-brand" size={36} beta onHome={onLogo}/>;
+  return <BrandHome className="app-brand" size={44} beta onHome={onLogo}/>;
 }
 function AppButton({ children, icon = "arrow", secondary = false, ...props }) { return <button className={`app-button${secondary ? " app-button-secondary" : ""}`} {...props}>{children}{icon && <AppIcon name={icon} size={19} />}</button>; }
 export function InterpretationLink({onInterpret,disabled=false,newTab=false,className=''}) {
