@@ -1,5 +1,6 @@
 import { CameraView } from "expo-camera";
 import { AppIcon } from "../app/AppWorkspace";
+import BrandHome from '../ui/BrandHome';
 import { displayWord } from "../ui/signNames";
 import useTranslator from "./useTranslator";
 import { TOTAL_FOTOGRAMAS, titularDeResultado } from "./translator";
@@ -15,6 +16,7 @@ export default function TranslatorScreen({ onBack }) {
 
   return <div className="deaf-app tr-stage">
     <header className="tr-top">
+      <BrandHome size={32} compact/>
       <button className="tr-back" aria-label="Volver" onClick={onBack} disabled={t.ocupada}><AppIcon name="back" size={19} /><span>Volver</span></button>
       <div className="tr-title"><h1 tabIndex={-1}>Probar interpretación</h1><span className="tr-beta">Beta</span></div>
     </header>

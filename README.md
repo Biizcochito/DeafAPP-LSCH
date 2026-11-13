@@ -170,7 +170,7 @@ La evaluación diferencia funcionamiento del software, consistencia de detecció
 
 ## Administración y laboratorio privado
 
-El acceso está en [deafapps.com/admin](https://deafapps.com/admin). También se abre al pulsar cinco veces el logo en 3,5 segundos. Ambos métodos exigen autenticación: el gesto abre el formulario y no concede permisos. No hace falta activar la cámara para administrar.
+El acceso está en [deafapps.com/admin](https://deafapps.com/admin) y exige autenticación. El logo animado de todas las pantallas vuelve al inicio con un clic; también se puede usar con teclado. Su movimiento se desactiva cuando el dispositivo solicita movimiento reducido. No hace falta activar la cámara para administrar.
 
 | Área | Función |
 | --- | --- |

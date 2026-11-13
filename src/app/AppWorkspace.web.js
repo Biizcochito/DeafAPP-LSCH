@@ -8,6 +8,7 @@ import "../ui/theme.css";
 import "./AppWorkspace.css";
 import {nombrePantalla} from './appRoutes';
 import CommunicationNav from './CommunicationNav.web';
+import BrandHome from '../ui/BrandHome';
 
 const paths = {
   camera: ["M4 7h4l2-3h4l2 3h4v13H4Z", "M16 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"],
@@ -39,10 +40,7 @@ export function AppIcon({ name, size = 22 }) {
 const normalize = value => value.toLocaleLowerCase("es").normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 function Brand({ onLogo }) {
-  const content = <><img src="/brand/deafapp-mark.svg" alt="" width="36" height="36" /><span>Deaf<span>App</span></span><span className="app-beta">Beta</span></>;
-  return onLogo
-    ? <button className="app-brand" type="button" aria-label="DeafApp" onClick={onLogo}>{content}</button>
-    : <div className="app-brand">{content}</div>;
+  return <BrandHome className="app-brand" size={36} beta onHome={onLogo}/>;
 }
 function AppButton({ children, icon = "arrow", secondary = false, ...props }) { return <button className={`app-button${secondary ? " app-button-secondary" : ""}`} {...props}>{children}{icon && <AppIcon name={icon} size={19} />}</button>; }
 export function InterpretationLink({onInterpret,disabled=false,newTab=false,className=''}) {
